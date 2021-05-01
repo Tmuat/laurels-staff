@@ -4,7 +4,11 @@ click==7.1.2
 Django==3.2
 django-debug-toolbar==3.2.1
 django-environ==0.4.5
+iniconfig==1.1.1
 pathspec==0.8.1
+pluggy==0.13.1
+py==1.10.0
+pytest==6.2.3
 pytz==2021.1
 regex==2021.4.4
 sqlparse==0.4.1
