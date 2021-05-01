@@ -9,6 +9,7 @@ pathspec==0.8.1
 pluggy==0.13.1
 py==1.10.0
 pytest==6.2.3
+pytest-django==4.2.0
 pytz==2021.1
 regex==2021.4.4
 sqlparse==0.4.1
