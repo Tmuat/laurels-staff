@@ -3,10 +3,12 @@
 import os
 import sys
 
+from laurels.settings.base import DJANGO_SETTINGS_MODULE_ENV
+
 
 def main():
     """Run administrative tasks."""
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'laurels.settings')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', DJANGO_SETTINGS_MODULE_ENV)
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
