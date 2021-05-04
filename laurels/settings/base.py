@@ -92,7 +92,7 @@ DJANGO_APPS = [
 
 THIRD_PARTY_APPS = ["admin_honeypot",]
 
-LOCAL_APPS = ["users", "invitations",]
+LOCAL_APPS = ["users", "invitations", "hub"]
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS + THIRD_PARTY_APPS

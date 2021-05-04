@@ -13,6 +13,8 @@ urlpatterns = [
     path(settings.ADMIN_URL, admin.site.urls),
 
     path("users/", include("users.urls")),
+    path("invitation/", include("invitations.urls")),
+    path("hub/", include("hub.urls")),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
