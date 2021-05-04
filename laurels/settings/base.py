@@ -90,7 +90,7 @@ DJANGO_APPS = [
     "django.forms",
 ]
 
-THIRD_PARTY_APPS = []
+THIRD_PARTY_APPS = ["admin_honeypot",]
 
 LOCAL_APPS = ["users",]
 
