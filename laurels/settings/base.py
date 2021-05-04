@@ -113,10 +113,13 @@ AUTHENTICATION_BACKENDS = [
 AUTH_USER_MODEL = "users.CustomUser"
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#login-redirect-url
-# LOGIN_REDIRECT_URL = "/"
+LOGIN_REDIRECT_URL = "/"
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#login-url
-# LOGIN_URL = "/accounts/login/"
+LOGIN_URL = "/accounts/login/"
+
+# https://docs.djangoproject.com/en/dev/ref/settings/#logout-redirect-url
+LOGOUT_REDIRECT_URL = '/'
 
 # ------------------------------------------------------------------------------
 # MIDDLEWARE

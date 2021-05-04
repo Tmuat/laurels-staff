@@ -530,6 +530,7 @@
 {% endblock %}
 
 {% block extra_javascript %}
+{{ block.super }}
 
     <!-- third party js -->
     <script src="{% static 'core/js/vendor/Chart.bundle.min.js' %}"></script>
