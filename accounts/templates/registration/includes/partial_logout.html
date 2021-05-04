@@ -1,0 +1,18 @@
+{% load static i18n %}
+
+<div class="modal-content green-gradient">
+    <div class="modal-body">
+        <div class="text-center mt-2 mb-3">
+            <a href="index.html" class="text-success">
+                <span><img src="{% static 'custom/images/logo.png' %}" alt="laurels" height="80"></span>
+            </a>
+        </div>
+        <div class="text-center">
+            <h4 class="text-white">Are you sure you wish to logout?</h4>
+        </div>
+        <div class="my-3 text-center">
+            <a href="{% url 'logout' %}" class="btn btn-rounded btn-danger">Logout</a>
+        </div>
+    </div>
+</div>
+<!-- /.modal-content -->
