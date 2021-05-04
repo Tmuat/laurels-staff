@@ -15,3 +15,39 @@ body[data-leftbar-compact-mode=condensed] .side-nav .side-nav-item:hover .side-n
 body[data-leftbar-compact-mode=condensed] .side-nav .side-nav-item:hover>ul {
     background: linear-gradient(180deg,#20AD1F 0,#0ed80e 60%);
 }
+
+/* Auth Page Customisations */
+
+body[data-leftbar-compact-mode=condensed] {
+    min-height: 0px;
+}
+
+body.authentication-bg {
+    background-image: url(../../core/images/bg-pattern-light-sm.svg);
+}
+
+/* Media Queries */
+
+/* Extra small devices (portrait phones, less than 576px) */
+@media (max-width: 575.98px) { }
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) { }
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+    .w-md-75 {
+        width: 75%!important;
+    }
+}
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+ }
+
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+    body.authentication-bg {
+        background-image: url(../../core/images/bg-pattern-light.svg);
+    }
+}
