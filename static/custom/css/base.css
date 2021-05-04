@@ -1,7 +1,7 @@
 /* Customising The Side Nav */
 
 .left-side-menu {
-    background: linear-gradient(135deg,#357a32 0,#0ed80e 70%);
+    background: linear-gradient(135deg,#357a32 0,#0acf97 70%);
 }
 
 body[data-leftbar-compact-mode=condensed] .wrapper .left-side-menu .logo {
