@@ -122,8 +122,8 @@ LOGGING = {
 # ------------------------------------------------------------------------------
 
 # https://pypi.org/project/django-admin-env-notice/
-# ENVIRONMENT_NAME = "Development server"
-# ENVIRONMENT_COLOR = "#FF2222"
+ENVIRONMENT_NAME = "Development server"
+ENVIRONMENT_COLOR = "#FF2222"
 
 # ------------------------------------------------------------------------------
 # EMAIL
