@@ -5,6 +5,7 @@ click==7.1.2
 Django==3.2
 django-admin-env-notice==0.2
 django-admin-honeypot==1.1.0
+django-crispy-forms==1.11.2
 django-debug-toolbar==3.2.1
 django-environ==0.4.5
 iniconfig==1.1.1

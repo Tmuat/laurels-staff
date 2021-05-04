@@ -93,7 +93,7 @@ DJANGO_APPS = [
     "django.forms",
 ]
 
-THIRD_PARTY_APPS = ["admin_honeypot",]
+THIRD_PARTY_APPS = ["admin_honeypot", "crispy_forms"]
 
 LOCAL_APPS = ["users", "invitations", "hub", "home", "accounts"]
 
@@ -189,6 +189,10 @@ TEMPLATES = [
                 "django.template.context_processors.static",
                 "django_admin_env_notice.context_processors.from_settings",
             ],
+            "builtins": [
+                "crispy_forms.templatetags.crispy_forms_tags",
+                "crispy_forms.templatetags.crispy_forms_field",
+            ],
         },
     }
 ]
@@ -238,3 +242,11 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")  # noqa
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#media-root
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")  # noqa
+
+
+# ------------------------------------------------------------------------------
+# crispy-forms
+# ------------------------------------------------------------------------------
+# https://django-crispy-forms.readthedocs.io/en/latest/index.html
+
+CRISPY_TEMPLATE_PACK = "bootstrap4"
