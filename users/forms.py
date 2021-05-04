@@ -6,7 +6,6 @@ from .models import CustomUser
 
 
 class CustomUserCreationForm(UserCreationForm):
-
     class Meta(UserCreationForm):
         model = CustomUser
         fields = ("email", "first_name", "last_name")
@@ -25,7 +24,7 @@ class CustomUserCreationForm(UserCreationForm):
             "password2": "Repeat Password",
             "is_staff": "Is Staff?",
             "is_superuser": "Is Superuser?",
-            "is_active": "Active?"
+            "is_active": "Active?",
         }
         for field in self.fields:
             placeholder = placeholders[field]
