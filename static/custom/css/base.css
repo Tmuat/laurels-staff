@@ -1,3 +1,17 @@
+/* Customising The Side Nav */
+
 .left-side-menu {
-    background: linear-gradient(135deg,#357a32 0,#23ee23 70%);
+    background: linear-gradient(135deg,#357a32 0,#0ed80e 70%);
+}
+
+body[data-leftbar-compact-mode=condensed] .wrapper .left-side-menu .logo {
+    background: none;
+}
+
+body[data-leftbar-compact-mode=condensed] .side-nav .side-nav-item:hover .side-nav-link {
+    background: linear-gradient(180deg,#4caf49 0,#20AD1F 60%);
+}
+
+body[data-leftbar-compact-mode=condensed] .side-nav .side-nav-item:hover>ul {
+    background: linear-gradient(180deg,#20AD1F 0,#0ed80e 60%);
 }
