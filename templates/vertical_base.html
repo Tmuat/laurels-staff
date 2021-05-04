@@ -16,6 +16,7 @@ data-layout-config='{"leftSideBarTheme":"default","layoutBoxed":false, "leftSide
     {% block left_sidebar %}
     {% include 'partials/left-sidebar.html' %}
     {% endblock %}
+
     <!-- ============================================================== -->
     <!-- Start Page Content here -->
     <!-- ============================================================== -->
@@ -51,4 +52,11 @@ data-layout-config='{"leftSideBarTheme":"default","layoutBoxed":false, "leftSide
 {% include 'partials/right-sidebar.html' %}
 {% endblock %}
 
+{% include 'partials/base-modal.html' %}
+
+{% endblock %}
+
+{% block extra_javascript %}
+{{ block.super }}
+    <script src="{% static 'custom/js/modal.js' %}"></script>
 {% endblock %}
