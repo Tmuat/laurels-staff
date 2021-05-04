@@ -13,6 +13,7 @@ urlpatterns = [
     path(settings.ADMIN_URL, admin.site.urls),
 
     path("users/", include("users.urls")),
+    path("accounts/", include("accounts.urls")),
     path("invitation/", include("invitations.urls")),
     path("hub/", include("hub.urls")),
     path("", include("home.urls")),
