@@ -15,16 +15,18 @@
           <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
         <![endif]-->
 
-        <link rel="icon" href="{% static 'core/images/favicon.ico' %}">
+        <link rel="icon" href="{% static 'custom/images/favicon.ico' %}">
         
         {% block css %}
                 
             <!-- Your stuff: Third-party CSS libraries go here -->
-            <!-- This file stores project-specific CSS -->
             <!-- App css -->
             <link href="{% static 'core/css/icons.min.css' %}" rel="stylesheet" type="text/css" />
             <link href="{% static 'core/css/app.min.css' %}" rel="stylesheet" type="text/css" id="light-style" />
             <link href="{% static 'core/css/app-dark.min.css' %}" rel="stylesheet" type="text/css" id="dark-style" disabled />
+            
+            <!-- This file stores project-specific CSS -->
+            <link href="{% static 'custom/css/base.css' %}" rel="stylesheet" type="text/css" />
 
             <!-- for creative demo uncomment these lines and comment above -->
             <!-- <link href="{% static 'core/css/app-creative.min.css' %}" rel="stylesheet" type="text/css" id="light-style" />
@@ -33,7 +35,6 @@
             <!-- for modern demo uncomment these lines and comment above -->
             <!-- <link href="{% static 'core/css/app-modern.min.css' %}" rel="stylesheet" type="text/css" id="light-style" />
             <link href="{% static 'core/css/app-modern-dark.min.css' %}" rel="stylesheet" type="text/css" id="dark-style" disabled /> -->
-
 
         {% endblock %}
 
@@ -46,9 +47,6 @@
         {% block page_content %}{% endblock %}
     </body>
 
-
-    <!-- Le javascript
-    ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     {% block javascript %}
         <!-- bundle -->
