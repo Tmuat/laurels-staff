@@ -2,7 +2,7 @@ $(function () {
 
     $(".js-logout").click(function () {
       $.ajax({
-        url: '/accounts/logout-modal/',
+        url: '/account/logout-modal/',
         type: 'get',
         dataType: 'json',
         beforeSend: function () {
