@@ -32,6 +32,12 @@ body.authentication-bg {
     background-image: url(../../core/images/bg-pattern-light-sm.svg);
 }
 
+.non-field-errors ul {
+    margin-bottom: 0px;
+    list-style-type: none;
+    padding: 0px;
+}
+
 /* Media Queries */
 
 /* Extra small devices (portrait phones, less than 576px) */
