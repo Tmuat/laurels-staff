@@ -19,29 +19,35 @@ class="loading authentication-bg" data-layout-config='{"leftSideBarTheme":"dark"
                         <!-- Logo -->
                         <div class="card-header pt-2 pb-2 text-center bg-success">
                             <a href="">
-                                <span><img src="{% static 'custom/images/logo.png' %}" alt="laurels logo" height="70"></span>
+                                <span><img src="{% static 'custom/images/logo.png' %}" alt="laurels logo"
+                                        height="70"></span>
                             </a>
                         </div>
 
                         <div class="card-body p-4">
-                            
+
                             <div class="text-center w-100 w-md-75 m-auto">
                                 <h4 class="text-dark-50 text-center mt-0 font-weight-bold">{% trans "Sign In" %}</h4>
-                                <p class="text-muted mb-4">{% trans "Enter your email address and password to access admin panel." %}</p>
+                                <p class="text-muted mb-2">
+                                {% trans "Enter your email address, password and one time passcode to access Laurels Intranet." %}</p>
                             </div>
-
-                            <form class="login" method="POST" action="" novalidate>
+                            <form action="." method="POST">
                                 {% csrf_token %}
-                                {{ form|crispy }}
-                                {% if redirect_field_value %}
-                                <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+                                {% if form.non_field_errors %}
+                                    <div class="non-field-errors text-center alert alert-block alert-danger">
+                                        {{ form.non_field_errors }}
+                                    </div>
                                 {% endif %}
-
+                                {{ form.username.errors }}
+                                {{ form.username|as_crispy_field }}
+                                {{ form.password.errors }}
+                                {{ form.password|as_crispy_field }}
+                                {{ form.otp_token.errors }}
+                                {{ form.otp_token|as_crispy_field }}
                                 <div class="form-group mb-0 mt-4 clearfix">
-                                    <button class="float-left btn btn-success" type="submit">{% trans "Sign In" %}</button>
-                                    <a class="button secondaryAction float-right align-middle"
-                                        href="">{% trans "Forgot Password?" %}</a>
-                                </div>
+                                      <button class="float-left btn btn-success" type="submit">{% trans "Sign In" %}</button>
+                                      <a class="button secondaryAction float-right align-middle" href="">{% trans "Forgot Password?" %}</a>
+                                  </div>
                             </form>
                         </div> <!-- end card-body -->
                     </div>
@@ -55,7 +61,7 @@ class="loading authentication-bg" data-layout-config='{"leftSideBarTheme":"dark"
     </div>
     <!-- end page -->
     <footer class="footer footer-alt">
-      {% now "Y" %} © Laurels - Designed By <a href="mailto: Thomas_Muat@hotmail.com">Thomas Muat</a>
-  </footer>
+        {% now "Y" %} © Laurels - Designed By <a href="mailto: Thomas_Muat@hotmail.com">Thomas Muat</a>
+    </footer>
 
 {% endblock %}
