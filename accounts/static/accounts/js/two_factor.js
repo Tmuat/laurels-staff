@@ -41,4 +41,47 @@ $(document).ready(function(){
     return false;
   });
 
+  $(".js-backup-otp").click(function () {
+    $.ajax({
+      url: '/account/two-factor/backup/tokens/',
+      type: 'get',
+      dataType: 'json',
+      beforeSend: function () {
+        $("#base-modal").modal("show");
+      },
+      success: function (data) {
+        $("#base-modal .modal-dialog").html(data.html_modal);
+      }
+    });
+  });
+
+  $("#base-modal").on("submit", ".js-generate-backup-otp", function () {
+    $('#modal-overlay').fadeToggle(100);
+    var form = $(this);
+    $.ajax({
+      url: form.attr("action"),
+      data: form.serialize(),
+      type: form.attr("method"),
+      dataType: 'json',
+      success: function (data) {
+        if (data.form_is_valid) {
+          $('#modal-overlay').fadeToggle(100);
+          $.ajax({
+            url: '/account/two-factor/backup/tokens/',
+            type: 'get',
+            dataType: 'json',
+            success: function (data) {
+              $("#base-modal .modal-dialog").html(data.html_modal);
+            }
+          });
+        }
+        else {
+          $('#modal-overlay').fadeToggle(100);
+          $("#base-modal .modal-dialog").html(data.html_form);
+        }
+      }
+    });
+    return false;
+  });
+
 });

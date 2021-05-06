@@ -1,0 +1,27 @@
+{% load static i18n %}
+<div class="modal-content green-gradient">
+    <div class="modal-body">
+        <div class="text-center mt-2 mb-3">
+            <span><img src="{% static 'custom/images/logo.png' %}" alt="laurels" height="80"></span>
+        </div>
+        <div class="text-center">
+            <h4 class="text-white">Backup Tokens</h4>
+        </div>
+        <p class="text-white text-center">{% blocktrans trimmed %}Backup tokens can be used when your primary TFA method
+            is not working. The backup tokens below can be used
+            for login verification. If you've used up all your backup tokens, you
+            can generate a new set of backup tokens. Only the backup tokens shown
+            below will be valid.{% endblocktrans %}</p>
+        
+        <div id="otp-codes" class="alert alert-info text-center ul-no-decoration" role="alert">
+            {% include 'two_factor/includes/backup_list.html' %}
+        </div>
+        <form action="{% url 'backup_tokens' %}" class="text-center js-generate-backup-otp" method="post">
+            {% csrf_token %}
+            {{ form }}
+            <button type="button" class="btn btn-secondary mr-2" data-bs-dismiss="modal" aria-label="Close">Close</button>
+            <button type="submit" class="btn btn-info">{% trans "Generate New Tokens" %}</button>
+        </form>
+    </div>
+</div>
+<!-- /.modal-content -->

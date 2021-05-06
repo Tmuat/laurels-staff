@@ -32,6 +32,7 @@ body.authentication-bg {
     background-image: url(../../core/images/bg-pattern-light-sm.svg);
 }
 
+.ul-no-decoration ul,
 .non-field-errors ul {
     margin-bottom: 0px;
     list-style-type: none;

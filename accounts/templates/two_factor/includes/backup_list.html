@@ -1,0 +1,13 @@
+{% load static i18n %}
+{% if device.token_set.count %}
+<ul>
+    {% for token in device.token_set.all %}
+    <li>{{ token.token }}</li>
+    {% endfor %}
+</ul>
+<p class="pt-3 mb-0">Print these tokens and keep them somewhere safe.</p>
+{% else %}
+<div>
+    You don't have any backup codes yet.
+</div>
+{% endif %}
