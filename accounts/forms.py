@@ -1,4 +1,13 @@
+from binascii import unhexlify
 from django_otp.forms import OTPAuthenticationForm
+from django_otp.oath import totp
+from django_otp.plugins.otp_totp.models import TOTPDevice
+from time import time
+
+from django import forms
+from django.utils.translation import gettext_lazy as _
+
+from accounts.utils import totp_digits
 
 
 class CustomOTPAuthenticationForm(OTPAuthenticationForm):
@@ -18,3 +27,9 @@ class CustomOTPAuthenticationForm(OTPAuthenticationForm):
             if field == "otp_token":
                 label = labels[field]
                 self.fields[field].label = label
+
+
+class CustomConfirmChangeForm(forms.Form):
+    understand = forms.BooleanField(label=_("Yes, I Am Sure"))
+
+
