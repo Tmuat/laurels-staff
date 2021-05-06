@@ -1,0 +1,16 @@
+{% load i18n %}
+
+{% if wizard.steps.prev %}
+<div class="form-group mb-0 mt-4 clearfix">
+  <button name="wizard_goto_step" type="submit"
+          value="{{ wizard.steps.prev }}"
+          class="btn btn-secondary">{% trans "Back" %}</button>
+{% else %}
+<div class="form-group mb-0 mt-4 clearfix">
+  <button disabled name="" type="button" class="btn">{% trans "Back" %}</button>
+{% endif %}
+    <button class="float-left btn btn-success" type="submit">{% trans "Next" %}</button>
+{% if cancel_url %}
+    <a class="button secondaryAction float-right align-middle" href="">{% trans "Forgot Password?" %}</a>
+{% endif %}
+</div>
