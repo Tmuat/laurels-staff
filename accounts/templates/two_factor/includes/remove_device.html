@@ -1,0 +1,23 @@
+{% load static i18n %}
+<div class="modal-content green-gradient">
+    <div class="modal-body">
+        <div class="text-center mt-2 mb-3">
+            <span><img src="{% static 'custom/images/logo.png' %}" alt="laurels" height="80"></span>
+        </div>
+        <div class="text-center">
+            <h4 class="text-white">Please confirm you wish to remove your current OTP device?</h4>
+        </div>
+        <form method="post" action="{% url 'otp_remove' %}" class="text-center text-white js-remove-otp-form">
+            {% csrf_token %}
+            <table>{{ form|crispy }}</table>
+            <div class="text-center" id="">
+            </div>
+            <div class="mb-3 text-center">
+                <button type="button" class="btn btn-secondary mr-2" data-bs-dismiss="modal" aria-label="Close">Close</button>
+                <button type="submit" class="btn btn-danger">Confirm Change</button>
+            </div>
+            <h6 class="alert alert-block alert-danger">Note. It is essential you complete the full process of changing your OTP device. Without this, you cannot login.</h6>
+        </form>
+    </div>
+</div>
+<!-- /.modal-content -->
