@@ -24,6 +24,9 @@ from accounts.utils import class_view_decorator
 
 
 def logout_modal(request):
+    """
+    Provides a response for an ajax request, delivering the logout modal.
+    """
     html_modal = render_to_string(
         "registration/includes/partial_logout.html",
         request=request,
@@ -33,6 +36,9 @@ def logout_modal(request):
 
 @never_cache
 def otp_remove(request):
+    """
+    Ajax URL for removing a TOTP device.
+    """
     data = dict()
 
     if request.method == "POST":
@@ -55,9 +61,14 @@ def otp_remove(request):
     return JsonResponse(data)
 
 
+@never_cache
 def otp_setup(request):
+    """
+    AJAX URL for setting up a TOTP device.
+    """
     session_key_name = "django_two_factor-qr_secret_key"
     data = dict()
+    no_error = True
 
     if request.method == "POST":
         """
@@ -101,11 +112,12 @@ def otp_setup(request):
             data["form_is_valid"] = True
         else:
             data["form_is_valid"] = False
+            no_error = False
     else:
         """
         Check to see if the session key is already in the session and clear it.
-        Generate a key on get request and store it in the session. One key to be used
-        to check against the OTP link and one to create the QR code.
+        Generate a key on get request and store it in the session. One key to 
+        be used to check against the OTP link and one to create the QR code.
         """
         try:
             del request.session[session_key_name]
@@ -125,7 +137,7 @@ def otp_setup(request):
 
         request.session[session_key_name] = session
 
-    context = {"QR_URL": reverse("qr")}
+    context = {"no_error": no_error, "QR_URL": reverse("qr")}
     data["html_modal"] = render_to_string(
         "two_factor/includes/setup.html",
         context,
@@ -134,7 +146,12 @@ def otp_setup(request):
     return JsonResponse(data)
 
 
+@never_cache
 def otp_backup(request):
+    """
+    AJAX URL for creating backup OTP numbers.
+    """
+
     data = dict()
 
     number_of_tokens = 10
