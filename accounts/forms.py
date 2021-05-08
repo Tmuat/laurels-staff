@@ -31,5 +31,3 @@ class CustomOTPAuthenticationForm(OTPAuthenticationForm):
 
 class CustomConfirmChangeForm(forms.Form):
     understand = forms.BooleanField(label=_("Yes, I Am Sure"))
-
-

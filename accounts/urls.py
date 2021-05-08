@@ -1,7 +1,6 @@
 from two_factor.views import (
     BackupTokensView,
     ProfileView,
-    QRGeneratorView,
     SetupCompleteView,
 )
 
@@ -14,7 +13,7 @@ from accounts.views import (
     otp_remove,
     otp_setup,
     otp_backup,
-    SetupView,
+    QRGeneratorView,
 )
 
 
@@ -51,12 +50,11 @@ urlpatterns = [
     path(
         "two-factor/setup/",
         otp_setup,
-        name="setup",
+        name="otp_setup",
     ),
     path(
         "two-factor/backup/tokens/",
         otp_backup,
         name="backup_tokens",
     ),
-    path("test/", otp_setup, name="test"),
 ]
