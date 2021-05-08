@@ -2,6 +2,7 @@ from base64 import b32encode
 from binascii import unhexlify
 import django_otp
 from django_otp import devices_for_user
+from django_otp.decorators import otp_required
 from django_otp.oath import totp
 from django_otp.plugins.otp_static.models import StaticToken
 from django_otp.plugins.otp_totp.models import TOTPDevice
@@ -23,6 +24,8 @@ from accounts.forms import CustomConfirmChangeForm, totp_digits
 from accounts.utils import class_view_decorator
 
 
+@login_required
+@otp_required
 def logout_modal(request):
     """
     Provides a response for an ajax request, delivering the logout modal.
@@ -34,6 +37,7 @@ def logout_modal(request):
     return JsonResponse({"html_modal": html_modal})
 
 
+@login_required
 @never_cache
 def otp_remove(request):
     """
@@ -61,6 +65,7 @@ def otp_remove(request):
     return JsonResponse(data)
 
 
+@login_required
 @never_cache
 def otp_setup(request):
     """
@@ -146,6 +151,8 @@ def otp_setup(request):
     return JsonResponse(data)
 
 
+@login_required
+@otp_required
 @never_cache
 def otp_backup(request):
     """
