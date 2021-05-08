@@ -15,7 +15,7 @@ urlpatterns = [
     path("users/", include("users.urls")),
     path("account/", include("accounts.urls")),
     path("invitation/", include("invitations.urls")),
-    path("hub/", include("hub.urls")),
+    path("hub/", include("regionandhub.urls")),
     path("", include("home.urls")),
 ]
 

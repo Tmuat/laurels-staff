@@ -102,7 +102,7 @@ THIRD_PARTY_APPS = [
     "two_factor",
 ]
 
-LOCAL_APPS = ["users", "invitations", "hub", "home", "accounts"]
+LOCAL_APPS = ["users", "invitations", "regionandhub", "home", "accounts"]
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS + THIRD_PARTY_APPS
