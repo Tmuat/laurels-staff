@@ -121,7 +121,7 @@ def otp_setup(request):
     else:
         """
         Check to see if the session key is already in the session and clear it.
-        Generate a key on get request and store it in the session. One key to 
+        Generate a key on get request and store it in the session. One key to
         be used to check against the OTP link and one to create the QR code.
         """
         try:
