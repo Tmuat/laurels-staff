@@ -1,4 +1,4 @@
-$(document).ready(function(){
+$(document).ready(function () {
   // Deals with the AJAX for removing a OTP. Loads the template
   $(".js-remove-otp").click(function () {
     $.ajax({
@@ -34,8 +34,7 @@ $(document).ready(function(){
               $("#base-modal .modal-dialog").html(data.html_modal);
             }
           });
-        }
-        else {
+        } else {
           $("#base-modal .modal-dialog").html(data.html_form);
         }
       }
@@ -56,8 +55,7 @@ $(document).ready(function(){
         if (data.form_is_valid) {
           $('#modal-overlay').fadeToggle(100);
           $("#base-modal").modal("hide");
-        }
-        else {
+        } else {
           $('#modal-overlay').fadeToggle(100);
           $("#base-modal .modal-dialog").html(data.html_modal);
         }
@@ -101,8 +99,7 @@ $(document).ready(function(){
               $("#base-modal .modal-dialog").html(data.html_modal);
             }
           });
-        }
-        else {
+        } else {
           $('#modal-overlay').fadeToggle(100);
           $("#base-modal .modal-dialog").html(data.html_form);
         }
