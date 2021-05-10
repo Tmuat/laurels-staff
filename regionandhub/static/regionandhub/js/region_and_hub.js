@@ -49,7 +49,7 @@ $(document).ready(function () {
             success: function (data) {
                 if (data.form_is_valid) {
                     $("#panel-div").html(data.html_region_panels);
-                    console.log("Should have changed");
+                    $("#page-title").html(data.html_region_page_title);
                     $('#modal-overlay').fadeToggle(100);
                     $("#base-modal").modal("hide");
                 } else {

@@ -31,13 +31,8 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-12 text-center">
-                                <h6 class="float-none float-sm-left">Showing <span class="text-success">{{ regions.count }}</span>
-                                    {% if regions.count > 1 %}Regions{% else %}Region{% endif %}</h6>
-                                <div class="float-none float-sm-right">
-                                    <button class="btn btn-success btn-sm mr-2 js-add-region">Add Region</button>
-                                    <button class="btn btn-success btn-sm">Add Hub</button>
-                                </div>
+                            <div id="page-title" class="col-12 text-center">
+                                {% include 'regionandhub/includes/page-title.html' %}
                             </div>
                             <div id="panel-div" class="w-100">
                                 {% include 'regionandhub/includes/panel.html' %}

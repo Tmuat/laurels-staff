@@ -50,6 +50,9 @@ def region_add(request):
             data["html_region_panels"] = render_to_string(
                 "regionandhub/includes/panel.html", {"regions": regions}
             )
+            data["html_region_page_title"] = render_to_string(
+                "regionandhub/includes/page-title.html", {"regions": regions}
+            )
         else:
             data["form_is_valid"] = False
 
