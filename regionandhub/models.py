@@ -33,7 +33,11 @@ class Hub(UpdatedAndCreated):
     )
     slug = models.SlugField(null=False, unique=True)
     region = models.ForeignKey(
-        Region, on_delete=models.CASCADE, null=False, blank=False
+        Region,
+        on_delete=models.CASCADE,
+        related_name="region",
+        null=False,
+        blank=False,
     )
     is_active = models.BooleanField(default=True)
 
