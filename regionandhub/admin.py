@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from regionandhub.models import Region, Hub
+from regionandhub.models import Region, Hub, HubTargets
 
 
 class RegionAdmin(admin.ModelAdmin):
@@ -39,7 +39,18 @@ class RegionAdmin(admin.ModelAdmin):
 admin.site.register(Region, RegionAdmin)
 
 
+class HubTargetsAdminInline(admin.TabularInline):
+    model = HubTargets
+    readonly_fields = [
+        "created",
+        "created_by",
+        "updated",
+        "updated_by",
+    ]
+
+
 class HubAdmin(admin.ModelAdmin):
+    inlines = (HubTargetsAdminInline,)
     list_display = (
         "hub_name",
         "slug",
@@ -59,11 +70,11 @@ class HubAdmin(admin.ModelAdmin):
 
     search_fields = ("hub_name",)
 
-    exclude = [
-        "updated_by",
-        "updated",
-        "created_by",
+    readonly_fields = [
         "created",
+        "created_by",
+        "updated",
+        "updated_by",
     ]
 
     def save_model(self, request, obj, form, change):
@@ -71,6 +82,14 @@ class HubAdmin(admin.ModelAdmin):
             obj.created_by = request.user.get_full_name()
         obj.updated_by = request.user.get_full_name()
         obj.save()
+
+    def save_formset(self, request, form, formset, change):
+        instances = formset.save(commit=False)
+        for instance in instances:
+            if not instance.created_by:
+                instance.created_by = request.user.get_full_name()
+            instance.updated_by = request.user.get_full_name()
+            instance.save()
 
 
 admin.site.register(Hub, HubAdmin)
