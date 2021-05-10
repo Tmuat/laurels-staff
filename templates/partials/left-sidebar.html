@@ -35,24 +35,31 @@
                 <a href="javascript: void(0);" class="side-nav-link">
                     <i class="uil-home-alt"></i>
                     <span> {% trans "Home" %} </span>
+                    <span class="menu-arrow"></span>
                 </a>
                 <ul class="side-nav-second-level" aria-expanded="false">
                     <li class="{% if request.resolver_match.url_name == 'analytics' %}active{% endif %}">
-                        <a href="">{% trans "Analytics" %}</a>
+                        <a href="sefsF">{% trans "Analytics" %}</a>
                     </li>
-                    <li class="{% if request.resolver_match.url_name == 'crm' %}active{% endif %}">
-                        <a href="">{% trans "CRM" %}</a>
-                    </li>
-                    <li class="{% if request.resolver_match.url_name == 'ecommerce' %}active{% endif %}">
-                        <a href="">{% trans "Ecommerce" %}</a>
-                    </li>
-                    <li class="{% if request.resolver_match.url_name == 'analytics' %}active{% endif %}">
-                        <a href="">{% trans "Projects" %}</a>
+                </ul>
+            </li>
+
+            <li class="side-nav-item">
+                <a href="javascript: void(0);" class="side-nav-link">
+                    <i class="mdi mdi-clipboard-account"></i>
+                    <span> {% trans "Management" %} </span>
+                    <span class="menu-arrow"></span>
+                </a>
+                <ul class="side-nav-second-level" aria-expanded="false">
+                    <li class="{% if request.resolver_match.url_name == 'hub_and_region' %}active{% endif %}">
+                        <a href="{% url 'hub_and_region' %}">{% trans "Regions & Hubs" %}</a>
                     </li>
                 </ul>
             </li>
         </ul>
         <!-- End Sidebar -->
+        
+        <div class="clearfix"></div>
 
     </div>
     <!-- Sidebar -left -->
