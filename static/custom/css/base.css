@@ -16,6 +16,19 @@ body[data-leftbar-compact-mode=condensed] .side-nav .side-nav-item:hover>ul {
     background: linear-gradient(180deg,#20AD1F 0,#0ed80e 60%);
 }
 
+.side-nav-item.mm-active a {
+    font-style: italic;
+}
+
+.side-nav-second-level .mm-active a {
+    font-style: normal;
+}
+
+.side-nav-second-level .mm-active a:hover,
+.side-nav-second-level .mm-active a:focus {
+    text-decoration: underline;
+}
+
 /* Colours */
 
 .green-gradient {
