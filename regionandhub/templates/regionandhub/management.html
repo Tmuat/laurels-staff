@@ -13,7 +13,7 @@
             <div class="col-12">
                 <div class="page-title-box">
                     <div class="page-title-right">
-                        <ol class="breadcrumb m-0">
+                        <ol class="breadcrumb m-0 p-0">
                             <li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="uil-home-alt"></i> Home</a></li>
                             <li class="breadcrumb-item"><a href="#">Management</a></li>
                             <li class="breadcrumb-item active" aria-current="page">Regions & Hubs</li>
@@ -25,81 +25,40 @@
         </div>     
         <!-- end page title --> 
 
+        <!-- start region list -->
         <div class="row">
-            <div class="col">
-                
-                {% for instance in regions %}
-                <!-- panel -->
-                <div class="mt-2">
-                    <a class="text-dark" data-toggle="collapse" href="#{{ instance.slug }}" aria-expanded="false"
-                        aria-controls="{{ instance.slug }}">
-                        <h5 class="m-0 pb-2">
-                            <i class='uil uil-angle-down font-18'></i>{{ instance.name }} <span class="text-muted">({{ instance.region.all.count }})</span>
-                        </h5>
-                    </a>
-
-                    <div class="collapse show" id="{{ instance.slug }}">
-                        <div class="card mb-0">
-                            <div class="card-body">
-
-                                {% for instance in instance.region.all %}
-                                <!-- task -->
-                                <div class="row justify-content-sm-between mt-2">
-                                    <div class="col-sm-6 mb-2 mb-sm-0">
-                                        <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="{{ instance.id }}">
-                                            <label class="custom-control-label" for="{{ instance.id }}">
-                                                {{ instance }}
-                                            </label>
-                                        </div> <!-- end checkbox -->
-                                    </div> <!-- end col -->
-                                    <div class="col-sm-6">
-                                        <div class="d-flex justify-content-between">
-                                            <div>
-                                            </div>
-                                            <div>
-                                                <ul class="list-inline font-13 text-right">
-                                                    <li class="list-inline-item">
-                                                        <i class='uil uil-schedule font-16 mr-1'></i> {{dueDate}}
-                                                    </li>
-                                                    <li class="list-inline-item ml-1">
-                                                        <i class='uil uil-align-alt font-16 mr-1'></i> {{noChecklists}}
-                                                    </li>
-                                                    <li class="list-inline-item ml-1">
-                                                        <i class='uil uil-comment-message font-16 mr-1'></i> {{noComments}}
-                                                    </li>
-                                                    <li class="list-inline-item ml-2">
-                                                        {% if priority == 'High' %}
-                                                        <span class="badge badge-danger-lighten p-1">{{priority}}</span>
-                                                        {% endif %}
-                                                        {% if priority == 'Medium' %}
-                                                        <span class="badge badge-info-lighten p-1">{{priority}}</span>
-                                                        {% endif %}
-                                                        {% if priority == 'Low' %}
-                                                        <span class="badge badge-success-lighten p-1">{{priority}}</span>
-                                                        {% endif %}
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div> <!-- end .d-flex-->
-                                    </div> <!-- end col -->
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12 text-center">
+                                <h6 class="float-none float-sm-left">Showing <span class="text-success">{{ regions.count }}</span>
+                                    {% if regions.count > 1 %}Regions{% else %}Region{% endif %}</h6>
+                                <div class="float-none float-sm-right">
+                                    <button class="btn btn-success btn-sm mr-2 js-add-region">Add Region</button>
+                                    <button class="btn btn-success btn-sm">Add Hub</button>
                                 </div>
-                                <!-- end task -->
-                                {% endfor %}
+                            </div>
+                            <div id="panel-div" class="w-100">
+                                {% include 'regionandhub/includes/panel.html' %}
+                            </div>
+                        </div>
+                        <!-- end card-body-->
+                        
+                    </div>
+                    <!-- end card-->
 
-                            </div> <!-- end card-body-->
-                        </div> <!-- end card -->
-                    </div> <!-- end .collapse-->
-                </div> <!-- end .mt-2-->
-                {% endfor %}
+                </div>
+                <!-- end col-->
 
-            </div> <!-- end col -->
+            </div>
+            <!-- end row-->
 
         </div>
-        <!-- end row-->
-
-    </div> <!-- container -->
+    <!-- End Content -->
 {% endblock %}
 
 {% block extra_javascript %}
+{{ block.super }}
+    <script src="{% static 'regionandhub/js/region_and_hub.js' %}"></script>
 {% endblock %}

@@ -1,0 +1,73 @@
+{% for instance in regions %}
+<!-- start panel -->
+<div class="col-12 {% if forloop.first %}mt-3{% else %}mt-4{% endif %}">
+    <a class="text-dark collapsed" data-toggle="collapse" href="#{{ instance.slug }}" aria-expanded="false"
+        aria-controls="{{ instance.slug }}">
+        <h5 class="m-0 pb-2">
+            <i class='uil uil-angle-down font-18'></i>{{ instance.name }} <span
+                class="text-muted">({{ instance.region.all.count }})</span>
+        </h5>
+    </a>
+
+    <!-- start hub dropdown -->
+    <div class="collapse" id="{{ instance.slug }}">
+
+        <!-- start card -->
+        <div class="card mb-0">
+
+            <!-- start card-body-->
+            <div class="card-body">
+
+                {% for instance in instance.region.all %}
+                <!-- region -->
+                <div class="row justify-content-sm-between mt-2">
+                    <div class="col-sm-6 mb-2 mb-sm-0">
+
+                        <!-- start checkbox -->
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="{{ instance.id }}">
+                            <label class="custom-control-label" for="{{ instance.id }}">
+                                {{ instance }}
+                            </label>
+                        </div>
+                        <!-- end checkbox -->
+
+                    </div>
+                    <!-- end col -->
+                    <div class="col-sm-6">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                # Employees.
+                            </div>
+                            <div>
+                                <ul class="list-inline font-13 text-right">
+                                    <li class="list-inline-item">
+                                        <a href="" data-toggle="tooltip" data-placement="top" title="Edit Hub">
+                                            <i class="mdi mdi-calendar-edit font-16 mr-1"></i>
+                                        </a>
+                                    </li>
+                                    <li class="list-inline-item">
+                                        <a href="" data-toggle="tooltip" data-placement="top" title="Hub Employees">
+                                            <i class="mdi mdi-view-list font-16 mr-1"></i>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div> <!-- end .d-flex-->
+                    </div> <!-- end col -->
+                </div>
+                <!-- end region -->
+                {% endfor %}
+
+            </div>
+            <!-- end card-body-->
+
+        </div>
+        <!-- end card -->
+
+    </div>
+    <!-- end hub dropdown -->
+
+</div>
+<!-- end panel -->
+{% endfor %}
