@@ -31,8 +31,14 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="row">
-                            <div id="page-title" class="col-12 text-center">
-                                {% include 'regionandhub/includes/page-title.html' %}
+                            <div class="col-12 text-center">
+                                <div id="page-title" class="float-none float-sm-left">
+                                    {% include 'regionandhub/includes/page-title.html' %}
+                                </div>
+                                <div class="float-none float-sm-right">
+                                    <button class="btn btn-success btn-sm mr-2 js-add-region">Add Region</button>
+                                    <button class="btn btn-success btn-sm js-add-hub">Add Hub</button>
+                                </div>
                             </div>
                             <div id="panel-div" class="w-100">
                                 {% include 'regionandhub/includes/panel.html' %}
