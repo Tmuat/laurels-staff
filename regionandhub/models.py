@@ -53,6 +53,7 @@ class HubTargets(UpdatedAndCreated):
         ordering = ["year", "quarter"]
         verbose_name = "Hub Target"
         verbose_name_plural = "Hub Targets"
+        unique_together = ["year", "quarter", "hub_targets"]
 
     Q1 = "q1"
     Q2 = "q2"
