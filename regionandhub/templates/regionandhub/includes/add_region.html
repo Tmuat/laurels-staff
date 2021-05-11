@@ -8,7 +8,7 @@
             <h4 class="text-white">Add Region</h4>
         </div>
         <p class="text-white text-center">{% blocktrans trimmed %}Please add a new region. Region names must be unique; the intranet will perform a uniqueness check.{% endblocktrans %}</p>
-        <form method="post" action="{% url 'add_region' %}" class="text-center text-white js-add-region-form">
+        <form method="post" action="{% url 'regionandhub:add_region' %}" class="text-center text-white js-add-region-form">
             {% csrf_token %}
             {{ form|crispy }}
             <div class="mb-2 alert alert-secondary w-50 mx-auto" role="alert" id="unique_check">

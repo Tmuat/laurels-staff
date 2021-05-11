@@ -5,7 +5,7 @@
 <div class="left-side-menu">
 
     <!-- LOGO -->
-    <a href="{% url 'home' %}" class="logo text-center logo-light">
+    <a href="{% url 'home:home' %}" class="logo text-center logo-light">
         <span class="logo-lg">
             <img class="white-box-shadow" src="{% static 'custom/images/logo.png' %}" alt="laurels logo" height="60">
         </span>
@@ -52,7 +52,7 @@
                 </a>
                 <ul class="side-nav-second-level" aria-expanded="false">
                     <li class="{% if request.resolver_match.url_name == 'hub_and_region' %}active{% endif %}">
-                        <a href="{% url 'hub_and_region' %}">{% trans "Regions & Hubs" %}</a>
+                        <a href="{% url 'regionandhub:hub_and_region' %}">{% trans "Regions & Hubs" %}</a>
                     </li>
                 </ul>
             </li>

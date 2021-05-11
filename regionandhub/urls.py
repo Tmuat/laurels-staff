@@ -3,6 +3,7 @@ from django.urls import path
 from regionandhub.views import hub_and_region, region_add, validate_region_name
 
 
+app_name = "regionandhub"
 urlpatterns = [
     path("manage/", hub_and_region, name="hub_and_region"),
     path("add/region/", region_add, name="add_region"),

@@ -16,7 +16,7 @@
         <div id="otp-codes" class="alert alert-info text-center ul-no-decoration" role="alert">
             {% include 'two_factor/includes/backup_list.html' %}
         </div>
-        <form action="{% url 'backup_tokens' %}" class="text-center js-generate-backup-otp" method="post">
+        <form action="{% url 'accounts:backup_tokens' %}" class="text-center js-generate-backup-otp" method="post">
             {% csrf_token %}
             {{ form }}
             <button type="button" class="btn btn-secondary mr-2" data-bs-dismiss="modal" aria-label="Close">Close</button>
