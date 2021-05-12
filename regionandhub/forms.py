@@ -48,7 +48,7 @@ class HubEditForm(forms.ModelForm):
         labels = {
             "hub_name": _("Hub Name"),
             "region": _("Associated Region"),
-            "is_active": _("Hub Still Active?")
+            "is_active": _("Hub Still Active?"),
         }
 
     def __init__(self, *args, **kwargs):

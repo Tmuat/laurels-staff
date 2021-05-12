@@ -278,9 +278,7 @@ def validate_hub_name_edit(request, hub_slug):
         data = {"is_taken": False}
     else:
         data = {
-            "is_taken": Hub.objects.filter(
-                slug__iexact=new_hub_slug
-            ).exists()
+            "is_taken": Hub.objects.filter(slug__iexact=new_hub_slug).exists()
         }
 
     return JsonResponse(data)

@@ -11,7 +11,7 @@ from regionandhub.views import (
     validate_hub_name,
     hub_add_targets,
     hub_edit,
-    validate_hub_name_edit
+    validate_hub_name_edit,
 )
 
 
