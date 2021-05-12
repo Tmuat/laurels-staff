@@ -24,7 +24,7 @@
                 {% for instance in instance.region.all %}
                 <!-- region -->
                 <div class="row justify-content-sm-between mt-2">
-                    <div class="col-sm-6 mb-2 mb-sm-0">
+                    <div class="col-sm-3 mb-2 mb-sm-0">
 
                         <!-- start checkbox -->
                         <div class="custom-control custom-checkbox">
@@ -37,13 +37,51 @@
 
                     </div>
                     <!-- end col -->
-                    <div class="col-sm-6">
-                        <div class="d-flex justify-content-between">
-                            <div>
+                    <div class="col-sm-9">
+                        <div class="row">
+                            <div class="col-12 col-md-3 text-center px-0 mx-auto">
                                 # Employees.
                             </div>
-                            <div>
-                                <ul class="list-inline font-13 text-right">
+                            {% if instance.hub_targets_year_set.all.count < 1 %}
+                                <div class="col-12 col-md-3 text-center px-0 mx-auto">
+                                    <p class="mb-0 text-danger">{{ current_year }} Targets <span class="mdi mdi-close-circle-outline"></span></p>
+                                </div>
+                                <div class="col-12 col-md-3 text-center px-0 mx-auto">
+                                    <p class="mb-0 text-danger">{{ next_year }} Targets <span class="mdi mdi-close-circle-outline"></span></p>
+                                </div>
+                            {% elif instance.hub_targets_year_set.all.count < 2 %}
+                                {% for target in instance.hub_targets_year_set.all %}
+                                    {% if target.year == current_year %}
+                                        <div class="col-12 col-md-3 text-center px-0 mx-auto">
+                                            <p class="mb-0 text-success">{{ current_year }} Targets <span class="mdi mdi-check-circle-outline"></span></p>
+                                        </div>
+                                        <div class="col-12 col-md-3 text-center px-0 mx-auto">
+                                            <p class="mb-0 text-danger">{{ next_year }} Targets <span class="mdi mdi-close-circle-outline"></span></p>
+                                        </div>
+                                    {% endif %}
+                                    {% if target.year == next_year %}
+                                        <div class="col-12 col-md-3 text-center px-0 mx-auto">
+                                            <p class="mb-0 text-danger">{{ current_year }} Targets <span class="mdi mdi-close-circle-outline"></span></p>
+                                        </div>
+                                        <div class="col-12 col-md-3 text-center px-0 mx-auto">
+                                            <p class="mb-0 text-success">{{ next_year }} Targets <span class="mdi mdi-check-circle-outline"></span></p>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            {% else %}
+                                {% for target in instance.hub_targets_year_set.all %}
+                                    <div class="col-12 col-md-3 text-center px-0 mx-auto">
+                                        {% if target.year == current_year %}
+                                            <p class="mb-0 text-success">{{ current_year }} Targets <span class="mdi mdi-check-circle-outline"></span></p>
+                                        {% elif target.year == next_year %}
+                                            <p class="mb-0 text-success">{{ next_year }} Targets <span class="mdi mdi-check-circle-outline"></span></p>
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+
+                            <div class="col-12 col-md-2 px-0 mx-auto">
+                                <ul class="list-inline font-13 text-center text-md-right">
                                     <li class="list-inline-item">
                                         <p class="mb-0 d-inline text-primary pointer js-edit-hub"  data-url="{% url 'regionandhub:edit_hub' instance.slug %}" data-toggle="tooltip" data-placement="top" title="Edit Hub">
                                             <i class="mdi mdi-calendar-edit font-16 mr-1"></i>

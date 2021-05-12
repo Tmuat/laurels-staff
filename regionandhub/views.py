@@ -6,6 +6,7 @@ from django.shortcuts import render, get_object_or_404
 from django.template.loader import render_to_string
 from django.utils.text import slugify
 
+from common.functions import quarter_year_calc
 from regionandhub.forms import (
     RegionForm,
     RegionEditForm,
@@ -13,7 +14,7 @@ from regionandhub.forms import (
     HubEditForm,
     HubTargetsFormset,
 )
-from regionandhub.models import Region, Hub
+from regionandhub.models import Region, Hub, HubTargetsYear
 
 
 @otp_required
@@ -23,7 +24,15 @@ def hub_and_region(request):
 
     regions = Region.objects.filter(is_active=True).prefetch_related("region")
 
-    context = {"regions": regions}
+    current_year = quarter_year_calc()
+
+    next_year = str(int(current_year) + 1)
+
+    context = {
+        "regions": regions,
+        "current_year": current_year,
+        "next_year": next_year,
+    }
 
     template = "regionandhub/management.html"
 
@@ -308,6 +317,13 @@ def hub_add_targets(request, hub):
                 instance.created_by = request.user.get_full_name()
                 instance.updated_by = request.user.get_full_name()
                 instance.save()
+            HubTargetsYear.objects.create(
+                year=selected_year,
+                targets_set=True,
+                hub=hub_instance,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
             data["form_is_valid"] = True
         else:
             data["form_is_valid"] = False
