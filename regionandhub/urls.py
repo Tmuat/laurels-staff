@@ -6,6 +6,7 @@ from regionandhub.views import (
     validate_region_name,
     hub_add,
     validate_hub_name,
+    hub_add_targets,
 )
 
 
@@ -16,4 +17,5 @@ urlpatterns = [
     path("check/region/", validate_region_name, name="check_region"),
     path("add/hub/", hub_add, name="add_hub"),
     path("check/hub/", validate_hub_name, name="check_hub"),
+    path("add/<hub>/hub-targets/", hub_add_targets, name="add_hub_targets"),
 ]

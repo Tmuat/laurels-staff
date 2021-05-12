@@ -73,6 +73,16 @@ body.authentication-bg {
   height: 100%;
 }
 
+/* Create HR */
+
+.hr {
+    display: block;
+    width: 75%;
+    margin-left: auto;
+    margin-right: auto;
+    border-top: 1px solid rgb(255, 255, 255)
+ }
+
 /* Media Queries */
 
 /* Extra small devices (portrait phones, less than 576px) */

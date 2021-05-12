@@ -5,58 +5,61 @@
 
 
 {% block content %}
-    <!-- Start Content-->
-    <div class="container-fluid">
+<!-- Start Content-->
+<div class="container-fluid">
 
-        <!-- start page title -->
-        <div class="row">
-            <div class="col-12">
-                <div class="page-title-box">
-                    <div class="page-title-right">
-                        <ol class="breadcrumb m-0 p-0">
-                            <li class="breadcrumb-item"><a href="{% url 'home:home' %}"><i class="uil-home-alt"></i> Home</a></li>
-                            <li class="breadcrumb-item"><a href="#">Management</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Regions & Hubs</li>
-                        </ol>
-                    </div>
-                    <h4 class="page-title">Region & Hubs</h4>
+    <!-- start page title -->
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box">
+                <div class="page-title-right">
+                    <ol class="breadcrumb m-0 p-0">
+                        <li class="breadcrumb-item"><a href="{% url 'home:home' %}"><i class="uil-home-alt"></i> Home</a></li>
+                        <li class="breadcrumb-item"><a href="#">Management</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Regions & Hubs</li>
+                    </ol>
                 </div>
+                <h4 class="page-title">Region & Hubs</h4>
             </div>
-        </div>     
-        <!-- end page title --> 
+        </div>
+    </div>     
+    <!-- end page title --> 
 
-        <!-- start region list -->
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-12 text-center">
-                                <div id="page-title" class="float-none float-sm-left">
-                                    {% include 'regionandhub/includes/page-title.html' %}
-                                </div>
-                                <div class="float-none float-sm-right">
-                                    <button class="btn btn-success btn-sm mr-2 js-add-region">Add Region</button>
-                                    <button class="btn btn-success btn-sm js-add-hub">Add Hub</button>
-                                </div>
+    <!-- start region list -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <div id="page-title" class="float-none float-sm-left">
+                                {% include 'regionandhub/includes/page-title.html' %}
                             </div>
-                            <div id="panel-div" class="w-100">
-                                {% include 'regionandhub/includes/panel.html' %}
+                            <div class="float-none float-sm-right">
+                                <button class="btn btn-success btn-sm mr-2 js-add-region">Add Region</button>
+                                <button class="btn btn-success btn-sm js-add-hub">Add Hub</button>
                             </div>
                         </div>
-                        <!-- end card-body-->
-                        
+                        <div id="panel-div" class="w-100">
+                            {% include 'regionandhub/includes/panel.html' %}
+                        </div>
                     </div>
-                    <!-- end card-->
-
+                    <!-- end card-body-->
+                    
                 </div>
-                <!-- end col-->
+                <!-- end card-body-->
 
             </div>
-            <!-- end row-->
+            <!-- end card-->
 
         </div>
-    <!-- End Content -->
+        <!-- end col-->
+
+    </div>
+    <!-- End row -->
+</div>
+<!-- End content -->
+{% include 'partials/base-full-width-modal.html' %}
 {% endblock %}
 
 {% block extra_javascript %}

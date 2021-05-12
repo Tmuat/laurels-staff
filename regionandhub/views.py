@@ -2,11 +2,11 @@ from django_otp.decorators import otp_required
 
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.template.loader import render_to_string
 from django.utils.text import slugify
 
-from regionandhub.forms import RegionForm, HubForm
+from regionandhub.forms import RegionForm, HubForm, HubTargetsFormset
 from regionandhub.models import Region, Hub
 
 
@@ -115,6 +115,7 @@ def hub_add(request):
             data["html_region_page_title"] = render_to_string(
                 "regionandhub/includes/page-title.html", {"regions": regions}
             )
+            data["hub_slug"] = instance.slug
         else:
             data["form_is_valid"] = False
 
@@ -139,4 +140,51 @@ def validate_hub_name(request):
     hub_name = request.GET.get("hub_name", None)
     hub_slug = slugify(hub_name)
     data = {"is_taken": Hub.objects.filter(slug__iexact=hub_slug).exists()}
+    return JsonResponse(data)
+
+
+@otp_required
+@login_required
+def hub_add_targets(request, hub):
+    """
+    Ajax URL for adding hub targets.
+    """
+    data = dict()
+    hub_instance = get_object_or_404(Hub, slug=hub)
+    data["hub_slug"] = hub_instance.slug
+
+    if request.method == "POST":
+        formset = HubTargetsFormset(
+            request.POST,
+            request.FILES,
+            instance=hub_instance
+        )
+        selected_year = request.POST.get("year")
+        if formset.is_valid():
+            instances = formset.save(commit=False)
+            for count, instance in enumerate(instances):
+                instance.year = selected_year
+                quarter = count+1
+                instance.quarter = f"q{quarter}"
+                instance.created_by = request.user.get_full_name()
+                instance.updated_by = request.user.get_full_name()
+                instance.save()
+            data["form_is_valid"] = True
+        else:
+            data["form_is_valid"] = False
+            context = {"formset": formset, "hub": hub_instance}
+            data["html_large_modal"] = render_to_string(
+                "regionandhub/includes/add_hub_targets.html",
+                context,
+                request=request,
+            )
+    else:
+        formset = HubTargetsFormset(instance=hub_instance)
+        context = {"formset": formset, "hub": hub_instance}
+        data["html_large_modal"] = render_to_string(
+            "regionandhub/includes/add_hub_targets.html",
+            context,
+            request=request,
+        )
+
     return JsonResponse(data)

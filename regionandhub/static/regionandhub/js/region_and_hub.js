@@ -110,10 +110,23 @@ $(document).ready(function () {
             dataType: 'json',
             success: function (data) {
                 if (data.form_is_valid) {
+                    var hub = data.hub_slug
                     $("#panel-div").html(data.html_region_panels);
                     $("#page-title").html(data.html_region_page_title);
-                    $('#modal-overlay').fadeToggle(100);
                     $("#base-modal").modal("hide");
+                    $.ajax({
+                        url: '/region-hub/add/' + hub + '/hub-targets/',
+                        type: 'get',
+                        dataType: 'json',
+                        beforeSend: function () {
+                            $("#base-full-width-modal .modal-dialog").addClass("modal-dialog-scrollable");
+                            $("#base-full-width-modal").modal("show");
+                        },
+                        success: function (data) {
+                            $("#base-full-width-modal .modal-dialog").html(data.html_large_modal);
+                        }
+                    });
+                    $('#modal-overlay').fadeToggle(100);
                 } else {
                     $('#modal-overlay').fadeToggle(100);
                     $("#base-modal .modal-dialog").html(data.html_modal);
@@ -121,6 +134,30 @@ $(document).ready(function () {
             }
         });
         return false;
+    });
+
+    // Deals with the form submission for adding hub targets with AJAX
+    $("#base-full-width-modal").on("submit", ".js-add-hub-targets-form", function (e) {
+        e.preventDefault();
+
+        $('#modal-overlay').fadeToggle(100);
+        var form = $(this);
+        console.log(form.attr("method"), form.attr("action"))
+        $.ajax({
+            url: form.attr("action"),
+            data: form.serialize(),
+            type: form.attr("method"),
+            dataType: "json",
+            success: function (data) {
+                if (data.form_is_valid) {
+                    $("#modal-overlay").fadeToggle(100);
+                    $("#base-full-width-modal").modal("hide");
+                } else {
+                    $('#modal-overlay').fadeToggle(100);
+                    $("#base-full-width-modal .modal-dialog").html(data.html_large_modal);
+                }
+            }
+        });
     });
 
 });
