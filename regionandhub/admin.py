@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from regionandhub.models import Region, Hub, HubTargets
+from regionandhub.models import Region, Hub, HubTargets, HubTargetsYear
 
 
 class RegionAdmin(admin.ModelAdmin):
@@ -39,6 +39,16 @@ class RegionAdmin(admin.ModelAdmin):
 admin.site.register(Region, RegionAdmin)
 
 
+class HubTargetsYearAdminInline(admin.TabularInline):
+    model = HubTargetsYear
+    readonly_fields = [
+        "created",
+        "created_by",
+        "updated",
+        "updated_by",
+    ]
+
+
 class HubTargetsAdminInline(admin.TabularInline):
     model = HubTargets
     readonly_fields = [
@@ -50,7 +60,7 @@ class HubTargetsAdminInline(admin.TabularInline):
 
 
 class HubAdmin(admin.ModelAdmin):
-    inlines = (HubTargetsAdminInline,)
+    inlines = (HubTargetsAdminInline, HubTargetsYearAdminInline)
     list_display = (
         "hub_name",
         "slug",

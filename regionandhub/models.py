@@ -48,6 +48,42 @@ class Hub(UpdatedAndCreated):
         return self.slug
 
 
+class HubTargetsYear(UpdatedAndCreated):
+    class Meta:
+        ordering = ["year", "hub"]
+        verbose_name = "Hub Target Set"
+        verbose_name_plural = "Hub Targets Set"
+        unique_together = ["year", "hub"]
+
+    Y_2021 = "2021"
+    Y_2022 = "2022"
+    Y_2023 = "2023"
+    Y_2024 = "2024"
+    Y_2025 = "2025"
+    Y_2026 = "2026"
+
+    YEAR_CHOICES = [
+        (Y_2021, "2021"),
+        (Y_2022, "2022"),
+        (Y_2023, "2023"),
+        (Y_2024, "2024"),
+        (Y_2025, "2025"),
+        (Y_2026, "2026"),
+    ]
+
+    year = models.CharField(
+        max_length=4, blank=False, null=False, choices=YEAR_CHOICES
+    )
+    targets_set = models.BooleanField(default=False, null=False, blank=False)
+    hub = models.ForeignKey(
+        Hub, related_name="hub_targets_year_set", on_delete=models.CASCADE
+    )
+
+    def __str__(self):
+        hub_targets_name = str(self.hub)
+        return hub_targets_name or ""
+
+
 class HubTargets(UpdatedAndCreated):
     class Meta:
         ordering = ["year", "quarter"]
