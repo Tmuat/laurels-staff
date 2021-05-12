@@ -10,6 +10,7 @@ from regionandhub.forms import (
     RegionForm,
     RegionEditForm,
     HubForm,
+    HubEditForm,
     HubTargetsFormset,
 )
 from regionandhub.models import Region, Hub
@@ -223,6 +224,65 @@ def validate_hub_name(request):
     hub_name = request.GET.get("hub_name", None)
     hub_slug = slugify(hub_name)
     data = {"is_taken": Hub.objects.filter(slug__iexact=hub_slug).exists()}
+    return JsonResponse(data)
+
+
+@otp_required
+@login_required
+def hub_edit(request, hub_slug):
+    """
+    Ajax URL for editing a hub.
+    """
+    data = dict()
+    hub = get_object_or_404(Hub, slug=hub_slug)
+
+    if request.method == "POST":
+        form = HubEditForm(request.POST, instance=hub)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            hub_name = request.POST.get("hub_name")
+
+            instance.slug = slugify(hub_name)
+            instance.updated_by = request.user.get_full_name()
+
+            instance.save()
+
+            data["form_is_valid"] = True
+        else:
+            data["form_is_valid"] = False
+
+    else:
+        form = HubEditForm(instance=hub)
+
+    context = {"form": form, "hub": hub}
+    data["html_modal"] = render_to_string(
+        "regionandhub/includes/edit_hub.html",
+        context,
+        request=request,
+    )
+    return JsonResponse(data)
+
+
+@otp_required
+@login_required
+def validate_hub_name_edit(request, hub_slug):
+    """
+    Check that the hub name is unique prior to
+    form submission whilst editing the hub.
+    """
+    current_slug = hub_slug
+    new_hub_name = request.GET.get("hub_name", None)
+    new_hub_slug = slugify(new_hub_name)
+
+    if new_hub_slug == current_slug:
+        data = {"is_taken": False}
+    else:
+        data = {
+            "is_taken": Hub.objects.filter(
+                slug__iexact=new_hub_slug
+            ).exists()
+        }
+
     return JsonResponse(data)
 
 

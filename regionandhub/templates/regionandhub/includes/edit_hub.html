@@ -1,0 +1,29 @@
+{% load static i18n %}
+<div class="modal-content green-gradient">
+    <div class="modal-body">
+        <div class="text-center mt-2 mb-3">
+            <span><img src="{% static 'custom/images/logo.png' %}" alt="laurels" height="80"></span>
+        </div>
+        <div class="text-center">
+            <h4 class="text-white">Edit '{{ hub }}'</h4>
+        </div>
+        <p class="text-white text-center">{% blocktrans trimmed %}Please remember hub names must be unique; the intranet will perform a uniqueness check.{% endblocktrans %}</p>
+        <form method="post" action="{% url 'regionandhub:edit_hub' hub.slug %}" class="text-center text-white js-edit-hub-form">
+            {% csrf_token %}
+            {{ form.hub_name|as_crispy_field }}
+            <div class="mb-2 alert alert-secondary border-success text-success w-50 mx-auto" role="alert" id="unique_check">
+                Unique: <span id="mdi-icon" class="mdi mdi-check-circle-outline"></span>
+            </div>
+            {{ form.region|as_crispy_field }}
+            {{ form.is_active|as_crispy_field }}
+            <div class="mb-2 alert alert-secondary w-50 mx-auto" role="alert" id="employee_check">
+                No Employees Associated: <span id="second-mdi-icon" class="mdi mdi-help-circle"></span>
+            </div>
+            <div class="mb-2 text-center">
+                <button type="submit" class="btn btn-info" id="add-button" disabled>{% trans "Edit Hub" %}</button>
+            </div>
+        </form>
+    </div>
+</div>
+{{ hub.slug|json_script:"hub_slug" }}
+<!-- /.modal-content -->

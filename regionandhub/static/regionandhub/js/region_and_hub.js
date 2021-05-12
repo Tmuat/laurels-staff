@@ -61,7 +61,7 @@ $(document).ready(function () {
         return false;
     });
 
-    // Deals with the AJAX for editing a region. Loads the template
+    // Deals with the AJAX for editing a region.
     $(".js-edit-region").click(function () {
         var button = $(this);
         $.ajax({
@@ -146,7 +146,7 @@ $(document).ready(function () {
         return false;
     });
 
-    // Deals with the AJAX for adding a hub. Loads the template
+    // Deals with the AJAX for adding a hub. Loads the template.
     $(".js-add-hub").click(function () {
         $.ajax({
             url: '/region-hub/add/hub/',
@@ -243,6 +243,69 @@ $(document).ready(function () {
                 }
             }
         });
+    });
+
+    // Deals with the AJAX for editing a hub.
+    $(".js-edit-hub").click(function () {
+        var button = $(this);
+        $.ajax({
+            url: button.attr("data-url"),
+            type: 'get',
+            dataType: 'json',
+            beforeSend: function () {
+                $("#base-modal").modal("show");
+            },
+            success: function (data) {
+                $("#base-modal .modal-dialog").html(data.html_modal);
+            }
+        });
+    });
+
+    // Checks the uniqueness of the hub name
+    $("#base-modal").on("change", "#id_change_hub_name", function () {
+        var hubName = $(this).val();
+        var currentHubName = $('#hub_slug').text().slice(1, -1);
+        $.ajax({
+            url: '/region-hub/check/hub/' + currentHubName + '/',
+            data: {
+                'hub_name': hubName
+            },
+            dataType: 'json',
+            success: function (data) {
+                if (data.is_taken) {
+                    $("#base-modal").find("#mdi-icon").removeClass("mdi-check-circle-outline").addClass("mdi-close-circle-outline");
+                    $("#base-modal").find("#unique_check").addClass("text-danger border-danger");
+                    $("#base-modal").find("#add-button").attr("disabled", true);
+                } else {
+                    $("#base-modal").find("#mdi-icon").removeClass("mdi-close-circle-outline").addClass("mdi-check-circle-outline");
+                    $("#base-modal").find("#unique_check").removeClass("text-danger border-danger").addClass("border-success text-success");
+                    $("#base-modal").find("#add-button").removeAttr("disabled");
+                };
+            }
+        });
+    });
+
+    // Deals with the form submission for editing hub with AJAX
+    $("#base-modal").on("submit", ".js-edit-hub-form", function () {
+        $('#modal-overlay').fadeToggle(100);
+        var form = $(this);
+        $.ajax({
+            url: form.attr("action"),
+            data: form.serialize(),
+            type: form.attr("method"),
+            dataType: 'json',
+            success: function (data) {
+                if (data.form_is_valid) {
+                    $("#base-modal").modal("hide");
+                    location.reload();
+                    $('#modal-overlay').fadeToggle(100);
+                } else {
+                    $('#modal-overlay').fadeToggle(100);
+                    $("#base-modal .modal-dialog").html(data.html_modal);
+                }
+            }
+        });
+        return false;
     });
 
 });

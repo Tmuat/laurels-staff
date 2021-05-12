@@ -83,6 +83,12 @@ body.authentication-bg {
     border-top: 1px solid rgb(255, 255, 255)
  }
 
+ /* Misc */
+
+ .pointer {
+     cursor: pointer;
+ }
+
 /* Media Queries */
 
 /* Extra small devices (portrait phones, less than 576px) */

@@ -33,12 +33,28 @@ class HubForm(forms.ModelForm):
         fields = ("hub_name", "region")
         labels = {
             "hub_name": _("Hub Name"),
-            "region": _("Associated Name"),
+            "region": _("Associated Region"),
         }
 
     def __init__(self, *args, **kwargs):
         super(HubForm, self).__init__(*args, **kwargs)
         self.fields["region"].queryset = Region.objects.filter(is_active=True)
+
+
+class HubEditForm(forms.ModelForm):
+    class Meta:
+        model = Hub
+        fields = ("hub_name", "region", "is_active")
+        labels = {
+            "hub_name": _("Hub Name"),
+            "region": _("Associated Region"),
+            "is_active": _("Hub Still Active?")
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(HubEditForm, self).__init__(*args, **kwargs)
+        self.fields["region"].queryset = Region.objects.filter(is_active=True)
+        self.fields["hub_name"].widget.attrs["id"] = "id_change_hub_name"
 
 
 class HubTargetsForm(forms.ModelForm):
