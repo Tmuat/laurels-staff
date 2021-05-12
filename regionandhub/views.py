@@ -6,7 +6,12 @@ from django.shortcuts import render, get_object_or_404
 from django.template.loader import render_to_string
 from django.utils.text import slugify
 
-from regionandhub.forms import RegionForm, HubForm, HubTargetsFormset
+from regionandhub.forms import (
+    RegionForm,
+    RegionEditForm,
+    HubForm,
+    HubTargetsFormset,
+)
 from regionandhub.models import Region, Hub
 
 
@@ -86,6 +91,84 @@ def validate_region_name(request):
 
 @otp_required
 @login_required
+def region_edit(request, region_slug):
+    """
+    Ajax URL for editing a region.
+    """
+    data = dict()
+    region = get_object_or_404(Region, slug=region_slug)
+
+    if request.method == "POST":
+        form = RegionEditForm(request.POST, instance=region)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            region_name = request.POST.get("name")
+
+            instance.slug = slugify(region_name)
+            instance.updated_by = request.user.get_full_name()
+
+            instance.save()
+
+            data["form_is_valid"] = True
+        else:
+            data["form_is_valid"] = False
+
+    else:
+        form = RegionEditForm(instance=region)
+
+    context = {"form": form, "region": region}
+    data["html_modal"] = render_to_string(
+        "regionandhub/includes/edit_region.html",
+        context,
+        request=request,
+    )
+    return JsonResponse(data)
+
+
+@otp_required
+@login_required
+def validate_region_name_edit(request, region_slug):
+    """
+    Check that the region name is unique prior to
+    form submission whilst editing the region.
+    """
+    current_slug = region_slug
+    new_region_name = request.GET.get("region_name", None)
+    new_region_slug = slugify(new_region_name)
+
+    if new_region_slug == current_slug:
+        data = {"is_taken": False}
+    else:
+        data = {
+            "is_taken": Region.objects.filter(
+                slug__iexact=new_region_slug
+            ).exists()
+        }
+
+    return JsonResponse(data)
+
+
+@otp_required
+@login_required
+def check_region_hubs(request, region_slug):
+    """
+    Check that the region has no associated hubs
+    before making it inactive.
+    """
+    region = get_object_or_404(Region, slug=region_slug)
+
+    region.region.all().count()
+
+    if region.region.all().count() > 0:
+        data = {"associated_hubs": True}
+    else:
+        data = {"associated_hubs": False}
+
+    return JsonResponse(data)
+
+
+@otp_required
+@login_required
 def hub_add(request):
     """
     Ajax URL for adding a hub.
@@ -155,16 +238,14 @@ def hub_add_targets(request, hub):
 
     if request.method == "POST":
         formset = HubTargetsFormset(
-            request.POST,
-            request.FILES,
-            instance=hub_instance
+            request.POST, request.FILES, instance=hub_instance
         )
         selected_year = request.POST.get("year")
         if formset.is_valid():
             instances = formset.save(commit=False)
             for count, instance in enumerate(instances):
                 instance.year = selected_year
-                quarter = count+1
+                quarter = count + 1
                 instance.quarter = f"q{quarter}"
                 instance.created_by = request.user.get_full_name()
                 instance.updated_by = request.user.get_full_name()

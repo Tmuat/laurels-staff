@@ -61,6 +61,91 @@ $(document).ready(function () {
         return false;
     });
 
+    // Deals with the AJAX for editing a region. Loads the template
+    $(".js-edit-region").click(function () {
+        var button = $(this);
+        $.ajax({
+            url: button.attr("data-url"),
+            type: 'get',
+            dataType: 'json',
+            beforeSend: function () {
+                $("#base-modal").modal("show");
+            },
+            success: function (data) {
+                $("#base-modal .modal-dialog").html(data.html_modal);
+            }
+        });
+    });
+
+    // Checks the uniqueness of the region name whilst editing
+    $("#base-modal").on("change", "#id_region_name", function () {
+        var regionName = $(this).val();
+        var currentRegionName = $('#region_slug').text().slice(1, -1);
+        $.ajax({
+            url: '/region-hub/check/region/' + currentRegionName + '/',
+            data: {
+                'region_name': regionName
+            },
+            dataType: 'json',
+            success: function (data) {
+                if (data.is_taken) {
+                    $("#base-modal").find("#mdi-icon").removeClass("mdi-check-circle-outline").addClass("mdi-close-circle-outline");
+                    $("#base-modal").find("#unique_check").addClass("text-danger border-danger");
+                    $("#base-modal").find("#add-button").attr("disabled", true);
+                } else {
+                    $("#base-modal").find("#mdi-icon").removeClass("mdi-close-circle-outline").addClass("mdi-check-circle-outline");
+                    $("#base-modal").find("#unique_check").removeClass("text-danger border-danger").addClass("border-success text-success");
+                    $("#base-modal").find("#add-button").removeAttr("disabled");
+                };
+            }
+        });
+    });
+
+    // Checks if the region has hubs still associated with it
+    $("#base-modal").on("change", "#id_is_active", function () {
+        var currentRegionName = $('#region_slug').text().slice(1, -1);
+        if($("#id_is_active").prop('checked') != true){
+            $.ajax({
+                url: '/region-hub/check/region/hubs/' + currentRegionName + '/',
+                dataType: 'json',
+                success: function (data) {
+                    if (data.associated_hubs) {
+                        $("#base-modal").find("#second-mdi-icon").removeClass("mdi-help-circle").addClass("mdi-close-circle-outline");
+                        $("#base-modal").find("#hub_check").addClass("text-danger border-danger");
+                        $("#base-modal").find("#add-button").attr("disabled", true);
+                    } else {
+                        $("#base-modal").find("#second-mdi-icon").removeClass("mdi-help-circle").addClass("mdi-check-circle-outline");
+                        $("#base-modal").find("#hub_check").removeClass("text-danger border-danger").addClass("border-success text-success");
+                        $("#base-modal").find("#add-button").removeAttr("disabled");
+                    };
+                }
+            });
+        };
+    });
+
+    // Deals with the form submission for editing region with AJAX
+    $("#base-modal").on("submit", ".js-edit-region-form", function () {
+        $('#modal-overlay').fadeToggle(100);
+        var form = $(this);
+        $.ajax({
+            url: form.attr("action"),
+            data: form.serialize(),
+            type: form.attr("method"),
+            dataType: 'json',
+            success: function (data) {
+                if (data.form_is_valid) {
+                    $("#base-modal").modal("hide");
+                    location.reload();
+                    $('#modal-overlay').fadeToggle(100);
+                } else {
+                    $('#modal-overlay').fadeToggle(100);
+                    $("#base-modal .modal-dialog").html(data.html_modal);
+                }
+            }
+        });
+        return false;
+    });
+
     // Deals with the AJAX for adding a hub. Loads the template
     $(".js-add-hub").click(function () {
         $.ajax({

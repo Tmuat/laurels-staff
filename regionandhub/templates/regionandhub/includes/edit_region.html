@@ -1,0 +1,28 @@
+{% load static i18n %}
+<div class="modal-content green-gradient">
+    <div class="modal-body">
+        <div class="text-center mt-2 mb-3">
+            <span><img src="{% static 'custom/images/logo.png' %}" alt="laurels" height="80"></span>
+        </div>
+        <div class="text-center">
+            <h4 class="text-white">Edit '{{ region }}'</h4>
+        </div>
+        <p class="text-white text-center">{% blocktrans trimmed %}Please remember region names must be unique; the intranet will perform a uniqueness check.{% endblocktrans %}</p>
+        <form method="post" action="{% url 'regionandhub:edit_region' region.slug %}" class="text-center text-white js-edit-region-form">
+            {% csrf_token %}
+            {{ form.name|as_crispy_field }}
+            <div class="mb-2 alert alert-secondary border-success text-success w-50 mx-auto" role="alert" id="unique_check">
+                Unique: <span id="mdi-icon" class="mdi mdi-check-circle-outline"></span>
+            </div>
+            {{ form.is_active|as_crispy_field }}
+            <div class="mb-2 alert alert-secondary w-50 mx-auto" role="alert" id="hub_check">
+                No Hubs Associated: <span id="second-mdi-icon" class="mdi mdi-help-circle"></span>
+            </div>
+            <div class="mb-2 text-center">
+                <button type="submit" class="btn btn-info" id="add-button">{% trans "Edit Region" %}</button>
+            </div>
+        </form>
+    </div>
+</div>
+{{ region.slug|json_script:"region_slug" }}
+<!-- /.modal-content -->

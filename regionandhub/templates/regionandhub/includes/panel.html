@@ -5,7 +5,10 @@
         aria-controls="{{ instance.slug }}">
         <h5 class="m-0 pb-2">
             <i class='uil uil-angle-down font-18'></i>{{ instance.name }} <span
-                class="text-muted">({{ instance.region.all.count }})</span>
+                class="text-muted">({{ instance.region.all.count }})</span> - 
+                <p class="mb-0 d-inline text-primary js-edit-region"  data-url="{% url 'regionandhub:edit_region' instance.slug %}" data-toggle="tooltip" data-placement="top" title="Edit Region">
+                    <i class="mdi mdi-calendar-edit font-16 mr-1"></i>
+                </p>
         </h5>
     </a>
 

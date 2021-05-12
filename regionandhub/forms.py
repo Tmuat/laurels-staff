@@ -13,6 +13,20 @@ class RegionForm(forms.ModelForm):
         }
 
 
+class RegionEditForm(forms.ModelForm):
+    class Meta:
+        model = Region
+        fields = ("name", "is_active")
+        labels = {
+            "name": _("Region Name"),
+            "is_active": _("Region Still Active?"),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(RegionEditForm, self).__init__(*args, **kwargs)
+        self.fields["name"].widget.attrs["id"] = "id_region_name"
+
+
 class HubForm(forms.ModelForm):
     class Meta:
         model = Hub
@@ -36,7 +50,7 @@ class HubTargetsForm(forms.ModelForm):
             "new_business",
             "exchange_and_move",
         )
-    
+
     def __init__(self, *args, **kwargs):
         """
         Remove auto-generated labels
@@ -53,5 +67,5 @@ HubTargetsFormset = forms.inlineformset_factory(
     extra=0,
     can_delete=False,
     min_num=4,
-    validate_min=True
+    validate_min=True,
 )
