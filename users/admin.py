@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
 from users.forms import CustomUserCreationForm, CustomUserChangeForm
-from users.models import CustomUser, Profile
+from users.models import CustomUser, Profile, UserTargets, UserTargetsByYear
 
 
 class ProfileAdminInline(admin.TabularInline):
@@ -15,8 +15,32 @@ class ProfileAdminInline(admin.TabularInline):
     ]
 
 
+class UserTargetsYearAdminInline(admin.TabularInline):
+    model = UserTargetsByYear
+    readonly_fields = [
+        "created",
+        "created_by",
+        "updated",
+        "updated_by",
+    ]
+
+
+class UserTargetsAdminInline(admin.TabularInline):
+    model = UserTargets
+    readonly_fields = [
+        "created",
+        "created_by",
+        "updated",
+        "updated_by",
+    ]
+
+
 class CustomUserAdmin(UserAdmin):
-    inlines = (ProfileAdminInline,)
+    inlines = (
+        ProfileAdminInline,
+        UserTargetsAdminInline,
+        UserTargetsYearAdminInline,
+    )
     add_form = CustomUserCreationForm
     form = CustomUserChangeForm
     model = CustomUser
