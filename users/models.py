@@ -78,6 +78,8 @@ class UserTargetsByYear(UpdatedAndCreated):
         CustomUser,
         related_name="user_targets_year_set",
         on_delete=models.CASCADE,
+        null=True,
+        blank=True,
     )
 
     def __str__(self):
@@ -133,7 +135,11 @@ class UserTargets(UpdatedAndCreated):
     new_business = models.PositiveIntegerField(blank=False, null=False)
     exchange_and_move = models.PositiveIntegerField(blank=False, null=False)
     user_targets = models.ForeignKey(
-        CustomUser, related_name="user_targets", on_delete=models.CASCADE
+        CustomUser,
+        related_name="user_targets",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
     )
 
     def __str__(self):
