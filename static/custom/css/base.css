@@ -89,6 +89,11 @@ body.authentication-bg {
      cursor: pointer;
  }
 
+ .text-hover-underline:hover,
+ .text-focus-underline:hover {
+     text-decoration: underline;
+ }
+
 /* Media Queries */
 
 /* Extra small devices (portrait phones, less than 576px) */

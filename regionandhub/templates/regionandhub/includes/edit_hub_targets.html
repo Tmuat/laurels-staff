@@ -1,0 +1,75 @@
+{% load static i18n %}
+<div class="modal-content green-gradient">
+    <div class="modal-body">
+        <div class="text-center mt-2 mb-3">
+            <span><img src="{% static 'custom/images/logo.png' %}" alt="laurels" height="80"></span>
+        </div>
+        <div class="text-center">
+            <h4 class="text-white">Edit Hub Targets - '{{ hub }}' - {{ year }}</h4>
+        </div>
+        <p class="text-white text-center">{% blocktrans trimmed %}You can amend the hub targets. You cannot leave any box blank.{% endblocktrans %}</p>
+        <form method="POST" action="{% url 'regionandhub:hub_edit_targets' hub.slug year %}" class="text-center text-white js-add-hub-targets-form">
+            {% csrf_token %}
+            {{ formset.non_form_errors }}
+            {% for form in formset %}
+                {% for hidden in form.hidden_fields %}
+                    {{ hidden }}
+                {% endfor %}
+                {% if forloop.first %}
+                <div class="row">
+                    <div class="col-3 d-none d-md-inline">
+                        Instructions
+                    </div>
+                    <div class="col-3 d-none d-md-inline">
+                        Reductions
+                    </div>
+                    <div class="col-3 d-none d-md-inline">
+                        New Business
+                    </div>
+                    <div class="col-3 d-none d-md-inline">
+                        Exchange/Move
+                    </div>
+                </div>
+                {% endif %}
+                <div class="row mt-1 mb-1">
+                    <div class="col-12">
+                        <h6 {% if forloop.counter == 1 %}class="mt-0"{% endif %}><small> Quarter{{ forloop.counter }}</small></h6>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="d-md-none">
+                            Instructions
+                        </div>
+                        {{ form.instructions|as_crispy_field }}
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="d-md-none">
+                            Reductions
+                        </div>
+                        {{ form.reductions|as_crispy_field }}
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="d-md-none">
+                            New Business
+                        </div>
+                        {{ form.new_business|as_crispy_field }}
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="d-md-none">
+                            Exchange/Move
+                        </div>
+                        {{ form.exchange_and_move|as_crispy_field }}
+                    </div>
+                </div>
+                {% if forloop.last %}
+                {% else %}
+                    <span class="hr"></span>
+                {% endif %}
+            {% endfor %}
+            {{ formset.management_form }}
+            <div class="mb-2 text-center">
+                <button type="submit" class="btn btn-info" id="add-button">{% trans "Update Hub Targets" %}</button>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- /.modal-content -->

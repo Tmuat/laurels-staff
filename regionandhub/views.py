@@ -1,6 +1,7 @@
 from django_otp.decorators import otp_required
 
 from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.template.loader import render_to_string
@@ -14,9 +15,10 @@ from regionandhub.forms import (
     HubEditForm,
     HubTargetsFormset,
 )
-from regionandhub.models import Region, Hub, HubTargetsYear
+from regionandhub.models import Region, Hub, HubTargets, HubTargetsYear
 
 
+@staff_member_required
 @otp_required
 @login_required
 def hub_and_region(request):
@@ -39,6 +41,7 @@ def hub_and_region(request):
     return render(request, template, context)
 
 
+@staff_member_required
 @otp_required
 @login_required
 def region_add(request):
@@ -61,11 +64,19 @@ def region_add(request):
             instance.save()
 
             data["form_is_valid"] = True
+
+            current_year = quarter_year_calc()
+            next_year = str(int(current_year) + 1)
+
             regions = Region.objects.filter(is_active=True).prefetch_related(
                 "region"
             )
             data["html_region_panels"] = render_to_string(
-                "regionandhub/includes/panel.html", {"regions": regions}
+                "regionandhub/includes/panel.html", {
+                    "regions": regions,
+                    "current_year": current_year,
+                    "next_year": next_year,
+                }
             )
             data["html_region_page_title"] = render_to_string(
                 "regionandhub/includes/page-title.html", {"regions": regions}
@@ -85,6 +96,7 @@ def region_add(request):
     return JsonResponse(data)
 
 
+@staff_member_required
 @otp_required
 @login_required
 def validate_region_name(request):
@@ -99,6 +111,7 @@ def validate_region_name(request):
     return JsonResponse(data)
 
 
+@staff_member_required
 @otp_required
 @login_required
 def region_edit(request, region_slug):
@@ -135,6 +148,7 @@ def region_edit(request, region_slug):
     return JsonResponse(data)
 
 
+@staff_member_required
 @otp_required
 @login_required
 def validate_region_name_edit(request, region_slug):
@@ -158,6 +172,7 @@ def validate_region_name_edit(request, region_slug):
     return JsonResponse(data)
 
 
+@staff_member_required
 @otp_required
 @login_required
 def check_region_hubs(request, region_slug):
@@ -177,6 +192,7 @@ def check_region_hubs(request, region_slug):
     return JsonResponse(data)
 
 
+@staff_member_required
 @otp_required
 @login_required
 def hub_add(request):
@@ -199,11 +215,19 @@ def hub_add(request):
             instance.save()
 
             data["form_is_valid"] = True
+
+            current_year = quarter_year_calc()
+            next_year = str(int(current_year) + 1)
+            
             regions = Region.objects.filter(is_active=True).prefetch_related(
                 "region"
             )
             data["html_region_panels"] = render_to_string(
-                "regionandhub/includes/panel.html", {"regions": regions}
+                "regionandhub/includes/panel.html", {
+                    "regions": regions,
+                    "current_year": current_year,
+                    "next_year": next_year,
+                }
             )
             data["html_region_page_title"] = render_to_string(
                 "regionandhub/includes/page-title.html", {"regions": regions}
@@ -224,6 +248,7 @@ def hub_add(request):
     return JsonResponse(data)
 
 
+@staff_member_required
 @otp_required
 @login_required
 def validate_hub_name(request):
@@ -236,6 +261,7 @@ def validate_hub_name(request):
     return JsonResponse(data)
 
 
+@staff_member_required
 @otp_required
 @login_required
 def hub_edit(request, hub_slug):
@@ -272,6 +298,7 @@ def hub_edit(request, hub_slug):
     return JsonResponse(data)
 
 
+@staff_member_required
 @otp_required
 @login_required
 def validate_hub_name_edit(request, hub_slug):
@@ -293,6 +320,7 @@ def validate_hub_name_edit(request, hub_slug):
     return JsonResponse(data)
 
 
+@staff_member_required
 @otp_required
 @login_required
 def hub_add_targets(request, hub):
@@ -338,6 +366,99 @@ def hub_add_targets(request, hub):
         context = {"formset": formset, "hub": hub_instance}
         data["html_large_modal"] = render_to_string(
             "regionandhub/includes/add_hub_targets.html",
+            context,
+            request=request,
+        )
+
+    return JsonResponse(data)
+
+
+@staff_member_required
+@otp_required
+@login_required
+def hub_edit_targets(request, hub_slug, year):
+    """
+    Ajax URL for editing hub targets by year.
+    """
+    data = dict()
+    hub_instance = get_object_or_404(Hub, slug=hub_slug)
+    
+    if request.method == "POST":
+        formset = HubTargetsFormset(
+            request.POST, request.FILES, instance=hub_instance
+        )
+        if formset.is_valid():
+            instances = formset.save(commit=False)
+            for instance in instances:
+                instance.updated_by = request.user.get_full_name()
+                instance.save()
+            data["form_is_valid"] = True
+        else:
+            data["form_is_valid"] = False
+    else:
+        formset = HubTargetsFormset(
+            instance=hub_instance,
+            queryset=HubTargets.objects.filter(year=year)
+        )
+        context = {
+            "formset": formset,
+            "hub": hub_instance,
+            "year": year
+        }
+        data["html_large_modal"] = render_to_string(
+            "regionandhub/includes/edit_hub_targets.html",
+            context,
+            request=request,
+        )
+
+    return JsonResponse(data)
+
+
+@staff_member_required
+@otp_required
+@login_required
+def hub_add_specific_targets(request, hub_slug, year):
+    """
+    Ajax URL for adding hub targets by year.
+    """
+    data = dict()
+    hub_instance = get_object_or_404(Hub, slug=hub_slug)
+    
+    if request.method == "POST":
+        formset = HubTargetsFormset(
+            request.POST, request.FILES, instance=hub_instance
+        )
+        if formset.is_valid():
+            instances = formset.save(commit=False)
+            for count, instance in enumerate(instances):
+                instance.year = year
+                quarter = count + 1
+                instance.quarter = f"q{quarter}"
+                instance.created_by = request.user.get_full_name()
+                instance.updated_by = request.user.get_full_name()
+                instance.save()
+            HubTargetsYear.objects.create(
+                year=year,
+                targets_set=True,
+                hub=hub_instance,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
+            data["form_is_valid"] = True
+        else:
+            data["form_is_valid"] = False
+    else:
+        formset = HubTargetsFormset(
+            instance=hub_instance,
+            queryset=HubTargets.objects.filter(year=year)
+        )
+        context = {
+            "formset": formset,
+            "hub": hub_instance,
+            "year": year
+        }
+        data["html_large_modal"] = render_to_string(
+            "regionandhub/includes/add_specific_hub_targets.html",
             context,
             request=request,
         )

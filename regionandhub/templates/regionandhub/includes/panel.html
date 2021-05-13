@@ -44,27 +44,27 @@
                             </div>
                             {% if instance.hub_targets_year_set.all.count < 1 %}
                                 <div class="col-12 col-md-3 text-center px-0 mx-auto">
-                                    <p class="mb-0 text-danger">{{ current_year }} Targets <span class="mdi mdi-close-circle-outline"></span></p>
+                                    <p class="mb-0 text-danger pointer text-hover-underline js-add-specific-hub-targets" data-url="{% url 'regionandhub:hub_add_specific_targets' instance.slug current_year%}">{{ current_year }} Targets <span class="mdi mdi-close-circle-outline"></span></p>
                                 </div>
                                 <div class="col-12 col-md-3 text-center px-0 mx-auto">
-                                    <p class="mb-0 text-danger">{{ next_year }} Targets <span class="mdi mdi-close-circle-outline"></span></p>
+                                    <p class="mb-0 text-danger pointer text-hover-underline js-add-specific-hub-targets" data-url="{% url 'regionandhub:hub_add_specific_targets' instance.slug next_year%}">{{ next_year }} Targets <span class="mdi mdi-close-circle-outline"></span></p>
                                 </div>
                             {% elif instance.hub_targets_year_set.all.count < 2 %}
                                 {% for target in instance.hub_targets_year_set.all %}
                                     {% if target.year == current_year %}
                                         <div class="col-12 col-md-3 text-center px-0 mx-auto">
-                                            <p class="mb-0 text-success">{{ current_year }} Targets <span class="mdi mdi-check-circle-outline"></span></p>
+                                            <p class="mb-0 text-success pointer text-hover-underline js-edit-hub-targets" data-url="{% url 'regionandhub:hub_edit_targets' instance.slug current_year%}">{{ current_year }} Targets <span class="mdi mdi-check-circle-outline"></span></p>
                                         </div>
                                         <div class="col-12 col-md-3 text-center px-0 mx-auto">
-                                            <p class="mb-0 text-danger">{{ next_year }} Targets <span class="mdi mdi-close-circle-outline"></span></p>
+                                            <p class="mb-0 text-danger pointer text-hover-underline js-add-specific-hub-targets" data-url="{% url 'regionandhub:hub_add_specific_targets' instance.slug next_year%}">{{ next_year }} Targets <span class="mdi mdi-close-circle-outline"></span></p>
                                         </div>
                                     {% endif %}
                                     {% if target.year == next_year %}
                                         <div class="col-12 col-md-3 text-center px-0 mx-auto">
-                                            <p class="mb-0 text-danger">{{ current_year }} Targets <span class="mdi mdi-close-circle-outline"></span></p>
+                                            <p class="mb-0 text-danger pointer text-hover-underline js-add-specific-hub-targets" data-url="{% url 'regionandhub:hub_add_specific_targets' instance.slug current_year%}">{{ current_year }} Targets <span class="mdi mdi-close-circle-outline"></span></p>
                                         </div>
                                         <div class="col-12 col-md-3 text-center px-0 mx-auto">
-                                            <p class="mb-0 text-success">{{ next_year }} Targets <span class="mdi mdi-check-circle-outline"></span></p>
+                                            <p class="mb-0 text-success pointer text-hover-underline js-edit-hub-targets" data-url="{% url 'regionandhub:hub_edit_targets' instance.slug next_year%}">{{ next_year }} Targets <span class="mdi mdi-check-circle-outline"></span></p>
                                         </div>
                                     {% endif %}
                                 {% endfor %}
@@ -72,9 +72,9 @@
                                 {% for target in instance.hub_targets_year_set.all %}
                                     <div class="col-12 col-md-3 text-center px-0 mx-auto">
                                         {% if target.year == current_year %}
-                                            <p class="mb-0 text-success">{{ current_year }} Targets <span class="mdi mdi-check-circle-outline"></span></p>
+                                            <p class="mb-0 text-success pointer text-hover-underline js-edit-hub-targets" data-url="{% url 'regionandhub:hub_edit_targets' instance.slug current_year%}">{{ current_year }} Targets <span class="mdi mdi-check-circle-outline"></span></p>
                                         {% elif target.year == next_year %}
-                                            <p class="mb-0 text-success">{{ next_year }} Targets <span class="mdi mdi-check-circle-outline"></span></p>
+                                            <p class="mb-0 text-success pointer text-hover-underline js-edit-hub-targets" data-url="{% url 'regionandhub:hub_edit_targets' instance.slug next_year%}">{{ next_year }} Targets <span class="mdi mdi-check-circle-outline"></span></p>
                                         {% endif %}
                                     </div>
                                 {% endfor %}

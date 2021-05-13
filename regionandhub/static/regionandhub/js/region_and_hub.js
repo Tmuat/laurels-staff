@@ -204,11 +204,11 @@ $(document).ready(function () {
                         type: 'get',
                         dataType: 'json',
                         beforeSend: function () {
-                            $("#base-full-width-modal .modal-dialog").addClass("modal-dialog-scrollable");
-                            $("#base-full-width-modal").modal("show");
+                            $("#base-large-modal .modal-dialog").addClass("modal-dialog-scrollable");
+                            $("#base-large-modal").modal("show");
                         },
                         success: function (data) {
-                            $("#base-full-width-modal .modal-dialog").html(data.html_large_modal);
+                            $("#base-large-modal .modal-dialog").html(data.html_large_modal);
                         }
                     });
                     $('#modal-overlay').fadeToggle(100);
@@ -222,7 +222,7 @@ $(document).ready(function () {
     });
 
     // Deals with the form submission for adding hub targets with AJAX
-    $("#base-full-width-modal").on("submit", ".js-add-hub-targets-form", function (e) {
+    $("#base-large-modal").on("submit", ".js-add-hub-targets-form", function (e) {
         e.preventDefault();
 
         $('#modal-overlay').fadeToggle(100);
@@ -236,11 +236,28 @@ $(document).ready(function () {
             success: function (data) {
                 if (data.form_is_valid) {
                     $("#modal-overlay").fadeToggle(100);
-                    $("#base-full-width-modal").modal("hide");
+                    $("#base-large-modal").modal("hide");
+                    location.reload();
                 } else {
                     $('#modal-overlay').fadeToggle(100);
-                    $("#base-full-width-modal .modal-dialog").html(data.html_large_modal);
+                    $("#base-large-modal .modal-dialog").html(data.html_large_modal);
                 }
+            }
+        });
+    });
+
+    $(".js-add-specific-hub-targets").click(function () {
+        var button = $(this);
+        $.ajax({
+            url: button.attr("data-url"),
+            type: 'get',
+            dataType: 'json',
+            beforeSend: function () {
+                $("#base-large-modal .modal-dialog").addClass("modal-dialog-scrollable");
+                $("#base-large-modal").modal("show");
+            },
+            success: function (data) {
+                $("#base-large-modal .modal-dialog").html(data.html_large_modal);
             }
         });
     });
@@ -306,6 +323,22 @@ $(document).ready(function () {
             }
         });
         return false;
+    });
+
+    // Deals with the AJAX for editing hub targets.
+    $(".js-edit-hub-targets").click(function () {
+        var button = $(this);
+        $.ajax({
+            url: button.attr("data-url"),
+            type: 'get',
+            dataType: 'json',
+            beforeSend: function () {
+                $("#base-large-modal").modal("show");
+            },
+            success: function (data) {
+                $("#base-large-modal .modal-dialog").html(data.html_large_modal);
+            }
+        });
     });
 
 });

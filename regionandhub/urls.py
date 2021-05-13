@@ -9,9 +9,11 @@ from regionandhub.views import (
     check_region_hubs,
     hub_add,
     validate_hub_name,
-    hub_add_targets,
     hub_edit,
     validate_hub_name_edit,
+    hub_add_targets,
+    hub_add_specific_targets,
+    hub_edit_targets,
 )
 
 
@@ -39,5 +41,15 @@ urlpatterns = [
         "check/hub/<hub_slug>/",
         validate_hub_name_edit,
         name="check_hub_edit",
+    ),
+    path(
+        "edit/hub-targets/<hub_slug>/<year>/",
+        hub_edit_targets,
+        name="hub_edit_targets",
+    ),
+    path(
+        "add/hub-targets/<hub_slug>/<year>/",
+        hub_add_specific_targets,
+        name="hub_add_specific_targets",
     ),
 ]
