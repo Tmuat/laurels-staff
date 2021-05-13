@@ -72,11 +72,12 @@ def region_add(request):
                 "region"
             )
             data["html_region_panels"] = render_to_string(
-                "regionandhub/includes/panel.html", {
+                "regionandhub/includes/panel.html",
+                {
                     "regions": regions,
                     "current_year": current_year,
                     "next_year": next_year,
-                }
+                },
             )
             data["html_region_page_title"] = render_to_string(
                 "regionandhub/includes/page-title.html", {"regions": regions}
@@ -218,16 +219,17 @@ def hub_add(request):
 
             current_year = quarter_year_calc()
             next_year = str(int(current_year) + 1)
-            
+
             regions = Region.objects.filter(is_active=True).prefetch_related(
                 "region"
             )
             data["html_region_panels"] = render_to_string(
-                "regionandhub/includes/panel.html", {
+                "regionandhub/includes/panel.html",
+                {
                     "regions": regions,
                     "current_year": current_year,
                     "next_year": next_year,
-                }
+                },
             )
             data["html_region_page_title"] = render_to_string(
                 "regionandhub/includes/page-title.html", {"regions": regions}
@@ -382,7 +384,7 @@ def hub_edit_targets(request, hub_slug, year):
     """
     data = dict()
     hub_instance = get_object_or_404(Hub, slug=hub_slug)
-    
+
     if request.method == "POST":
         formset = HubTargetsFormset(
             request.POST, request.FILES, instance=hub_instance
@@ -398,13 +400,9 @@ def hub_edit_targets(request, hub_slug, year):
     else:
         formset = HubTargetsFormset(
             instance=hub_instance,
-            queryset=HubTargets.objects.filter(year=year)
+            queryset=HubTargets.objects.filter(year=year),
         )
-        context = {
-            "formset": formset,
-            "hub": hub_instance,
-            "year": year
-        }
+        context = {"formset": formset, "hub": hub_instance, "year": year}
         data["html_large_modal"] = render_to_string(
             "regionandhub/includes/edit_hub_targets.html",
             context,
@@ -423,7 +421,7 @@ def hub_add_specific_targets(request, hub_slug, year):
     """
     data = dict()
     hub_instance = get_object_or_404(Hub, slug=hub_slug)
-    
+
     if request.method == "POST":
         formset = HubTargetsFormset(
             request.POST, request.FILES, instance=hub_instance
@@ -450,13 +448,9 @@ def hub_add_specific_targets(request, hub_slug, year):
     else:
         formset = HubTargetsFormset(
             instance=hub_instance,
-            queryset=HubTargets.objects.filter(year=year)
+            queryset=HubTargets.objects.filter(year=year),
         )
-        context = {
-            "formset": formset,
-            "hub": hub_instance,
-            "year": year
-        }
+        context = {"formset": formset, "hub": hub_instance, "year": year}
         data["html_large_modal"] = render_to_string(
             "regionandhub/includes/add_specific_hub_targets.html",
             context,

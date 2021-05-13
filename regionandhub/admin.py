@@ -30,10 +30,10 @@ class RegionAdmin(admin.ModelAdmin):
     ]
 
     def save_model(self, request, obj, form, change):
-        if not obj.created_by:
+        if not obj.pk:
             obj.created_by = request.user.get_full_name()
         obj.updated_by = request.user.get_full_name()
-        obj.save()
+        super().save_model(request, obj, form, change)
 
 
 admin.site.register(Region, RegionAdmin)
@@ -88,18 +88,18 @@ class HubAdmin(admin.ModelAdmin):
     ]
 
     def save_model(self, request, obj, form, change):
-        if not obj.created_by:
+        if not obj.pk:
             obj.created_by = request.user.get_full_name()
         obj.updated_by = request.user.get_full_name()
-        obj.save()
+        super().save_model(request, obj, form, change)
 
     def save_formset(self, request, form, formset, change):
         instances = formset.save(commit=False)
-        for instance in instances:
-            if not instance.created_by:
-                instance.created_by = request.user.get_full_name()
-            instance.updated_by = request.user.get_full_name()
-            instance.save()
+        for obj in instances:
+            if not obj.pk:
+                obj.created_by = request.user.get_full_name()
+            obj.updated_by = request.user.get_full_name()
+            super().save_model(request, obj, form, change)
 
 
 admin.site.register(Hub, HubAdmin)
