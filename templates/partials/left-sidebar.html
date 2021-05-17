@@ -54,6 +54,12 @@
                     <li class="{% if request.resolver_match.url_name == 'hub_and_region' %}active{% endif %}">
                         <a href="{% url 'regionandhub:hub_and_region' %}">{% trans "Regions & Hubs" %}</a>
                     </li>
+                    <li class="{% if request.resolver_match.url_name == 'employees' %}active{% endif %}">
+                        <a href="{% url 'users:employees' %}">{% trans "Employees" %}</a>
+                    </li>
+                    <li class="{% if request.resolver_match.url_name == 'invitations' %}active{% endif %}">
+                        <a href="{% url 'invitations:invitations' %}">{% trans "Invitations" %}</a>
+                    </li>
                 </ul>
             </li>
         </ul>

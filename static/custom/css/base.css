@@ -81,18 +81,28 @@ body.authentication-bg {
     margin-left: auto;
     margin-right: auto;
     border-top: 1px solid rgb(255, 255, 255)
- }
+}
 
- /* Misc */
+/* Misc */
 
- .pointer {
-     cursor: pointer;
- }
+.pointer {
+    cursor: pointer;
+}
 
- .text-hover-underline:hover,
- .text-focus-underline:hover {
-     text-decoration: underline;
- }
+.text-hover-underline:hover,
+.text-focus-underline:hover {
+    text-decoration: underline;
+}
+
+/* Multi Select Field */
+
+.multi-select {
+    max-height: 80px;
+}
+
+.scrollable {
+    overflow-y: scroll;
+}
 
 /* Media Queries */
 

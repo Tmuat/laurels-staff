@@ -1,0 +1,105 @@
+{% extends "vertical_base.html" %}
+{% load static i18n %}
+
+{% block head_title %}{% trans "Invitations" %}{% endblock head_title %}
+
+{% block extra_css %}
+{{ block.super }}
+{% endblock %}
+
+{% block content %}
+    <!-- Start Content-->
+    <div class="container-fluid">
+        
+        <!-- start page title -->
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box">
+                    <div class="page-title-right">
+                        <ol class="breadcrumb m-0 p-0">
+                            <li class="breadcrumb-item"><a href="{% url 'home:home' %}"><i class="uil-home-alt"></i> Home</a></li>
+                            <li class="breadcrumb-item"><a href="#">Management</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Invitations</li>
+                        </ol>
+                    </div>
+                    <h4 class="page-title">Invitations</h4>
+                </div>
+            </div>
+        </div>     
+        <!-- end page title -->
+
+        <!-- start inviations list -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12 text-center">
+                                <div id="page-title" class="float-none float-sm-left">
+                                    <h6>Showing <span class="text-success">{{ invitations.count }}</span>
+                                        {% if invitations.count > 1 or invitations.count == 0 %}Invitations{% else %}Invitation{% endif %}</h6>
+                                </div>
+                                <div class="float-none float-sm-right">
+                                    <button class="btn btn-success btn-sm mr-2 js-add-invitation">Invite User</button>
+                                </div>
+                            </div>
+                            <div id="panel-div" class="w-100 mt-3">
+
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-centered mb-0 font-14">
+                                        <thead class="thead-light">
+                                            <tr>
+                                                <th>Duration (Secs)</th>
+                                                <th style="width: 30%;">Sessions</th>
+                                                <th style="width: 30%;">Views</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>0-30</td>
+                                                <td>2,250</td>
+                                                <td>4,250</td>
+                                            </tr>
+                                            <tr>
+                                                <td>31-60</td>
+                                                <td>1,501</td>
+                                                <td>2,050</td>
+                                            </tr>
+                                            <tr>
+                                                <td>61-120</td>
+                                                <td>750</td>
+                                                <td>1,600</td>
+                                            </tr>
+                                            <tr>
+                                                <td>121-240</td>
+                                                <td>540</td>
+                                                <td>1,040</td>  
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div> 
+                                <!-- end table-responsive-->
+
+                            </div>
+                        </div>
+                        <!-- end card-body-->
+                        
+                    </div>
+                    <!-- end card-body-->
+
+                </div>
+                <!-- end card-->
+
+            </div>
+            <!-- end col-->
+
+        </div>
+        <!-- End row -->
+
+    </div> <!-- container -->
+{% endblock %}
+
+{% block extra_javascript %}
+{{ block.super }}
+    <script src="{% static 'invitations/js/invitations.js' %}"></script>
+{% endblock %}

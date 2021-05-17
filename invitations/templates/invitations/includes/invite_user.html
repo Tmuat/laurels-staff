@@ -1,0 +1,78 @@
+{% load static i18n %}
+<div class="modal-content green-gradient">
+    <div class="modal-body">
+        <div class="text-center mt-2 mb-3">
+            <span><img src="{% static 'custom/images/logo.png' %}" alt="laurels" height="80"></span>
+        </div>
+        <div class="text-center">
+            <h4 class="text-white">Invite New User {% url 'invitations:check_user' %}</h4>
+        </div>
+        <p class="text-white text-center">{% blocktrans trimmed %}Please enter the information to invite a new user. User emails must be unique; the intranet will perform a uniqueness check prior to sending the invite.{% endblocktrans %}</p>
+        <form method="post" action="{% url 'invitations:invite_user' %}" class="text-center text-white js-invite-user-form">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-12">
+                    {{ form.email|as_crispy_field }}
+                </div>
+                <div class="mb-2 alert alert-secondary w-50 mx-auto" role="alert" id="unique_check">
+                    Unique: <span id="mdi-icon" class="mdi mdi-help-circle"></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 col-sm-6">
+                    {{ form.first_name|as_crispy_field }}
+                </div>
+                <div class="col-12 col-sm-6">
+                    {{ form.last_name|as_crispy_field }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 col-sm-4">
+                    <label for="id_director" class=" requiredField">
+                        Is The User A Director?<span class="asteriskField">*</span>
+                    </label>
+                    {{ form.director|as_crispy_field }}
+                </div>
+                <div class="col-12 col-sm-4">
+                    <label for="id_is_staff" class=" requiredField">
+                        Is The User An Admin?<span class="asteriskField">*</span>
+                    </label>
+                    {{ form.is_staff|as_crispy_field }}
+                </div>
+                <div class="col-12 col-sm-4">
+                    <label for="id_is_staff" class=" requiredField">
+                        Does The User Need Targets?<span class="asteriskField">*</span>
+                    </label>
+                    {{ form.employee_targets|as_crispy_field }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 col-sm-6 offset-sm-3">
+                    <label class=" requiredField">
+                        Associated Hubs?<span class="asteriskField">*</span>
+                    </label>
+                </div>
+                <div class="col-12 col-sm-6 offset-sm-3 px-sm-0">
+                    <div class="p-2 bg-white rounded text-dark scrollable multi-select">
+                        {% for checkbox in form.hub %}
+                        <div class="d-block">
+                            <div class="pl-2 text-left">
+                                <span class="pr-2 border-right border-dark">
+                                    {{ checkbox.tag }}
+                                </span>
+                                <label class="pl-2 checkbox-input mb-0">
+                                    {{ checkbox.choice_label }}
+                                </label>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="my-2 text-center">
+                <button type="submit" class="btn btn-info" id="add-button" disabled>{% trans "Invite User" %}</button>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- /.modal-content -->
