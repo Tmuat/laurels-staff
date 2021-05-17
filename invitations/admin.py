@@ -1,9 +1,34 @@
 from django.contrib import admin
 
 from invitations.models import UserInvitations
+from users.models import UserTargetsByYear, UserTargets
+
+
+class UserTargetsYearAdminInline(admin.TabularInline):
+    model = UserTargetsByYear
+    readonly_fields = [
+        "created",
+        "created_by",
+        "updated",
+        "updated_by",
+    ]
+
+
+class UserTargetsAdminInline(admin.TabularInline):
+    model = UserTargets
+    readonly_fields = [
+        "created",
+        "created_by",
+        "updated",
+        "updated_by",
+    ]
 
 
 class InvitationAdmin(admin.ModelAdmin):
+    inlines = (
+        UserTargetsAdminInline,
+        UserTargetsYearAdminInline,
+    )
     model = UserInvitations
     list_display = (
         "email",

@@ -227,7 +227,6 @@ $(document).ready(function () {
 
         $('#modal-overlay').fadeToggle(100);
         var form = $(this);
-        console.log(form.attr("method"), form.attr("action"))
         $.ajax({
             url: form.attr("action"),
             data: form.serialize(),

@@ -31,20 +31,6 @@ class UserInvitations(UpdatedAndCreated):
     employee_targets = models.BooleanField(
         null=False, blank=False, default=False
     )
-    hub_targets = models.OneToOneField(
-        HubTargets,
-        on_delete=models.CASCADE,
-        related_name="invitation_hub_targets",
-        null=True,
-        blank=True,
-    )
-    hub_targets_year = models.OneToOneField(
-        HubTargetsYear,
-        on_delete=models.CASCADE,
-        related_name="invitation_hub_targets_year",
-        null=True,
-        blank=True,
-    )
 
     def save(self, *args, **kwargs):
         """
@@ -53,3 +39,6 @@ class UserInvitations(UpdatedAndCreated):
         if not self.key:
             self.key = get_random_string(64).lower()
         super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.email

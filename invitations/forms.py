@@ -15,15 +15,15 @@ class UserInvitationsForm(forms.ModelForm):
             "director",
             "is_staff",
             "hub",
-            "employee_targets"
+            "employee_targets",
         )
         labels = {
             "is_staff": _("Admin"),
         }
-    
+
     hub = forms.ModelMultipleChoiceField(
         queryset=Hub.objects.filter(is_active=True),
-        widget=forms.CheckboxSelectMultiple
+        widget=forms.CheckboxSelectMultiple,
     )
 
     def __init__(self, *args, **kwargs):
