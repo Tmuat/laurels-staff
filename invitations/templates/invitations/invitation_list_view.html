@@ -36,8 +36,8 @@
                         <div class="row">
                             <div class="col-12 text-center">
                                 <div id="page-title" class="float-none float-sm-left">
-                                    <h6>Showing <span class="text-success">{{ invitations.count }}</span>
-                                        {% if invitations.count > 1 or invitations.count == 0 %}Invitations{% else %}Invitation{% endif %}</h6>
+                                    <h6>Showing <span class="text-success">{{ active_invitations }}</span>
+                                        {% if active_invitations > 1 or active_invitations == 0 %}Active Invitations{% else %}Active Invitation{% endif %}</h6>
                                 </div>
                                 <div class="float-none float-sm-right">
                                     <button class="btn btn-success btn-sm mr-2 js-add-invitation">Invite User</button>
@@ -49,13 +49,41 @@
                                     <table class="table table-sm table-centered mb-0 font-14">
                                         <thead class="thead-light">
                                             <tr>
-                                                <th>Duration (Secs)</th>
-                                                <th style="width: 30%;">Sessions</th>
-                                                <th style="width: 30%;">Views</th>
+                                                <th>Invited Email</th>
+                                                <th style="width: 20%;">Targets Set</th>
+                                                <th style="width: 20%;">Invite Sent</th>
+                                                <th style="width: 20%;">Invite Sent By</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-
+                                            {% if active_invitations == 0 %}
+                                                <tr>
+                                                    <td>No active invitations.</td>
+                                                </tr>
+                                            {% else %}
+                                                {% for invite in invitations %}
+                                                    {% if invite.accepted is False %}
+                                                    <tr>
+                                                        <td>{{ invite.email }}</td>
+                                                        <td>
+                                                            {% if invite.employee_targets %}
+                                                                {% for target in invite.user_invitation_targets_year.all %}
+                                                                    {% if target.year == current_year %}
+                                                                        <p class="mb-0 text-success"><span class="mdi mdi-check-circle-outline"></span></p>
+                                                                    {% else %}
+                                                                        <p class="mb-0 text-danger"><span class="mdi mdi-close-circle-outline"></span></p>
+                                                                    {% endif %}
+                                                                {% endfor %}
+                                                            {% else %}
+                                                                <p class="mb-0 text-secondary"><span class="mdi mdi-checkbox-blank-circle"></span></p>
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>{{ invite.invited }}</td>
+                                                        <td>{{ invite.created_by }}</td>
+                                                    </tr>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% endif %}
                                         </tbody>
                                     </table>
                                 </div> 

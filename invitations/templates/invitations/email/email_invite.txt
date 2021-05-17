@@ -1,0 +1,17 @@
+{% load i18n %}
+{% autoescape off %}
+{% blocktrans %}
+
+Hello,
+
+You ({{ email }}) have been invited to join the Laurels Intranet.
+
+If you'd like to join, please go to {{ invite_url }}
+
+Thank you very much,
+The Laurels Website Team
+
+Note. This email was sent from a notification-only address that does not accept incoming emails. Please do not reply to this message.
+
+{% endblocktrans %}
+{% endautoescape %}

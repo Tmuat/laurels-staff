@@ -5,24 +5,31 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.template.loader import render_to_string
-from django.utils.decorators import method_decorator
-from django.views.generic.list import ListView
 
+from common.functions import quarter_year_calc
 from invitations.forms import UserInvitationsForm
 from invitations.models import UserInvitations
 from users.forms import UserTargetsFormset
-from users.models import UserTargets, UserTargetsByYear
+from users.models import UserTargetsByYear
 
 
-@method_decorator(staff_member_required, name="dispatch")
-@method_decorator(otp_required, name="dispatch")
-@method_decorator(login_required, name="dispatch")
-class InvitationListView(ListView):
+@staff_member_required
+@otp_required
+@login_required
+def invitation_home(request):
+    invitations = UserInvitations.objects.all()
+    active_invitations = invitations.filter(accepted=False).count()
+    current_year = quarter_year_calc()
 
-    queryset = UserInvitations.objects.all()
-    context_object_name = "invitations"
-    paginate_by = 100  # if pagination is desired
-    template_name = "invitations/invitation_list_view.html"
+    context = {
+        "invitations": invitations,
+        "active_invitations": active_invitations,
+        "current_year": current_year,
+    }
+
+    template = "invitations/invitation_list_view.html"
+
+    return render(request, template, context)
 
 
 @staff_member_required
@@ -44,6 +51,8 @@ def invite_user(request):
             for hub in form.cleaned_data["hub"]:
                 instance.hub.add(hub)
             instance.save()
+
+            instance.send_invitation(request)
 
             if instance.employee_targets is True:
                 data["targets"] = True
