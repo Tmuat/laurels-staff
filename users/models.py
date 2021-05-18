@@ -41,6 +41,7 @@ class Profile(UpdatedAndCreated):
     employee_targets = models.BooleanField(
         null=False, blank=False, default=False
     )
+    profile_picture = models.ImageField(null=True, blank=True)
 
     def __str__(self):
         return self.user.get_full_name()
