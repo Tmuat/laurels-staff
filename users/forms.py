@@ -32,6 +32,28 @@ class CustomUserCreationForm(UserCreationForm):
             self.fields[field].widget.attrs["placeholder"] = placeholder
 
 
+class CustomPasswordCreationForm(UserCreationForm):
+    class Meta(UserCreationForm):
+        model = CustomUser
+        fields = ("password1", "password2")
+        exclude = (
+            "email",
+            "first_name",
+            "last_name",
+            "is_staff",
+            "is_superuser",
+            "is_active",
+        )
+
+    def __init__(self, *args, **kwargs):
+        """
+        Remove help text.
+        """
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].help_text = False
+
+
 class CustomUserChangeForm(UserChangeForm):
     """
     This code is taken from the following tutorial:

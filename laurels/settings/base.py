@@ -123,7 +123,7 @@ AUTH_USER_MODEL = "users.CustomUser"
 LOGIN_REDIRECT_URL = "/"
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#login-url
-LOGIN_URL = "login"
+LOGIN_URL = "accounts:login"
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#logout-redirect-url
 LOGOUT_REDIRECT_URL = "/"

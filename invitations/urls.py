@@ -5,6 +5,7 @@ from invitations.views import (
     invite_user,
     validate_email_invite,
     users_add_targets,
+    accept_invite,
 )
 
 
@@ -20,7 +21,7 @@ urlpatterns = [
     ),
     path(
         "accept/<invitation_key>/",
-        users_add_targets,
+        accept_invite,
         name="accept_invitation",
     ),
 ]

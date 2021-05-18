@@ -1,0 +1,30 @@
+{% load static i18n %}
+<div class="text-center w-100 w-md-75 m-auto">
+    <h4 class="text-dark-50 text-center mt-0 font-weight-bold">{% trans "Accept Invite" %}</h4>
+    <p class="text-muted mb-2">
+    {% trans "In order to obtain access, please fill in a password and complete the OTP generator on the next screen." %}</p>
+    <p class="text-muted mb-1"><strong>Name:</strong> {{ invitation.first_name }} {{ invitation.last_name }}</p>
+    <p class="text-muted mb-2"><strong>Email:</strong> {{ invitation.email }}</p>
+</div>
+<form action="{% url 'invitations:accept_invitation' invitation.key %}" method="POST">
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+        <div class="non-field-errors text-center alert alert-block alert-danger">
+            {{ form.non_field_errors }}
+        </div>
+    {% endif %}
+    {% for text in form.password1.help_text %}
+        {{ text }}
+    {% endfor %}
+    {{ form.password1|as_crispy_field }}
+    <div>
+        <p class="text-muted mb-1 text-center"><small>Your password must contain at least 12 characters.</small></p>
+        <p class="text-muted mb-1 text-center"><small>Your password can’t be a commonly used password.</small></p>
+        <p class="text-muted text-center"><small>Your password can’t be entirely numeric.</small></p>
+    </div>
+    {{ form.password2|as_crispy_field }}
+
+    <div class="form-group mb-0 mt-4 clearfix">
+            <button class="btn btn-success" type="submit">{% trans "Next" %}</button>
+        </div>
+</form>
