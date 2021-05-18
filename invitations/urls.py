@@ -6,7 +6,7 @@ from invitations.views import (
     validate_email_invite,
     users_add_targets,
     accept_invite,
-    otp_setup
+    otp_setup,
 )
 
 

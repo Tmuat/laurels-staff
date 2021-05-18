@@ -330,10 +330,7 @@ def otp_setup(request):
 
         request.session[session_key_name] = session
 
-    context = {
-        "no_error": no_error,
-        "QR_URL": reverse("accounts:qr")
-    }
+    context = {"no_error": no_error, "QR_URL": reverse("accounts:qr")}
 
     template = "invitations/otp.html"
 
