@@ -255,14 +255,13 @@ def accept_invite(request, invitation_key):
     return render(request, template, context)
 
 
-# @login_required
-# @never_cache
+@login_required
+@never_cache
 def otp_setup(request):
     """
     View for setting up OTP device
     """
     session_key_name = "django_two_factor-qr_secret_key"
-    data = dict()
     no_error = True
 
     if request.method == "POST":
