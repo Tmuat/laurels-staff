@@ -1,21 +1,28 @@
+from base64 import b32encode
+from binascii import unhexlify
 import datetime
+import django_otp
 from django_otp.decorators import otp_required
+from django_otp.oath import totp
+from django_otp.plugins.otp_totp.models import TOTPDevice
+from django_otp.util import random_hex
 
 from django.contrib.admin.views.decorators import staff_member_required
-from django.contrib.auth import get_user_model, authenticate, login
+from django.contrib.auth import get_user_model, login
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404, redirect, reverse
 from django.template.loader import render_to_string
+from django.views.decorators.cache import never_cache
 from django.utils import timezone
 
-from users.models import CustomUser
+from accounts.forms import totp_digits
 from common.decorators import anonymous_required
 from common.functions import quarter_year_calc
 from invitations.forms import UserInvitationsForm
 from invitations.models import UserInvitations
 from users.forms import UserTargetsFormset, CustomPasswordCreationForm
-from users.models import UserTargetsByYear, Profile
+from users.models import CustomUser, UserTargetsByYear, Profile
 
 
 @staff_member_required
@@ -230,7 +237,7 @@ def accept_invite(request, invitation_key):
             user = get_object_or_404(CustomUser, email=instance_form.email)
 
             login(request, user)
-            return redirect("/")
+            return redirect(reverse("invitations:otp_setup"))
         else:
             form = CustomPasswordCreationForm(request.POST)
     else:
@@ -244,5 +251,91 @@ def accept_invite(request, invitation_key):
     }
 
     template = "invitations/accept_invitation.html"
+
+    return render(request, template, context)
+
+
+# @login_required
+# @never_cache
+def otp_setup(request):
+    """
+    View for setting up OTP device
+    """
+    session_key_name = "django_two_factor-qr_secret_key"
+    data = dict()
+    no_error = True
+
+    if request.method == "POST":
+        """
+        On post get the keys from the session.
+
+        Post the key to totp to get back the token to be checked against.
+
+        Check to see if they user token and validated token match.
+        """
+        session = request.session.get(session_key_name)
+
+        for key in session:
+            if key == "keys":
+                hex_key = session[key]
+
+        unhex_key = unhexlify(hex_key.encode())
+
+        validated_token = totp(key=unhex_key)
+
+        user_token = request.POST.get("token")
+
+        if validated_token == int(user_token):
+            device = TOTPDevice.objects.create(
+                user=request.user,
+                key=hex_key,
+                tolerance=1,
+                t0=0,
+                step=30,
+                drift=0,
+                digits=totp_digits(),
+                name="default",
+            )
+
+            django_otp.login(request, device)
+
+            try:
+                del request.session[session_key_name]
+            except KeyError:
+                pass
+
+            return redirect("/")
+        else:
+            no_error = False
+    else:
+        """
+        Check to see if the session key is already in the session and clear it.
+        Generate a key on get request and store it in the session. One key to
+        be used to check against the OTP link and one to create the QR code.
+        """
+        try:
+            del request.session[session_key_name]
+        except KeyError:
+            pass
+
+        session = request.session.get(session_key_name, {})
+
+        key = random_hex(20)
+
+        session["keys"] = key
+
+        rawkey = unhexlify(key.encode("ascii"))
+        b32key = b32encode(rawkey).decode("utf-8")
+
+        session["b32key"] = b32key
+
+        request.session[session_key_name] = session
+
+    context = {
+        "no_error": no_error,
+        "QR_URL": reverse("accounts:qr")
+    }
+
+    template = "invitations/otp.html"
 
     return render(request, template, context)

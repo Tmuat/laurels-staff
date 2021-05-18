@@ -142,7 +142,7 @@ def otp_setup(request):
 
         request.session[session_key_name] = session
 
-    context = {"no_error": no_error, "QR_URL": reverse("qr")}
+    context = {"no_error": no_error, "QR_URL": reverse("accounts:qr")}
     data["html_modal"] = render_to_string(
         "two_factor/includes/setup.html",
         context,

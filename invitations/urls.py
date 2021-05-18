@@ -6,6 +6,7 @@ from invitations.views import (
     validate_email_invite,
     users_add_targets,
     accept_invite,
+    otp_setup
 )
 
 
@@ -24,4 +25,5 @@ urlpatterns = [
         accept_invite,
         name="accept_invitation",
     ),
+    path("otp-setup/", otp_setup, name="otp_setup"),
 ]
