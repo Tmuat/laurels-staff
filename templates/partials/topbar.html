@@ -169,11 +169,15 @@
             <a class="nav-link dropdown-toggle nav-user arrow-none mr-0" data-toggle="dropdown" href="#" role="button" aria-haspopup="false"
                 aria-expanded="false">
                 <span class="account-user-avatar"> 
-                    <img src="{% static 'core/images/users/avatar-1.jpg' %}" alt="user-image" class="rounded-circle">
+                    {% if user.profile.profile_picture %}
+                        <img src="{{ user.profile.profile_picture.url }}" alt="user-image" class="rounded-circle">
+                    {% else %}
+                        <img src="{% static 'custom/images/laurels_logo.png' %}" alt="user-image" class="rounded-circle">
+                    {% endif %}
                 </span>
                 <span>
-                    <span class="account-user-name">{{ request.user.get_full_name }}</span>
-                    <span class="account-position">{% trans "Founder" %}</span>
+                    <span class="account-user-name">{{ user.get_full_name }}</span>
+                    <span class="account-position">{% if user.profile.hub.first is None %}NA{% else %}{{ user.profile.hub.first }}{% endif %}</span>
                 </span>
             </a>
             <div class="dropdown-menu dropdown-menu-right dropdown-menu-animated topbar-dropdown-menu profile-dropdown">
