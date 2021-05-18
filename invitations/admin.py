@@ -38,6 +38,7 @@ class InvitationAdmin(admin.ModelAdmin):
         "last_name",
     )
     readonly_fields = [
+        "invited",
         "key",
         "created",
         "created_by",

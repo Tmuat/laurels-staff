@@ -3,6 +3,7 @@ from django.db import models
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
 
@@ -19,7 +20,7 @@ class UserInvitations(UpdatedAndCreated):
         verbose_name_plural = "User Invitations"
 
     key = models.CharField(max_length=64, unique=True, null=False)
-    invited = models.DateTimeField(auto_now_add=True)
+    invited = models.DateTimeField(null=True)
     accepted = models.BooleanField(default=False, null=False)
 
     email = models.EmailField(_("email address"), unique=True)
@@ -35,20 +36,19 @@ class UserInvitations(UpdatedAndCreated):
     employee_targets = models.BooleanField(
         null=False, blank=False, default=False
     )
-    invite_sent = models.BooleanField(
-        null=False, default=False
-    )
+    invite_sent = models.BooleanField(null=False, default=False)
 
     def send_invitation(self, request, **kwargs):
-        invite_url = reverse('invitations:accept_invitation',
-                             args=[self.key])
+        invite_url = reverse("invitations:accept_invitation", args=[self.key])
         invite_url = request.build_absolute_uri(invite_url)
         context = kwargs
-        context.update({
-            'invite_url': invite_url,
-            'email': self.email,
-            'key': self.key,
-        })
+        context.update(
+            {
+                "invite_url": invite_url,
+                "email": self.email,
+                "key": self.key,
+            }
+        )
 
         invite = render_to_string(
             "invitations/email/email_invite.txt", context
@@ -62,12 +62,13 @@ class UserInvitations(UpdatedAndCreated):
                 recipient_list=[
                     '"Laurels No Reply" <admin@laurels.co.uk>',
                 ],
-                fail_silently=False
+                fail_silently=False,
             )
             self.invite_sent = True
+            self.invited = timezone.now()
             self.save()
         except BadHeaderError:
-            return HttpResponse('Invalid header found.')
+            return HttpResponse("Invalid header found.")
 
     def save(self, *args, **kwargs):
         """
