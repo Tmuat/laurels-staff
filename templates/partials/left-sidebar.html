@@ -43,7 +43,7 @@
                     </li>
                 </ul>
             </li>
-
+            {% if request.user.is_staff %}
             <li class="side-nav-item">
                 <a href="javascript: void(0);" class="side-nav-link">
                     <i class="mdi mdi-clipboard-account"></i>
@@ -62,6 +62,7 @@
                     </li>
                 </ul>
             </li>
+            {% endif %}
         </ul>
         <!-- End Sidebar -->
         
