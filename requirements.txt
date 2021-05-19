@@ -21,6 +21,7 @@ pathspec==0.8.1
 phonenumbers==8.12.22
 Pillow==8.2.0
 pluggy==0.13.1
+psycopg2==2.8.6
 py==1.10.0
 pytest==6.2.3
 pytest-django==4.2.0
