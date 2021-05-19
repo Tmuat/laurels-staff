@@ -22,7 +22,7 @@ urlpatterns = [
     path(
         "login/",
         auth_views.LoginView.as_view(
-            authentication_form=CustomOTPAuthenticationForm
+            # authentication_form=CustomOTPAuthenticationForm
         ),
         name="login",
     ),
