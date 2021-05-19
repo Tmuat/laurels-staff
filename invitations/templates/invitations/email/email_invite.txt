@@ -1,8 +1,4 @@
-{% load i18n %}
-{% autoescape off %}
-{% blocktrans %}
-
-Hello,
+{% load i18n %}{% autoescape off %}{% blocktrans %}Hello,
 
 You ({{ email }}) have been invited to join the Laurels Intranet.
 
