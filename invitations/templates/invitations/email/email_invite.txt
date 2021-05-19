@@ -1,4 +1,4 @@
-}{% autoescape off %}
+{% autoescape off %}
 Hello,
 
 You ({{ email }}) have been invited to join the Laurels Intranet.
