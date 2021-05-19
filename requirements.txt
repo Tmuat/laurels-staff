@@ -13,8 +13,11 @@ django-environ==0.4.5
 django-formtools==2.3
 django-otp==1.0.4
 django-phonenumber-field==5.1.0
+django-ses==2.0.0
 django-storages==1.11.1
 django-two-factor-auth==1.13.1
+future==0.18.2
+gunicorn==20.1.0
 iniconfig==1.1.1
 jmespath==0.10.0
 pathspec==0.8.1
