@@ -215,8 +215,8 @@ def accept_invite(request, invitation_key):
                 user=instance_form,
                 director=invitation_instance.director,
                 employee_targets=invitation_instance.employee_targets,
-                created_by=user_targets_qs.first().created_by,
-                updated_by=user_targets_qs.first().created_by,
+                created_by=invitation_instance.created_by,
+                updated_by=invitation_instance.created_by,
             )
 
             for hub in invitation_instance.hub.all():
