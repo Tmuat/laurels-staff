@@ -9,6 +9,10 @@ class PropertyAdmin(admin.ModelAdmin):
         "postcode",
         "address_line_1",
         "address_line_2",
+        "updated_by",
+        "updated",
+        "created_by",
+        "created",
     )
 
     ordering = ("postcode",)
