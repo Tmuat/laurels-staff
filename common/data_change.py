@@ -3,16 +3,36 @@ import uuid
 
 from django.template.defaultfilters import slugify
 
+# ------------------------------------------------------------------------------
+# COMMANDS
+# ------------------------------------------------------------------------------
 
 # exec(open('common/data_change.py').read())
 
-# Property Model
+# python3 manage.py dumpdata otp_totp.totpdevice > totp.json
+
+
+# ------------------------------------------------------------------------------
+# DICTIONARIES
+# ------------------------------------------------------------------------------
+
+property_dict = None
+hub_dict = None
+user_dict = None
+profile_dict = None
+
+# ------------------------------------------------------------------------------
+# START SCRIPT
+# ------------------------------------------------------------------------------
+
+# ----------------------------------------
+# PROPERTY MODEL
+# ----------------------------------------
 
 with open(
     "/workspace/laurels-staff/common/data_dump/originals/property.json", "r"
 ) as json_data:
-    property_model = json.load(json_data)  # deserialises it
-    # data2 = json.dumps(data1) # json formatted string
+    property_model = json.load(json_data)
 
 for instance in property_model:
 
@@ -110,15 +130,17 @@ for instance in property_model:
 
     instance["pk"] = str(uuid.uuid4())
 
+property_dict = property_model
+
 with open(
     "/workspace/laurels-staff/common/data_dump/property.json", "w"
 ) as json_data:
     json.dump(property_model, json_data)
 
-# End Property Model
-
-# Remeber to add Region UUID
-# Hub Model
+# ----------------------------------------
+# HUB MODEL
+# Note. Remember to manually add region
+# ----------------------------------------
 
 with open(
     "/workspace/laurels-staff/common/data_dump/originals/hub.json", "r"
@@ -136,12 +158,12 @@ for instance in hub_model:
     # Add/Update fields
 
     hub_slug = slugify(instance["fields"]["hub_name"])
-    
+
     instance["fields"]["slug"] = hub_slug
 
     instance["fields"]["is_active"] = True
 
-    instance["fields"]["region"] = "f26b0560-01d7-45af-9ae0-5e3d7e388829"
+    instance["fields"]["region"] = "aa8b84a7-8cd0-464a-83f1-ceea7b094e73"
 
     del instance["fields"]["hub_targets"]
 
@@ -166,14 +188,51 @@ for instance in hub_model:
 
     instance["pk"] = str(uuid.uuid4())
 
+hub_dict = hub_model
+
 with open(
     "/workspace/laurels-staff/common/data_dump/hub.json", "w"
 ) as json_data:
     json.dump(hub_model, json_data)
 
-# End Hub Model
+# ----------------------------------------
+# USER PREP
+# ----------------------------------------
 
-# Custom User Model
+with open(
+    "/workspace/laurels-staff/common/data_dump/originals/profile.json", "r"
+) as json_data:
+    profile_model = json.load(json_data)
+
+names = []
+
+for instance in profile_model:
+
+    profile_instance = {}
+
+    pk = instance["pk"]
+
+    user_pk = instance["fields"]["user"]
+
+    profile_instance["pk"] = pk
+
+    profile_instance["user_pk"] = user_pk
+
+    name = instance["fields"]["name"]
+
+    if name == "Admin":
+        profile_instance["first_name"] = "Admin"
+        profile_instance["last_name"] = "User"
+    else:
+        data = name.split(" ", 1)
+        profile_instance["first_name"] = data[0]
+        profile_instance["last_name"] = data[1]
+
+    names.append(profile_instance)
+
+# ----------------------------------------
+# USER MODEL
+# ----------------------------------------
 
 with open(
     "/workspace/laurels-staff/common/data_dump/originals/users.json", "r"
@@ -188,28 +247,23 @@ for instance in custom_user_model:
 
     # End changing the model to new value
 
+    # Loop profile list for first name & last name
+
+    first_name = ""
+    last_name = ""
+
+    for profile_instance in names:
+        if profile_instance["user_pk"] == instance["pk"]:
+            first_name = profile_instance["first_name"]
+            last_name = profile_instance["last_name"]
+
     # Add/Update fields
 
-    hub_slug = slugify(instance["fields"]["hub_name"])
-    
-    instance["fields"]["slug"] = hub_slug
+    instance["fields"]["first_name"] = first_name
 
-    instance["fields"]["is_active"] = True
-
-    instance["fields"]["region"] = "f26b0560-01d7-45af-9ae0-5e3d7e388829"
-
-    del instance["fields"]["hub_targets"]
+    instance["fields"]["last_name"] = last_name
 
     # End Add/Update fields
-
-    # Add new fields
-
-    instance["fields"]["created_by"] = "Admin"
-    instance["fields"]["created"] = "2000-01-13T13:13:13.000Z"
-    instance["fields"]["updated_by"] = "Admin"
-    instance["fields"]["updated"] = "2000-01-13T13:13:13.000Z"
-
-    # End add new fields
 
     # Move original PK
 
@@ -221,9 +275,64 @@ for instance in custom_user_model:
 
     instance["pk"] = str(uuid.uuid4())
 
+user_dict = custom_user_model
+
 with open(
-    "/workspace/laurels-staff/common/data_dump/hub.json", "w"
+    "/workspace/laurels-staff/common/data_dump/users.json", "w"
 ) as json_data:
     json.dump(custom_user_model, json_data)
 
-# End Custom User Model
+# ----------------------------------------
+# PROFILE MODEL
+# ----------------------------------------
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/originals/profile.json", "r"
+) as json_data:
+    profile_model = json.load(json_data)
+
+for instance in profile_model:
+
+    # Changing the model to new value
+
+    instance["model"] = "users.profile"
+
+    # End changing the model to new value
+
+    # Loop user list for one to one link
+
+    for user_instance in user_dict:
+        if user_instance["old_pk"] == instance["fields"]["user"]:
+            instance["fields"]["user"] = user_instance["pk"]
+
+    # Delete fields
+
+    del instance["fields"]["gender"]
+
+    del instance["fields"]["name"]
+
+    # End Delete fields
+
+    # Add new fields
+
+    instance["fields"]["created_by"] = "Admin"
+    instance["fields"]["created"] = "2000-01-13T13:13:13.000Z"
+    instance["fields"]["updated_by"] = "Admin"
+    instance["fields"]["updated"] = "2000-01-13T13:13:13.000Z"
+
+    # Move original PK
+
+    instance["old_pk"] = instance["pk"]
+
+    # End move original PK
+
+    # Create new UUID field
+
+    instance["pk"] = str(uuid.uuid4())
+
+profile_dict = profile_model
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/profile.json", "w"
+) as json_data:
+    json.dump(profile_model, json_data)
