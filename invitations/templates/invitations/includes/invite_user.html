@@ -5,7 +5,7 @@
             <span><img src="{% static 'custom/images/logo.png' %}" alt="laurels" height="80"></span>
         </div>
         <div class="text-center">
-            <h4 class="text-white">Invite New User {% url 'invitations:check_user' %}</h4>
+            <h4 class="text-white">Invite New User</h4>
         </div>
         <p class="text-white text-center">{% blocktrans trimmed %}Please enter the information to invite a new user. User emails must be unique; the intranet will perform a uniqueness check prior to sending the invite.{% endblocktrans %}</p>
         <form method="post" action="{% url 'invitations:invite_user' %}" class="text-center text-white js-invite-user-form">
