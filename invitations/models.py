@@ -58,9 +58,9 @@ class UserInvitations(UpdatedAndCreated):
             send_mail(
                 "Laurels Intranet Invitation",
                 invite,
-                self.email,
+                '"Laurels No Reply" <admin@laurels.co.uk>',
                 recipient_list=[
-                    '"Laurels No Reply" <admin@laurels.co.uk>',
+                    self.email,
                 ],
                 fail_silently=False,
             )
