@@ -1,3 +1,5 @@
+from datetime import date
+
 from django.db import models
 
 from common.models import UpdatedAndCreated
@@ -177,5 +179,36 @@ class PropertyProcess(UpdatedAndCreated):
                 self.property.postcode,
                 self.property.address_line_1,
                 self.property.address_line_2,
+            )
+        return property_address
+
+
+class Valuation(UpdatedAndCreated):
+    class Meta:
+        ordering = [
+            "propertyprocess__property__postcode",
+            "propertyprocess__property__address_line_1",
+        ]
+        verbose_name = "Valuation"
+        verbose_name_plural = "Valuations"
+
+    propertyprocess = models.OneToOneField(
+        PropertyProcess, on_delete=models.CASCADE, related_name="valuation"
+    )
+    date = models.DateField(default=date.today)
+    price_quoted = models.PositiveIntegerField()
+    fee_quoted = models.DecimalField(max_digits=5, decimal_places=2)
+
+    def __str__(self):
+        if self.propertyprocess.property.address_line_2 == "":
+            property_address = "%s, %s" % (
+                self.propertyprocess.property.postcode,
+                self.propertyprocess.property.address_line_1,
+            )
+        else:
+            property_address = "%s, %s, %s" % (
+                self.propertyprocess.property.postcode,
+                self.propertyprocess.property.address_line_1,
+                self.propertyprocess.property.address_line_2,
             )
         return property_address
