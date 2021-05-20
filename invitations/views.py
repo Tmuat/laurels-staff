@@ -8,7 +8,7 @@ from django_otp.plugins.otp_totp.models import TOTPDevice
 from django_otp.util import random_hex
 
 from django.contrib.admin.views.decorators import staff_member_required
-from django.contrib.auth import get_user_model, login
+from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect, reverse
@@ -57,6 +57,7 @@ def invite_user(request):
         form = UserInvitationsForm(request.POST)
         if form.is_valid():
             instance = form.save(commit=False)
+            instance.email = form.cleaned_data["email"].lower()
             instance.created_by = request.user.get_full_name()
             instance.updated_by = request.user.get_full_name()
             instance.save()
