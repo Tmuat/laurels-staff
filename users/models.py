@@ -11,6 +11,10 @@ from users.managers import CustomUserManager
 
 
 class CustomUser(AbstractUser):
+    class Meta:
+        ordering = ["email", "is_active"]
+        verbose_name = "User & Profile"
+        verbose_name_plural = "Users & Profiles"
 
     username = None
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -42,6 +46,12 @@ class Profile(UpdatedAndCreated):
         null=False, blank=False, default=False
     )
     profile_picture = models.ImageField(null=True, blank=True)
+    personal_comm = models.DecimalField(max_digits=4,
+                                 decimal_places=2,
+                                 default=10)
+    office_comm = models.DecimalField(max_digits=4,
+                                 decimal_places=2,
+                                 default=0)
 
     def __str__(self):
         return self.user.get_full_name()
