@@ -120,6 +120,8 @@ $(document).ready(function () {
                     };
                 }
             });
+        } else if($("#id_is_active").prop('checked') == true){
+            $("#base-modal").find("#add-button").removeAttr("disabled");
         };
     });
 
@@ -299,6 +301,30 @@ $(document).ready(function () {
                 };
             }
         });
+    });
+
+    // Checks if the hub has employees associated with it
+    $("#base-modal").on("change", "#id_is_active_hub", function () {
+        var currentHubName = $('#hub_slug').text().slice(1, -1);
+        if($("#id_is_active_hub").prop('checked') != true){
+            $.ajax({
+                url: '/region-hub/check/hub/employees/' + currentHubName + '/',
+                dataType: 'json',
+                success: function (data) {
+                    if (data.associated_employees) {
+                        $("#base-modal").find("#second-mdi-icon").removeClass("mdi-help-circle").addClass("mdi-close-circle-outline");
+                        $("#base-modal").find("#employee_check").addClass("text-danger border-danger");
+                        $("#base-modal").find("#add-button").attr("disabled", true);
+                    } else {
+                        $("#base-modal").find("#second-mdi-icon").removeClass("mdi-help-circle").addClass("mdi-check-circle-outline");
+                        $("#base-modal").find("#employee_check").removeClass("text-danger border-danger").addClass("border-success text-success");
+                        $("#base-modal").find("#add-button").removeAttr("disabled");
+                    };
+                }
+            });
+        } else if($("#id_is_active_hub").prop('checked') == true){
+            $("#base-modal").find("#add-button").removeAttr("disabled");
+        };
     });
 
     // Deals with the form submission for editing hub with AJAX

@@ -55,6 +55,7 @@ class HubEditForm(forms.ModelForm):
         super(HubEditForm, self).__init__(*args, **kwargs)
         self.fields["region"].queryset = Region.objects.filter(is_active=True)
         self.fields["hub_name"].widget.attrs["id"] = "id_change_hub_name"
+        self.fields["is_active"].widget.attrs["id"] = "id_is_active_hub"
 
 
 class HubTargetsForm(forms.ModelForm):

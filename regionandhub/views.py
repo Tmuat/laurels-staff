@@ -183,8 +183,6 @@ def check_region_hubs(request, region_slug):
     """
     region = get_object_or_404(Region, slug=region_slug)
 
-    region.region.all().count()
-
     if region.region.all().count() > 0:
         data = {"associated_hubs": True}
     else:
@@ -318,6 +316,24 @@ def validate_hub_name_edit(request, hub_slug):
         data = {
             "is_taken": Hub.objects.filter(slug__iexact=new_hub_slug).exists()
         }
+
+    return JsonResponse(data)
+
+
+@staff_member_required
+@otp_required
+@login_required
+def check_hub_employees(request, hub_slug):
+    """
+    Check that the hub has no associated employees
+    before making it inactive.
+    """
+    hub = get_object_or_404(Hub, slug=hub_slug)
+
+    if hub.employee.all().count() > 0:
+        data = {"associated_employees": True}
+    else:
+        data = {"associated_employees": False}
 
     return JsonResponse(data)
 
