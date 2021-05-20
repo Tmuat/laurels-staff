@@ -10,7 +10,7 @@ from .base import *  # noqa
 # ------------------------------------------------------------------------------
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
-DJANGO_ALLOWED_HOSTS = env('DJANGO_ALLOWED_HOSTS').split(",")
+DJANGO_ALLOWED_HOSTS = env("DJANGO_ALLOWED_HOSTS").split(",")
 ALLOWED_HOSTS = list(DJANGO_ALLOWED_HOSTS)
 
 # ------------------------------------------------------------------------------
@@ -18,9 +18,7 @@ ALLOWED_HOSTS = list(DJANGO_ALLOWED_HOSTS)
 # ------------------------------------------------------------------------------
 
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
-DATABASES = {
-    'default': env.db('DATABASE_URL')
-             }
+DATABASES = {"default": env.db("DATABASE_URL")}
 
 # ------------------------------------------------------------------------------
 # SECURITY
@@ -63,40 +61,40 @@ AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")
 AWS_S3_REGION_NAME = env("AWS_S3_REGION_NAME")
 
 # https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html#cloudfront
-AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
+AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
 
 # https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html#settings
 AWS_S3_OBJECT_PARAMETERS = {
-    'Expires': 'Thu, 31 Dec 2099 20:00:00 GMT',
-    'CacheControl': 'max-age=94608000',
+    "Expires": "Thu, 31 Dec 2099 20:00:00 GMT",
+    "CacheControl": "max-age=94608000",
 }
 
 # ------------------------------------------------------------------------------
 # STATIC
 # ------------------------------------------------------------------------------
-STATICFILES_STORAGE = 'custom_storages.StaticStorage'
-STATICFILES_LOCATION = 'static'
-STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{STATICFILES_LOCATION}/'
+STATICFILES_STORAGE = "custom_storages.StaticStorage"
+STATICFILES_LOCATION = "static"
+STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{STATICFILES_LOCATION}/"
 
 # ------------------------------------------------------------------------------
 # MEDIA
 # ------------------------------------------------------------------------------
-DEFAULT_FILE_STORAGE = 'custom_storages.MediaStorage'
-MEDIAFILES_LOCATION = 'media'
-MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{MEDIAFILES_LOCATION}/'
+DEFAULT_FILE_STORAGE = "custom_storages.MediaStorage"
+MEDIAFILES_LOCATION = "media"
+MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{MEDIAFILES_LOCATION}/"
 
 # ------------------------------------------------------------------------------
 # EMAIL
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#default-from-email
-DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL')
-SERVER_EMAIL = env('DEFAULT_FROM_EMAIL')
-EMAIL_BACKEND = 'django_ses.SESBackend'
+DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL")
+SERVER_EMAIL = env("DEFAULT_FROM_EMAIL")
+EMAIL_BACKEND = "django_ses.SESBackend"
 
-AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
-AWS_SES_REGION_NAME = env('AWS_SES_REGION_NAME')
-AWS_SES_REGION_ENDPOINT = env('AWS_SES_REGION_ENDPOINT')
+AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
+AWS_SES_REGION_NAME = env("AWS_SES_REGION_NAME")
+AWS_SES_REGION_ENDPOINT = env("AWS_SES_REGION_ENDPOINT")
 
 
 # ------------------------------------------------------------------------------
@@ -106,33 +104,35 @@ AWS_SES_REGION_ENDPOINT = env('AWS_SES_REGION_ENDPOINT')
 # https://docs.djangoproject.com/en/dev/ref/settings/#logging
 # See https://docs.djangoproject.com/en/dev/topics/logging for
 # more details on how to customize your logging configuration.
-LOGLEVEL = env.str('DJANGO_LOGGING_LEVEL', 'info').upper()
+LOGLEVEL = env.str("DJANGO_LOGGING_LEVEL", "info").upper()
 
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'verbose': {
-            'format': '{levelname} {asctime} {module} '
-                      '{process:d} {thread:d} {message}',
-            'style': '{',
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "{levelname} {asctime} {module} "
+            "{process:d} {thread:d} {message}",
+            "style": "{",
         },
-        'simple': {
-            'format': '{levelname} {message}',
-            'style': '{',
-        },
-    },
-    'handlers': {
-        'console': {
-            'level': LOGLEVEL,
-            'class': 'logging.StreamHandler',
-            'formatter': 'verbose'
+        "simple": {
+            "format": "{levelname} {message}",
+            "style": "{",
         },
     },
-    'loggers': {
-        'django': {
-            'handlers': ['console', ],
-            'propagate': True,
+    "handlers": {
+        "console": {
+            "level": LOGLEVEL,
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+        },
+    },
+    "loggers": {
+        "django": {
+            "handlers": [
+                "console",
+            ],
+            "propagate": True,
         }
     },
 }
@@ -145,7 +145,7 @@ sentry_sdk.init(
     dsn="https://9b48092cc88c43409cfd9dc47a0d4624@o469529.ingest.sentry.io/5773961",
     integrations=[DjangoIntegration()],
     traces_sample_rate=1.0,
-    send_default_pii=True
+    send_default_pii=True,
 )
 
 # ------------------------------------------------------------------------------

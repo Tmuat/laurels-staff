@@ -115,14 +115,11 @@ class Property(UpdatedAndCreated):
 
     def __str__(self):
         if self.address_line_2 == "":
-            property_address = "%s, %s" % (
-                self.postcode,
-                self.address_line_1
-            )
+            property_address = "%s, %s" % (self.postcode, self.address_line_1)
         else:
             property_address = "%s, %s, %s" % (
                 self.postcode,
                 self.address_line_1,
-                self.address_line_2
+                self.address_line_2,
             )
         return property_address

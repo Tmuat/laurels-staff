@@ -20,6 +20,7 @@ property_dict = None
 hub_dict = None
 user_dict = None
 profile_dict = None
+master_dict = None
 
 # ------------------------------------------------------------------------------
 # START SCRIPT
@@ -313,12 +314,38 @@ for instance in profile_model:
 
     # End Delete fields
 
+    # Link many to many hubs to new PK
+
+    associated_hubs = []
+
+    for hub in instance["fields"]["hub"]:
+        for old_hub in hub_dict:
+            if hub == old_hub["old_pk"]:
+                associated_hubs.append(str(old_hub["pk"]))
+
+    instance["fields"]["hub"] = associated_hubs
+
+    # End link many to many hubs to new PK
+
+    # Edit field name
+
+    instance["fields"]["employee_targets"] = instance["fields"][
+        "target_employee"
+    ]
+
+    del instance["fields"]["target_employee"]
+    del instance["fields"]["target_link"]
+
+    # End edit field name
+
     # Add new fields
 
     instance["fields"]["created_by"] = "Admin"
     instance["fields"]["created"] = "2000-01-13T13:13:13.000Z"
     instance["fields"]["updated_by"] = "Admin"
     instance["fields"]["updated"] = "2000-01-13T13:13:13.000Z"
+
+    # End add new fields
 
     # Move original PK
 
@@ -336,3 +363,26 @@ with open(
     "/workspace/laurels-staff/common/data_dump/profile.json", "w"
 ) as json_data:
     json.dump(profile_model, json_data)
+
+# ----------------------------------------
+# CREATE MASTER JSON
+# ----------------------------------------
+
+master_dict = []
+
+for object in hub_dict:
+    master_dict.append(object)
+
+for object in user_dict:
+    master_dict.append(object)
+
+for object in profile_dict:
+    master_dict.append(object)
+
+for object in property_dict:
+    master_dict.append(object)
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/master.json", "w"
+) as json_data:
+    json.dump(master_dict, json_data)

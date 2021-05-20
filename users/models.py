@@ -46,12 +46,12 @@ class Profile(UpdatedAndCreated):
         null=False, blank=False, default=False
     )
     profile_picture = models.ImageField(null=True, blank=True)
-    personal_comm = models.DecimalField(max_digits=4,
-                                 decimal_places=2,
-                                 default=10)
-    office_comm = models.DecimalField(max_digits=4,
-                                 decimal_places=2,
-                                 default=0)
+    personal_comm = models.DecimalField(
+        max_digits=4, decimal_places=2, default=10
+    )
+    office_comm = models.DecimalField(
+        max_digits=4, decimal_places=2, default=0
+    )
 
     def __str__(self):
         return self.user.get_full_name()

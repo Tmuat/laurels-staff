@@ -6,22 +6,26 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0008_auto_20210520_0938'),
+        ("users", "0008_auto_20210520_0938"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='customuser',
-            options={'ordering': ['email', 'is_active'], 'verbose_name': 'User & Profile', 'verbose_name_plural': 'Users & Profiles'},
+            name="customuser",
+            options={
+                "ordering": ["email", "is_active"],
+                "verbose_name": "User & Profile",
+                "verbose_name_plural": "Users & Profiles",
+            },
         ),
         migrations.RenameField(
-            model_name='profile',
-            old_name='o_comm',
-            new_name='office_comm',
+            model_name="profile",
+            old_name="o_comm",
+            new_name="office_comm",
         ),
         migrations.RenameField(
-            model_name='profile',
-            old_name='p_comm',
-            new_name='personal_comm',
+            model_name="profile",
+            old_name="p_comm",
+            new_name="personal_comm",
         ),
     ]
