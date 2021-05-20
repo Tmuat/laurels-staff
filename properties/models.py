@@ -1,6 +1,8 @@
 from django.db import models
 
 from common.models import UpdatedAndCreated
+from regionandhub.models import Hub
+from users.models import Profile
 
 
 class Property(UpdatedAndCreated):
@@ -121,5 +123,59 @@ class Property(UpdatedAndCreated):
                 self.postcode,
                 self.address_line_1,
                 self.address_line_2,
+            )
+        return property_address
+
+
+class PropertyProcess(UpdatedAndCreated):
+    class Meta:
+        ordering = ["property__postcode", "property__address_line_1"]
+        verbose_name = "Property Link"
+        verbose_name_plural = "Property Links"
+
+    LETTINGS = "lettings"
+    SALES = "sales"
+
+    VALUATION = "val"
+    INSTRUCTION = "inst"
+    VIEWING = "view"
+    DEAL = "deal"
+    COMPLETE = "comp"
+    WITHDRAWN = "withd"
+
+    SECTOR = [
+        (LETTINGS, "Lettings"),
+        (SALES, "Sales"),
+        (INSTRUCTION, "Instruction"),
+        (VIEWING, "Viewing"),
+        (DEAL, "Deal"),
+        (COMPLETE, "Complete"),
+        (WITHDRAWN, "Withdrawn"),
+    ]
+
+    STATUS = [
+        (VALUATION, "Valuation"),
+    ]
+    sector = models.CharField(max_length=40, null=False, choices=SECTOR)
+    property = models.ForeignKey(Property, on_delete=models.CASCADE)
+    employee = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    macro_status = models.CharField(
+        max_length=40, null=False, blank=False, choices=SECTOR
+    )
+    hub = models.ForeignKey(
+        Hub, on_delete=models.CASCADE, null=False, blank=False
+    )
+
+    def __str__(self):
+        if self.property.address_line_2 == "":
+            property_address = "%s, %s" % (
+                self.property.postcode,
+                self.property.address_line_1,
+            )
+        else:
+            property_address = "%s, %s, %s" % (
+                self.property.postcode,
+                self.property.address_line_1,
+                self.property.address_line_2,
             )
         return property_address
