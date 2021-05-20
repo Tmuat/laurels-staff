@@ -41,7 +41,7 @@ class Profile(UpdatedAndCreated):
         CustomUser, on_delete=models.CASCADE, related_name="profile"
     )
     director = models.BooleanField(null=True, blank=True, default=False)
-    hub = models.ManyToManyField(Hub)
+    hub = models.ManyToManyField(Hub, related_name="employee")
     employee_targets = models.BooleanField(
         null=False, blank=False, default=False
     )
