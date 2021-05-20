@@ -40,7 +40,7 @@
                     <div class="col-sm-9">
                         <div class="row">
                             <div class="col-12 col-md-3 text-center px-0 mx-auto">
-                                # Employees.
+                                {{ instance.employee.all.count }} Employees.
                             </div>
                             {% if instance.hub_targets_year_set.all.count < 1 %}
                                 <div class="col-12 col-md-3 text-center px-0 mx-auto">
