@@ -11,12 +11,27 @@ from django.template.defaultfilters import slugify
 
 # python3 manage.py dumpdata otp_totp.totpdevice > totp.json
 
+# ------------------------------------------------------------------------------
+# FUNCITONS
+# ------------------------------------------------------------------------------
+
+# unique = []
+# non_unique = []
+
+# if instance["fields"]["macro_status"] not in unique:
+#         unique.append(instance["fields"]["macro_status"])
+#         if instance["fields"]["macro_status"] in non_unique:
+#             pass
+#         else:
+#             non_unique.append(instance["fields"]["macro_status"])
+
 
 # ------------------------------------------------------------------------------
 # DICTIONARIES
 # ------------------------------------------------------------------------------
 
 property_dict = None
+propertylink_dict = None
 hub_dict = None
 user_dict = None
 profile_dict = None
@@ -140,7 +155,6 @@ with open(
 
 # ----------------------------------------
 # HUB MODEL
-# Note. Remember to manually add region
 # ----------------------------------------
 
 with open(
@@ -364,6 +378,113 @@ with open(
 ) as json_data:
     json.dump(profile_model, json_data)
 
+
+# ----------------------------------------
+# PROPERTY LINK MODEL
+# ----------------------------------------
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/originals/property_process.json", "r"
+) as json_data:
+    property_link_model = json.load(json_data)
+
+for instance in property_link_model:
+
+    # Changing the model to new value
+
+    instance["model"] = "properties.propertylink"
+
+    # End changing the model to new value
+
+    # Changing the macro_status to new values
+
+    if instance["fields"]["macro_status"] == "Valuation":
+        instance["fields"]["macro_status"] = "valuation"
+
+    elif instance["fields"]["macro_status"] == "Instruction":
+        instance["fields"]["macro_status"] = "instruction"
+
+    elif instance["fields"]["macro_status"] == "Viewing":
+        instance["fields"]["macro_status"] = "viewing"
+
+    elif instance["fields"]["macro_status"] == "Deal":
+        instance["fields"]["macro_status"] = "deal"
+
+    elif instance["fields"]["macro_status"] == "Complete":
+        instance["fields"]["macro_status"] = "complete"
+
+    elif instance["fields"]["macro_status"] == "Withdrawn":
+        instance["fields"]["macro_status"] = "withdrawn"
+
+    # End change macro_status
+
+    # Changing the sector to new values
+
+    if instance["fields"]["sector"] == "Sales":
+        instance["fields"]["sector"] = "sales"
+
+    elif instance["fields"]["sector"] == "Lettings":
+        instance["fields"]["sector"] = "lettings"
+    
+    # End sector change
+
+    # Loop property list for property link & delete old field
+
+    for property_instance in property_dict:
+        if property_instance["old_pk"] == instance["fields"]["property_link"]:
+            instance["fields"]["property"] = property_instance["pk"]
+
+    del instance["fields"]["property_link"]
+
+    # End loop
+
+    # Loop profile list for employee link & delete old field
+
+    for profile_instance in profile_dict:
+        if profile_instance["old_pk"] == instance["fields"]["employee_link"]:
+            instance["fields"]["employee"] = profile_instance["pk"]
+
+    del instance["fields"]["employee_link"]
+
+    # End loop
+
+    # Loop hub list for employee link & delete old field
+
+    for hub_instance in hub_dict:
+        if hub_instance["old_pk"] == instance["fields"]["static_hub"]:
+            instance["fields"]["hub"] = hub_instance["pk"]
+
+    del instance["fields"]["static_hub"]
+
+    # End loop
+
+    # Add new fields
+
+    instance["fields"]["created_by"] = "Admin"
+    instance["fields"]["created"] = "2000-01-13T13:13:13.000Z"
+    instance["fields"]["updated_by"] = "Admin"
+    instance["fields"]["updated"] = "2000-01-13T13:13:13.000Z"
+
+    # End add new fields
+
+    # Move original PK
+
+    instance["old_pk"] = instance["pk"]
+
+    # End move original PK
+
+    # Create new UUID field
+
+    instance["pk"] = str(uuid.uuid4())
+
+propertylink_dict = property_link_model
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/property_link.json", "w"
+) as json_data:
+    json.dump(property_link_model, json_data)
+
+
 # ----------------------------------------
 # CREATE MASTER JSON
 # ----------------------------------------
@@ -380,6 +501,9 @@ for object in profile_dict:
     master_dict.append(object)
 
 for object in property_dict:
+    master_dict.append(object)
+
+for object in propertylink_dict:
     master_dict.append(object)
 
 with open(
