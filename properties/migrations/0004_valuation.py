@@ -9,27 +9,48 @@ import uuid
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('properties', '0003_auto_20210520_1120'),
+        ("properties", "0003_auto_20210520_1120"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Valuation',
+            name="Valuation",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('updated', models.DateTimeField(auto_now=True)),
-                ('created_by', models.CharField(blank=True, max_length=100)),
-                ('updated_by', models.CharField(blank=True, max_length=100)),
-                ('date', models.DateField(default=datetime.date.today)),
-                ('price_quoted', models.PositiveIntegerField()),
-                ('fee_quoted', models.DecimalField(decimal_places=2, max_digits=5)),
-                ('propertyprocess', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='valuation', to='properties.propertyprocess')),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                ("created", models.DateTimeField(auto_now_add=True)),
+                ("updated", models.DateTimeField(auto_now=True)),
+                ("created_by", models.CharField(blank=True, max_length=100)),
+                ("updated_by", models.CharField(blank=True, max_length=100)),
+                ("date", models.DateField(default=datetime.date.today)),
+                ("price_quoted", models.PositiveIntegerField()),
+                (
+                    "fee_quoted",
+                    models.DecimalField(decimal_places=2, max_digits=5),
+                ),
+                (
+                    "propertyprocess",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="valuation",
+                        to="properties.propertyprocess",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Valuation',
-                'verbose_name_plural': 'Valuations',
-                'ordering': ['propertyprocess__property__postcode', 'propertyprocess__property__address_line_1'],
+                "verbose_name": "Valuation",
+                "verbose_name_plural": "Valuations",
+                "ordering": [
+                    "propertyprocess__property__postcode",
+                    "propertyprocess__property__address_line_1",
+                ],
             },
         ),
     ]
