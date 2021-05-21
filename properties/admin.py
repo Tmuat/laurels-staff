@@ -50,9 +50,7 @@ class ValuationAdminInline(admin.TabularInline):
 
 
 class PropertyProcessAdmin(admin.ModelAdmin):
-    inlines = (
-        ValuationAdminInline,
-    )
+    inlines = (ValuationAdminInline,)
 
     list_display = ("__str__", "employee", "sector", "hub", "macro_status")
 
@@ -74,7 +72,7 @@ class PropertyProcessAdmin(admin.ModelAdmin):
             obj.created_by = request.user.get_full_name()
         obj.updated_by = request.user.get_full_name()
         super().save_model(request, obj, form, change)
-    
+
     def save_formset(self, request, form, formset, change):
         instances = formset.save(commit=False)
         for obj in instances:
