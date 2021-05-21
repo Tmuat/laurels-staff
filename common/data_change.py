@@ -7,10 +7,16 @@ from django.template.defaultfilters import slugify
 # COMMANDS
 # ------------------------------------------------------------------------------
 
+# python3 manage.py shell
+
 # exec(open('common/data_change.py').read())
 
-# python3 manage.py dumpdata home.propertyprocess > property_process.json
-# python3 manage.py dumpdata otp_totp.totpdevice > totp.json
+# python3 manage.py dumpdata home.valuation > valuations.json --settings=laurels_staff_portal.settings.production
+# python3 manage.py dumpdata home.propertyprocess > property_process.json --settings=laurels_staff_portal.settings.production
+# python3 manage.py dumpdata otp_totp.totpdevice > totp.json --settings=laurels_staff_portal.settings.production
+# python3 manage.py dumpdata home.property > property.json --settings=laurels_staff_portal.settings.production
+# python3 manage.py dumpdata home.instruction > instruction.json --settings=laurels_staff_portal.settings.production
+
 # python3 manage.py loaddata master.json
 
 # ------------------------------------------------------------------------------
@@ -35,7 +41,11 @@ from django.template.defaultfilters import slugify
 setup_dict = None
 super_dict = None
 property_dict = None
-propertylink_dict = None
+propertyprocess_dict = None
+property_history_dict = None
+valuation_dict = None
+instruction_dict = None
+instruction_lettings_extra_dict = None
 hub_dict = None
 hub_targets_dict = None
 user_dict = None
@@ -635,9 +645,9 @@ with open(
     "/workspace/laurels-staff/common/data_dump/originals/property_process.json",
     "r",
 ) as json_data:
-    property_link_model = json.load(json_data)
+    property_process_model = json.load(json_data)
 
-for instance in property_link_model:
+for instance in property_process_model:
 
     # Changing the model to new value
 
@@ -677,7 +687,7 @@ for instance in property_link_model:
 
     # End sector change
 
-    # Loop property list for property link & delete old field
+    # Loop property list for property process & delete old field
 
     for property_instance in property_dict:
         if property_instance["old_pk"] == instance["fields"]["property_link"]:
@@ -726,13 +736,291 @@ for instance in property_link_model:
 
     instance["pk"] = str(uuid.uuid4())
 
-propertylink_dict = property_link_model
+propertyprocess_dict = property_process_model
 
 with open(
     "/workspace/laurels-staff/common/data_dump/property_link.json", "w"
 ) as json_data:
-    json.dump(property_link_model, json_data)
+    json.dump(property_process_model, json_data)
 
+
+# ----------------------------------------
+# PROPERTY HISTORY MODEL
+# ----------------------------------------
+
+history = []
+
+for instance in propertyprocess_dict:
+
+    property_history = {}
+    property_history_fields = {}
+
+    # Changing the model to new value
+
+    property_history["model"] = "properties.propertyhistory"
+
+    # Create new UUID field
+
+    property_history["pk"] = str(uuid.uuid4())
+
+    # End new UUID
+
+    # Add propertyprocess link
+
+    property_history_fields["propertyprocess"] = instance["pk"]
+
+    # End add propertyprocess link
+
+    # Add new fields
+
+    property_history_fields["type"] = "other"
+
+    if instance["fields"]["sector"] == "sales":
+        property_history_fields[
+            "description"
+        ] = "There is no history for this Property Sale"
+    else:
+        property_history_fields[
+            "description"
+        ] = "There is no history for this Property Letting"
+
+    property_history_fields["created_by"] = "Admin"
+    property_history_fields["created"] = "2000-01-13T13:13:13.000Z"
+    property_history_fields["updated_by"] = "Admin"
+    property_history_fields["updated"] = "2000-01-13T13:13:13.000Z"
+
+    # End add new fields
+
+    property_history["fields"] = property_history_fields
+
+    history.append(property_history)
+
+property_history_dict = history
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/property_history.json", "w"
+) as json_data:
+    json.dump(history, json_data)
+
+
+# ----------------------------------------
+# VALUATION MODEL
+# ----------------------------------------
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/originals/valuation.json",
+    "r",
+) as json_data:
+    valuation_model = json.load(json_data)
+
+for instance in valuation_model:
+
+    # Changing the model to new value
+
+    instance["model"] = "properties.valuation"
+
+    # End changing the model to new value
+
+    # Loop property list for property process & delete old field
+
+    for propertyprocess_instance in propertyprocess_dict:
+        if (
+            propertyprocess_instance["old_pk"]
+            == instance["fields"]["propertyprocess_link"]
+        ):
+            instance["fields"]["propertyprocess"] = propertyprocess_instance[
+                "pk"
+            ]
+
+    del instance["fields"]["propertyprocess_link"]
+
+    # End loop
+
+    # Add new fields
+
+    instance["fields"]["created_by"] = "Admin"
+    instance["fields"]["created"] = "2000-01-13T13:13:13.000Z"
+    instance["fields"]["updated_by"] = "Admin"
+    instance["fields"]["updated"] = "2000-01-13T13:13:13.000Z"
+
+    # End add new fields
+
+    # Delete old field
+
+    del instance["fields"]["employee_valuer"]
+
+    # End delete
+
+    # Move original PK
+
+    instance["old_pk"] = instance["pk"]
+
+    # End move original PK
+
+    # Create new UUID field
+
+    instance["pk"] = str(uuid.uuid4())
+
+valuation_dict = valuation_model
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/valuation.json", "w"
+) as json_data:
+    json.dump(valuation_model, json_data)
+
+
+# ----------------------------------------
+# INSTRUCTION MODEL
+# ----------------------------------------
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/originals/instruction.json",
+    "r",
+) as json_data:
+    instruction_model = json.load(json_data)
+
+instruction_extra_dict = []
+
+for instance in instruction_model:
+
+    instruction_extra = {}
+    instruction_extra_fields = {}
+
+    # Changing the model to new value
+
+    instance["model"] = "properties.instruction"
+    instruction_extra["model"] = "properties.instructionlettingsextra"
+
+    # End changing the model to new value
+
+    # Loop property list for property process & delete old field
+
+    for propertyprocess_instance in propertyprocess_dict:
+        if (
+            propertyprocess_instance["old_pk"]
+            == instance["fields"]["propertyprocess_link"]
+        ):
+            instance["fields"]["propertyprocess"] = propertyprocess_instance[
+                "pk"
+            ]
+            instruction_extra_fields[
+                "propertyprocess"
+            ] = propertyprocess_instance["pk"]
+
+    del instance["fields"]["propertyprocess_link"]
+
+    # End loop
+
+    # Changing the agreement_type to new values
+
+    if instance["fields"]["agreement_type"] == "Sole":
+        instance["fields"]["agreement_type"] = "sole"
+
+    elif instance["fields"]["agreement_type"] == "Mutli":
+        instance["fields"]["agreement_type"] = "multi"
+
+    # End change agreement_type
+
+    # Changing the length_of_contract to new values
+
+    if instance["fields"]["length_of_contract"] == "16 Weeks":
+        instance["fields"]["length_of_contract"] = 16
+
+    elif instance["fields"]["length_of_contract"] == "12 Weeks":
+        instance["fields"]["length_of_contract"] = 12
+
+    elif instance["fields"]["length_of_contract"] == "10 Weeks":
+        instance["fields"]["length_of_contract"] = 10
+
+    elif instance["fields"]["length_of_contract"] == "8 Weeks":
+        instance["fields"]["length_of_contract"] = 8
+
+    elif instance["fields"]["length_of_contract"] == "6 Weeks":
+        instance["fields"]["length_of_contract"] = 6
+
+    elif instance["fields"]["length_of_contract"] == "4 Weeks (Multi Only)":
+        instance["fields"]["length_of_contract"] = 4
+
+    # End change length_of_contract
+
+    # Add fields to new model
+
+    if instance["fields"]["lettings_service_level"] == "Intro Only":
+        instruction_extra_fields["lettings_service_level"] = "intro_only"
+
+    elif instance["fields"]["lettings_service_level"] == "Rent Collect":
+        instruction_extra_fields["lettings_service_level"] = "rent_collect"
+
+    elif instance["fields"]["lettings_service_level"] == "Fully Managed":
+        instruction_extra_fields["lettings_service_level"] = "fully_managed"
+
+    elif (
+        instance["fields"]["lettings_service_level"]
+        == "Fully Managed Rent Insurance Included"
+    ):
+        instruction_extra_fields["lettings_service_level"] = "fully_managed_ri"
+
+    instruction_extra_fields["managed_property"] = instance["fields"][
+        "managed_property"
+    ]
+
+    del instance["fields"]["lettings_service_level"]
+    del instance["fields"]["managed_property"]
+
+    # End add fields to new model
+
+    # Add new fields
+
+    instance["fields"]["created_by"] = "Admin"
+    instance["fields"]["created"] = "2000-01-13T13:13:13.000Z"
+    instance["fields"]["updated_by"] = "Admin"
+    instance["fields"]["updated"] = "2000-01-13T13:13:13.000Z"
+
+    instruction_extra_fields["created_by"] = "Admin"
+    instruction_extra_fields["created"] = "2000-01-13T13:13:13.000Z"
+    instruction_extra_fields["updated_by"] = "Admin"
+    instruction_extra_fields["updated"] = "2000-01-13T13:13:13.000Z"
+
+    # End add new fields
+
+    # Move original PK
+
+    instance["old_pk"] = instance["pk"]
+
+    # End move original PK
+
+    # Add fields to larger dict
+
+    instruction_extra["fields"] = instruction_extra_fields
+
+    for propertyprocess_instance in propertyprocess_dict:
+        if (
+            propertyprocess_instance["pk"]
+            == instance["fields"]["propertyprocess"]
+        ):
+            if propertyprocess_instance["fields"]["sector"] == "lettings":
+                instruction_extra_dict.append(instruction_extra)
+
+    # End adding fields to larger dict
+
+    # Create new UUID field
+
+    instance["pk"] = str(uuid.uuid4())
+    instruction_extra["pk"] = str(uuid.uuid4())
+
+instruction_dict = instruction_model
+instruction_lettings_extra_dict = instruction_extra_dict
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/instruction.json", "w"
+) as json_data:
+    json.dump(instruction_model, json_data)
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/instruction_letting_extra.json",
+    "w",
+) as json_data:
+    json.dump(instruction_extra_dict, json_data)
 
 # ----------------------------------------
 # CREATE MASTER JSON
@@ -761,10 +1049,22 @@ for object in totp_dict:
 for object in property_dict:
     master_dict.append(object)
 
-for object in propertylink_dict:
+for object in propertyprocess_dict:
+    master_dict.append(object)
+
+for object in property_history_dict:
     master_dict.append(object)
 
 for object in super_dict:
+    master_dict.append(object)
+
+for object in valuation_dict:
+    master_dict.append(object)
+
+for object in instruction_dict:
+    master_dict.append(object)
+
+for object in instruction_lettings_extra_dict:
     master_dict.append(object)
 
 with open(
