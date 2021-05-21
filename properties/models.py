@@ -148,21 +148,21 @@ class PropertyProcess(UpdatedAndCreated):
     SECTOR = [
         (LETTINGS, "Lettings"),
         (SALES, "Sales"),
+    ]
+
+    STATUS = [
+        (VALUATION, "Valuation"),
         (INSTRUCTION, "Instruction"),
         (VIEWING, "Viewing"),
         (DEAL, "Deal"),
         (COMPLETE, "Complete"),
         (WITHDRAWN, "Withdrawn"),
     ]
-
-    STATUS = [
-        (VALUATION, "Valuation"),
-    ]
     sector = models.CharField(max_length=40, null=False, choices=SECTOR)
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     employee = models.ForeignKey(Profile, on_delete=models.CASCADE)
     macro_status = models.CharField(
-        max_length=40, null=False, blank=False, choices=SECTOR
+        max_length=40, null=False, blank=False, choices=STATUS
     )
     hub = models.ForeignKey(
         Hub, on_delete=models.CASCADE, null=False, blank=False
@@ -249,12 +249,12 @@ class Instruction(UpdatedAndCreated):
 
     BOOL_CHOICES = [(True, "Yes"), (False, "No")]
 
-    propertyprocess = models.ForeignKey(
+    propertyprocess = models.OneToOneField(
         PropertyProcess, on_delete=models.CASCADE, related_name="instruction"
     )
     date = models.DateField(default=date.today)
     agreement_type = models.CharField(max_length=15, choices=AGREEMENT_TYPE)
-    listing_price = models.IntegerField(null=False, blank=False)
+    listing_price = models.PositiveIntegerField(null=False, blank=False)
     fee_agreed = models.DecimalField(
         max_digits=5, decimal_places=2, null=False, blank=False
     )
@@ -301,7 +301,7 @@ class InstructionLettingsExtra(UpdatedAndCreated):
 
     TRUE_FALSE_CHOICES = [(True, "Yes"), (False, "No")]
 
-    propertyprocess = models.ForeignKey(
+    propertyprocess = models.OneToOneField(
         PropertyProcess,
         on_delete=models.CASCADE,
         related_name="instruction_letting_extra",

@@ -1,6 +1,12 @@
 from django.contrib import admin
 
-from properties.models import Property, PropertyProcess, Valuation
+from properties.models import (
+    Property,
+    PropertyProcess,
+    Valuation,
+    Instruction,
+    InstructionLettingsExtra,
+)
 
 
 class PropertyAdmin(admin.ModelAdmin):
@@ -49,8 +55,32 @@ class ValuationAdminInline(admin.TabularInline):
     ]
 
 
+class InstructionAdminInline(admin.TabularInline):
+    model = Instruction
+    readonly_fields = [
+        "created",
+        "created_by",
+        "updated",
+        "updated_by",
+    ]
+
+
+class InstructionLettingsExtraAdminInline(admin.TabularInline):
+    model = InstructionLettingsExtra
+    readonly_fields = [
+        "created",
+        "created_by",
+        "updated",
+        "updated_by",
+    ]
+
+
 class PropertyProcessAdmin(admin.ModelAdmin):
-    inlines = (ValuationAdminInline,)
+    inlines = (
+        ValuationAdminInline,
+        InstructionAdminInline,
+        InstructionLettingsExtraAdminInline,
+    )
 
     list_display = ("__str__", "employee", "sector", "hub", "macro_status")
 
