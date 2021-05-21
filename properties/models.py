@@ -216,6 +216,20 @@ class PropertyHistory(UpdatedAndCreated):
     description = models.CharField(max_length=400, null=False, blank=False)
     notes = models.TextField(null=True, blank=True)
 
+    def __str__(self):
+        if self.propertyprocess.property.address_line_2 == "":
+            property_address = "%s, %s" % (
+                self.propertyprocess.property.postcode,
+                self.propertyprocess.property.address_line_1,
+            )
+        else:
+            property_address = "%s, %s, %s" % (
+                self.propertyprocess.property.postcode,
+                self.propertyprocess.property.address_line_1,
+                self.propertyprocess.property.address_line_2,
+            )
+        return property_address
+
 
 class Valuation(UpdatedAndCreated):
     class Meta:
