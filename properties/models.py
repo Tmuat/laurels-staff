@@ -183,6 +183,40 @@ class PropertyProcess(UpdatedAndCreated):
         return property_address
 
 
+class PropertyHistory(UpdatedAndCreated):
+    class Meta:
+        ordering = [
+            "propertyprocess__property__postcode",
+            "propertyprocess__property__address_line_1",
+            "created",
+        ]
+        verbose_name = "Property History"
+        verbose_name_plural = "Property History"
+
+    PROPERTY_EVENT = "property_event"
+    OFFER = "offer"
+    PROGRESSION = "progression"
+    MANAGEMENT = "management"
+    OTHER = "other"
+
+    TYPE = [
+        (PROPERTY_EVENT, "Property Event"),
+        (OFFER, "Offer"),
+        (PROGRESSION, "Progression"),
+        (MANAGEMENT, "Management"),
+        (OTHER, "Other"),
+    ]
+
+    propertyprocess = models.ForeignKey(
+        PropertyProcess, on_delete=models.CASCADE, related_name="history"
+    )
+    type = models.CharField(
+        max_length=40, null=False, blank=False, choices=TYPE
+    )
+    description = models.CharField(max_length=400, null=False, blank=False)
+    notes = models.TextField(null=True, blank=True)
+
+
 class Valuation(UpdatedAndCreated):
     class Meta:
         ordering = [

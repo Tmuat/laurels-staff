@@ -3,6 +3,7 @@ from django.contrib import admin
 from properties.models import (
     Property,
     PropertyProcess,
+    PropertyHistory,
     Valuation,
     Instruction,
     InstructionLettingsExtra,
@@ -10,7 +11,7 @@ from properties.models import (
 
 
 class PropertyAdmin(admin.ModelAdmin):
-    list_display = (
+    list_display = [
         "__str__",
         "postcode",
         "address_line_1",
@@ -19,13 +20,15 @@ class PropertyAdmin(admin.ModelAdmin):
         "updated",
         "created_by",
         "created",
-    )
+    ]
 
-    ordering = ("postcode",)
+    ordering = [
+        "postcode",
+    ]
 
-    list_filter = ("property_type", "property_style", "number_of_bedrooms")
+    list_filter = ["property_type", "property_style", "number_of_bedrooms"]
 
-    search_fields = ("postcode", "address_line_1")
+    search_fields = ["postcode", "address_line_1"]
 
     readonly_fields = [
         "updated_by",
@@ -42,6 +45,16 @@ class PropertyAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Property, PropertyAdmin)
+
+
+class PropertyHistoryAdminInline(admin.TabularInline):
+    model = PropertyHistory
+    readonly_fields = [
+        "created",
+        "created_by",
+        "updated",
+        "updated_by",
+    ]
 
 
 class ValuationAdminInline(admin.TabularInline):
@@ -76,19 +89,22 @@ class InstructionLettingsExtraAdminInline(admin.TabularInline):
 
 
 class PropertyProcessAdmin(admin.ModelAdmin):
-    inlines = (
+    inlines = [
+        PropertyHistoryAdminInline,
         ValuationAdminInline,
         InstructionAdminInline,
         InstructionLettingsExtraAdminInline,
-    )
+    ]
 
-    list_display = ("__str__", "employee", "sector", "hub", "macro_status")
+    list_display = ["__str__", "employee", "sector", "hub", "macro_status"]
 
-    ordering = ("property__postcode",)
+    ordering = [
+        "property__postcode",
+    ]
 
-    list_filter = ("sector", "hub", "employee")
+    list_filter = ["sector", "hub", "employee"]
 
-    search_fields = ("property__postcode", "property__address_line_1")
+    search_fields = ["property__postcode", "property__address_line_1"]
 
     readonly_fields = [
         "updated_by",
