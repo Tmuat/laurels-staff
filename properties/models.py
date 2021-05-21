@@ -212,3 +212,117 @@ class Valuation(UpdatedAndCreated):
                 self.propertyprocess.property.address_line_2,
             )
         return property_address
+
+
+class Instruction(UpdatedAndCreated):
+    class Meta:
+        ordering = [
+            "propertyprocess__property__postcode",
+            "propertyprocess__property__address_line_1",
+        ]
+        verbose_name = "Instruction"
+        verbose_name_plural = "Instructions"
+
+    SOLE = "sole"
+    MULTI = "multi"
+
+    WEEKS16 = 16
+    WEEKS12 = 12
+    WEEKS10 = 10
+    WEEKS8 = 8
+    WEEKS6 = 6
+    WEEKS4 = 4
+
+    AGREEMENT_TYPE = [
+        (SOLE, "Sole"),
+        (MULTI, "Multi"),
+    ]
+
+    LENGTH_OF_CONTRACT = [
+        (WEEKS16, "16 Weeks"),
+        (WEEKS12, "12 Weeks"),
+        (WEEKS10, "10 Weeks"),
+        (WEEKS8, "8 Weeks"),
+        (WEEKS6, "6 Weeks"),
+        (WEEKS4, "4 Weeks (Multi Only)"),
+    ]
+
+    BOOL_CHOICES = [(True, "Yes"), (False, "No")]
+
+    propertyprocess = models.ForeignKey(
+        PropertyProcess, on_delete=models.CASCADE, related_name="instruction"
+    )
+    date = models.DateField(default=date.today)
+    agreement_type = models.CharField(max_length=15, choices=AGREEMENT_TYPE)
+    listing_price = models.IntegerField(null=False, blank=False)
+    fee_agreed = models.DecimalField(
+        max_digits=5, decimal_places=2, null=False, blank=False
+    )
+    length_of_contract = models.IntegerField(
+        null=False, blank=False, choices=LENGTH_OF_CONTRACT
+    )
+    marketing_board = models.BooleanField(choices=BOOL_CHOICES)
+
+    def __str__(self):
+        if self.propertyprocess.property.address_line_2 == "":
+            property_address = "%s, %s" % (
+                self.propertyprocess.property.postcode,
+                self.propertyprocess.property.address_line_1,
+            )
+        else:
+            property_address = "%s, %s, %s" % (
+                self.propertyprocess.property.postcode,
+                self.propertyprocess.property.address_line_1,
+                self.propertyprocess.property.address_line_2,
+            )
+        return property_address
+
+
+class InstructionLettingsExtra(UpdatedAndCreated):
+    class Meta:
+        ordering = [
+            "propertyprocess__property__postcode",
+            "propertyprocess__property__address_line_1",
+        ]
+        verbose_name = "Instruction Lettings Extra"
+        verbose_name_plural = "Instructions Lettings Extra"
+
+    INTRO = "intro_only"
+    RENTCOLLECT = "rent_collect"
+    FULLYMANAGED = "fully_managed"
+    FULLYMANAGEDRI = "fully_managed_ri"
+
+    SERVICE_LEVEL = [
+        (INTRO, "Intro Only"),
+        (RENTCOLLECT, "Rent Collect"),
+        (FULLYMANAGED, "Fully Managed"),
+        (FULLYMANAGEDRI, "Fully Managed Rent Insurance Included"),
+    ]
+
+    TRUE_FALSE_CHOICES = [(True, "Yes"), (False, "No")]
+
+    propertyprocess = models.ForeignKey(
+        PropertyProcess,
+        on_delete=models.CASCADE,
+        related_name="instruction_letting_extra",
+    )
+    lettings_service_level = models.CharField(
+        max_length=40, null=True, blank=True, choices=SERVICE_LEVEL
+    )
+    managed_property = models.BooleanField(
+        null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
+    )
+
+    def __str__(self):
+        if self.propertyprocess.property.address_line_2 == "":
+            property_address = "%s, %s" % (
+                self.propertyprocess.property.postcode,
+                self.propertyprocess.property.address_line_1,
+            )
+        else:
+            property_address = "%s, %s, %s" % (
+                self.propertyprocess.property.postcode,
+                self.propertyprocess.property.address_line_1,
+                self.propertyprocess.property.address_line_2,
+            )
+        return property_address
