@@ -778,7 +778,7 @@ for instance in propertyprocess_dict:
     if instance["fields"]["sector"] == "sales":
         property_history_fields[
             "description"
-        ] = "There is no history for this Property Sale"
+        ] = "There is no history for this property sale"
     else:
         property_history_fields[
             "description"
