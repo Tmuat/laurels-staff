@@ -104,6 +104,15 @@ body.authentication-bg {
     overflow-y: scroll;
 }
 
+/* Paginator */
+
+.page-item.active .page-link {
+    z-index: 3;
+    color: #fff;
+    background-color: #0acf97;
+    border-color: #0acf97;
+}
+
 /* Media Queries */
 
 /* Extra small devices (portrait phones, less than 576px) */

@@ -1,0 +1,23 @@
+<div class="mt-2">
+    <a class="text-dark" data-toggle="collapse" href="#property{{ forloop.counter }}" aria-expanded="false"
+        aria-controls="property{{ forloop.counter }}">
+        <h5 class="m-0 pb-2">
+            <i class='uil uil-angle-down font-18'></i>{{ instance }} <span class="text-muted">({{ instance.get_macro_status_display }})</span>
+        </h5>
+    </a>
+
+    <div class="collapse {% if forloop.first %}show{% endif %}" id="property{{ forloop.counter }}">
+        <div class="card mb-0">
+            <div class="card-body">
+
+                <!-- task -->
+                
+                <!-- end task -->
+
+            </div>
+            <!-- end card-body-->
+        </div>
+        <!-- end card -->
+    </div>
+    <!-- end .collapse-->
+</div>

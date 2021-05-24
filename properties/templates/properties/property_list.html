@@ -12,55 +12,42 @@
                 <!-- start page title -->
                 <div class="page-title-box">
                     <div class="page-title-right">
-                        <div class="app-search">
-                            <form>
-                                <div class="input-group">
-                                    <input type="text" class="form-control" placeholder="Search..." />
-                                    <span class="mdi mdi-magnify"></span>
-                                    <div class="input-group-append">
-                                        <button class="btn btn-secondary dropdown-toggle"
-                                            type="button" data-toggle="dropdown" aria-haspopup="true"
-                                            aria-expanded="false">
-                                            <i class='uil uil-sort-amount-down'></i>
-                                        </button>
-                                        <div class="dropdown-menu dropdown-menu-right">
-                                            <a class="dropdown-item" href="#">Due Date</a>
-                                            <a class="dropdown-item" href="#">Added Date</a>
-                                            <a class="dropdown-item" href="#">Assignee</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
+                        <h4>
+                            {{ properties.start_index }}-{{ properties.end_index }} of {{ properties_length }} {% if query %}results for "<span class="text-primary">{{ query }}</span>"{% endif %}
+                        </h4>
                     </div>
-                    <h4 class="page-title">Properties <a href="#" class="btn btn-success btn-sm ml-3">Add New</a></h4>
+                    <div class="text-center text-sm-left">
+                        <h4 class="page-title"><a class="text-secondary text-hover-underline text-focus-underline" href="{% url 'properties:property_list' %}">Properties Home</a></h4>
+                    </div>
                 </div>
                 <!-- end page title -->
 
+                <!-- start content title -->
+                <div class="row mb-3">
+                    <div class="col-sm-4 text-center text-sm-left order-1">
+                        <a href="#" class="btn btn-success btn-sm">Add New</a>
+                    </div>
+                    <div class="col-sm-4 text-center mt-2 mt-sm-0 order-3 order-sm-2">
+                        {% include 'properties/includes/pagination.html' %}
+                    </div>
+                    <div class="col-sm-4 order-2 order-sm-3">
+                        <div class="text-center text-sm-right mt-2 mt-sm-0">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-sm btn-success">All</button>
+                                <button type="button" class="btn btn-sm btn-light">Live Only</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end col-->
+                </div> 
+                <!-- end row-->
+
                 <!-- property panel -->
                 {% for instance in properties %}
-                <div class="mt-2">
-                    <a class="text-dark" data-toggle="collapse" href="#property{{ forloop.counter }}" aria-expanded="false"
-                        aria-controls="property{{ forloop.counter }}">
-                        <h5 class="m-0 pb-2">
-                            <i class='uil uil-angle-down font-18'></i>{{ instance }} <span class="text-muted">({{ instance.get_macro_status_display }})</span>
-                        </h5>
-                    </a>
-
-                    <div class="collapse {% if forloop.first %}show{% endif %}" id="property{{ forloop.counter }}">
-                        <div class="card mb-0">
-                            <div class="card-body">
-
-                                <!-- task -->
-                                
-                                <!-- end task -->
-
-                            </div> <!-- end card-body-->
-                        </div> <!-- end card -->
-                    </div> <!-- end .collapse-->
-                </div>
+                    {% include 'properties/includes/panel.html' %}
                 {% endfor %}
                 <!-- end .mt-2-->
+
             </div>
         </div>
         <!-- end row-->

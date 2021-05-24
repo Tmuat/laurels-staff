@@ -43,6 +43,18 @@
                     </li>
                 </ul>
             </li>
+            <li class="side-nav-item">
+                <a href="javascript: void(0);" class="side-nav-link">
+                    <i class="mdi mdi-warehouse"></i>
+                    <span> {% trans "Properties" %} </span>
+                    <span class="menu-arrow"></span>
+                </a>
+                <ul class="side-nav-second-level" aria-expanded="false">
+                    <li class="{% if request.resolver_match.url_name == 'property_list' %}active{% endif %}">
+                        <a href="{% url 'properties:property_list' %}">{% trans "Property List" %}</a>
+                    </li>
+                </ul>
+            </li>
             {% if request.user.is_staff %}
             <li class="side-nav-item">
                 <a href="javascript: void(0);" class="side-nav-link">

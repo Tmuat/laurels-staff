@@ -1,0 +1,56 @@
+<div class="">
+    <ul class="pagination pagination-sm mb-0 mb-md-2 justify-content-center">
+        {% if properties.has_previous %}
+        <li class="page-item">
+            <a class="page-link text-dark" href="?{% if query %}query={{ query }}&{% endif %}page=1" aria-disabled="true"><span class="mdi mdi-page-first"></span></a>
+        </li>
+            {% if properties.number == last_page %}
+                <li class="page-item">
+                    <a class="page-link text-dark"
+                        href="?{% if query %}query={{ query }}&{% endif %}page={{ properties.previous_page_number|add:'-1' }}">{{ properties.previous_page_number|add:"-1" }}</a>
+                </li>
+            {% endif %}
+        <li class="page-item">
+            <a class="page-link text-dark"
+                href="?{% if query %}query={{ query }}&{% endif %}page={{ properties.previous_page_number }}">{{ properties.previous_page_number }}</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <a class="page-link" href="?{% if query %}query={{ query }}&{% endif %}page=1" aria-disabled="true"><span class="mdi mdi-page-first"></span></a>
+        </li>
+        {% endif %}
+        <li class="page-item active" aria-current="page">
+            <a class="page-link text-white bg-black" href="?{% if query %}query={{ query }}&{% endif %}page={{ properties.number }}">{{ properties.number }} <span
+                    class="sr-only">(current)</span></a>
+        </li>
+        {% if properties.has_next %}
+        <li class="page-item">
+            <a class="page-link text-dark"
+                href="?{% if query %}query={{ query }}&{% endif %}page={{ properties.next_page_number }}">{{ properties.next_page_number }}</a>
+        </li>
+            {% if properties.number == 1 %}
+                <li class="page-item">
+                    <a class="page-link text-dark"
+                        href="?{% if query %}query={{ query }}&{% endif %}page=3">3</a>
+                </li>
+            {% endif %}
+        <li class="page-item">
+            <a class="page-link text-dark" href="?{% if query %}query={{ query }}&{% endif %}page={{ last_page }}"><span class="mdi mdi-page-last"></span></a>
+        </li>
+        {% else %}
+            {% if properties.number == 1 %}
+                <li class="page-item disabled">
+                    <a class="page-link"
+                        href="?{% if query %}query={{ query }}&{% endif %}page=2">2</a>
+                </li>
+                <li class="page-item disabled">
+                    <a class="page-link"
+                        href="?{% if query %}query={{ query }}&{% endif %}page=3">3</a>
+                </li>
+            {% endif %}
+        <li class="page-item disabled">
+            <a class="page-link" href="?{% if query %}query={{ query }}&{% endif %}page={{ last_page }}"><span class="mdi mdi-page-last"></span></a>
+        </li>
+        {% endif %}
+    </ul>
+</div>
