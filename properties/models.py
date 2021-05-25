@@ -159,7 +159,9 @@ class PropertyProcess(UpdatedAndCreated):
         (WITHDRAWN, "Withdrawn"),
     ]
     sector = models.CharField(max_length=40, null=False, choices=SECTOR)
-    property = models.ForeignKey(Property, on_delete=models.CASCADE)
+    property = models.ForeignKey(
+        Property, on_delete=models.CASCADE, related_name="property"
+    )
     employee = models.ForeignKey(Profile, on_delete=models.CASCADE)
     macro_status = models.CharField(
         max_length=40, null=False, blank=False, choices=STATUS
@@ -188,7 +190,7 @@ class PropertyHistory(UpdatedAndCreated):
         ordering = [
             "propertyprocess__property__postcode",
             "propertyprocess__property__address_line_1",
-            "created",
+            "-created",
         ]
         verbose_name = "Property History"
         verbose_name_plural = "Property History"
