@@ -9,13 +9,14 @@ def property_list(request):
 
     properties_list = PropertyProcess.objects.all()
     query = None
-    categories = None
+    status = None
 
     if request.GET:
-        # if "category" in request.GET:
-        #     categories = request.GET["category"].split(",")
-        #     products = products.filter(category__name__in=categories)
-        #     categories = Category.objects.filter(name__in=categories)
+        if "status" in request.GET:
+            status = request.GET["status"]
+            properties_list = properties_list \
+                .exclude(macro_status="comp") \
+                .exclude(macro_status="withd") \
 
         if "query" in request.GET:
             query = request.GET["query"]
@@ -27,7 +28,7 @@ def property_list(request):
                 | Q(property__address_line_1__icontains=query)
             )
             properties_list = properties_list.filter(queries)
-    
+
     properties_list_length = len(properties_list)
 
     page = request.GET.get('page', 1)
@@ -47,7 +48,7 @@ def property_list(request):
         "last_page": last_page,
         "properties_length": properties_list_length,
         "query": query,
-        "current_categories": categories,
+        "status": status,
     }
 
     template = "properties/property_list.html"
