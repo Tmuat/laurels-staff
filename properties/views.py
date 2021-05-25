@@ -7,33 +7,39 @@ from properties.models import PropertyProcess
 
 def property_list(request):
 
-    properties_list = PropertyProcess.objects.all()
+    properties_list = PropertyProcess.objects.all() \
+        .select_related(
+            "property",
+        ) \
+        .prefetch_related(
+            "employee",
+            "hub",
+            "history",
+        )
     query = None
     status = None
 
     if request.GET:
         if "status" in request.GET:
             status = request.GET["status"]
-            properties_list = properties_list \
-                .exclude(macro_status="comp") \
-                .exclude(macro_status="withd") \
-
+            properties_list = properties_list.exclude(
+                macro_status="comp"
+            ).exclude(macro_status="withd")
         if "query" in request.GET:
             query = request.GET["query"]
             if not query:
                 return redirect(reverse("properties:property_list"))
 
-            queries = (
-                Q(property__postcode__icontains=query)
-                | Q(property__address_line_1__icontains=query)
+            queries = Q(property__postcode__icontains=query) | Q(
+                property__address_line_1__icontains=query
             )
             properties_list = properties_list.filter(queries)
 
     properties_list_length = len(properties_list)
 
-    page = request.GET.get('page', 1)
+    page = request.GET.get("page", 1)
 
-    paginator = Paginator(properties_list, 10)
+    paginator = Paginator(properties_list, 12)
     last_page = paginator.num_pages
 
     try:
@@ -54,4 +60,3 @@ def property_list(request):
     template = "properties/property_list.html"
 
     return render(request, template, context)
-
