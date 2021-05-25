@@ -1,0 +1,186 @@
+{% extends "vertical_base.html" %}
+{% load static i18n %}
+
+{% block head_title %}{% trans "Property Detail" %}{% endblock head_title %}
+
+{% block content %}
+    <!-- Start Content-->
+    <div class="container-fluid">
+
+        <!-- start page title -->
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box">
+                    <div class="page-title-right">
+                        <ol class="breadcrumb m-0 p-0">
+                            <li class="breadcrumb-item"><a href="{% url 'home:home' %}"><i class="uil-home-alt"></i> Home</a></li>
+                            <li class="breadcrumb-item"><a href="{% url 'properties:property_list' %}"><i class="mdi mdi-warehouse"></i> Properties</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Detail</li>
+                        </ol>
+                    </div>
+                    <h4 class="page-title">Property Detail</h4>
+                </div>
+            </div>
+        </div>     
+        <!-- end page title --> 
+
+        <div class="row">
+            <div class="col-sm-12">
+                <!-- Property -->
+                <div class="card bg-success">
+                    <div class="card-body">
+
+                        <div class="row">
+                            <div class="col-sm-8">
+                                <div class="media">
+                                    <div class="media-body">
+
+                                        <h4 class="mt-1 mb-1 text-white">{{ propertyprocess }}</h4>
+                                        <p class="font-13 text-white-50">{{ propertyprocess.get_sector_display }} - {{ propertyprocess.employee }}</p>
+
+                                        <ul class="mb-0 list-inline text-light">
+                                            <li class="list-inline-item mr-3">
+                                                <h5 class="mb-1">{{ propertyprocess.get_macro_status_display }}</h5>
+                                                <p class="mb-0 font-13 text-white-50">Status</p>
+                                            </li>
+                                            <li class="list-inline-item">
+                                                <h5 class="mb-1">-</h5>
+                                                <p class="mb-0 font-13 text-white-50">Another Field</p>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <!-- end media-body-->
+                                </div>
+                            </div>
+                            <!-- end col-->
+                        </div>
+                        <!-- end row -->
+                    </div>
+                    <!-- end card-body -->
+                </div>
+                <!--end property / card -->
+            </div>
+            <!-- end col-->
+        </div>
+        <!-- end row -->
+
+
+        <div class="row">
+            <div class="col-lg-4">
+                <!-- Property-Information -->
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="header-title mt-0 mb-3">Property Information</h4>
+
+                        <div class="text-left">
+                            <p class="text-muted"><strong>Address Line 1:</strong> <span class="ml-2">{{ propertyprocess.property.address_line_1 }}</span></p>
+
+                            <p class="text-muted"><strong>Address Line 2:</strong><span class="ml-2">{{ propertyprocess.property.address_line_2 }}</span></p>
+
+                            <p class="text-muted"><strong>Town:</strong> <span class="ml-2">{{ propertyprocess.property.town }}</span></p>
+
+                            <p class="text-muted"><strong>Postcode:</strong> <span class="ml-2">{{ propertyprocess.property.postcode }}</span></p>
+
+                            <p class="text-muted"><strong>Bedrooms:</strong>
+                                <span class="ml-2">{{ propertyprocess.property.number_of_bedrooms }} </span>
+                            </p>
+
+                            <p class="text-muted"><strong>Property Type:</strong>
+                                <span class="ml-2">{{ propertyprocess.property.get_property_type_display }} </span>
+                            </p>
+
+                            <p class="text-muted"><strong>Property Style:</strong>
+                                <span class="ml-2">{{ propertyprocess.property.get_property_style_display }} </span>
+                            </p>
+
+                            <p class="text-muted"><strong>Tenure:</strong>
+                                <span class="ml-2">{{ propertyprocess.property.get_tenure_display }} </span>
+                            </p>
+
+                            <p class="text-muted mb-0"><strong>Floor Space:</strong>
+                                <span class="ml-2">{{ propertyprocess.property.floor_space }} </span>
+                            </p>
+
+                        </div>
+                    </div>
+                </div>
+                <!-- End Property-Information -->
+
+            </div>
+            <!-- end col -->
+
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-body">
+                        <ul class="nav nav-pills bg-nav-pills nav-justified mb-3">
+                            <li class="nav-item">
+                                <a href="#history" data-toggle="tab" aria-expanded="true" class="nav-link rounded-0 active">
+                                    History
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#valuation" data-toggle="tab" aria-expanded="false" class="nav-link rounded-0">
+                                    Valuation
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#instruction" data-toggle="tab" aria-expanded="false" class="nav-link rounded-0">
+                                    Instruction
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane show active" id="history">
+
+                                <h5 class="text-uppercase"><i class="mdi mdi-history mr-1"></i>
+                                    All Property History</h5>
+
+                                <div class="table-responsive">
+                                    <table class="table table-borderless table-nowrap mb-0">
+                                        <thead class="thead-light">
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Event</th>
+                                                <th class="text-center">Type</th>
+                                                <th class="text-center">Notes</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tbody-history">
+                                            {% for instance in propertyprocess.history.all %}
+                                                {% include 'properties/includes/table_row.html' %}
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div> <!-- end tab-pane -->
+                            <!-- end about me section content -->
+
+                            <div class="tab-pane" id="valuation">
+                            </div>
+
+                            <div class="tab-pane" id="instruction">
+
+                            </div>
+                            <!-- end settings content-->
+
+                        </div>
+                        <!-- end tab-content -->
+                    </div>
+                    <!-- end card body -->
+                </div>
+                <!-- end card -->
+            </div>
+            <!-- end col -->
+
+        </div>
+        <!-- end row -->
+        
+    </div>
+    <!-- container --> 
+{% endblock %}
+
+{% block extra_javascript %}
+{{ block.super }}
+    <script src="{% static 'properties/js/property_detail.js' %}"></script>
+{% endblock %}

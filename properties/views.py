@@ -1,21 +1,29 @@
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
-from django.shortcuts import render, reverse, redirect
+from django.http import JsonResponse
+from django.shortcuts import render, reverse, redirect, get_object_or_404
+from django.template.loader import render_to_string
 
-from properties.models import PropertyProcess
+from properties.models import PropertyProcess, PropertyHistory
 
 
 def property_list(request):
+    """
+    A view to show paginated lists of the properties in the system; including
+    searching and filtering.
+    """
 
-    properties_list = PropertyProcess.objects.all() \
+    properties_list = (
+        PropertyProcess.objects.all()
         .select_related(
             "property",
-        ) \
+        )
         .prefetch_related(
             "employee",
             "hub",
             "history",
         )
+    )
     query = None
     status = None
 
@@ -60,3 +68,39 @@ def property_list(request):
     template = "properties/property_list.html"
 
     return render(request, template, context)
+
+
+def property_detail(request, propertyprocess_id):
+    """
+    A view to show individual property details
+    """
+
+    propertyprocess = get_object_or_404(PropertyProcess, id=propertyprocess_id)
+
+    context = {
+        "propertyprocess": propertyprocess,
+    }
+
+    template = "properties/property_detail.html"
+
+    return render(request, template, context)
+
+
+def property_history_detail(request, property_history_id):
+    """
+    A view to return an ajax response with property history instance
+    """
+
+    data = dict()
+    history_instance = get_object_or_404(
+        PropertyHistory, id=property_history_id
+    )
+
+    context = {"history_instance": history_instance.notes}
+    data["html_modal"] = render_to_string(
+        "properties/includes/property_history.html",
+        context,
+        request=request,
+    )
+    print(history_instance.notes)
+    return JsonResponse(data)

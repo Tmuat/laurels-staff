@@ -119,6 +119,11 @@ body.authentication-bg {
     border-bottom: 2px solid #0acf97;
 }
 
+.nav-pills .nav-link.active, .nav-pills .show>.nav-link {
+    color: #fff;
+    background-color: #0acf97;
+}
+
 /* Media Queries */
 
 /* Extra small devices (portrait phones, less than 576px) */

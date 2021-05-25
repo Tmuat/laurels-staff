@@ -1,0 +1,12 @@
+<tr>
+    <td>{{ instance.created|date:"D d M Y" }}</td>
+    <td>{{ instance.description }}</td>
+    {% if instance.type ==  "other" %}
+        <td class="text-center"><span class="badge badge-info-lighten">Other</span></td>
+    {% endif %}
+    {% if instance.notes !=  "" %}
+        <td class="text-center"><span class="mdi mdi-playlist-check text-success pointer js-show-notes" data-url="{% url 'properties:property_history_instance' instance.id %}"></span></td>
+    {% else %}
+        <td class="text-center"><span class="mdi mdi-playlist-remove"></span></td>
+    {% endif %}
+</tr>
