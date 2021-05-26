@@ -248,6 +248,8 @@ class Valuation(UpdatedAndCreated):
     date = models.DateField(default=date.today)
     price_quoted = models.PositiveIntegerField()
     fee_quoted = models.DecimalField(max_digits=5, decimal_places=2)
+    valuer = models.ForeignKey(Profile,
+                               on_delete=models.CASCADE)
 
     def __str__(self):
         if self.propertyprocess.property.address_line_2 == "":
