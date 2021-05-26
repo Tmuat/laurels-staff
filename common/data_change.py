@@ -836,6 +836,21 @@ for instance in valuation_model:
 
     # End loop
 
+    # Loop user profile for valuer & delete old field
+
+    for profile_instance in profile_dict:
+        if (
+            profile_instance["old_pk"]
+            == instance["fields"]["employee_valuer"]
+        ):
+            instance["fields"]["valuer"] = profile_instance[
+                "pk"
+            ]
+
+    del instance["fields"]["employee_valuer"]
+
+    # End loop
+
     # Add new fields
 
     instance["fields"]["created_by"] = "Admin"
@@ -844,12 +859,6 @@ for instance in valuation_model:
     instance["fields"]["updated"] = "2000-01-13T13:13:13.000Z"
 
     # End add new fields
-
-    # Delete old field
-
-    del instance["fields"]["employee_valuer"]
-
-    # End delete
 
     # Move original PK
 
