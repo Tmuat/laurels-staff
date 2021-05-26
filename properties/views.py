@@ -26,6 +26,7 @@ def property_list(request):
     )
     query = None
     status = None
+    sector = None
 
     if request.GET:
         if "status" in request.GET:
@@ -33,6 +34,11 @@ def property_list(request):
             properties_list = properties_list.exclude(
                 macro_status="comp"
             ).exclude(macro_status="withd")
+        if "sector" in request.GET:
+            sector = request.GET["sector"]
+            properties_list = properties_list.filter(
+                sector=sector
+            )
         if "query" in request.GET:
             query = request.GET["query"]
             if not query:
@@ -63,6 +69,7 @@ def property_list(request):
         "properties_length": properties_list_length,
         "query": query,
         "status": status,
+        "sector": sector,
     }
 
     template = "properties/property_list.html"

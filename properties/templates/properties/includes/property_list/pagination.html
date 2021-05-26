@@ -2,68 +2,68 @@
     <ul class="pagination pagination-sm mb-0 mb-md-2 justify-content-center">
         {% if properties.has_previous %}
         <li class="page-item">
-            <a class="page-link text-dark" href="?{% if query %}query={{ query }}&{% endif %}{% if status %}status=live&{% endif %}page=1" aria-disabled="true"><span class="mdi mdi-page-first"></span></a>
+            <a class="page-link text-dark" href="?{% if query %}query={{ query }}&{% endif %}{% if sector %}sector={{ sector }}&{% endif %}{% if status %}status=live&{% endif %}page=1" aria-disabled="true"><span class="mdi mdi-page-first"></span></a>
         </li>
             {% if properties.number == last_page %}
                 {% if properties.number != 2 %}
                     <li class="page-item">
                         <a class="page-link text-dark"
-                            href="?{% if query %}query={{ query }}&{% endif %}{% if status %}status=live&{% endif %}page={{ properties.previous_page_number|add:'-1' }}">{{ properties.previous_page_number|add:"-1" }}</a>
+                            href="?{% if query %}query={{ query }}&{% endif %}{% if sector %}sector={{ sector }}&{% endif %}{% if status %}status=live&{% endif %}page={{ properties.previous_page_number|add:'-1' }}">{{ properties.previous_page_number|add:"-1" }}</a>
                     </li>
                 {% endif %}
             {% endif %}
         <li class="page-item">
             <a class="page-link text-dark"
-                href="?{% if query %}query={{ query }}&{% endif %}{% if status %}status=live&{% endif %}page={{ properties.previous_page_number }}">{{ properties.previous_page_number }}</a>
+                href="?{% if query %}query={{ query }}&{% endif %}{% if sector %}sector={{ sector }}&{% endif %}{% if status %}status=live&{% endif %}page={{ properties.previous_page_number }}">{{ properties.previous_page_number }}</a>
         </li>
         {% else %}
         <li class="page-item disabled">
-            <a class="page-link text-light" href="?{% if query %}query={{ query }}&{% endif %}{% if status %}status=live&{% endif %}page=1" aria-disabled="true"><span class="mdi mdi-page-first"></span></a>
+            <a class="page-link text-light" href="?{% if query %}query={{ query }}&{% endif %}{% if sector %}sector={{ sector }}&{% endif %}{% if status %}status=live&{% endif %}page=1" aria-disabled="true"><span class="mdi mdi-page-first"></span></a>
         </li>
         {% endif %}
         <li class="page-item active" aria-current="page">
-            <a class="page-link text-white" href="?{% if query %}query={{ query }}&{% endif %}{% if status %}status=live&{% endif %}page={{ properties.number }}">{{ properties.number }} <span
+            <a class="page-link text-white" href="?{% if query %}query={{ query }}&{% endif %}{% if sector %}sector={{ sector }}&{% endif %}{% if status %}status=live&{% endif %}page={{ properties.number }}">{{ properties.number }} <span
                     class="sr-only">(current)</span></a>
         </li>
         {% if properties.has_next %}
         <li class="page-item">
             <a class="page-link text-dark"
-                href="?{% if query %}query={{ query }}&{% endif %}{% if status %}status=live&{% endif %}page={{ properties.next_page_number }}">{{ properties.next_page_number }}</a>
+                href="?{% if query %}query={{ query }}&{% endif %}{% if sector %}sector={{ sector }}&{% endif %}{% if status %}status=live&{% endif %}page={{ properties.next_page_number }}">{{ properties.next_page_number }}</a>
         </li>
             {% if properties.number == 1 %}
                 {% if last_page == 2 %}
                     <li class="page-item disabled">
                         <a class="page-link text-light"
-                            href="?{% if query %}query={{ query }}&{% endif %}{% if status %}status=live&{% endif %}page=3">3</a>
+                            href="?{% if query %}query={{ query }}&{% endif %}{% if sector %}sector={{ sector }}&{% endif %}{% if status %}status=live&{% endif %}page=3">3</a>
                     </li>
                 {% else %}
                     <li class="page-item">
                         <a class="page-link text-dark"
-                            href="?{% if query %}query={{ query }}&{% endif %}{% if status %}status=live&{% endif %}page=3">3</a>
+                            href="?{% if query %}query={{ query }}&{% endif %}{% if sector %}sector={{ sector }}&{% endif %}{% if status %}status=live&{% endif %}page=3">3</a>
                     </li>
                 {% endif %}
             {% endif %}
         <li class="page-item">
-            <a class="page-link text-dark" href="?{% if query %}query={{ query }}&{% endif %}{% if status %}status=live&{% endif %}page={{ last_page }}"><span class="mdi mdi-page-last"></span></a>
+            <a class="page-link text-dark" href="?{% if query %}query={{ query }}&{% endif %}{% if sector %}sector={{ sector }}&{% endif %}{% if status %}status=live&{% endif %}page={{ last_page }}"><span class="mdi mdi-page-last"></span></a>
         </li>
         {% else %}
             {% if properties.number == 1 %}
                 <li class="page-item disabled">
                     <a class="page-link text-light"
-                        href="?{% if query %}query={{ query }}&{% endif %}{% if status %}status=live&{% endif %}page=2">2</a>
+                        href="?{% if query %}query={{ query }}&{% endif %}{% if sector %}sector={{ sector }}&{% endif %}{% if status %}status=live&{% endif %}page=2">2</a>
                 </li>
                 <li class="page-item disabled">
                     <a class="page-link text-light"
-                        href="?{% if query %}query={{ query }}&{% endif %}{% if status %}status=live&{% endif %}page=3">3</a>
+                        href="?{% if query %}query={{ query }}&{% endif %}{% if sector %}sector={{ sector }}&{% endif %}{% if status %}status=live&{% endif %}page=3">3</a>
                 </li>
             {% elif last_page == 2 %}
                 <li class="page-item disabled">
                     <a class="page-link text-light"
-                        href="?{% if query %}query={{ query }}&{% endif %}{% if status %}status=live&{% endif %}page=3">3</a>
+                        href="?{% if query %}query={{ query }}&{% endif %}{% if sector %}sector={{ sector }}&{% endif %}{% if status %}status=live&{% endif %}page=3">3</a>
                 </li>
             {% endif %}
         <li class="page-item disabled">
-            <a class="page-link text-light" href="?{% if query %}query={{ query }}&{% endif %}{% if status %}status=live&{% endif %}page={{ last_page }}"><span class="mdi mdi-page-last"></span></a>
+            <a class="page-link text-light" href="?{% if query %}query={{ query }}&{% endif %}{% if sector %}sector={{ sector }}&{% endif %}{% if status %}status=live&{% endif %}page={{ last_page }}"><span class="mdi mdi-page-last"></span></a>
         </li>
         {% endif %}
     </ul>
