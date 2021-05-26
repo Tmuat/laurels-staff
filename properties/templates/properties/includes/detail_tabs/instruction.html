@@ -1,0 +1,32 @@
+{% load humanize %}
+<h5 class="text-uppercase"><i class="mdi mdi-clipboard-file-outline mr-1"></i>
+    Property Instruction</h5>
+
+<div class="text-left mt-2">
+    <div class="row">
+        <div class="col-12 col-md-4 text-center">
+            <p class="mb-1"><strong>Date:</strong></p>
+            <p><span>{{ propertyprocess.instruction.date }}</span></p>
+        </div>
+        <div class="col-12 col-md-4 text-center">
+            <p class="mb-1"><strong>Listing Price:</strong></p>
+            <p><span>£{{ propertyprocess.instruction.listing_price|intcomma }}</span></p>
+        </div>
+        <div class="col-12 col-md-4 text-center">
+            <p class="mb-1"><strong>Fee Agreed:</strong></p>
+            <p><span>{{ propertyprocess.instruction.fee_agreed }}%</span></p>
+        </div>
+        <div class="col-12 col-md-4 text-center">
+            <p class="mb-1"><strong>Agreement Type:</strong></p>
+            <p><span>{{ propertyprocess.instruction.get_agreement_type_display }}</span></p>
+        </div>
+        <div class="col-12 col-md-4 text-center">
+            <p class="mb-1"><strong>Length of Contract:</strong></p>
+            <p><span>{{ propertyprocess.instruction.get_length_of_contract_display }}</span></p>
+        </div>
+        <div class="col-12 col-md-4 text-center">
+            <p class="mb-1"><strong>Marketing Board:</strong></p>
+            <p><span>{{ propertyprocess.instruction.get_marketing_board_display }}</span></p>
+        </div>
+    </div>
+</div>

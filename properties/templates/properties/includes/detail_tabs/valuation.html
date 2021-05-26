@@ -1,0 +1,20 @@
+{% load humanize %}
+<h5 class="text-uppercase"><i class="mdi mdi-clipboard-file-outline mr-1"></i>
+    Property Valuation</h5>
+
+<div class="text-left mt-2">
+    <div class="row">
+        <div class="col-12 col-md-4 text-center">
+            <p class="mb-1"><strong>Date:</strong></p>
+            <p><span>{{ propertyprocess.valuation.date }}</span></p>
+        </div>
+        <div class="col-12 col-md-4 text-center">
+            <p class="mb-1"><strong>Price Quoted:</strong></p>
+            <p><span>£{{ propertyprocess.valuation.price_quoted|intcomma }}</span></p>
+        </div>
+        <div class="col-12 col-md-4 text-center">
+            <p class="mb-1"><strong>Fee Quoted:</strong></p>
+            <p><span>{{ propertyprocess.valuation.fee_quoted }}%</span></p>
+        </div>
+    </div>
+</div>

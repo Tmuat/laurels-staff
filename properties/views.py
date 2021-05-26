@@ -134,12 +134,12 @@ def property_history_pagination(request, propertyprocess_id):
         "last_page": last_page,
     }
     data["pagination"] = render_to_string(
-        "properties/includes/property_history_pagination.html",
+        "properties/includes/detail_tabs/property_history_pagination.html",
         context,
         request=request,
     )
     data["html_table"] = render_to_string(
-        "properties/includes/table_row.html",
+        "properties/includes/detail_tabs/table_row.html",
         context,
         request=request,
     )
@@ -158,7 +158,7 @@ def property_history_detail(request, property_history_id):
 
     context = {"history_instance": history_instance.notes}
     data["html_modal"] = render_to_string(
-        "properties/includes/property_history.html",
+        "properties/includes/detail_tabs/property_history.html",
         context,
         request=request,
     )

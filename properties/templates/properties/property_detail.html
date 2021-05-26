@@ -1,5 +1,6 @@
 {% extends "vertical_base.html" %}
 {% load static i18n %}
+{% load humanize %}
 
 {% block head_title %}{% trans "Property Detail" %}{% endblock head_title %}
 
@@ -120,7 +121,11 @@
                             </li>
                             <li class="nav-item">
                                 <a href="#valuation" data-toggle="tab" aria-expanded="false" class="nav-link rounded-0">
-                                    Valuation
+                                    {% if propertyprocess.macro_status == "val" %}
+                                        Valuation
+                                    {% else %}
+                                        Valuation & Instruction
+                                    {% endif %}
                                 </a>
                             </li>
                             <li class="nav-item">
@@ -130,6 +135,8 @@
                             </li>
                         </ul>
                         <div class="tab-content">
+                            <!-- history section -->
+                            <!-- tab pane -->
                             <div class="tab-pane show active" id="history">
 
                                 <h5 class="text-uppercase"><i class="mdi mdi-history mr-1"></i>
@@ -146,18 +153,30 @@
                                             </tr>
                                         </thead>
                                         <tbody id="tbody-history">
-                                            {% include 'properties/includes/table_row.html' %}
+                                            {% include 'properties/includes/detail_tabs/table_row.html' %}
                                         </tbody>
                                     </table>
                                 </div>
                                 <div class="mt-1" id="history-pagination">
-                                    {% include 'properties/includes/property_history_pagination.html' %}
+                                    {% include 'properties/includes/detail_tabs/property_history_pagination.html' %}
                                 </div>
-                            </div> <!-- end tab-pane -->
-                            <!-- end about me section content -->
-
-                            <div class="tab-pane" id="valuation">
                             </div>
+                            <!-- end tab-pane -->
+                            <!-- end history section -->
+
+                            <!-- valuation section -->
+                            <!-- tab pane -->
+                            <div class="tab-pane" id="valuation">
+                                {% if propertyprocess.macro_status == "val" %}
+                                    {% include 'properties/includes/detail_tabs/valuation.html' %}
+                                {% else %}
+                                    {% include 'properties/includes/detail_tabs/valuation.html' %}
+                                    <hr>
+                                    {% include 'properties/includes/detail_tabs/instruction.html' %}
+                                {% endif %}
+                            </div>
+                            <!-- end tab pane -->
+                            <!-- end valuation section -->
 
                             <div class="tab-pane" id="instruction">
 

@@ -28,7 +28,7 @@
                         <a href="#" class="btn btn-success btn-sm">Add New</a>
                     </div>
                     <div class="col-sm-4 text-center mt-2 mt-sm-0 order-3 order-sm-2">
-                        {% include 'properties/includes/pagination.html' %}
+                        {% include 'properties/includes/property_list/pagination.html' %}
                     </div>
                     <div class="col-sm-4 order-2 order-sm-3">
                         <div class="text-center text-sm-right mt-2 mt-sm-0">
@@ -44,7 +44,7 @@
 
                 <!-- property panel -->
                 {% for instance in properties %}
-                    {% include 'properties/includes/panel.html' %}
+                    {% include 'properties/includes/property_list/panel.html' %}
                 {% endfor %}
                 <!-- end .mt-2-->
 
