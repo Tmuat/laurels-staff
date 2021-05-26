@@ -7,6 +7,8 @@ from django.template.defaultfilters import slugify
 # COMMANDS
 # ------------------------------------------------------------------------------
 
+# python3 manage.py flush
+
 # python3 manage.py shell
 
 # exec(open('common/data_change.py').read())
@@ -965,7 +967,7 @@ for instance in instruction_model:
 
     elif (
         instance["fields"]["lettings_service_level"]
-        == "Fully Managed Rent Insurance Included"
+        == "Fully Managed RI"
     ):
         instruction_extra_fields["lettings_service_level"] = "fully_managed_ri"
 
