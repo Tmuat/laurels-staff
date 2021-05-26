@@ -841,13 +841,8 @@ for instance in valuation_model:
     # Loop user profile for valuer & delete old field
 
     for profile_instance in profile_dict:
-        if (
-            profile_instance["old_pk"]
-            == instance["fields"]["employee_valuer"]
-        ):
-            instance["fields"]["valuer"] = profile_instance[
-                "pk"
-            ]
+        if profile_instance["old_pk"] == instance["fields"]["employee_valuer"]:
+            instance["fields"]["valuer"] = profile_instance["pk"]
 
     del instance["fields"]["employee_valuer"]
 
@@ -965,10 +960,7 @@ for instance in instruction_model:
     elif instance["fields"]["lettings_service_level"] == "Fully Managed":
         instruction_extra_fields["lettings_service_level"] = "fully_managed"
 
-    elif (
-        instance["fields"]["lettings_service_level"]
-        == "Fully Managed RI"
-    ):
+    elif instance["fields"]["lettings_service_level"] == "Fully Managed RI":
         instruction_extra_fields["lettings_service_level"] = "fully_managed_ri"
 
     instruction_extra_fields["managed_property"] = instance["fields"][

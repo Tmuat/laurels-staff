@@ -36,9 +36,7 @@ def property_list(request):
             ).exclude(macro_status="withd")
         if "sector" in request.GET:
             sector = request.GET["sector"]
-            properties_list = properties_list.filter(
-                sector=sector
-            )
+            properties_list = properties_list.filter(sector=sector)
         if "query" in request.GET:
             query = request.GET["query"]
             if not query:
