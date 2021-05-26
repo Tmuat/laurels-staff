@@ -31,17 +31,7 @@
                         {% include 'properties/includes/property_list/pagination.html' %}
                     </div>
                     <div class="col-sm-4 order-2 order-sm-3">
-                        <div class="text-center text-sm-right mt-2 mt-sm-0">
-                            <div class="btn-group">
-                                <a href="?{% if query %}query={{ query }}{% endif %}{% if sector %}sector={{ sector }}{% endif %}" class="btn btn-sm {% if status %}btn-light text-dark{% else %}btn-success text-white{% endif %}">All</a>
-                                <a href="?{% if query %}query={{ query }}&{% endif %}{% if sector %}sector={{ sector }}&{% endif %}status=live" class="btn btn-sm {% if status %}btn-success text-white{% else %}btn-light text-dark{% endif %}">Live Only</a>
-                            </div>
-                            <div class="btn-group ml-1">
-                                <a href="?{% if query %}query={{ query }}{% endif %}{% if query and status %}&{% endif %}{% if status %}status={{ status }}{% endif %}" class="btn btn-sm {% if sector %}btn-light text-dark{% else %}btn-success text-white{% endif %}">All</a>
-                                <a href="?{% if query %}query={{ query }}&{% endif %}sector=sales{% if status %}&status={{ status }}{% endif %}" class="btn btn-sm {% if sector == 'sales' %}btn-success text-white{% else %}btn-light text-dark{% endif %}">Sales</a>
-                                <a href="?{% if query %}query={{ query }}&{% endif %}sector=lettings{% if status %}&status={{ status }}{% endif %}" class="btn btn-sm {% if sector == 'lettings' %}btn-success text-white{% else %}btn-light text-dark{% endif %}">Lettings</a>
-                            </div>
-                        </div>
+                        {% include 'properties/includes/property_list/filters.html' %}
                     </div>
                     <!-- end col-->
                 </div> 
