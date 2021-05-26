@@ -18,6 +18,7 @@ from django.template.defaultfilters import slugify
 # python3 manage.py dumpdata otp_totp.totpdevice > totp.json --settings=laurels_staff_portal.settings.production
 # python3 manage.py dumpdata home.property > property.json --settings=laurels_staff_portal.settings.production
 # python3 manage.py dumpdata home.instruction > instruction.json --settings=laurels_staff_portal.settings.production
+# python3 manage.py dumpdata home.offer > offer.json --settings=laurels_staff_portal.settings.production
 
 # python3 manage.py loaddata master.json
 
@@ -48,6 +49,7 @@ property_history_dict = None
 valuation_dict = None
 instruction_dict = None
 instruction_lettings_extra_dict = None
+offerer_dict = None
 hub_dict = None
 hub_targets_dict = None
 user_dict = None
@@ -1025,6 +1027,74 @@ with open(
 ) as json_data:
     json.dump(instruction_extra_dict, json_data)
 
+
+# ----------------------------------------
+# OFFER MODEL
+# ----------------------------------------
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/originals/offer.json",
+    "r",
+) as json_data:
+    offer_model = json.load(json_data)
+
+offerer_extra_dict = []
+
+for instance in offer_model:
+
+    offerer_extra = {}
+    offerer_extra_fields = {}
+
+    # Changing the model to new value
+
+    offerer_extra["model"] = "properties.offererdetails"
+
+    # End changing the model to new value
+
+    # Loop property list for property process & delete old field
+
+    for propertyprocess_instance in propertyprocess_dict:
+        if (
+            propertyprocess_instance["old_pk"]
+            == instance["fields"]["propertyprocess_link"]
+        ):
+            offerer_extra_fields["propertyprocess"] = propertyprocess_instance[
+                "pk"
+            ]
+
+    # End loop
+
+    # Add new fields
+
+    offerer_extra_fields["full_name"] = instance["fields"]["full_name"]
+
+    offerer_extra_fields["created_by"] = "Admin"
+    offerer_extra_fields["created"] = "2000-01-13T13:13:13.000Z"
+    offerer_extra_fields["updated_by"] = "Admin"
+    offerer_extra_fields["updated"] = "2000-01-13T13:13:13.000Z"
+
+    # End add new fields
+
+    # Add fields to larger dict
+
+    offerer_extra["fields"] = offerer_extra_fields
+
+    # End adding fields to larger dict
+
+    # Create new UUID field
+
+    offerer_extra["pk"] = str(uuid.uuid4())
+
+    offerer_extra_dict.append(offerer_extra)
+
+offerer_dict = offerer_extra_dict
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/offerer.json",
+    "w",
+) as json_data:
+    json.dump(offerer_extra_dict, json_data)
+
 # ----------------------------------------
 # CREATE MASTER JSON
 # ----------------------------------------
@@ -1068,6 +1138,9 @@ for object in instruction_dict:
     master_dict.append(object)
 
 for object in instruction_lettings_extra_dict:
+    master_dict.append(object)
+
+for object in offerer_dict:
     master_dict.append(object)
 
 with open(

@@ -386,8 +386,8 @@ class OffererDetails(UpdatedAndCreated):
             "propertyprocess__property__address_line_1",
             "full_name",
         ]
-        verbose_name = "Offerer Details"
-        verbose_name_plural = "Offerer Details"
+        verbose_name = "Offerer History"
+        verbose_name_plural = "Offerer History"
 
     CASH = "cash"
     MORTGAGE = "mortgage"
@@ -406,6 +406,56 @@ class OffererDetails(UpdatedAndCreated):
     )
     funding = models.CharField(
         max_length=10, null=True, blank=False, choices=FUNDING
+    )
+
+    def __str__(self):
+        if self.propertyprocess.property.address_line_2 == "":
+            property_address = "%s, %s (%s)" % (
+                self.propertyprocess.property.postcode,
+                self.propertyprocess.property.address_line_1,
+                self.full_name,
+            )
+        else:
+            property_address = "%s, %s, %s (%s)" % (
+                self.propertyprocess.property.postcode,
+                self.propertyprocess.property.address_line_1,
+                self.propertyprocess.property.address_line_2,
+                self.full_name,
+            )
+        return property_address
+
+
+class OffererMortgage(UpdatedAndCreated):
+    class Meta:
+        ordering = [
+            "offerer_details__propertyprocess__property__postcode",
+            "offerer_details__propertyprocess__property__address_line_1",
+            "offerer_details__full_name",
+        ]
+        verbose_name = "Offerer Mortgage Details"
+        verbose_name_plural = "Offerer Mortgage Details"
+
+    PENDING = "pending"
+    VERIFIEDMR = "verified_mr"
+    MIP = "mip"
+    UNABLE = "unable"
+
+    VERI_CHOICES = [
+        (PENDING, "Pending"),
+        (VERIFIEDMR, "Verified By Mortgage Required"),
+        (MIP, "Mortgage In Principle Seen"),
+        (UNABLE, "Unable To Verify"),
+    ]
+
+    offerer_details = models.OneToOneField(
+        OffererDetails,
+        on_delete=models.CASCADE,
+        related_name="offerer_mortgage_details",
+    )
+    deposit_percentage = models.DecimalField(max_digits=5, decimal_places=2)
+    verified = models.BooleanField(default=False, null=True)
+    verified_status = models.CharField(
+        max_length=50, null=False, blank=False, choices=VERI_CHOICES
     )
 
     def __str__(self):
