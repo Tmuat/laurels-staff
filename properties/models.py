@@ -248,8 +248,7 @@ class Valuation(UpdatedAndCreated):
     date = models.DateField(default=date.today)
     price_quoted = models.PositiveIntegerField()
     fee_quoted = models.DecimalField(max_digits=5, decimal_places=2)
-    valuer = models.ForeignKey(Profile,
-                               on_delete=models.CASCADE)
+    valuer = models.ForeignKey(Profile, on_delete=models.CASCADE)
 
     def __str__(self):
         if self.propertyprocess.property.address_line_2 == "":
@@ -378,3 +377,64 @@ class InstructionLettingsExtra(UpdatedAndCreated):
                 self.propertyprocess.property.address_line_2,
             )
         return property_address
+
+
+class OffererDetails(UpdatedAndCreated):
+    class Meta:
+        ordering = [
+            "propertyprocess__property__postcode",
+            "propertyprocess__property__address_line_1",
+            "full_name",
+        ]
+        verbose_name = "Offerer Details"
+        verbose_name_plural = "Offerer Details"
+
+    CASH = "cash"
+    MORTGAGE = "mortgage"
+
+    FUNDING = [(CASH, "Cash"), (MORTGAGE, "Mortgage")]
+
+    propertyprocess = models.ForeignKey(
+        PropertyProcess,
+        on_delete=models.CASCADE,
+        related_name="offerer_details",
+    )
+    full_name = models.CharField(max_length=100, null=False, blank=False)
+    email = models.EmailField(blank=True)
+    completed_offer_form = models.BooleanField(
+        default=False, null=True, blank=False
+    )
+    funding = models.CharField(
+        max_length=10, null=True, blank=False, choices=FUNDING
+    )
+
+    def __str__(self):
+        if self.propertyprocess.property.address_line_2 == "":
+            property_address = "%s, %s (%s)" % (
+                self.propertyprocess.property.postcode,
+                self.propertyprocess.property.address_line_1,
+                self.full_name,
+            )
+        else:
+            property_address = "%s, %s, %s (%s)" % (
+                self.propertyprocess.property.postcode,
+                self.propertyprocess.property.address_line_1,
+                self.propertyprocess.property.address_line_2,
+                self.full_name,
+            )
+        return property_address
+
+
+GETTINGVERIFIED = "getting_verified"
+NEGOTIATING = "negotiating"
+REJECTED = "rejected"
+ACCEPTED = "accepted"
+WITHDRAWN = "withdrawn"
+
+STATUS = [
+    (GETTINGVERIFIED, "Getting Verified"),
+    (NEGOTIATING, "Negotiating"),
+    (REJECTED, "Rejected"),
+    (ACCEPTED, "Accepted"),
+    (WITHDRAWN, "Withdrawn"),
+]

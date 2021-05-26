@@ -7,6 +7,7 @@ from properties.models import (
     Valuation,
     Instruction,
     InstructionLettingsExtra,
+    OffererDetails,
 )
 
 
@@ -88,12 +89,23 @@ class InstructionLettingsExtraAdminInline(admin.TabularInline):
     ]
 
 
+class OffererDetailsAdminInline(admin.TabularInline):
+    model = OffererDetails
+    readonly_fields = [
+        "created",
+        "created_by",
+        "updated",
+        "updated_by",
+    ]
+
+
 class PropertyProcessAdmin(admin.ModelAdmin):
     inlines = [
         PropertyHistoryAdminInline,
         ValuationAdminInline,
         InstructionAdminInline,
         InstructionLettingsExtraAdminInline,
+        OffererDetailsAdminInline,
     ]
 
     list_display = ["__str__", "employee", "sector", "hub", "macro_status"]
