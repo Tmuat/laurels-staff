@@ -76,14 +76,74 @@ def property_detail(request, propertyprocess_id):
     """
 
     propertyprocess = get_object_or_404(PropertyProcess, id=propertyprocess_id)
+    property_history = propertyprocess.history.all()
+
+    property_history_list_length = len(property_history)
+
+    page = 1
+
+    paginator = Paginator(property_history, 5)
+    last_page = paginator.num_pages
+
+    try:
+        property_history = paginator.page(page)
+    except PageNotAnInteger:
+        property_history = paginator.page(1)
+    except EmptyPage:
+        property_history = paginator.page(paginator.num_pages)
 
     context = {
         "propertyprocess": propertyprocess,
+        "property_history": property_history,
+        "property_history_length": property_history_list_length,
+        "last_page": last_page,
     }
 
     template = "properties/property_detail.html"
 
     return render(request, template, context)
+
+
+def property_history_pagination(request, propertyprocess_id):
+    """
+    A view to return an ajax response with property history instance
+    """
+
+    data = dict()
+    propertyprocess = get_object_or_404(PropertyProcess, id=propertyprocess_id)
+    property_history = propertyprocess.history.all()
+
+    property_history_list_length = len(property_history)
+
+    page = request.GET.get("page", 1)
+
+    paginator = Paginator(property_history, 5)
+    last_page = paginator.num_pages
+
+    try:
+        property_history = paginator.page(page)
+    except PageNotAnInteger:
+        property_history = paginator.page(1)
+    except EmptyPage:
+        property_history = paginator.page(paginator.num_pages)
+
+    context = {
+        "propertyprocess": propertyprocess,
+        "property_history": property_history,
+        "property_history_length": property_history_list_length,
+        "last_page": last_page,
+    }
+    data["pagination"] = render_to_string(
+        "properties/includes/property_history_pagination.html",
+        context,
+        request=request,
+    )
+    data["html_table"] = render_to_string(
+        "properties/includes/table_row.html",
+        context,
+        request=request,
+    )
+    return JsonResponse(data)
 
 
 def property_history_detail(request, property_history_id):
@@ -102,5 +162,4 @@ def property_history_detail(request, property_history_id):
         context,
         request=request,
     )
-    print(history_instance.notes)
     return JsonResponse(data)

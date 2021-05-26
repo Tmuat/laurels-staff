@@ -22,7 +22,7 @@
         </li>
         {% endif %}
         <li class="page-item active" aria-current="page">
-            <a class="page-link text-white bg-black" href="?{% if query %}query={{ query }}&{% endif %}{% if status %}status=live&{% endif %}page={{ properties.number }}">{{ properties.number }} <span
+            <a class="page-link text-white" href="?{% if query %}query={{ query }}&{% endif %}{% if status %}status=live&{% endif %}page={{ properties.number }}">{{ properties.number }} <span
                     class="sr-only">(current)</span></a>
         </li>
         {% if properties.has_next %}

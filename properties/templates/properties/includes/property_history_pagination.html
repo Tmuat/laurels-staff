@@ -1,0 +1,66 @@
+<ul class="pagination pagination-sm mb-0 justify-content-center">
+    {% if property_history.has_previous %}
+        <li class="page-item">
+            <button class="page-link text-dark js-history-pagination" data-url="{% url 'properties:property_history_pagination' propertyprocess.id %}?page=1" aria-disabled="true"><span
+                    class="mdi mdi-page-first"></span></button>
+        </li>
+        {% if property_history.number == last_page %}
+            {% if property_history.number != 2 %}
+                <li class="page-item">
+                    <button class="page-link text-dark js-history-pagination"
+                        data-url="{% url 'properties:property_history_pagination' propertyprocess.id %}?page={{ property_history.previous_page_number|add:'-1' }}">{{ property_history.previous_page_number|add:"-1" }}</button>
+                </li>
+            {% endif %}
+    {% endif %}
+        <li class="page-item">
+            <button class="page-link text-dark js-history-pagination"
+                data-url="{% url 'properties:property_history_pagination' propertyprocess.id %}?page={{ property_history.previous_page_number }}">{{ property_history.previous_page_number }}</button>
+        </li>
+    {% else %}
+        <li class="page-item disabled">
+            <button class="page-link text-light" data-url="?page=1" aria-disabled="true"><span class="mdi mdi-page-first"></span></button>
+        </li>
+    {% endif %}
+    <li class="page-item active" aria-current="page">
+        <button class="page-link text-white js-history-pagination"
+            data-url="{% url 'properties:property_history_pagination' propertyprocess.id %}?page={{ property_history.number }}">{{ property_history.number }} <span
+                class="sr-only">(current)</span></button>
+    </li>
+    {% if property_history.has_next %}
+        <li class="page-item">
+            <button class="page-link text-dark js-history-pagination"
+                data-url="{% url 'properties:property_history_pagination' propertyprocess.id %}?page={{ property_history.next_page_number }}">{{ property_history.next_page_number }}</button>
+        </li>
+        {% if property_history.number == 1 %}
+            {% if last_page == 2 %}
+                <li class="page-item disabled">
+                    <button class="page-link text-light" data-url="?page=3">3</button>
+                </li>
+            {% else %}
+                <li class="page-item">
+                    <button class="page-link text-dark js-history-pagination" data-url="{% url 'properties:property_history_pagination' propertyprocess.id %}?page=3">3</button>
+                </li>
+            {% endif %}
+        {% endif %}
+        <li class="page-item">
+            <button class="page-link text-dark js-history-pagination" data-url="{% url 'properties:property_history_pagination' propertyprocess.id %}?page={{ last_page }}"><span
+                    class="mdi mdi-page-last"></span></button>
+        </li>
+    {% else %}
+        {% if property_history.number == 1 %}
+            <li class="page-item disabled">
+                <button class="page-link text-light" data-url="?page=2">2</button>
+            </li>
+            <li class="page-item disabled">
+                <button class="page-link text-light" data-url="?page=3">3</button>
+            </li>
+        {% elif last_page == 2 %}
+            <li class="page-item disabled">
+                <button class="page-link text-light" data-url="?page=3">3</button>
+            </li>
+        {% endif %}
+            <li class="page-item disabled">
+                <button class="page-link text-light" data-url="?page={{ last_page }}"><span class="mdi mdi-page-last"></span></button>
+            </li>
+    {% endif %}
+</ul>

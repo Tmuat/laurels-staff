@@ -146,13 +146,13 @@
                                             </tr>
                                         </thead>
                                         <tbody id="tbody-history">
-                                            {% for instance in propertyprocess.history.all %}
-                                                {% include 'properties/includes/table_row.html' %}
-                                            {% endfor %}
+                                            {% include 'properties/includes/table_row.html' %}
                                         </tbody>
                                     </table>
                                 </div>
-
+                                <div class="mt-1" id="history-pagination">
+                                    {% include 'properties/includes/property_history_pagination.html' %}
+                                </div>
                             </div> <!-- end tab-pane -->
                             <!-- end about me section content -->
 
