@@ -158,6 +158,11 @@ class PropertyProcess(UpdatedAndCreated):
         (COMPLETE, "Complete"),
         (WITHDRAWN, "Withdrawn"),
     ]
+
+    LEGACY = [
+        (True, "Legacy"),
+        (False, "Not Legacy")
+    ]
     sector = models.CharField(max_length=40, null=False, choices=SECTOR)
     property = models.ForeignKey(
         Property, on_delete=models.CASCADE, related_name="property"
@@ -169,6 +174,7 @@ class PropertyProcess(UpdatedAndCreated):
     hub = models.ForeignKey(
         Hub, on_delete=models.CASCADE, null=False, blank=False
     )
+    legacy_property = models.BooleanField(default=False, choices=LEGACY)
 
     def __str__(self):
         if self.property.address_line_2 == "":

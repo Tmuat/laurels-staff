@@ -724,6 +724,7 @@ for instance in property_process_model:
 
     # Add new fields
 
+    instance["fields"]["legacy_property"] = True
     instance["fields"]["created_by"] = "Admin"
     instance["fields"]["created"] = "2000-01-13T13:13:13.000Z"
     instance["fields"]["updated_by"] = "Admin"
