@@ -159,10 +159,7 @@ class PropertyProcess(UpdatedAndCreated):
         (WITHDRAWN, "Withdrawn"),
     ]
 
-    LEGACY = [
-        (True, "Legacy"),
-        (False, "Not Legacy")
-    ]
+    LEGACY = [(True, "Legacy"), (False, "Not Legacy")]
     sector = models.CharField(max_length=40, null=False, choices=SECTOR)
     property = models.ForeignKey(
         Property, on_delete=models.CASCADE, related_name="property"
@@ -410,8 +407,7 @@ class OffererDetails(UpdatedAndCreated):
     full_name = models.CharField(max_length=100, null=False, blank=False)
     email = models.EmailField(blank=True)
     completed_offer_form = models.BooleanField(
-        default=False, null=True, blank=False,
-        choices=COMPLETED
+        default=False, null=True, blank=False, choices=COMPLETED
     )
     funding = models.CharField(
         max_length=10, null=True, blank=False, choices=FUNDING

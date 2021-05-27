@@ -6,13 +6,16 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('properties', '0025_offer'),
+        ("properties", "0025_offer"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='propertyprocess',
-            name='legacy_property',
-            field=models.BooleanField(choices=[(True, 'Legacy'), (False, 'Not Legacy')], default=False),
+            model_name="propertyprocess",
+            name="legacy_property",
+            field=models.BooleanField(
+                choices=[(True, "Legacy"), (False, "Not Legacy")],
+                default=False,
+            ),
         ),
     ]

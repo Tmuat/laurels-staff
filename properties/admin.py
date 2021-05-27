@@ -111,7 +111,14 @@ class PropertyProcessAdmin(admin.ModelAdmin):
         OffererDetailsAdminInline,
     ]
 
-    list_display = ["__str__", "employee", "sector", "hub", "macro_status", "legacy_property"]
+    list_display = [
+        "__str__",
+        "employee",
+        "sector",
+        "hub",
+        "macro_status",
+        "legacy_property",
+    ]
 
     ordering = [
         "property__postcode",

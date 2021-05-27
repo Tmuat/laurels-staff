@@ -7,18 +7,26 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('properties', '0026_propertyprocess_legacy_property'),
+        ("properties", "0026_propertyprocess_legacy_property"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='offer',
-            name='offerer_details',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='offerdetails', to='properties.offererdetails'),
+            model_name="offer",
+            name="offerer_details",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="offerdetails",
+                to="properties.offererdetails",
+            ),
         ),
         migrations.AlterField(
-            model_name='offererdetails',
-            name='completed_offer_form',
-            field=models.BooleanField(choices=[(True, 'Completed'), (False, 'Incomplete')], default=False, null=True),
+            model_name="offererdetails",
+            name="completed_offer_form",
+            field=models.BooleanField(
+                choices=[(True, "Completed"), (False, "Incomplete")],
+                default=False,
+                null=True,
+            ),
         ),
     ]
