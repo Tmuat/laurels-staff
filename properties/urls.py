@@ -6,6 +6,7 @@ from properties.views import (
     property_history_pagination,
     property_history_detail,
     offer_history,
+    offers_pagination
 )
 
 
@@ -23,12 +24,17 @@ urlpatterns = [
         name="property_history_pagination",
     ),
     path(
-        "properties/history/<property_history_id>",
+        "properties/history/<property_history_id>/",
         property_history_detail,
         name="property_history_instance",
     ),
     path(
-        "properties/offers/<offerer_id>",
+        "properties/offers/<propertyprocess_id>/pagination/",
+        offers_pagination,
+        name="offers_pagination",
+    ),
+    path(
+        "properties/offers/<offerer_id>/",
         offer_history,
         name="offerer_offers",
     ),

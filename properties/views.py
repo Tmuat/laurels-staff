@@ -137,23 +137,23 @@ def property_history_pagination(request, propertyprocess_id):
 
     property_history_list_length = len(property_history)
 
-    page = request.GET.get("page", 1)
+    history_page = request.GET.get("page", 1)
 
-    paginator = Paginator(property_history, 5)
-    last_page = paginator.num_pages
+    history_paginator = Paginator(property_history, 5)
+    history_last_page = history_paginator.num_pages
 
     try:
-        property_history = paginator.page(page)
+        property_history = history_paginator.page(history_page)
     except PageNotAnInteger:
-        property_history = paginator.page(1)
+        property_history = history_paginator.page(1)
     except EmptyPage:
-        property_history = paginator.page(paginator.num_pages)
+        property_history = history_paginator.page(history_paginator.num_pages)
 
     context = {
         "propertyprocess": propertyprocess,
         "property_history": property_history,
         "property_history_length": property_history_list_length,
-        "last_page": last_page,
+        "history_last_page": history_last_page,
     }
     data["pagination"] = render_to_string(
         "properties/includes/detail_tabs/property_history_pagination.html",
@@ -165,6 +165,52 @@ def property_history_pagination(request, propertyprocess_id):
         context,
         request=request,
     )
+    return JsonResponse(data)
+
+
+def offers_pagination(request, propertyprocess_id):
+    """
+    A view to return an ajax response with offers instance
+    """
+    data = dict()
+    print("ME HERE")
+
+    propertyprocess = get_object_or_404(PropertyProcess, id=propertyprocess_id)
+    offers = propertyprocess.offerer_details.all()
+
+    offers_length = len(offers)
+
+    offer_page = request.GET.get("page", 1)
+
+    offers_paginator = Paginator(offers, 6)
+
+    offers_last_page = offers_paginator.num_pages
+
+    try:
+        offers = offers_paginator.page(offer_page)
+    except PageNotAnInteger:
+        offers = offers_paginator.page(1)
+    except EmptyPage:
+        offers = offers_paginator.page(offers_paginator.num_pages)
+
+    context = {
+        "propertyprocess": propertyprocess,
+        "offers": offers,
+        "offers_length": offers_length,
+        "offers_last_page": offers_last_page,
+    }
+
+    data["pagination"] = render_to_string(
+        "properties/includes/detail_tabs/offers_pagination.html",
+        context,
+        request=request,
+    )
+    data["html_table"] = render_to_string(
+        "properties/includes/detail_tabs/offer_table.html",
+        context,
+        request=request,
+    )
+
     return JsonResponse(data)
 
 

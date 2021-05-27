@@ -45,4 +45,19 @@ $(document).ready(function () {
             }
         });
     });
+
+    // Deals with the AJAX for offers pagination
+    $("#offers").on("click", ".js-offers-pagination", function () {
+        var instance = $(this);
+        $.ajax({
+            url: instance.attr("data-url"),
+            type: 'get',
+            dataType: 'json',
+            success: function (data) {
+                $("#tbody-offers").html(data.html_table);
+                $("#offers-pagination").html(data.pagination);
+            }
+        });
+        return false;
+    });
 });
