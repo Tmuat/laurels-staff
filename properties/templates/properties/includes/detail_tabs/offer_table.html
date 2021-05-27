@@ -4,8 +4,21 @@
     <td>{{ instance.full_name }}</td>
     <td class="text-center">{% if propertyprocess.legacy_property is False %}{{ instance.get_completed_offer_form_display }}{% endif %}</td>
     <td class="text-center">{% if propertyprocess.legacy_property is False %}{{ instance.get_funding_display }}{% endif %}</td>
-    <td class="text-center">£{{ instance.offerdetails.first.offer|intcomma }}</td>
-    <td class="text-center">{{ instance.offerdetails.first.get_status_display }}</td>
-    <td class="text-center"><span class="mdi mdi-view-list pointer js-show-offers"></span></td>
+    <td class="text-center">£{{ instance.offerdetails.last.offer|intcomma }}</td>
+    <td class="text-center">
+        {% if instance.offerdetails.last.status == "getting_verified" %}
+            <span class="badge badge-secondary-lighten">
+        {% elif instance.offerdetails.last.status == "negotiating" %}
+            <span class="badge badge-info-lighten">
+        {% elif instance.offerdetails.last.status == "rejected" %}
+            <span class="badge badge-danger-lighten">
+        {% elif instance.offerdetails.last.status == "accepted" %}
+            <span class="badge badge-success-lighten">
+        {% elif instance.offerdetails.last.status == "withdrawn" %}
+            <span class="badge badge-primary-lighten">
+        {% endif %}
+            {{ instance.offerdetails.last.get_status_display }}</span>
+    </td>
+    <td class="text-center"><span class="mdi mdi-view-list pointer js-show-offers" data-url="{% url 'properties:offerer_offers' instance.pk %}"></span></td>
 </tr>
 {% endfor %}

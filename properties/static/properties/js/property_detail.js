@@ -29,4 +29,20 @@ $(document).ready(function () {
         });
         return false;
     });
+
+    // Deals with the AJAX for showing the history of offers
+    $("#tbody-offers").on("click", ".js-show-offers", function () {
+        var instance = $(this);
+        $.ajax({
+            url: instance.attr("data-url"),
+            type: 'get',
+            dataType: 'json',
+            beforeSend: function () {
+                $("#base-modal").modal("show");
+            },
+            success: function (data) {
+                $("#base-modal .modal-dialog").html(data.html_modal);
+            }
+        });
+    });
 });

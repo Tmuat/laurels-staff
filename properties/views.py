@@ -4,7 +4,12 @@ from django.http import JsonResponse
 from django.shortcuts import render, reverse, redirect, get_object_or_404
 from django.template.loader import render_to_string
 
-from properties.models import PropertyProcess, PropertyHistory
+from properties.models import (
+    PropertyProcess,
+    PropertyHistory,
+    Offer,
+    OffererDetails,
+)
 
 
 def property_list(request):
@@ -113,7 +118,7 @@ def property_detail(request, propertyprocess_id):
         "history_last_page": history_last_page,
         "offers": offers,
         "offers_length": offers_length,
-        "offers_last_page": offers_last_page
+        "offers_last_page": offers_last_page,
     }
 
     template = "properties/property_detail.html"
@@ -179,4 +184,25 @@ def property_history_detail(request, property_history_id):
         context,
         request=request,
     )
+    return JsonResponse(data)
+
+
+def offer_history(request, offerer_id):
+    """
+    A view to return an ajax response with offerer offer history
+    """
+
+    data = dict()
+
+    offerer = get_object_or_404(OffererDetails, pk=offerer_id)
+    offers = Offer.objects.filter(offerer_details=offerer_id).order_by("-date")
+
+    context = {"offers": offers, "offerer": offerer}
+
+    data["html_modal"] = render_to_string(
+        "properties/includes/detail_tabs/offer_history.html",
+        context,
+        request=request,
+    )
+
     return JsonResponse(data)
