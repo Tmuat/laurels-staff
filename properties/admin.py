@@ -10,6 +10,7 @@ from properties.models import (
     OffererDetails,
     OffererMortgage,
     OffererCash,
+    Offer,
 )
 
 
@@ -165,8 +166,22 @@ class OffererCashAdminInline(admin.TabularInline):
     ]
 
 
+class OfferAdminInline(admin.TabularInline):
+    model = Offer
+    readonly_fields = [
+        "created",
+        "created_by",
+        "updated",
+        "updated_by",
+    ]
+
+
 class OffererDetailsAdmin(admin.ModelAdmin):
-    inlines = [OffererMortgageAdminInline, OffererCashAdminInline]
+    inlines = [
+        OffererMortgageAdminInline,
+        OffererCashAdminInline,
+        OfferAdminInline,
+    ]
 
     list_display = [
         "__str__",

@@ -523,16 +523,56 @@ class OffererCash(UpdatedAndCreated):
         return property_address
 
 
-GETTINGVERIFIED = "getting_verified"
-NEGOTIATING = "negotiating"
-REJECTED = "rejected"
-ACCEPTED = "accepted"
-WITHDRAWN = "withdrawn"
+class Offer(UpdatedAndCreated):
+    class Meta:
+        ordering = [
+            "offerer_details__propertyprocess__property__postcode",
+            "offerer_details__propertyprocess__property__address_line_1",
+            "offerer_details__full_name",
+            "date",
+        ]
+        verbose_name = "Offer Details"
+        verbose_name_plural = "Offer Details"
 
-STATUS = [
-    (GETTINGVERIFIED, "Getting Verified"),
-    (NEGOTIATING, "Negotiating"),
-    (REJECTED, "Rejected"),
-    (ACCEPTED, "Accepted"),
-    (WITHDRAWN, "Withdrawn"),
-]
+    GETTINGVERIFIED = "getting_verified"
+    NEGOTIATING = "negotiating"
+    REJECTED = "rejected"
+    ACCEPTED = "accepted"
+    WITHDRAWN = "withdrawn"
+
+    STATUS = [
+        (GETTINGVERIFIED, "Getting Verified"),
+        (NEGOTIATING, "Negotiating"),
+        (REJECTED, "Rejected"),
+        (ACCEPTED, "Accepted"),
+        (WITHDRAWN, "Withdrawn"),
+    ]
+
+    offerer_details = models.OneToOneField(
+        OffererDetails,
+        on_delete=models.CASCADE,
+        related_name="offerdetails",
+    )
+    date = models.DateField(null=False, blank=False)
+    offer = models.DecimalField(
+        max_digits=10, decimal_places=2, null=False, blank=False
+    )
+    status = models.CharField(
+        max_length=50, null=False, blank=False, choices=STATUS
+    )
+
+    def __str__(self):
+        if self.propertyprocess.property.address_line_2 == "":
+            property_address = "%s, %s (%s)" % (
+                self.propertyprocess.property.postcode,
+                self.propertyprocess.property.address_line_1,
+                self.full_name,
+            )
+        else:
+            property_address = "%s, %s, %s (%s)" % (
+                self.propertyprocess.property.postcode,
+                self.propertyprocess.property.address_line_1,
+                self.propertyprocess.property.address_line_2,
+                self.full_name,
+            )
+        return property_address
