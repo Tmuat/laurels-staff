@@ -1,0 +1,31 @@
+<h4 class="header-title mt-0 mb-3">Property Information</h4>
+<div class="text-left">
+    <p class="text-muted"><strong>Address Line 1:</strong> <span class="ml-2">{{ propertyprocess.property.address_line_1 }}</span></p>
+
+    <p class="text-muted"><strong>Address Line 2:</strong><span class="ml-2">{{ propertyprocess.property.address_line_2 }}</span></p>
+
+    <p class="text-muted"><strong>Town:</strong> <span class="ml-2">{{ propertyprocess.property.town }}</span></p>
+
+    <p class="text-muted"><strong>Postcode:</strong> <span class="ml-2">{{ propertyprocess.property.postcode }}</span></p>
+
+    <p class="text-muted"><strong>Bedrooms:</strong>
+        <span class="ml-2">{{ propertyprocess.property.number_of_bedrooms }}</span>
+    </p>
+
+    <p class="text-muted"><strong>Property Type:</strong>
+        <span class="ml-2">{{ propertyprocess.property.get_property_type_display }}</span>
+    </p>
+
+    <p class="text-muted"><strong>Property Style:</strong>
+        <span class="ml-2">{{ propertyprocess.property.get_property_style_display }}</span>
+    </p>
+
+    <p class="text-muted"><strong>Tenure:</strong>
+        <span class="ml-2">{% if propertyprocess.property.tenure is not None %}{{ propertyprocess.property.get_tenure_display }}{% endif %}</span>
+    </p>
+
+    <p class="text-muted mb-0"><strong>Floor Space:</strong>
+        <span class="ml-2">{% if propertyprocess.property.floor_space is not None %}{{ propertyprocess.property.floor_space }}{% endif %}</span>
+    </p>
+
+</div>
