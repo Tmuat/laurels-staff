@@ -4,7 +4,7 @@
             <button class="page-link text-dark js-history-pagination" data-url="{% url 'properties:property_history_pagination' propertyprocess.id %}?page=1" aria-disabled="true"><span
                     class="mdi mdi-page-first"></span></button>
         </li>
-        {% if property_history.number == last_page %}
+        {% if property_history.number == history_last_page %}
             {% if property_history.number != 2 %}
                 <li class="page-item">
                     <button class="page-link text-dark js-history-pagination"
@@ -32,7 +32,7 @@
                 data-url="{% url 'properties:property_history_pagination' propertyprocess.id %}?page={{ property_history.next_page_number }}">{{ property_history.next_page_number }}</button>
         </li>
         {% if property_history.number == 1 %}
-            {% if last_page == 2 %}
+            {% if history_last_page == 2 %}
                 <li class="page-item disabled">
                     <button class="page-link text-light" data-url="?page=3">3</button>
                 </li>
@@ -43,7 +43,7 @@
             {% endif %}
         {% endif %}
         <li class="page-item">
-            <button class="page-link text-dark js-history-pagination" data-url="{% url 'properties:property_history_pagination' propertyprocess.id %}?page={{ last_page }}"><span
+            <button class="page-link text-dark js-history-pagination" data-url="{% url 'properties:property_history_pagination' propertyprocess.id %}?page={{ history_last_page }}"><span
                     class="mdi mdi-page-last"></span></button>
         </li>
     {% else %}
@@ -54,13 +54,13 @@
             <li class="page-item disabled">
                 <button class="page-link text-light" data-url="?page=3">3</button>
             </li>
-        {% elif last_page == 2 %}
+        {% elif history_last_page == 2 %}
             <li class="page-item disabled">
                 <button class="page-link text-light" data-url="?page=3">3</button>
             </li>
         {% endif %}
             <li class="page-item disabled">
-                <button class="page-link text-light" data-url="?page={{ last_page }}"><span class="mdi mdi-page-last"></span></button>
+                <button class="page-link text-light" data-url="?page={{ history_last_page }}"><span class="mdi mdi-page-last"></span></button>
             </li>
     {% endif %}
 </ul>

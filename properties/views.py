@@ -82,26 +82,38 @@ def property_detail(request, propertyprocess_id):
 
     propertyprocess = get_object_or_404(PropertyProcess, id=propertyprocess_id)
     property_history = propertyprocess.history.all()
+    offers = propertyprocess.offerer_details.all()
 
     property_history_list_length = len(property_history)
+    offers_length = len(offers)
 
-    page = 1
+    history_page = 1
+    offer_page = 1
 
-    paginator = Paginator(property_history, 5)
-    last_page = paginator.num_pages
+    history_paginator = Paginator(property_history, 5)
+    offers_paginator = Paginator(offers, 6)
+
+    history_last_page = history_paginator.num_pages
+    offers_last_page = offers_paginator.num_pages
 
     try:
-        property_history = paginator.page(page)
+        property_history = history_paginator.page(history_page)
+        offers = offers_paginator.page(offer_page)
     except PageNotAnInteger:
-        property_history = paginator.page(1)
+        property_history = history_paginator.page(1)
+        offers = offers_paginator.page(1)
     except EmptyPage:
-        property_history = paginator.page(paginator.num_pages)
+        property_history = history_paginator.page(history_paginator.num_pages)
+        offers = offers_paginator.page(offers_paginator.num_pages)
 
     context = {
         "propertyprocess": propertyprocess,
         "property_history": property_history,
         "property_history_length": property_history_list_length,
-        "last_page": last_page,
+        "history_last_page": history_last_page,
+        "offers": offers,
+        "offers_length": offers_length,
+        "offers_last_page": offers_last_page
     }
 
     template = "properties/property_detail.html"
@@ -144,7 +156,7 @@ def property_history_pagination(request, propertyprocess_id):
         request=request,
     )
     data["html_table"] = render_to_string(
-        "properties/includes/detail_tabs/table_row.html",
+        "properties/includes/detail_tabs/history_table.html",
         context,
         request=request,
     )
