@@ -6,16 +6,23 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('properties', '0012_offerermortgage'),
+        ("properties", "0012_offerermortgage"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='offerermortgage',
-            options={'ordering': ['propertyprocess__property__postcode', 'propertyprocess__property__address_line_1'], 'verbose_name': 'Offerer Mortgage Details', 'verbose_name_plural': 'Offerer Mortgage Details'},
+            name="offerermortgage",
+            options={
+                "ordering": [
+                    "propertyprocess__property__postcode",
+                    "propertyprocess__property__address_line_1",
+                ],
+                "verbose_name": "Offerer Mortgage Details",
+                "verbose_name_plural": "Offerer Mortgage Details",
+            },
         ),
         migrations.RemoveField(
-            model_name='offerermortgage',
-            name='offerer_details',
+            model_name="offerermortgage",
+            name="offerer_details",
         ),
     ]

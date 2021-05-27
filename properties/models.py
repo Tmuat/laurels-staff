@@ -475,6 +475,54 @@ class OffererMortgage(UpdatedAndCreated):
         return property_address
 
 
+class OffererCash(UpdatedAndCreated):
+    class Meta:
+        ordering = [
+            "offerer_details__propertyprocess__property__postcode",
+            "offerer_details__propertyprocess__property__address_line_1",
+            "offerer_details__full_name",
+        ]
+        verbose_name = "Offerer Cash Details"
+        verbose_name_plural = "Offerer Cash Details"
+
+    SAVINGS = "savings"
+    SALEOFPROPERTY = "sale_of_property"
+    GIFT = "gift"
+    REMORTGAGE = "re_mortgage"
+
+    CASH_CHOICES = [
+        (SAVINGS, "Savings"),
+        (SALEOFPROPERTY, "Sale of Property"),
+        (GIFT, "Gift"),
+        (REMORTGAGE, "Re-Mortgage"),
+    ]
+
+    offerer_details = models.OneToOneField(
+        OffererDetails,
+        on_delete=models.CASCADE,
+        related_name="offerer_cash_details",
+    )
+    cash = models.CharField(
+        max_length=50, null=False, blank=False, choices=CASH_CHOICES
+    )
+
+    def __str__(self):
+        if self.propertyprocess.property.address_line_2 == "":
+            property_address = "%s, %s (%s)" % (
+                self.propertyprocess.property.postcode,
+                self.propertyprocess.property.address_line_1,
+                self.full_name,
+            )
+        else:
+            property_address = "%s, %s, %s (%s)" % (
+                self.propertyprocess.property.postcode,
+                self.propertyprocess.property.address_line_1,
+                self.propertyprocess.property.address_line_2,
+                self.full_name,
+            )
+        return property_address
+
+
 GETTINGVERIFIED = "getting_verified"
 NEGOTIATING = "negotiating"
 REJECTED = "rejected"

@@ -8,7 +8,8 @@ from properties.models import (
     Instruction,
     InstructionLettingsExtra,
     OffererDetails,
-    OffererMortgage
+    OffererMortgage,
+    OffererCash,
 )
 
 
@@ -100,16 +101,6 @@ class OffererDetailsAdminInline(admin.TabularInline):
     ]
 
 
-class OffererMortgageAdminInline(admin.TabularInline):
-    model = OffererMortgage
-    readonly_fields = [
-        "created",
-        "created_by",
-        "updated",
-        "updated_by",
-    ]
-
-
 class PropertyProcessAdmin(admin.ModelAdmin):
     inlines = [
         PropertyHistoryAdminInline,
@@ -154,24 +145,46 @@ class PropertyProcessAdmin(admin.ModelAdmin):
 admin.site.register(PropertyProcess, PropertyProcessAdmin)
 
 
-class OffererDetailsAdmin(admin.ModelAdmin):
-    inlines = [
-        OffererMortgageAdminInline
+class OffererMortgageAdminInline(admin.TabularInline):
+    model = OffererMortgage
+    readonly_fields = [
+        "created",
+        "created_by",
+        "updated",
+        "updated_by",
     ]
 
-    list_display = ["__str__", "completed_offer_form", "funding",]
+
+class OffererCashAdminInline(admin.TabularInline):
+    model = OffererCash
+    readonly_fields = [
+        "created",
+        "created_by",
+        "updated",
+        "updated_by",
+    ]
+
+
+class OffererDetailsAdmin(admin.ModelAdmin):
+    inlines = [OffererMortgageAdminInline, OffererCashAdminInline]
+
+    list_display = [
+        "__str__",
+        "completed_offer_form",
+        "funding",
+    ]
 
     ordering = [
         "propertyprocess__property__postcode",
         "propertyprocess__property__address_line_1",
-        "full_name"
+        "full_name",
     ]
 
     list_filter = ["propertyprocess__sector", "propertyprocess__hub"]
 
     search_fields = [
         "propertyprocess__property__postcode",
-        "propertyprocess__property__address_line_1"
+        "propertyprocess__property__address_line_1",
     ]
 
     readonly_fields = [
