@@ -459,18 +459,18 @@ class OffererMortgage(UpdatedAndCreated):
     )
 
     def __str__(self):
-        if self.propertyprocess.property.address_line_2 == "":
+        if self.offerer_details.propertyprocess.property.address_line_2 == "":
             property_address = "%s, %s (%s)" % (
-                self.propertyprocess.property.postcode,
-                self.propertyprocess.property.address_line_1,
-                self.full_name,
+                self.offerer_details.propertyprocess.property.postcode,
+                self.offerer_details.propertyprocess.property.address_line_1,
+                self.offerer_details.full_name,
             )
         else:
             property_address = "%s, %s, %s (%s)" % (
-                self.propertyprocess.property.postcode,
-                self.propertyprocess.property.address_line_1,
-                self.propertyprocess.property.address_line_2,
-                self.full_name,
+                self.offerer_details.propertyprocess.property.postcode,
+                self.offerer_details.propertyprocess.property.address_line_1,
+                self.offerer_details.propertyprocess.property.address_line_2,
+                self.offerer_details.full_name,
             )
         return property_address
 
@@ -507,18 +507,18 @@ class OffererCash(UpdatedAndCreated):
     )
 
     def __str__(self):
-        if self.propertyprocess.property.address_line_2 == "":
+        if self.offerer_details.propertyprocess.property.address_line_2 == "":
             property_address = "%s, %s (%s)" % (
-                self.propertyprocess.property.postcode,
-                self.propertyprocess.property.address_line_1,
-                self.full_name,
+                self.offerer_details.propertyprocess.property.postcode,
+                self.offerer_details.propertyprocess.property.address_line_1,
+                self.offerer_details.full_name,
             )
         else:
             property_address = "%s, %s, %s (%s)" % (
-                self.propertyprocess.property.postcode,
-                self.propertyprocess.property.address_line_1,
-                self.propertyprocess.property.address_line_2,
-                self.full_name,
+                self.offerer_details.propertyprocess.property.postcode,
+                self.offerer_details.propertyprocess.property.address_line_1,
+                self.offerer_details.propertyprocess.property.address_line_2,
+                self.offerer_details.full_name,
             )
         return property_address
 
@@ -562,17 +562,17 @@ class Offer(UpdatedAndCreated):
     )
 
     def __str__(self):
-        if self.propertyprocess.property.address_line_2 == "":
+        if self.offerer_details.propertyprocess.property.address_line_2 == "":
             property_address = "%s, %s (%s)" % (
-                self.propertyprocess.property.postcode,
-                self.propertyprocess.property.address_line_1,
-                self.full_name,
+                self.offerer_details.propertyprocess.property.postcode,
+                self.offerer_details.propertyprocess.property.address_line_1,
+                self.offerer_details.full_name,
             )
         else:
             property_address = "%s, %s, %s (%s)" % (
-                self.propertyprocess.property.postcode,
-                self.propertyprocess.property.address_line_1,
-                self.propertyprocess.property.address_line_2,
-                self.full_name,
+                self.offerer_details.propertyprocess.property.postcode,
+                self.offerer_details.propertyprocess.property.address_line_1,
+                self.offerer_details.propertyprocess.property.address_line_2,
+                self.offerer_details.full_name,
             )
         return property_address

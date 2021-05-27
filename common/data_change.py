@@ -50,6 +50,7 @@ valuation_dict = None
 instruction_dict = None
 instruction_lettings_extra_dict = None
 offerer_dict = None
+offer_dict = None
 hub_dict = None
 hub_targets_dict = None
 user_dict = None
@@ -1047,6 +1048,7 @@ for instance in offer_model:
 
     # Changing the model to new value
 
+    instance["model"] = "properties.offer"
     offerer_extra["model"] = "properties.offererdetails"
 
     # End changing the model to new value
@@ -1062,16 +1064,32 @@ for instance in offer_model:
                 "pk"
             ]
 
+    del instance["fields"]["propertyprocess_link"]
+
     # End loop
+
+    # Change old field names
+
+    instance["fields"]["date"] = instance["fields"]["offer_date"]
+
+    del instance["fields"]["offer_date"]
 
     # Add new fields
 
     offerer_extra_fields["full_name"] = instance["fields"]["full_name"]
+    del instance["fields"]["full_name"]
+
+    instance["fields"]["status"] = "negotiating"
 
     offerer_extra_fields["created_by"] = "Admin"
     offerer_extra_fields["created"] = "2000-01-13T13:13:13.000Z"
     offerer_extra_fields["updated_by"] = "Admin"
     offerer_extra_fields["updated"] = "2000-01-13T13:13:13.000Z"
+
+    instance["fields"]["created_by"] = "Admin"
+    instance["fields"]["created"] = "2000-01-13T13:13:13.000Z"
+    instance["fields"]["updated_by"] = "Admin"
+    instance["fields"]["updated"] = "2000-01-13T13:13:13.000Z"
 
     # End add new fields
 
@@ -1081,13 +1099,36 @@ for instance in offer_model:
 
     # End adding fields to larger dict
 
+    # Move original PK
+
+    instance["old_pk"] = instance["pk"]
+
+    # End move original PK
+
     # Create new UUID field
+
+    instance["pk"] = str(uuid.uuid4())
 
     offerer_extra["pk"] = str(uuid.uuid4())
 
     offerer_extra_dict.append(offerer_extra)
 
+    # End new UUID field
+
+    # Add UUID to link two new models
+
+    instance["fields"]["offerer_details"] = offerer_extra["pk"]
+
+    # End add UUID to link two new models
+
 offerer_dict = offerer_extra_dict
+
+offer_dict = offer_model
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/offer.json", "w"
+) as json_data:
+    json.dump(offer_model, json_data)
 
 with open(
     "/workspace/laurels-staff/common/data_dump/offerer.json",
@@ -1141,6 +1182,9 @@ for object in instruction_lettings_extra_dict:
     master_dict.append(object)
 
 for object in offerer_dict:
+    master_dict.append(object)
+
+for object in offer_dict:
     master_dict.append(object)
 
 with open(
