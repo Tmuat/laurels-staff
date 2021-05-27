@@ -25,6 +25,7 @@
         </div>     
         <!-- end page title --> 
 
+        <!-- header row -->
         <div class="row">
             <div class="col-sm-12">
                 <!-- Property -->
@@ -37,7 +38,9 @@
                                     <div class="media-body">
 
                                         <h4 class="mt-1 mb-1 text-white">{{ propertyprocess }}</h4>
-                                        <p class="font-13 text-white-50">{{ propertyprocess.get_sector_display }} - {{ propertyprocess.employee }}</p>
+                                        <p class="font-13 text-white-50">
+                                            {{ propertyprocess.get_sector_display }} - {{ propertyprocess.employee }}
+                                            {% if propertyprocess.legacy_property %} - {{ propertyprocess.get_legacy_property_display }}{% endif %}</p>
 
                                         <ul class="mb-0 list-inline text-light">
                                             <li class="list-inline-item mr-3">
@@ -71,38 +74,7 @@
                 <!-- Property-Information -->
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="header-title mt-0 mb-3">Property Information</h4>
-
-                        <div class="text-left">
-                            <p class="text-muted"><strong>Address Line 1:</strong> <span class="ml-2">{{ propertyprocess.property.address_line_1 }}</span></p>
-
-                            <p class="text-muted"><strong>Address Line 2:</strong><span class="ml-2">{{ propertyprocess.property.address_line_2 }}</span></p>
-
-                            <p class="text-muted"><strong>Town:</strong> <span class="ml-2">{{ propertyprocess.property.town }}</span></p>
-
-                            <p class="text-muted"><strong>Postcode:</strong> <span class="ml-2">{{ propertyprocess.property.postcode }}</span></p>
-
-                            <p class="text-muted"><strong>Bedrooms:</strong>
-                                <span class="ml-2">{{ propertyprocess.property.number_of_bedrooms }}</span>
-                            </p>
-
-                            <p class="text-muted"><strong>Property Type:</strong>
-                                <span class="ml-2">{{ propertyprocess.property.get_property_type_display }}</span>
-                            </p>
-
-                            <p class="text-muted"><strong>Property Style:</strong>
-                                <span class="ml-2">{{ propertyprocess.property.get_property_style_display }}</span>
-                            </p>
-
-                            <p class="text-muted"><strong>Tenure:</strong>
-                                <span class="ml-2">{% if propertyprocess.property.tenure is not None %}{{ propertyprocess.property.get_tenure_display }}{% endif %}</span>
-                            </p>
-
-                            <p class="text-muted mb-0"><strong>Floor Space:</strong>
-                                <span class="ml-2">{% if propertyprocess.property.floor_space is not None %}{{ propertyprocess.property.floor_space }}{% endif %}</span>
-                            </p>
-
-                        </div>
+                        {% include 'properties/includes/detail/property_info.html' %}
                     </div>
                 </div>
                 <!-- End Property-Information -->
@@ -131,8 +103,8 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="#instruction" data-toggle="tab" aria-expanded="false" class="nav-link rounded-0">
-                                    Instruction
+                                <a href="#offers" data-toggle="tab" aria-expanded="false" class="nav-link rounded-0">
+                                    Offers
                                 </a>
                             </li>
                         </ul>
@@ -155,7 +127,7 @@
                                             </tr>
                                         </thead>
                                         <tbody id="tbody-history">
-                                            {% include 'properties/includes/detail_tabs/table_row.html' %}
+                                            {% include 'properties/includes/detail_tabs/history_table.html' %}
                                         </tbody>
                                     </table>
                                 </div>
@@ -180,10 +152,35 @@
                             <!-- end tab pane -->
                             <!-- end valuation section -->
 
-                            <div class="tab-pane" id="instruction">
+                            <!-- offer section -->
+                            <!-- tab pane -->
+                            <div class="tab-pane" id="offers">
+                                <h5 class="text-uppercase"><i class="mdi mdi-currency-gbp mr-1"></i>
+                                    Property Offer History {% if propertyprocess.legacy_property %} - {{ propertyprocess.get_legacy_property_display }}{% endif %}</h5>
 
+                                <div class="table-responsive">
+                                    <table class="table table-borderless table-nowrap mb-0">
+                                        <thead class="thead-light">
+                                            <tr>
+                                                <th>Name</th>
+                                                <th class="text-center">Offer Form</th>
+                                                <th class="text-center">Funding</th>
+                                                <th class="text-center">Latest Offer</th>
+                                                <th class="text-center">Offer Status</th>
+                                                <th class="text-center">Past Offers</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tbody-history">
+                                            {% include 'properties/includes/detail_tabs/offer_table.html' %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="mt-1" id="history-pagination">
+                                    {% include 'properties/includes/detail_tabs/property_history_pagination.html' %}
+                                </div>
                             </div>
-                            <!-- end settings content-->
+                            <!-- end tab pane -->
+                            <!-- end offer section -->
 
                         </div>
                         <!-- end tab-content -->
