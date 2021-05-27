@@ -400,6 +400,8 @@ class OffererDetails(UpdatedAndCreated):
 
     FUNDING = [(CASH, "Cash"), (MORTGAGE, "Mortgage")]
 
+    COMPLETED = [(True, "Completed"), (False, "Incomplete")]
+
     propertyprocess = models.ForeignKey(
         PropertyProcess,
         on_delete=models.CASCADE,
@@ -408,7 +410,8 @@ class OffererDetails(UpdatedAndCreated):
     full_name = models.CharField(max_length=100, null=False, blank=False)
     email = models.EmailField(blank=True)
     completed_offer_form = models.BooleanField(
-        default=False, null=True, blank=False
+        default=False, null=True, blank=False,
+        choices=COMPLETED
     )
     funding = models.CharField(
         max_length=10, null=True, blank=False, choices=FUNDING
@@ -554,7 +557,7 @@ class Offer(UpdatedAndCreated):
         (WITHDRAWN, "Withdrawn"),
     ]
 
-    offerer_details = models.OneToOneField(
+    offerer_details = models.ForeignKey(
         OffererDetails,
         on_delete=models.CASCADE,
         related_name="offerdetails",
