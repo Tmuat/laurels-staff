@@ -122,7 +122,7 @@ def property_detail(request, propertyprocess_id):
         "offers": offers,
         "offers_length": offers_length,
         "offers_last_page": offers_last_page,
-        "status_integer": status_integer
+        "status_integer": status_integer,
     }
 
     template = "properties/property_detail.html"

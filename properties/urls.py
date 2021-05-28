@@ -6,7 +6,7 @@ from properties.views import (
     property_history_pagination,
     property_history_detail,
     offer_history,
-    offers_pagination
+    offers_pagination,
 )
 
 
