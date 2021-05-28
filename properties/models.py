@@ -581,3 +581,37 @@ class Offer(UpdatedAndCreated):
                 self.offerer_details.full_name,
             )
         return property_address
+
+
+class Deal(UpdatedAndCreated):
+    class Meta:
+        ordering = [
+            "propertyprocess__property__postcode",
+            "propertyprocess__property__address_line_1",
+            "date",
+        ]
+        verbose_name = "Deal"
+        verbose_name_plural = "Deals"
+
+    propertyprocess = models.ForeignKey(
+        PropertyProcess,
+        on_delete=models.CASCADE,
+        related_name="deal",
+    )
+    date = models.DateField(null=False, blank=False)
+    target_move_date = models.DateField()
+    offer_accepted = models.ForeignKey(Offer, on_delete=models.CASCADE)
+
+    def __str__(self):
+        if self.propertyprocess.property.address_line_2 == "":
+            property_address = "%s, %s (%s)" % (
+                self.propertyprocess.property.postcode,
+                self.propertyprocess.property.address_line_1,
+            )
+        else:
+            property_address = "%s, %s, %s (%s)" % (
+                self.propertyprocess.property.postcode,
+                self.propertyprocess.property.address_line_1,
+                self.propertyprocess.property.address_line_2,
+            )
+        return property_address
