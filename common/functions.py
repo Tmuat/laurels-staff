@@ -19,3 +19,24 @@ def quarter_year_calc():
         start_year + 1
 
     return str(start_year)
+
+
+def macro_status_calculator(status):
+    """
+    A function to convert the status to a number. Made to be reusable.
+    """
+
+    status_numbers = {
+        "val": 1,
+        "inst": 2,
+        "view": 3,
+        "deal": 4,
+        "comp": 5,
+        "withd": 6,
+    }
+
+    for key, value in status_numbers.items():
+        if key == status:
+            macro_status = value
+
+    return macro_status
