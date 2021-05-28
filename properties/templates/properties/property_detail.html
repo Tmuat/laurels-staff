@@ -91,6 +91,7 @@
                                     History
                                 </a>
                             </li>
+                            {% if status_integer > 1 %}
                             <li class="nav-item">
                                 <a href="#valuation" data-toggle="tab" aria-expanded="false" class="nav-link rounded-0">
                                     {% if propertyprocess.macro_status == "val" %}
@@ -102,11 +103,14 @@
                                     {% endif %}
                                 </a>
                             </li>
+                            {% endif %}
+                            {% if status_integer > 2 %}
                             <li class="nav-item">
                                 <a href="#offers" data-toggle="tab" aria-expanded="false" class="nav-link rounded-0">
                                     Offers
                                 </a>
                             </li>
+                            {% endif %}
                         </ul>
                         <div class="tab-content">
                             <!-- history section -->
@@ -152,6 +156,7 @@
                             <!-- end tab pane -->
                             <!-- end valuation section -->
 
+                            {% if status_integer > 2 %}
                             <!-- offer section -->
                             <!-- tab pane -->
                             <div class="tab-pane" id="offers">
@@ -181,6 +186,7 @@
                             </div>
                             <!-- end tab pane -->
                             <!-- end offer section -->
+                            {% endif %}
 
                         </div>
                         <!-- end tab-content -->

@@ -4,6 +4,7 @@ from django.http import JsonResponse
 from django.shortcuts import render, reverse, redirect, get_object_or_404
 from django.template.loader import render_to_string
 
+from common.functions import macro_status_calculator
 from properties.models import (
     PropertyProcess,
     PropertyHistory,
@@ -89,6 +90,8 @@ def property_detail(request, propertyprocess_id):
     property_history = propertyprocess.history.all()
     offers = propertyprocess.offerer_details.all()
 
+    status_integer = macro_status_calculator(propertyprocess.macro_status)
+
     property_history_list_length = len(property_history)
     offers_length = len(offers)
 
@@ -119,6 +122,7 @@ def property_detail(request, propertyprocess_id):
         "offers": offers,
         "offers_length": offers_length,
         "offers_last_page": offers_last_page,
+        "status_integer": status_integer
     }
 
     template = "properties/property_detail.html"
@@ -173,7 +177,6 @@ def offers_pagination(request, propertyprocess_id):
     A view to return an ajax response with offers instance
     """
     data = dict()
-    print("ME HERE")
 
     propertyprocess = get_object_or_404(PropertyProcess, id=propertyprocess_id)
     offers = propertyprocess.offerer_details.all()
