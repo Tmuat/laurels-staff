@@ -13,12 +13,19 @@ from django.template.defaultfilters import slugify
 
 # exec(open('common/data_change.py').read())
 
-# python3 manage.py dumpdata home.valuation > valuations.json --settings=laurels_staff_portal.settings.production
-# python3 manage.py dumpdata home.propertyprocess > property_process.json --settings=laurels_staff_portal.settings.production
-# python3 manage.py dumpdata otp_totp.totpdevice > totp.json --settings=laurels_staff_portal.settings.production
-# python3 manage.py dumpdata home.property > property.json --settings=laurels_staff_portal.settings.production
-# python3 manage.py dumpdata home.instruction > instruction.json --settings=laurels_staff_portal.settings.production
-# python3 manage.py dumpdata home.offer > offer.json --settings=laurels_staff_portal.settings.production
+
+# python3 manage.py dumpdata home.hub > data/hub.json --settings=laurels_staff_portal.settings.production
+# python3 manage.py dumpdata home.targetshub > data/hubtargets.json --settings=laurels_staff_portal.settings.production
+# python3 manage.py dumpdata accounts.profile > data/profile.json --settings=laurels_staff_portal.settings.production
+# python3 manage.py dumpdata accounts.customuser > data/users.json --settings=laurels_staff_portal.settings.production
+# python3 manage.py dumpdata otp_totp.totpdevice > data/totp.json --settings=laurels_staff_portal.settings.production
+
+# python3 manage.py dumpdata home.property > data/property.json --settings=laurels_staff_portal.settings.production
+# python3 manage.py dumpdata home.propertyprocess > data/property_process.json --settings=laurels_staff_portal.settings.production
+# python3 manage.py dumpdata home.valuation > data/valuations.json --settings=laurels_staff_portal.settings.production
+# python3 manage.py dumpdata home.instruction > data/instruction.json --settings=laurels_staff_portal.settings.production
+# python3 manage.py dumpdata home.offer > data/offer.json --settings=laurels_staff_portal.settings.production
+# python3 manage.py dumpdata home.deal > data/deal.json --settings=laurels_staff_portal.settings.production
 
 # python3 manage.py loaddata master.json
 
@@ -1040,6 +1047,12 @@ with open(
 ) as json_data:
     offer_model = json.load(json_data)
 
+with open(
+    "/workspace/laurels-staff/common/data_dump/originals/deal.json",
+    "r",
+) as json_data:
+    deal_model = json.load(json_data)
+
 offerer_extra_dict = []
 
 for instance in offer_model:
@@ -1064,6 +1077,7 @@ for instance in offer_model:
             offerer_extra_fields["propertyprocess"] = propertyprocess_instance[
                 "pk"
             ]
+            instance["old_pp_pk"] = propertyprocess_instance["old_pk"]
 
     del instance["fields"]["propertyprocess_link"]
 
@@ -1079,8 +1093,6 @@ for instance in offer_model:
 
     offerer_extra_fields["full_name"] = instance["fields"]["full_name"]
     del instance["fields"]["full_name"]
-
-    instance["fields"]["status"] = "negotiating"
 
     offerer_extra_fields["created_by"] = "Admin"
     offerer_extra_fields["created"] = "2000-01-13T13:13:13.000Z"
@@ -1121,6 +1133,17 @@ for instance in offer_model:
     instance["fields"]["offerer_details"] = offerer_extra["pk"]
 
     # End add UUID to link two new models
+
+    # Change status' dependent on deals
+
+    instance["fields"]["status"] = "negotiating"
+
+    for deal_instance in deal_model:
+        if deal_instance["fields"]["propertyprocess_link"] == instance["old_pp_pk"]:
+            instance["fields"]["status"] = "rejected"
+        
+        if deal_instance["fields"]["offer_accepted"] == instance["old_pk"]:
+            instance["fields"]["status"] = "accepted"
 
 offerer_dict = offerer_extra_dict
 
