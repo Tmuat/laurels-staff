@@ -11,7 +11,8 @@ from properties.models import (
     OffererMortgage,
     OffererCash,
     Offer,
-    Deal
+    Deal,
+    ExchangeMove
 )
 
 
@@ -125,6 +126,16 @@ class DealAdminInline(admin.TabularInline):
     ]
 
 
+class ExchangeAdminInline(admin.TabularInline):
+    model = Deal
+    readonly_fields = [
+        "created",
+        "created_by",
+        "updated",
+        "updated_by",
+    ]
+
+
 class PropertyProcessAdmin(admin.ModelAdmin):
     inlines = [
         PropertyHistoryAdminInline,
@@ -133,7 +144,8 @@ class PropertyProcessAdmin(admin.ModelAdmin):
         InstructionLettingsExtraAdminInline,
         OffererDetailsAdminInline,
         OfferAdminInline,
-        DealAdminInline
+        DealAdminInline,
+        ExchangeAdminInline
     ]
 
     list_display = [
@@ -198,7 +210,7 @@ class OffererCashAdminInline(admin.TabularInline):
     ]
 
 
-class OfferAdminInline(admin.TabularInline):
+class OffersAdminInline(admin.TabularInline):
     model = Offer
     readonly_fields = [
         "created",
@@ -212,7 +224,7 @@ class OffererDetailsAdmin(admin.ModelAdmin):
     inlines = [
         OffererMortgageAdminInline,
         OffererCashAdminInline,
-        OfferAdminInline,
+        OffersAdminInline,
     ]
 
     list_display = [

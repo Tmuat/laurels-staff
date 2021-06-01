@@ -624,3 +624,35 @@ class Deal(UpdatedAndCreated):
                 self.propertyprocess.property.address_line_2,
             )
         return property_address
+
+
+class ExchangeMove(UpdatedAndCreated):
+    class Meta:
+        ordering = [
+            "propertyprocess__property__postcode",
+            "propertyprocess__property__address_line_1",
+        ]
+        verbose_name = "Exchange & Move"
+        verbose_name_plural = "Exchange & Move"
+
+    propertyprocess = models.OneToOneField(
+        PropertyProcess,
+        on_delete=models.CASCADE,
+        related_name="exchange_and_move",
+    )
+    exchange_date = models.DateField()
+    completion_date = models.DateField()
+
+    def __str__(self):
+        if self.propertyprocess.property.address_line_2 == "":
+            property_address = "%s, %s" % (
+                self.propertyprocess.property.postcode,
+                self.propertyprocess.property.address_line_1,
+            )
+        else:
+            property_address = "%s, %s, %s" % (
+                self.propertyprocess.property.postcode,
+                self.propertyprocess.property.address_line_1,
+                self.propertyprocess.property.address_line_2,
+            )
+        return property_address
