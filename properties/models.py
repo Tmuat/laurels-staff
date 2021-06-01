@@ -606,9 +606,7 @@ class Deal(UpdatedAndCreated):
     date = models.DateField(null=False, blank=False)
     target_move_date = models.DateField()
     offer_accepted = models.ForeignKey(
-        Offer,
-        on_delete=models.CASCADE,
-        related_name="offer_accepted"
+        Offer, on_delete=models.CASCADE, related_name="offer_accepted"
     )
 
     def __str__(self):
@@ -654,5 +652,199 @@ class ExchangeMove(UpdatedAndCreated):
                 self.propertyprocess.property.postcode,
                 self.propertyprocess.property.address_line_1,
                 self.propertyprocess.property.address_line_2,
+            )
+        return property_address
+
+
+class SaleStatus(UpdatedAndCreated):
+    class Meta:
+        ordering = [
+            "propertyprocess__property__postcode",
+            "propertyprocess__property__address_line_1",
+        ]
+        verbose_name = "Sale Status"
+        verbose_name_plural = "Sale Status'"
+
+    TRUE_FALSE_CHOICES = ((True, "Done"), (False, "Not Done"))
+
+    propertyprocess = models.OneToOneField(
+        PropertyProcess, on_delete=models.CASCADE, related_name="sale_status"
+    )
+
+    laurels_aml_checks = models.BooleanField(
+        null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
+    )
+    laurels_aml_checks_date = models.DateField(null=True, blank=True)
+
+    buyers_initial_solicitors_paperwork = models.BooleanField(
+        null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
+    )
+    buyers_initial_solicitors_paperwork_date = models.DateField(
+        null=True, blank=True
+    )
+
+    sellers_inital_solicitors_paperwork = models.BooleanField(
+        null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
+    )
+    sellers_inital_solicitors_paperwork_date = models.DateField(
+        null=True, blank=True
+    )
+
+    draft_contracts_recieved_by_buyers_solicitors = models.BooleanField(
+        null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
+    )
+    draft_contracts_recieved_by_buyers_solicitors_date = models.DateField(
+        null=True, blank=True
+    )
+
+    searches_paid_for = models.BooleanField(
+        null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
+    )
+    searches_paid_for_date = models.DateField(null=True, blank=True)
+
+    searches_ordered = models.BooleanField(
+        null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
+    )
+    searches_ordered_date = models.DateField(null=True, blank=True)
+
+    mortgage_application_submitted = models.BooleanField(
+        null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
+    )
+    mortgage_application_submitted_date = models.DateField(
+        null=True, blank=True
+    )
+
+    mortgage_survey_arranged = models.BooleanField(
+        null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
+    )
+    mortgage_survey_arranged_date = models.DateField(null=True, blank=True)
+
+    mortgage_survey_completed = models.BooleanField(
+        null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
+    )
+    mortgage_survey_completed_date = models.DateField(null=True, blank=True)
+
+    all_search_results_recieved = models.BooleanField(
+        null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
+    )
+    all_search_results_recieved_date = models.DateField(null=True, blank=True)
+
+    enquiries_raised = models.BooleanField(
+        null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
+    )
+    enquiries_raised_date = models.DateField(null=True, blank=True)
+
+    structural_survey_booked = models.BooleanField(
+        null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
+    )
+    structural_survey_booked_date = models.DateField(null=True, blank=True)
+
+    structural_survey_completed = models.BooleanField(
+        null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
+    )
+    structural_survey_completed_date = models.DateField(null=True, blank=True)
+
+    enquiries_answered = models.BooleanField(
+        null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
+    )
+    enquiries_answered_date = models.DateField(null=True, blank=True)
+
+    additional_enquiries_raised = models.BooleanField(
+        null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
+    )
+    additional_enquiries_raised_date = models.DateField(null=True, blank=True)
+
+    all_enquiries_answered = models.BooleanField(
+        null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
+    )
+    all_enquiries_answered_date = models.DateField(null=True, blank=True)
+
+    final_contracts_sent_out = models.BooleanField(
+        null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
+    )
+    final_contracts_sent_out_date = models.DateField(null=True, blank=True)
+
+    buyers_final_contracts_signed = models.BooleanField(
+        null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
+    )
+    buyers_final_contracts_signed_date = models.DateField(
+        null=True, blank=True
+    )
+
+    sellers_final_contracts_signed = models.BooleanField(
+        null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
+    )
+    sellers_final_contracts_signed_date = models.DateField(
+        null=True, blank=True
+    )
+
+    buyers_deposit_sent = models.BooleanField(
+        null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
+    )
+    buyers_deposit_sent_date = models.DateField(null=True, blank=True)
+
+    buyers_deposit_recieved = models.BooleanField(
+        null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
+    )
+    buyers_deposit_recieved_date = models.DateField(null=True, blank=True)
+
+    completion_date_agreed = models.BooleanField(
+        null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
+    )
+    completion_date_agreed_date = models.DateField(null=True, blank=True)
+
+    sales_notes = models.CharField(max_length=1000, null=True, blank=True)
+
+    def __str__(self):
+        if self.propertyprocess.property.address_line_2 == "":
+            property_address = "%s, %s" % (
+                self.propertyprocess.property.postcode,
+                self.propertyprocess.property.address_line_1,
+            )
+        else:
+            property_address = "%s, %s, %s" % (
+                self.propertyprocess.property.postcode,
+                self.propertyprocess.property.address_line_1,
+                self.propertyprocess.property.address_line_2,
+            )
+        return property_address
+
+
+class SaleStatusSettings(UpdatedAndCreated):
+    class Meta:
+        ordering = [
+            "sale_status__propertyprocess__property__postcode",
+            "sale_status__propertyprocess__property__address_line_1",
+        ]
+        verbose_name = "Sale Status Settings"
+        verbose_name_plural = "Sale Status' Settings"
+
+    SHOW_HIDE_CHOICES = ((True, "Show"), (False, "Hide"))
+
+    sale_status = models.OneToOneField(
+        SaleStatus,
+        on_delete=models.CASCADE,
+        related_name="sale_status_settings",
+    )
+
+    show_mortgage = models.BooleanField(
+        null=True, blank=True, default=True, choices=SHOW_HIDE_CHOICES
+    )
+
+    show_survey = models.BooleanField(
+        null=True, blank=True, default=True, choices=SHOW_HIDE_CHOICES
+    )
+
+    def __str__(self):
+        if self.sale_status.propertyprocess.property.address_line_2 == "":
+            property_address = "%s, %s" % (
+                self.sale_status.propertyprocess.property.postcode,
+                self.sale_status.propertyprocess.property.address_line_1,
+            )
+        else:
+            property_address = "%s, %s, %s" % (
+                self.sale_status.propertyprocess.property.postcode,
+                self.sale_status.propertyprocess.property.address_line_1,
+                self.sale_status.propertyprocess.property.address_line_2,
             )
         return property_address

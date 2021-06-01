@@ -1143,7 +1143,10 @@ for instance in offer_model:
     instance["fields"]["status"] = "negotiating"
 
     for deal_instance in deal_model:
-        if deal_instance["fields"]["propertyprocess_link"] == instance["old_pp_pk"]:
+        if (
+            deal_instance["fields"]["propertyprocess_link"]
+            == instance["old_pp_pk"]
+        ):
             instance["fields"]["status"] = "rejected"
 
         if deal_instance["fields"]["offer_accepted"] == instance["old_pk"]:
@@ -1205,13 +1208,8 @@ for instance in deal_model:
     # Loop through offers
 
     for offer_instance in offer_dict:
-        if (
-            offer_instance["old_pk"]
-            == instance["fields"]["offer_accepted"]
-        ):
-            instance["fields"]["offer_accepted"] = offer_instance[
-                "pk"
-            ]
+        if offer_instance["old_pk"] == instance["fields"]["offer_accepted"]:
+            instance["fields"]["offer_accepted"] = offer_instance["pk"]
 
     # End loop through offers
 
@@ -1278,9 +1276,13 @@ for instance in exchange_model:
 
     # Edit old fields
 
-    instance["fields"]["exchange_date"] = instance["fields"]["exchange_move_in_date"]
-    instance["fields"]["completion_date"] = instance["fields"]["sales_completion_date"]
-    
+    instance["fields"]["exchange_date"] = instance["fields"][
+        "exchange_move_in_date"
+    ]
+    instance["fields"]["completion_date"] = instance["fields"][
+        "sales_completion_date"
+    ]
+
     del instance["fields"]["exchange_move_in_date"]
     del instance["fields"]["sales_completion_date"]
     del instance["fields"]["lettings_renewal_date"]

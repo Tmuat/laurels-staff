@@ -12,7 +12,9 @@ from properties.models import (
     OffererCash,
     Offer,
     Deal,
-    ExchangeMove
+    ExchangeMove,
+    SaleStatus,
+    SaleStatusSettings,
 )
 
 
@@ -136,6 +138,16 @@ class ExchangeAdminInline(admin.TabularInline):
     ]
 
 
+class SaleStatusAdminInline(admin.TabularInline):
+    model = SaleStatus
+    readonly_fields = [
+        "created",
+        "created_by",
+        "updated",
+        "updated_by",
+    ]
+
+
 class PropertyProcessAdmin(admin.ModelAdmin):
     inlines = [
         PropertyHistoryAdminInline,
@@ -145,7 +157,8 @@ class PropertyProcessAdmin(admin.ModelAdmin):
         OffererDetailsAdminInline,
         OfferAdminInline,
         DealAdminInline,
-        ExchangeAdminInline
+        ExchangeAdminInline,
+        SaleStatusAdminInline,
     ]
 
     list_display = [
@@ -269,3 +282,59 @@ class OffererDetailsAdmin(admin.ModelAdmin):
 
 
 admin.site.register(OffererDetails, OffererDetailsAdmin)
+
+
+class SaleStatusSecondAdminInline(admin.StackedInline):
+    model = SaleStatusSettings
+    readonly_fields = [
+        "created",
+        "created_by",
+        "updated",
+        "updated_by",
+    ]
+
+
+class SaleStatusAdmin(admin.ModelAdmin):
+    inlines = [
+        SaleStatusSecondAdminInline,
+    ]
+
+    list_display = [
+        "__str__",
+    ]
+
+    ordering = [
+        "propertyprocess__property__postcode",
+        "propertyprocess__property__address_line_1",
+    ]
+
+    list_filter = ["propertyprocess__sector", "propertyprocess__hub"]
+
+    search_fields = [
+        "propertyprocess__property__postcode",
+        "propertyprocess__property__address_line_1",
+    ]
+
+    readonly_fields = [
+        "updated_by",
+        "updated",
+        "created_by",
+        "created",
+    ]
+
+    def save_model(self, request, obj, form, change):
+        if not obj.pk:
+            obj.created_by = request.user.get_full_name()
+        obj.updated_by = request.user.get_full_name()
+        super().save_model(request, obj, form, change)
+
+    def save_formset(self, request, form, formset, change):
+        instances = formset.save(commit=False)
+        for obj in instances:
+            if not obj.pk:
+                obj.created_by = request.user.get_full_name()
+            obj.updated_by = request.user.get_full_name()
+            super().save_model(request, obj, form, change)
+
+
+admin.site.register(SaleStatus, SaleStatusAdmin)

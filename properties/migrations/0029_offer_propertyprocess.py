@@ -7,14 +7,18 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('properties', '0028_deal'),
+        ("properties", "0028_deal"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='offer',
-            name='propertyprocess',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='offer', to='properties.propertyprocess'),
+            model_name="offer",
+            name="propertyprocess",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="offer",
+                to="properties.propertyprocess",
+            ),
             preserve_default=False,
         ),
     ]
