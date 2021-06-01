@@ -127,7 +127,7 @@ class DealAdminInline(admin.TabularInline):
 
 
 class ExchangeAdminInline(admin.TabularInline):
-    model = Deal
+    model = ExchangeMove
     readonly_fields = [
         "created",
         "created_by",
