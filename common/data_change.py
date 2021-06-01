@@ -1145,7 +1145,7 @@ for instance in offer_model:
     for deal_instance in deal_model:
         if deal_instance["fields"]["propertyprocess_link"] == instance["old_pp_pk"]:
             instance["fields"]["status"] = "rejected"
-        
+
         if deal_instance["fields"]["offer_accepted"] == instance["old_pk"]:
             instance["fields"]["status"] = "accepted"
 
