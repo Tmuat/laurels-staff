@@ -558,6 +558,11 @@ class Offer(UpdatedAndCreated):
         on_delete=models.CASCADE,
         related_name="offerdetails",
     )
+    propertyprocess = models.ForeignKey(
+        PropertyProcess,
+        on_delete=models.CASCADE,
+        related_name="offer",
+    )
     date = models.DateField(null=False, blank=False)
     offer = models.DecimalField(
         max_digits=10, decimal_places=2, null=False, blank=False
@@ -604,12 +609,12 @@ class Deal(UpdatedAndCreated):
 
     def __str__(self):
         if self.propertyprocess.property.address_line_2 == "":
-            property_address = "%s, %s (%s)" % (
+            property_address = "%s, %s" % (
                 self.propertyprocess.property.postcode,
                 self.propertyprocess.property.address_line_1,
             )
         else:
-            property_address = "%s, %s, %s (%s)" % (
+            property_address = "%s, %s, %s" % (
                 self.propertyprocess.property.postcode,
                 self.propertyprocess.property.address_line_1,
                 self.propertyprocess.property.address_line_2,

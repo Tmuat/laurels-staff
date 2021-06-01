@@ -58,6 +58,7 @@ instruction_dict = None
 instruction_lettings_extra_dict = None
 offerer_dict = None
 offer_dict = None
+deal_dict = None
 hub_dict = None
 hub_targets_dict = None
 user_dict = None
@@ -1078,6 +1079,9 @@ for instance in offer_model:
                 "pk"
             ]
             instance["old_pp_pk"] = propertyprocess_instance["old_pk"]
+            instance["fields"]["propertyprocess"] = propertyprocess_instance[
+                "pk"
+            ]
 
     del instance["fields"]["propertyprocess_link"]
 
@@ -1160,6 +1164,85 @@ with open(
 ) as json_data:
     json.dump(offerer_extra_dict, json_data)
 
+
+# ----------------------------------------
+# DEAL MODEL
+# ----------------------------------------
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/originals/deal.json",
+    "r",
+) as json_data:
+    deal_model = json.load(json_data)
+
+for instance in deal_model:
+
+    # Changing the model to new value
+
+    instance["model"] = "properties.deal"
+
+    # End changing the model to new value
+
+    # Loop property list for property process & delete old field
+
+    for propertyprocess_instance in propertyprocess_dict:
+        if (
+            propertyprocess_instance["old_pk"]
+            == instance["fields"]["propertyprocess_link"]
+        ):
+            instance["fields"]["propertyprocess"] = propertyprocess_instance[
+                "pk"
+            ]
+
+    del instance["fields"]["propertyprocess_link"]
+
+    # End loop
+
+    # Edit old fields
+
+    instance["fields"]["date"] = instance["fields"]["deal_date"]
+    del instance["fields"]["deal_date"]
+
+    # Loop through offers
+
+    for offer_instance in offer_dict:
+        if (
+            offer_instance["old_pk"]
+            == instance["fields"]["offer_accepted"]
+        ):
+            instance["fields"]["offer_accepted"] = offer_instance[
+                "pk"
+            ]
+
+    # End loop through offers
+
+    # Add new fields
+
+    instance["fields"]["created_by"] = "Admin"
+    instance["fields"]["created"] = "2000-01-13T13:13:13.000Z"
+    instance["fields"]["updated_by"] = "Admin"
+    instance["fields"]["updated"] = "2000-01-13T13:13:13.000Z"
+
+    # End add new fields
+
+    # Move original PK
+
+    instance["old_pk"] = instance["pk"]
+
+    # End move original PK
+
+    # Create new UUID field
+
+    instance["pk"] = str(uuid.uuid4())
+
+deal_dict = deal_model
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/deal.json", "w"
+) as json_data:
+    json.dump(deal_model, json_data)
+
+
 # ----------------------------------------
 # CREATE MASTER JSON
 # ----------------------------------------
@@ -1209,6 +1292,9 @@ for object in offerer_dict:
     master_dict.append(object)
 
 for object in offer_dict:
+    master_dict.append(object)
+
+for object in deal_dict:
     master_dict.append(object)
 
 with open(
