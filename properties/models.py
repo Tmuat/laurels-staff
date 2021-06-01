@@ -598,14 +598,18 @@ class Deal(UpdatedAndCreated):
         verbose_name = "Deal"
         verbose_name_plural = "Deals"
 
-    propertyprocess = models.ForeignKey(
+    propertyprocess = models.OneToOneField(
         PropertyProcess,
         on_delete=models.CASCADE,
         related_name="deal",
     )
     date = models.DateField(null=False, blank=False)
     target_move_date = models.DateField()
-    offer_accepted = models.ForeignKey(Offer, on_delete=models.CASCADE)
+    offer_accepted = models.ForeignKey(
+        Offer,
+        on_delete=models.CASCADE,
+        related_name="offer_accepted"
+    )
 
     def __str__(self):
         if self.propertyprocess.property.address_line_2 == "":

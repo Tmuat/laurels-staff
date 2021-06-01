@@ -36,12 +36,10 @@ from django.template.defaultfilters import slugify
 # unique = []
 # non_unique = []
 
-# if instance["fields"]["macro_status"] not in unique:
-#         unique.append(instance["fields"]["macro_status"])
-#         if instance["fields"]["macro_status"] in non_unique:
-#             pass
-#         else:
-#             non_unique.append(instance["fields"]["macro_status"])
+# if instance["fields"]["propertyprocess_link"] not in unique:
+#     unique.append(instance["fields"]["propertyprocess_link"])
+# elif instance["fields"]["propertyprocess_link"] not in non_unique:
+#     non_unique.append(instance["fields"]["propertyprocess_link"])
 
 
 # ------------------------------------------------------------------------------
@@ -1241,7 +1239,6 @@ with open(
     "/workspace/laurels-staff/common/data_dump/deal.json", "w"
 ) as json_data:
     json.dump(deal_model, json_data)
-
 
 # ----------------------------------------
 # CREATE MASTER JSON

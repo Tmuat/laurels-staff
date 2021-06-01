@@ -111,6 +111,13 @@
                                 </a>
                             </li>
                             {% endif %}
+                            {% if status_integer > 3 %}
+                            <li class="nav-item">
+                                <a href="#deal" data-toggle="tab" aria-expanded="false" class="nav-link rounded-0">
+                                    Deal
+                                </a>
+                            </li>
+                            {% endif %}
                         </ul>
                         <div class="tab-content">
                             <!-- history section -->
@@ -186,6 +193,31 @@
                             </div>
                             <!-- end tab pane -->
                             <!-- end offer section -->
+                            {% endif %}
+                            
+                            {% if status_integer > 3 %}
+                            <!-- deal section -->
+                            <!-- tab pane -->
+                            <div class="tab-pane" id="deal">
+                                <div class="mt-2">
+                                    <div class="row">
+                                        <div class="col-6 col-md-4 text-center">
+                                            <p class="mb-1"><strong>Deal Date:</strong></p>
+                                            <p><span>{{ propertyprocess.deal.date }}</span></p>
+                                        </div>
+                                        <div class="col-6 col-md-4 text-center">
+                                            <p class="mb-1"><strong>Offer Accepted:</strong></p>
+                                            <p><span>{{ propertyprocess.deal.offer_accepted.offerer_details.full_name }}<br>£{{ propertyprocess.deal.offer_accepted.offer|intcomma }}</span></p>
+                                        </div>
+                                        <div class="offset-3 offset-md-0 col-6 col-md-4 text-center">
+                                            <p class="mb-1"><strong>Target Move Date:</strong></p>
+                                            <p><span>{{ propertyprocess.deal.target_move_date }}</span></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- end tab pane -->
+                            <!-- end deal section -->
                             {% endif %}
 
                         </div>
