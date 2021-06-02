@@ -1,13 +1,282 @@
-<!-- overview section -->
+<!-- phase 4 section -->
 <!-- tab pane -->
 <div class="tab-pane" id="phase4">
     
     <h5 class="text-uppercase"><i class="mdi mdi-progress-check mr-1"></i>
         Phase 4</h5>
 
-    <div class="">
-        
+    <div class="d-none d-md-inline">
+        <div class="row">
+            <div class="col-md-4 text-center">
+                <p class="mb-1"><strong>Additional Enquiries Raised:</strong></p>
+            </div>
+            <div class="col-md-4 col text-center">
+                <p class="mb-1"><strong>All Enquiries Answered:</strong></p>
+            </div>
+            <div class="col-md-4 text-center">
+                <p class="mb-1"><strong>Final Contracts Sent Out:</strong></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 text-center">
+                {% if propertyprocess.sales_progression.additional_enquiries_raised %}
+                    <h5 class="text-uppercase badge badge-success">Completed</h5>
+                    <p>
+                        <small>
+                            {{ propertyprocess.sales_progression.additional_enquiries_raised_date }}
+                        </small>
+                    </p>
+                {% else %}
+                    <p><span class="badge badge-danger">Incomplete</span></p>
+                {% endif %}
+            </div>
+            <div class="col-md-4 text-center">
+                {% if propertyprocess.sales_progression.all_enquiries_answered %}
+                    <h5 class="text-uppercase badge badge-success">Completed</h5>
+                    <p>
+                        <small>
+                            {{ propertyprocess.sales_progression.all_enquiries_answered_date }}
+                        </small>
+                    </p>
+                {% else %}
+                    <p><span class="badge badge-danger">Incomplete</span></p>
+                {% endif %}
+            </div>
+            <div class="col-md-4 text-center">
+                {% if propertyprocess.sales_progression.final_contracts_sent_out %}
+                    <h5 class="text-uppercase badge badge-success">Completed</h5>
+                    <p>
+                        <small>
+                            {{ propertyprocess.sales_progression.final_contracts_sent_out_date }}
+                        </small>
+                    </p>
+                {% else %}
+                    <p><span class="badge badge-danger">Incomplete</span></p>
+                {% endif %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 text-center">
+                <p class="mb-1"><strong>Buyers Final Contracts Signed:</strong></p>
+            </div>
+            <div class="col-md-4 col text-center">
+                <p class="mb-1"><strong>Sellers Final Contracts Signed:</strong></p>
+            </div>
+            <div class="col-md-4 text-center">
+                <p class="mb-1"><strong>Buyers Deposit Sent:</strong></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 text-center">
+                {% if propertyprocess.sales_progression.buyers_final_contracts_signed %}
+                    <h5 class="text-uppercase badge badge-success">Completed</h5>
+                    <p>
+                        <small>
+                            {{ propertyprocess.sales_progression.buyers_final_contracts_signed_date }}
+                        </small>
+                    </p>
+                {% else %}
+                    <p><span class="badge badge-danger">Incomplete</span></p>
+                {% endif %}
+            </div>
+            <div class="col-md-4 text-center">
+                {% if propertyprocess.sales_progression.sellers_final_contracts_signed %}
+                    <h5 class="text-uppercase badge badge-success">Completed</h5>
+                    <p>
+                        <small>
+                            {{ propertyprocess.sales_progression.sellers_final_contracts_signed_date }}
+                        </small>
+                    </p>
+                {% else %}
+                    <p><span class="badge badge-danger">Incomplete</span></p>
+                {% endif %}
+            </div>
+            <div class="col-md-4 text-center">
+                {% if propertyprocess.sales_progression.buyers_deposit_sent %}
+                    <h5 class="text-uppercase badge badge-success">Completed</h5>
+                    <p>
+                        <small>
+                            {{ propertyprocess.sales_progression.buyers_deposit_sent_date }}
+                        </small>
+                    </p>
+                {% else %}
+                    <p><span class="badge badge-danger">Incomplete</span></p>
+                {% endif %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="offset-2 col-md-4 text-center">
+                <p class="mb-1"><strong>Buyers Deposit Received:</strong></p>
+            </div>
+            <div class="col-md-4 col text-center">
+                <p class="mb-1"><strong>Completion Date Agreed:</strong></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="offset-2 col-md-4 text-center">
+                {% if propertyprocess.sales_progression.buyers_deposit_recieved %}
+                    <h5 class="text-uppercase badge badge-success">Completed</h5>
+                    <p>
+                        <small>
+                            {{ propertyprocess.sales_progression.buyers_deposit_recieved_date }}
+                        </small>
+                    </p>
+                {% else %}
+                    <p><span class="badge badge-danger">Incomplete</span></p>
+                {% endif %}
+            </div>
+            <div class="col-md-4 text-center">
+                {% if propertyprocess.sales_progression.completion_date_agreed %}
+                    <h5 class="text-uppercase badge badge-success">Completed</h5>
+                    <p>
+                        <small>
+                            {{ propertyprocess.sales_progression.completion_date_agreed_date }}
+                        </small>
+                    </p>
+                {% else %}
+                    <p><span class="badge badge-danger">Incomplete</span></p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="d-md-none">
+        <div class="row">
+            <div class="col-6 text-center">
+                <p class="mb-1"><strong>Additional Enquiries Raised:</strong></p>
+            </div>
+            <div class="col-6 col text-center">
+                <p class="mb-1"><strong>All Enquiries Answered:</strong></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6 text-center">
+                {% if propertyprocess.sales_progression.additional_enquiries_raised %}
+                    <h5 class="text-uppercase badge badge-success">Completed</h5>
+                    <p>
+                        <small>
+                            {{ propertyprocess.sales_progression.additional_enquiries_raised_date }}
+                        </small>
+                    </p>
+                {% else %}
+                    <p><span class="badge badge-danger">Incomplete</span></p>
+                {% endif %}
+            </div>
+            <div class="col-6 text-center">
+                {% if propertyprocess.sales_progression.all_enquiries_answered %}
+                    <h5 class="text-uppercase badge badge-success">Completed</h5>
+                    <p>
+                        <small>
+                            {{ propertyprocess.sales_progression.all_enquiries_answered_date }}
+                        </small>
+                    </p>
+                {% else %}
+                    <p><span class="badge badge-danger">Incomplete</span></p>
+                {% endif %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6 text-center">
+                <p class="mb-1"><strong>Final Contracts Sent Out:</strong></p>
+            </div>
+            <div class="col-6 text-center">
+                <p class="mb-1"><strong>Buyers Final Contracts Signed:</strong></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6 text-center">
+                {% if propertyprocess.sales_progression.final_contracts_sent_out %}
+                    <h5 class="text-uppercase badge badge-success">Completed</h5>
+                    <p>
+                        <small>
+                            {{ propertyprocess.sales_progression.final_contracts_sent_out_date }}
+                        </small>
+                    </p>
+                {% else %}
+                    <p><span class="badge badge-danger">Incomplete</span></p>
+                {% endif %}
+            </div>
+            <div class="col-6 text-center">
+                {% if propertyprocess.sales_progression.buyers_final_contracts_signed %}
+                    <h5 class="text-uppercase badge badge-success">Completed</h5>
+                    <p>
+                        <small>
+                            {{ propertyprocess.sales_progression.buyers_final_contracts_signed_date }}
+                        </small>
+                    </p>
+                {% else %}
+                    <p><span class="badge badge-danger">Incomplete</span></p>
+                {% endif %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6 col text-center">
+                <p class="mb-1"><strong>Sellers Final Contracts Signed:</strong></p>
+            </div>
+            <div class="col-6 text-center">
+                <p class="mb-1"><strong>Buyers Deposit Sent:</strong></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6 text-center">
+                {% if propertyprocess.sales_progression.sellers_final_contracts_signed %}
+                    <h5 class="text-uppercase badge badge-success">Completed</h5>
+                    <p>
+                        <small>
+                            {{ propertyprocess.sales_progression.sellers_final_contracts_signed_date }}
+                        </small>
+                    </p>
+                {% else %}
+                    <p><span class="badge badge-danger">Incomplete</span></p>
+                {% endif %}
+            </div>
+            <div class="col-6 text-center">
+                {% if propertyprocess.sales_progression.buyers_deposit_sent %}
+                    <h5 class="text-uppercase badge badge-success">Completed</h5>
+                    <p>
+                        <small>
+                            {{ propertyprocess.sales_progression.buyers_deposit_sent_date }}
+                        </small>
+                    </p>
+                {% else %}
+                    <p><span class="badge badge-danger">Incomplete</span></p>
+                {% endif %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6 text-center">
+                <p class="mb-1"><strong>Buyers Deposit Received:</strong></p>
+            </div>
+            <div class="col-6 col text-center">
+                <p class="mb-1"><strong>Completion Date Agreed:</strong></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6 text-center">
+                {% if propertyprocess.sales_progression.buyers_deposit_recieved %}
+                    <h5 class="text-uppercase badge badge-success">Completed</h5>
+                    <p>
+                        <small>
+                            {{ propertyprocess.sales_progression.buyers_deposit_recieved_date }}
+                        </small>
+                    </p>
+                {% else %}
+                    <p><span class="badge badge-danger">Incomplete</span></p>
+                {% endif %}
+            </div>
+            <div class="col-6 text-center">
+                {% if propertyprocess.sales_progression.completion_date_agreed %}
+                    <h5 class="text-uppercase badge badge-success">Completed</h5>
+                    <p>
+                        <small>
+                            {{ propertyprocess.sales_progression.completion_date_agreed_date }}
+                        </small>
+                    </p>
+                {% else %}
+                    <p><span class="badge badge-danger">Incomplete</span></p>
+                {% endif %}
+            </div>
+        </div>
     </div>
 </div>
 <!-- end tab-pane -->
-<!-- end overview section -->
+<!-- end phase 4 section -->
