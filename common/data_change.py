@@ -62,6 +62,7 @@ deal_dict = None
 exchange_dict = None
 salestatus_dict = None
 salestatussettings_dict = None
+salestatusphase_dict = None
 hub_dict = None
 hub_targets_dict = None
 user_dict = None
@@ -1333,16 +1334,21 @@ with open(
     salestatus_model = json.load(json_data)
 
 settings_extra = []
+phase_extra = []
 
 for instance in salestatus_model:
 
     settings = {}
     settings_fields = {}
 
+    phase = {}
+    phase_fields = {}
+
     # Changing the model to new value
 
     instance["model"] = "properties.salestatus"
     settings["model"] = "properties.salestatussettings"
+    phase["model"] = "properties.salestatusphase"
 
     # End changing the model to new value
 
@@ -1373,14 +1379,14 @@ for instance in salestatus_model:
 
     # Edit old fields
 
-    instance["fields"]["laurels_aml_checks"] = instance["fields"][
-        "laurels_aml_checks_complete"
-    ]
+    instance["fields"]["buyers_aml_checks_and_sales_memo"] = instance[
+        "fields"
+    ]["laurels_aml_checks_complete"]
     del instance["fields"]["laurels_aml_checks_complete"]
 
-    instance["fields"]["laurels_aml_checks_date"] = instance["fields"][
-        "laurels_aml_checks_complete_date"
-    ]
+    instance["fields"]["buyers_aml_checks_and_sales_memo_date"] = instance[
+        "fields"
+    ]["laurels_aml_checks_complete_date"]
     del instance["fields"]["laurels_aml_checks_complete_date"]
 
     instance["fields"]["buyers_initial_solicitors_paperwork"] = instance[
@@ -1410,6 +1416,85 @@ for instance in salestatus_model:
 
     # end del old fields
 
+    # Create phase counts
+
+    phase_fields["phase_1"] = False
+    phase_fields["phase_2"] = False
+    phase_fields["phase_3"] = False
+    phase_fields["phase_4"] = False
+
+    if (
+        instance["fields"]["buyers_aml_checks_and_sales_memo"]
+        and instance["fields"]["buyers_initial_solicitors_paperwork"]
+        and instance["fields"]["sellers_inital_solicitors_paperwork"]
+        and instance["fields"]["draft_contracts_recieved_by_buyers_solicitors"]
+        and instance["fields"]["searches_paid_for"]
+        and instance["fields"]["searches_ordered"]
+    ):
+        phase_fields["phase_1"] = True
+        phase_fields["overall_phase"] = 1
+
+    if settings_fields["show_mortgage"] is True:
+        if (
+            instance["fields"]["mortgage_application_submitted"]
+            and instance["fields"]["mortgage_survey_arranged"]
+            and instance["fields"]["mortgage_survey_completed"]
+            and instance["fields"]["all_search_results_recieved"]
+        ):
+            phase_fields["phase_2"] = True
+            if phase_fields["phase_1"] is True:
+                phase_fields["overall_phase"] = 2
+    else:
+        if instance["fields"]["all_search_results_recieved"]:
+            phase_fields["phase_2"] = True
+            if phase_fields["phase_1"] is True:
+                phase_fields["overall_phase"] = 2
+
+    if settings_fields["show_survey"] is True:
+        if (
+            instance["fields"]["structural_survey_booked"]
+            and instance["fields"]["structural_survey_completed"]
+            and instance["fields"]["enquiries_raised"]
+            and instance["fields"]["enquiries_answered"]
+        ):
+            phase_fields["phase_3"] = True
+            if (
+                phase_fields["phase_1"] is True
+                and phase_fields["phase_2"] is True
+            ):
+                phase_fields["overall_phase"] = 3
+    else:
+        if (
+            instance["fields"]["enquiries_raised"]
+            and instance["fields"]["enquiries_answered"]
+        ):
+            phase_fields["phase_3"] = True
+            if (
+                phase_fields["phase_1"] is True
+                and phase_fields["phase_2"] is True
+            ):
+                phase_fields["overall_phase"] = 3
+
+    if (
+        instance["fields"]["additional_enquiries_raised"]
+        and instance["fields"]["all_enquiries_answered"]
+        and instance["fields"]["final_contracts_sent_out"]
+        and instance["fields"]["buyers_final_contracts_signed"]
+        and instance["fields"]["sellers_final_contracts_signed"]
+        and instance["fields"]["buyers_deposit_sent"]
+        and instance["fields"]["buyers_deposit_recieved"]
+        and instance["fields"]["completion_date_agreed"]
+    ):
+        phase_fields["phase_4"] = True
+        if (
+            phase_fields["phase_1"] is True
+            and phase_fields["phase_2"] is True
+            and phase_fields["phase_3"] is True
+        ):
+            phase_fields["overall_phase"] = 4
+
+    # End create phase counts
+
     # Add new fields
 
     instance["fields"]["created_by"] = "Admin"
@@ -1421,6 +1506,11 @@ for instance in salestatus_model:
     settings_fields["created"] = "2000-01-13T13:13:13.000Z"
     settings_fields["updated_by"] = "Admin"
     settings_fields["updated"] = "2000-01-13T13:13:13.000Z"
+
+    phase_fields["created_by"] = "Admin"
+    phase_fields["created"] = "2000-01-13T13:13:13.000Z"
+    phase_fields["updated_by"] = "Admin"
+    phase_fields["updated"] = "2000-01-13T13:13:13.000Z"
 
     # End add new fields
 
@@ -1434,20 +1524,25 @@ for instance in salestatus_model:
 
     instance["pk"] = str(uuid.uuid4())
     settings["pk"] = str(uuid.uuid4())
+    phase["pk"] = str(uuid.uuid4())
 
     # New model extra fields
 
     settings_fields["sale_status"] = instance["pk"]
+    phase_fields["sale_status"] = instance["pk"]
+    phase["old_ss_pk"] = instance["old_pk"]
 
     settings["fields"] = settings_fields
+    phase["fields"] = phase_fields
 
     settings_extra.append(settings)
+    phase_extra.append(phase)
 
     # End new model extra fields
 
 salestatus_dict = salestatus_model
-
 salestatussettings_dict = settings_extra
+salestatusphase_dict = phase_extra
 
 with open(
     "/workspace/laurels-staff/common/data_dump/salestatus.json", "w"
@@ -1458,6 +1553,11 @@ with open(
     "/workspace/laurels-staff/common/data_dump/salestatussettings.json", "w"
 ) as json_data:
     json.dump(salestatussettings_dict, json_data)
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/salestatusphase.json", "w"
+) as json_data:
+    json.dump(salestatusphase_dict, json_data)
 
 # ----------------------------------------
 # CREATE MASTER JSON
@@ -1520,6 +1620,9 @@ for object in salestatus_dict:
     master_dict.append(object)
 
 for object in salestatussettings_dict:
+    master_dict.append(object)
+
+for object in salestatusphase_dict:
     master_dict.append(object)
 
 with open(
