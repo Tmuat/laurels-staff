@@ -15,7 +15,7 @@ from properties.models import (
     ExchangeMove,
     SaleStatus,
     SaleStatusSettings,
-    SaleStatusPhase
+    SaleStatusPhase,
 )
 
 

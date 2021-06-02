@@ -1,5 +1,6 @@
 from datetime import date
 
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
 from common.models import UpdatedAndCreated
@@ -863,6 +864,10 @@ class SaleStatusPhase(UpdatedAndCreated):
         SaleStatus,
         on_delete=models.CASCADE,
         related_name="sale_status_phase",
+    )
+
+    overall_phase = models.PositiveIntegerField(
+        default=0, validators=[MinValueValidator(0), MaxValueValidator(4)]
     )
 
     phase_1 = models.BooleanField(default=False)
