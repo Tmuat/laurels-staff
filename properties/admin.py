@@ -138,7 +138,7 @@ class ExchangeAdminInline(admin.TabularInline):
     ]
 
 
-class SaleStatusAdminInline(admin.TabularInline):
+class SaleStatusAdminInline(admin.StackedInline):
     model = SaleStatus
     readonly_fields = [
         "created",
@@ -284,7 +284,7 @@ class OffererDetailsAdmin(admin.ModelAdmin):
 admin.site.register(OffererDetails, OffererDetailsAdmin)
 
 
-class SaleStatusSecondAdminInline(admin.StackedInline):
+class SaleStatusSettingsAdminInline(admin.StackedInline):
     model = SaleStatusSettings
     readonly_fields = [
         "created",
@@ -296,7 +296,7 @@ class SaleStatusSecondAdminInline(admin.StackedInline):
 
 class SaleStatusAdmin(admin.ModelAdmin):
     inlines = [
-        SaleStatusSecondAdminInline,
+        SaleStatusSettingsAdminInline,
     ]
 
     list_display = [
