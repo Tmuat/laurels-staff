@@ -46,7 +46,7 @@
             </div>
             <!-- end col -->
             
-            {% if status_integer > 3 and propertyprocess.sector == "sales" %}
+            {% if status_integer > 3  and status_integer < 6 and propertyprocess.sector == "sales" %}
             <div class="col-12">
                 {% include 'properties/includes/detail/sale_progression.html' %}
             </div>

@@ -94,7 +94,7 @@ def property_detail(request, propertyprocess_id):
 
     status_integer = macro_status_calculator(propertyprocess.macro_status)
 
-    if status_integer > 3 < 6 and propertyprocess.sector == "sales":
+    if status_integer > 3 and status_integer < 6 and propertyprocess.sector == "sales":
         percentages = sales_progression_percentage(propertyprocess.id)
 
     property_history_list_length = len(property_history)
