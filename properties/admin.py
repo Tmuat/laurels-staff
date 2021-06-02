@@ -13,9 +13,9 @@ from properties.models import (
     Offer,
     Deal,
     ExchangeMove,
-    SaleStatus,
-    SaleStatusSettings,
-    SaleStatusPhase,
+    SalesProgression,
+    SalesProgressionSettings,
+    SalesProgressionPhase,
 )
 
 
@@ -139,8 +139,8 @@ class ExchangeAdminInline(admin.TabularInline):
     ]
 
 
-class SaleStatusAdminInline(admin.StackedInline):
-    model = SaleStatus
+class SalesProgressionAdminInline(admin.StackedInline):
+    model = SalesProgression
     readonly_fields = [
         "created",
         "created_by",
@@ -159,7 +159,7 @@ class PropertyProcessAdmin(admin.ModelAdmin):
         OfferAdminInline,
         DealAdminInline,
         ExchangeAdminInline,
-        SaleStatusAdminInline,
+        SalesProgressionAdminInline,
     ]
 
     list_display = [
@@ -285,8 +285,8 @@ class OffererDetailsAdmin(admin.ModelAdmin):
 admin.site.register(OffererDetails, OffererDetailsAdmin)
 
 
-class SaleStatusPhaseAdminInline(admin.TabularInline):
-    model = SaleStatusPhase
+class SalesProgressionPhaseAdminInline(admin.TabularInline):
+    model = SalesProgressionPhase
     readonly_fields = [
         "created",
         "created_by",
@@ -295,8 +295,8 @@ class SaleStatusPhaseAdminInline(admin.TabularInline):
     ]
 
 
-class SaleStatusSettingsAdminInline(admin.TabularInline):
-    model = SaleStatusSettings
+class SalesProgressionSettingsAdminInline(admin.TabularInline):
+    model = SalesProgressionSettings
     readonly_fields = [
         "created",
         "created_by",
@@ -305,14 +305,15 @@ class SaleStatusSettingsAdminInline(admin.TabularInline):
     ]
 
 
-class SaleStatusAdmin(admin.ModelAdmin):
+class SalesProgressionAdmin(admin.ModelAdmin):
     inlines = [
-        SaleStatusPhaseAdminInline,
-        SaleStatusSettingsAdminInline,
+        SalesProgressionPhaseAdminInline,
+        SalesProgressionSettingsAdminInline,
     ]
 
     list_display = [
         "__str__",
+        "get_phase",
     ]
 
     ordering = [
@@ -320,7 +321,7 @@ class SaleStatusAdmin(admin.ModelAdmin):
         "propertyprocess__property__address_line_1",
     ]
 
-    list_filter = ["propertyprocess__hub"]
+    list_filter = ["propertyprocess__hub", ]
 
     search_fields = [
         "propertyprocess__property__postcode",
@@ -348,5 +349,12 @@ class SaleStatusAdmin(admin.ModelAdmin):
             obj.updated_by = request.user.get_full_name()
             super().save_model(request, obj, form, change)
 
+    def get_phase(self, obj):
+        phase = obj.sales_progression_phase.get_overall_phase_display()
+        if phase == 0:
+            phase = "No Phase Complete"
+        return phase
+    get_phase.short_description = 'Sales Progression Phase'
 
-admin.site.register(SaleStatus, SaleStatusAdmin)
+
+admin.site.register(SalesProgression, SalesProgressionAdmin)

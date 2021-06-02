@@ -27,7 +27,7 @@ from django.template.defaultfilters import slugify
 # python3 manage.py dumpdata home.offer > data/offer.json --settings=laurels_staff_portal.settings.production
 # python3 manage.py dumpdata home.deal > data/deal.json --settings=laurels_staff_portal.settings.production
 # python3 manage.py dumpdata home.exchangemove > data/exchangemove.json --settings=laurels_staff_portal.settings.production
-# python3 manage.py dumpdata home.salestatus > data/salestatus.json --settings=laurels_staff_portal.settings.production
+# python3 manage.py dumpdata home.salestatus > data/salesprogression.json --settings=laurels_staff_portal.settings.production
 
 # python3 manage.py loaddata common/data_dump/master.json
 
@@ -60,9 +60,9 @@ offerer_dict = None
 offer_dict = None
 deal_dict = None
 exchange_dict = None
-salestatus_dict = None
-salestatussettings_dict = None
-salestatusphase_dict = None
+salesprogression_dict = None
+salesprogressionsettings_dict = None
+salesprogressionphase_dict = None
 hub_dict = None
 hub_targets_dict = None
 user_dict = None
@@ -1324,19 +1324,19 @@ with open(
     json.dump(exchange_dict, json_data)
 
 # ----------------------------------------
-# SALE STATUS MODEL
+# SALE PROGRESSION MODEL
 # ----------------------------------------
 
 with open(
-    "/workspace/laurels-staff/common/data_dump/originals/salestatus.json",
+    "/workspace/laurels-staff/common/data_dump/originals/salesprogression.json",
     "r",
 ) as json_data:
-    salestatus_model = json.load(json_data)
+    saleprogression_model = json.load(json_data)
 
 settings_extra = []
 phase_extra = []
 
-for instance in salestatus_model:
+for instance in saleprogression_model:
 
     settings = {}
     settings_fields = {}
@@ -1346,9 +1346,9 @@ for instance in salestatus_model:
 
     # Changing the model to new value
 
-    instance["model"] = "properties.salestatus"
-    settings["model"] = "properties.salestatussettings"
-    phase["model"] = "properties.salestatusphase"
+    instance["model"] = "properties.salesprogression"
+    settings["model"] = "properties.salesprogressionsettings"
+    phase["model"] = "properties.salesprogressionphase"
 
     # End changing the model to new value
 
@@ -1528,9 +1528,9 @@ for instance in salestatus_model:
 
     # New model extra fields
 
-    settings_fields["sale_status"] = instance["pk"]
-    phase_fields["sale_status"] = instance["pk"]
-    phase["old_ss_pk"] = instance["old_pk"]
+    settings_fields["sales_progression"] = instance["pk"]
+    phase_fields["sales_progression"] = instance["pk"]
+    phase["old_sp_pk"] = instance["old_pk"]
 
     settings["fields"] = settings_fields
     phase["fields"] = phase_fields
@@ -1540,24 +1540,24 @@ for instance in salestatus_model:
 
     # End new model extra fields
 
-salestatus_dict = salestatus_model
-salestatussettings_dict = settings_extra
-salestatusphase_dict = phase_extra
+salesprogression_dict = saleprogression_model
+salesprogressionsettings_dict = settings_extra
+salesprogressionphase_dict = phase_extra
 
 with open(
-    "/workspace/laurels-staff/common/data_dump/salestatus.json", "w"
+    "/workspace/laurels-staff/common/data_dump/salesprogression.json", "w"
 ) as json_data:
-    json.dump(salestatus_model, json_data)
+    json.dump(saleprogression_model, json_data)
 
 with open(
-    "/workspace/laurels-staff/common/data_dump/salestatussettings.json", "w"
+    "/workspace/laurels-staff/common/data_dump/salesprogressionsettings.json", "w"
 ) as json_data:
-    json.dump(salestatussettings_dict, json_data)
+    json.dump(salesprogressionsettings_dict, json_data)
 
 with open(
-    "/workspace/laurels-staff/common/data_dump/salestatusphase.json", "w"
+    "/workspace/laurels-staff/common/data_dump/salesprogressionphase.json", "w"
 ) as json_data:
-    json.dump(salestatusphase_dict, json_data)
+    json.dump(salesprogressionphase_dict, json_data)
 
 # ----------------------------------------
 # CREATE MASTER JSON
@@ -1616,13 +1616,13 @@ for object in deal_dict:
 for object in exchange_dict:
     master_dict.append(object)
 
-for object in salestatus_dict:
+for object in salesprogression_dict:
     master_dict.append(object)
 
-for object in salestatussettings_dict:
+for object in salesprogressionsettings_dict:
     master_dict.append(object)
 
-for object in salestatusphase_dict:
+for object in salesprogressionphase_dict:
     master_dict.append(object)
 
 with open(

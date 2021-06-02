@@ -657,19 +657,19 @@ class ExchangeMove(UpdatedAndCreated):
         return property_address
 
 
-class SaleStatus(UpdatedAndCreated):
+class SalesProgression(UpdatedAndCreated):
     class Meta:
         ordering = [
             "propertyprocess__property__postcode",
             "propertyprocess__property__address_line_1",
         ]
-        verbose_name = "Sale Status"
-        verbose_name_plural = "Sale Status'"
+        verbose_name = "Sales Progression"
+        verbose_name_plural = "Sales Progressions"
 
     TRUE_FALSE_CHOICES = ((True, "Done"), (False, "Not Done"))
 
     propertyprocess = models.OneToOneField(
-        PropertyProcess, on_delete=models.CASCADE, related_name="sale_status"
+        PropertyProcess, on_delete=models.CASCADE, related_name="sales_progression"
     )
 
     buyers_aml_checks_and_sales_memo = models.BooleanField(
@@ -813,21 +813,21 @@ class SaleStatus(UpdatedAndCreated):
         return property_address
 
 
-class SaleStatusSettings(UpdatedAndCreated):
+class SalesProgressionSettings(UpdatedAndCreated):
     class Meta:
         ordering = [
-            "sale_status__propertyprocess__property__postcode",
-            "sale_status__propertyprocess__property__address_line_1",
+            "sales_progression__propertyprocess__property__postcode",
+            "sales_progression__propertyprocess__property__address_line_1",
         ]
-        verbose_name = "Sale Status Settings"
-        verbose_name_plural = "Sale Status' Settings"
+        verbose_name = "Sales Progression Settings"
+        verbose_name_plural = "Sales Progressions Settings"
 
     SHOW_HIDE_CHOICES = ((True, "Show"), (False, "Hide"))
 
-    sale_status = models.OneToOneField(
-        SaleStatus,
+    sales_progression = models.OneToOneField(
+        SalesProgression,
         on_delete=models.CASCADE,
-        related_name="sale_status_settings",
+        related_name="sales_progression_settings",
     )
 
     show_mortgage = models.BooleanField(
@@ -839,37 +839,45 @@ class SaleStatusSettings(UpdatedAndCreated):
     )
 
     def __str__(self):
-        if self.sale_status.propertyprocess.property.address_line_2 == "":
+        if self.sales_progression.propertyprocess.property.address_line_2 == "":
             property_address = "%s, %s" % (
-                self.sale_status.propertyprocess.property.postcode,
-                self.sale_status.propertyprocess.property.address_line_1,
+                self.sales_progression.propertyprocess.property.postcode,
+                self.sales_progression.propertyprocess.property.address_line_1,
             )
         else:
             property_address = "%s, %s, %s" % (
-                self.sale_status.propertyprocess.property.postcode,
-                self.sale_status.propertyprocess.property.address_line_1,
-                self.sale_status.propertyprocess.property.address_line_2,
+                self.sales_progression.propertyprocess.property.postcode,
+                self.sales_progression.propertyprocess.property.address_line_1,
+                self.sales_progression.propertyprocess.property.address_line_2,
             )
         return property_address
 
 
-class SaleStatusPhase(UpdatedAndCreated):
+class SalesProgressionPhase(UpdatedAndCreated):
     class Meta:
         ordering = [
-            "sale_status__propertyprocess__property__postcode",
-            "sale_status__propertyprocess__property__address_line_1",
+            "sales_progression__propertyprocess__property__postcode",
+            "sales_progression__propertyprocess__property__address_line_1",
         ]
-        verbose_name = "Sale Status Phase"
-        verbose_name_plural = "Sale Status' Phase"
+        verbose_name = "Sales Progression Phase"
+        verbose_name_plural = "Sales Progressions Phase"
 
-    sale_status = models.OneToOneField(
-        SaleStatus,
+    PHASE_CHOICE = [
+        (1, "Phase 1 Complete"),
+        (2, "Phase 2 Complete"),
+        (3, "Phase 3 Complete"),
+        (4, "Phase 4 Complete"),
+    ]
+
+    sales_progression = models.OneToOneField(
+        SalesProgression,
         on_delete=models.CASCADE,
-        related_name="sale_status_phase",
+        related_name="sales_progression_phase",
     )
 
     overall_phase = models.PositiveIntegerField(
-        default=0, validators=[MinValueValidator(0), MaxValueValidator(4)]
+        default=0, validators=[MinValueValidator(0), MaxValueValidator(4)],
+        choices=PHASE_CHOICE
     )
 
     phase_1 = models.BooleanField(default=False)
@@ -881,15 +889,15 @@ class SaleStatusPhase(UpdatedAndCreated):
     phase_4 = models.BooleanField(default=False)
 
     def __str__(self):
-        if self.sale_status.propertyprocess.property.address_line_2 == "":
+        if self.sales_progression.propertyprocess.property.address_line_2 == "":
             property_address = "%s, %s" % (
-                self.sale_status.propertyprocess.property.postcode,
-                self.sale_status.propertyprocess.property.address_line_1,
+                self.sales_progression.propertyprocess.property.postcode,
+                self.sales_progression.propertyprocess.property.address_line_1,
             )
         else:
             property_address = "%s, %s, %s" % (
-                self.sale_status.propertyprocess.property.postcode,
-                self.sale_status.propertyprocess.property.address_line_1,
-                self.sale_status.propertyprocess.property.address_line_2,
+                self.sales_progression.propertyprocess.property.postcode,
+                self.sales_progression.propertyprocess.property.address_line_1,
+                self.sales_progression.propertyprocess.property.address_line_2,
             )
         return property_address
