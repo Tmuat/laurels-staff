@@ -27,8 +27,9 @@ from django.template.defaultfilters import slugify
 # python3 manage.py dumpdata home.offer > data/offer.json --settings=laurels_staff_portal.settings.production
 # python3 manage.py dumpdata home.deal > data/deal.json --settings=laurels_staff_portal.settings.production
 # python3 manage.py dumpdata home.exchangemove > data/exchangemove.json --settings=laurels_staff_portal.settings.production
+# python3 manage.py dumpdata home.salestatus > data/salestatus.json --settings=laurels_staff_portal.settings.production
 
-# python3 manage.py loaddata master.json
+# python3 manage.py loaddata common/data_dump/master.json
 
 # ------------------------------------------------------------------------------
 # FUNCITONS
@@ -59,6 +60,8 @@ offerer_dict = None
 offer_dict = None
 deal_dict = None
 exchange_dict = None
+salestatus_dict = None
+salestatussettings_dict = None
 hub_dict = None
 hub_targets_dict = None
 user_dict = None
@@ -1320,6 +1323,131 @@ with open(
     json.dump(exchange_dict, json_data)
 
 # ----------------------------------------
+# SALE STATUS MODEL
+# ----------------------------------------
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/originals/salestatus.json",
+    "r",
+) as json_data:
+    salestatus_model = json.load(json_data)
+
+settings_extra = []
+
+for instance in salestatus_model:
+
+    settings = {}
+    settings_fields = {}
+
+    # Changing the model to new value
+
+    instance["model"] = "properties.salestatus"
+    settings["model"] = "properties.salestatussettings"
+
+    # End changing the model to new value
+
+    # Loop property list for property process & delete old field
+
+    for propertyprocess_instance in propertyprocess_dict:
+        if (
+            propertyprocess_instance["old_pk"]
+            == instance["fields"]["propertyprocess_link"]
+        ):
+            instance["fields"]["propertyprocess"] = propertyprocess_instance[
+                "pk"
+            ]
+
+    del instance["fields"]["propertyprocess_link"]
+
+    # End loop
+
+    # Move fields to new model
+
+    settings_fields["show_mortgage"] = instance["fields"]["show_mortgage"]
+    del instance["fields"]["show_mortgage"]
+
+    settings_fields["show_survey"] = instance["fields"]["show_survey"]
+    del instance["fields"]["show_survey"]
+
+    # End move fields to new model
+
+    # Edit old fields
+
+    instance["fields"]["laurels_aml_checks"] = instance["fields"]["laurels_aml_checks_complete"]
+    del instance["fields"]["laurels_aml_checks_complete"]
+
+    instance["fields"]["laurels_aml_checks_date"] = instance["fields"]["laurels_aml_checks_complete_date"]
+    del instance["fields"]["laurels_aml_checks_complete_date"]
+
+    instance["fields"]["buyers_initial_solicitors_paperwork"] = instance["fields"]["buyers_initial_solicitors_paperwork_complete"]
+    del instance["fields"]["buyers_initial_solicitors_paperwork_complete"]
+
+    instance["fields"]["buyers_initial_solicitors_paperwork_date"] = instance["fields"]["buyers_initial_solicitors_paperwork_complete_date"]
+    del instance["fields"]["buyers_initial_solicitors_paperwork_complete_date"]
+
+    instance["fields"]["sellers_inital_solicitors_paperwork"] = instance["fields"]["sellers_inital_solicitors_paperwork_complete"]
+    del instance["fields"]["sellers_inital_solicitors_paperwork_complete"]
+
+    instance["fields"]["sellers_inital_solicitors_paperwork_date"] = instance["fields"]["sellers_inital_solicitors_paperwork_complete_date"]
+    del instance["fields"]["sellers_inital_solicitors_paperwork_complete_date"]
+
+    # del old fields
+
+    del instance["fields"]["fallen_through"]
+    del instance["fields"]["fallen_through_date"]
+
+    # end del old fields
+
+    # Add new fields
+
+    instance["fields"]["created_by"] = "Admin"
+    instance["fields"]["created"] = "2000-01-13T13:13:13.000Z"
+    instance["fields"]["updated_by"] = "Admin"
+    instance["fields"]["updated"] = "2000-01-13T13:13:13.000Z"
+
+    settings_fields["created_by"] = "Admin"
+    settings_fields["created"] = "2000-01-13T13:13:13.000Z"
+    settings_fields["updated_by"] = "Admin"
+    settings_fields["updated"] = "2000-01-13T13:13:13.000Z"
+
+    # End add new fields
+
+    # Move original PK
+
+    instance["old_pk"] = instance["pk"]
+
+    # End move original PK
+
+    # Create new UUID field
+
+    instance["pk"] = str(uuid.uuid4())
+    settings["pk"] = str(uuid.uuid4())
+
+    # New model extra fields
+
+    settings_fields["sale_status"] = instance["pk"]
+
+    settings["fields"] = settings_fields
+
+    settings_extra.append(settings)
+
+    # End new model extra fields
+
+salestatus_dict = salestatus_model
+
+salestatussettings_dict = settings_extra
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/salestatus.json", "w"
+) as json_data:
+    json.dump(salestatus_model, json_data)
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/salestatussettings.json", "w"
+) as json_data:
+    json.dump(salestatussettings_dict, json_data)
+
+# ----------------------------------------
 # CREATE MASTER JSON
 # ----------------------------------------
 
@@ -1374,6 +1502,12 @@ for object in deal_dict:
     master_dict.append(object)
 
 for object in exchange_dict:
+    master_dict.append(object)
+
+for object in salestatus_dict:
+    master_dict.append(object)
+
+for object in salestatussettings_dict:
     master_dict.append(object)
 
 with open(
