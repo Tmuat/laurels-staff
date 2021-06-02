@@ -1373,22 +1373,34 @@ for instance in salestatus_model:
 
     # Edit old fields
 
-    instance["fields"]["laurels_aml_checks"] = instance["fields"]["laurels_aml_checks_complete"]
+    instance["fields"]["laurels_aml_checks"] = instance["fields"][
+        "laurels_aml_checks_complete"
+    ]
     del instance["fields"]["laurels_aml_checks_complete"]
 
-    instance["fields"]["laurels_aml_checks_date"] = instance["fields"]["laurels_aml_checks_complete_date"]
+    instance["fields"]["laurels_aml_checks_date"] = instance["fields"][
+        "laurels_aml_checks_complete_date"
+    ]
     del instance["fields"]["laurels_aml_checks_complete_date"]
 
-    instance["fields"]["buyers_initial_solicitors_paperwork"] = instance["fields"]["buyers_initial_solicitors_paperwork_complete"]
+    instance["fields"]["buyers_initial_solicitors_paperwork"] = instance[
+        "fields"
+    ]["buyers_initial_solicitors_paperwork_complete"]
     del instance["fields"]["buyers_initial_solicitors_paperwork_complete"]
 
-    instance["fields"]["buyers_initial_solicitors_paperwork_date"] = instance["fields"]["buyers_initial_solicitors_paperwork_complete_date"]
+    instance["fields"]["buyers_initial_solicitors_paperwork_date"] = instance[
+        "fields"
+    ]["buyers_initial_solicitors_paperwork_complete_date"]
     del instance["fields"]["buyers_initial_solicitors_paperwork_complete_date"]
 
-    instance["fields"]["sellers_inital_solicitors_paperwork"] = instance["fields"]["sellers_inital_solicitors_paperwork_complete"]
+    instance["fields"]["sellers_inital_solicitors_paperwork"] = instance[
+        "fields"
+    ]["sellers_inital_solicitors_paperwork_complete"]
     del instance["fields"]["sellers_inital_solicitors_paperwork_complete"]
 
-    instance["fields"]["sellers_inital_solicitors_paperwork_date"] = instance["fields"]["sellers_inital_solicitors_paperwork_complete_date"]
+    instance["fields"]["sellers_inital_solicitors_paperwork_date"] = instance[
+        "fields"
+    ]["sellers_inital_solicitors_paperwork_complete_date"]
     del instance["fields"]["sellers_inital_solicitors_paperwork_complete_date"]
 
     # del old fields

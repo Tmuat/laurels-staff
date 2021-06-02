@@ -848,3 +848,41 @@ class SaleStatusSettings(UpdatedAndCreated):
                 self.sale_status.propertyprocess.property.address_line_2,
             )
         return property_address
+
+
+class SaleStatusPhase(UpdatedAndCreated):
+    class Meta:
+        ordering = [
+            "sale_status__propertyprocess__property__postcode",
+            "sale_status__propertyprocess__property__address_line_1",
+        ]
+        verbose_name = "Sale Status Phase"
+        verbose_name_plural = "Sale Status' Phase"
+
+    sale_status = models.OneToOneField(
+        SaleStatus,
+        on_delete=models.CASCADE,
+        related_name="sale_status_phase",
+    )
+
+    phase_1 = models.BooleanField(default=False)
+
+    phase_2 = models.BooleanField(default=False)
+
+    phase_3 = models.BooleanField(default=False)
+
+    phase_4 = models.BooleanField(default=False)
+
+    def __str__(self):
+        if self.sale_status.propertyprocess.property.address_line_2 == "":
+            property_address = "%s, %s" % (
+                self.sale_status.propertyprocess.property.postcode,
+                self.sale_status.propertyprocess.property.address_line_1,
+            )
+        else:
+            property_address = "%s, %s, %s" % (
+                self.sale_status.propertyprocess.property.postcode,
+                self.sale_status.propertyprocess.property.address_line_1,
+                self.sale_status.propertyprocess.property.address_line_2,
+            )
+        return property_address

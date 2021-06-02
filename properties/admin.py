@@ -15,6 +15,7 @@ from properties.models import (
     ExchangeMove,
     SaleStatus,
     SaleStatusSettings,
+    SaleStatusPhase
 )
 
 
@@ -284,6 +285,16 @@ class OffererDetailsAdmin(admin.ModelAdmin):
 admin.site.register(OffererDetails, OffererDetailsAdmin)
 
 
+class SaleStatusPhaseAdminInline(admin.StackedInline):
+    model = SaleStatusPhase
+    readonly_fields = [
+        "created",
+        "created_by",
+        "updated",
+        "updated_by",
+    ]
+
+
 class SaleStatusSettingsAdminInline(admin.StackedInline):
     model = SaleStatusSettings
     readonly_fields = [
@@ -296,6 +307,7 @@ class SaleStatusSettingsAdminInline(admin.StackedInline):
 
 class SaleStatusAdmin(admin.ModelAdmin):
     inlines = [
+        SaleStatusPhaseAdminInline,
         SaleStatusSettingsAdminInline,
     ]
 
