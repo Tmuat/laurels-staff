@@ -5,9 +5,102 @@
     <h5 class="text-uppercase"><i class="mdi mdi-home-analytics mr-1"></i>
         Sales Progression</h5>
 
-    <div class="">
-        
+    <div class="row">
+        <div class="col-6 col-xl-3">
+            <div class="card tilebox-one">
+                <div class="card-body">
+                    <i class="dripicons-home float-right text-muted"></i>
+                    <h2 class="m-b-20">Phase 1</h2>
+                    {% if propertyprocess.sales_progression.sales_progression_phase.phase_1 %}
+                        <h6 class="text-white text-uppercase mt-0 badge badge-success">Completed</h6>
+                    {% else %}
+                        <h6 class="text-white text-uppercase mt-0 badge badge-danger">Incomplete</h6>
+                    {% endif %}
+                    <h6 class="float-right mt-1">{{ percentages.phase_1 }}%</h6>
+                    <div class="progress mt-1" style="height: 3px;">
+                        <div class="progress-bar bg-info" role="progressbar"
+                            style="width: {{ percentages.phase_1 }}%; height: 20px;" aria-valuenow="45"
+                            aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <!-- end card-body-->
+            </div>
+            <!--end card-->
+        </div>
+        <!-- end col -->
+
+        <div class="col-6 col-xl-3">
+            <div class="card tilebox-one">
+                <div class="card-body">
+                    <i class="dripicons-home float-right text-muted"></i>
+                    <h2 class="m-b-20">Phase 2</h2>
+                    {% if propertyprocess.sales_progression.sales_progression_phase.phase_2 %}
+                        <h6 class="text-white text-uppercase mt-0 badge badge-success">Completed</h6>
+                    {% else %}
+                        <h6 class="text-white text-uppercase mt-0 badge badge-danger">Incomplete</h6>
+                    {% endif %}
+                    <h6 class="float-right mt-1">{{ percentages.phase_2 }}%</h6>
+                    <div class="progress mt-1" style="height: 3px;">
+                        <div class="progress-bar bg-info" role="progressbar"
+                            style="width: {{ percentages.phase_2 }}%; height: 20px;" aria-valuenow="45"
+                            aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <!-- end card-body-->
+            </div>
+            <!--end card-->
+        </div>
+        <!-- end col -->
+
+        <div class="col-6 col-xl-3">
+            <div class="card tilebox-one">
+                <div class="card-body">
+                    <i class="dripicons-home float-right text-muted"></i>
+                    <h2 class="m-b-20">Phase 3</h2>
+                    {% if propertyprocess.sales_progression.sales_progression_phase.phase_3 %}
+                        <h6 class="text-white text-uppercase mt-0 badge badge-success">Completed</h6>
+                    {% else %}
+                        <h6 class="text-white text-uppercase mt-0 badge badge-danger">Incomplete</h6>
+                    {% endif %}
+                    <h6 class="float-right mt-1">{{ percentages.phase_3 }}%</h6>
+                    <div class="progress mt-1" style="height: 3px;">
+                        <div class="progress-bar bg-info" role="progressbar"
+                            style="width: {{ percentages.phase_3 }}%; height: 20px;" aria-valuenow="45"
+                            aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <!-- end card-body-->
+            </div>
+            <!--end card-->
+        </div>
+        <!-- end col -->
+
+        <div class="col-6 col-xl-3">
+            <div class="card tilebox-one">
+                <div class="card-body">
+                    <i class="dripicons-home float-right text-muted"></i>
+                    <h2 class="m-b-20">Phase 4</h2>
+                    {% if propertyprocess.sales_progression.sales_progression_phase.phase_4 %}
+                        <h6 class="text-white text-uppercase mt-0 badge badge-success">Completed</h6>
+                    {% else %}
+                        <h6 class="text-white text-uppercase mt-0 badge badge-danger">Incomplete</h6>
+                    {% endif %}
+                    <h6 class="float-right mt-1">{{ percentages.phase_4 }}%</h6>
+                    <div class="progress mt-1" style="height: 3px;">
+                        <div class="progress-bar bg-info" role="progressbar"
+                            style="width: {{ percentages.phase_4 }}%; height: 20px;" aria-valuenow="45"
+                            aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <!-- end card-body-->
+            </div>
+            <!--end card-->
+        </div>
+        <!-- end col -->
+
     </div>
+    <!-- end row -->
+
 </div>
 <!-- end tab-pane -->
 <!-- end overview section -->
