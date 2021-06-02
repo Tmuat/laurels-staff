@@ -1,0 +1,44 @@
+<ul class="nav nav-pills bg-nav-pills nav-justified mb-3 flex-wrap">
+    <li class="nav-item">
+        <a href="#history" data-toggle="tab" aria-expanded="true" class="nav-link rounded-0 active">
+            History
+        </a>
+    </li>
+    {% if status_integer > 1 %}
+    <li class="nav-item">
+        <a href="#valuation" data-toggle="tab" aria-expanded="false" class="nav-link rounded-0">
+            {% if propertyprocess.macro_status == "val" %}
+                <span class="d-none d-md-block">Valuation</span>
+                <span class="d-md-none">Val</span>
+            {% else %}
+                <span class="text-nowrap">Val & Inst</span>
+            {% endif %}
+        </a>
+    </li>
+    {% endif %}
+    {% if status_integer > 2 %}
+    <li class="nav-item">
+        <a href="#offers" data-toggle="tab" aria-expanded="false" class="nav-link rounded-0">
+            Offers
+        </a>
+    </li>
+    {% endif %}
+    {% if propertyprocess.sector == "sales" %}
+        {% if status_integer > 3 %}
+        <li class="nav-item">
+            <a href="#deal" data-toggle="tab" aria-expanded="false" class="nav-link rounded-0">
+                Deal
+            </a>
+        </li>
+        {% endif %}
+    {% endif %}
+    {% if propertyprocess.sector == "sales" %}
+        {% if status_integer > 4 %}
+        <li class="nav-item">
+            <a href="#exchange" data-toggle="tab" aria-expanded="false" class="nav-link px-1 rounded-0">
+                Exchange
+            </a>
+        </li>
+        {% endif %}
+    {% endif %}
+</ul>
