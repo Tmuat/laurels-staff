@@ -6,10 +6,34 @@
                     Overview
                 </a>
             </li>
+            <li class="nav-item">
+                <a href="#phase1" data-toggle="tab" aria-expanded="true" class="nav-link rounded-0">
+                    Phase 1
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#phase2" data-toggle="tab" aria-expanded="true" class="nav-link rounded-0">
+                    Phase 2
+                </a> 
+            </li>
+            <li class="nav-item">
+                <a href="#phase3" data-toggle="tab" aria-expanded="true" class="nav-link rounded-0">
+                    Phase 3
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#phase4" data-toggle="tab" aria-expanded="true" class="nav-link rounded-0">
+                    Phase 4
+                </a>
+            </li>
 
         </ul>
         <div class="tab-content">
             {% include 'properties/includes/sales_progression/overview.html' %}
+            {% include 'properties/includes/sales_progression/phase1.html' %}
+            {% include 'properties/includes/sales_progression/phase2.html' %}
+            {% include 'properties/includes/sales_progression/phase3.html' %}
+            {% include 'properties/includes/sales_progression/phase4.html' %}
         </div>
 
     </div>
