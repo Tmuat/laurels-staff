@@ -6,6 +6,7 @@
         Phase 3</h5>
 
     <div>
+        {% if propertyprocess.sales_progression.sales_progression_settings.show_survey %}
         <div class="row">
             <div class="col-6 text-center">
                 <p class="mb-1"><strong>Structural Survey Booked:
@@ -41,6 +42,7 @@
                 {% endif %}
             </div>
         </div>
+        {% endif %}
         <div class="row">
             <div class="col-6 text-center">
                 <p class="mb-1"><strong>Enquiries Raised:</strong></p>

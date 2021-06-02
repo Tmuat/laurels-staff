@@ -6,6 +6,7 @@
         Phase 2</h5>
 
     <div>
+        {% if propertyprocess.sales_progression.sales_progression_settings.show_mortgage %}
         <div class="row">
             <div class="col-6 text-center">
                 <p class="mb-1"><strong>Mortgage Application
@@ -76,6 +77,27 @@
                 {% endif %}
             </div>
         </div>
+        {% else %}
+        <div class="row">
+            <div class="col-12 text-center">
+                <p class="mb-1"><strong>All Search Results Received:</strong></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 text-center">
+                {% if propertyprocess.sales_progression.all_search_results_recieved %}
+                    <h5 class="text-uppercase badge badge-success">Completed</h5>
+                    <p>
+                        <small>
+                            {{ propertyprocess.sales_progression.all_search_results_recieved_date }}
+                        </small>
+                    </p>
+                {% else %}
+                    <p><span class="badge badge-danger">Incomplete</span></p>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
     </div>
 </div>
 <!-- end tab-pane -->
