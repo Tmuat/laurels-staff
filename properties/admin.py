@@ -285,7 +285,7 @@ class OffererDetailsAdmin(admin.ModelAdmin):
 admin.site.register(OffererDetails, OffererDetailsAdmin)
 
 
-class SaleStatusPhaseAdminInline(admin.StackedInline):
+class SaleStatusPhaseAdminInline(admin.TabularInline):
     model = SaleStatusPhase
     readonly_fields = [
         "created",
@@ -295,7 +295,7 @@ class SaleStatusPhaseAdminInline(admin.StackedInline):
     ]
 
 
-class SaleStatusSettingsAdminInline(admin.StackedInline):
+class SaleStatusSettingsAdminInline(admin.TabularInline):
     model = SaleStatusSettings
     readonly_fields = [
         "created",
@@ -320,7 +320,7 @@ class SaleStatusAdmin(admin.ModelAdmin):
         "propertyprocess__property__address_line_1",
     ]
 
-    list_filter = ["propertyprocess__sector", "propertyprocess__hub"]
+    list_filter = ["propertyprocess__hub"]
 
     search_fields = [
         "propertyprocess__property__postcode",
