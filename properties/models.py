@@ -672,10 +672,12 @@ class SaleStatus(UpdatedAndCreated):
         PropertyProcess, on_delete=models.CASCADE, related_name="sale_status"
     )
 
-    laurels_aml_checks = models.BooleanField(
+    buyers_aml_checks_and_sales_memo = models.BooleanField(
         null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
     )
-    laurels_aml_checks_date = models.DateField(null=True, blank=True)
+    buyers_aml_checks_and_sales_memo_date = models.DateField(
+        null=True, blank=True
+    )
 
     buyers_initial_solicitors_paperwork = models.BooleanField(
         null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
