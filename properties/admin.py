@@ -321,7 +321,9 @@ class SalesProgressionAdmin(admin.ModelAdmin):
         "propertyprocess__property__address_line_1",
     ]
 
-    list_filter = ["propertyprocess__hub", ]
+    list_filter = [
+        "propertyprocess__hub",
+    ]
 
     search_fields = [
         "propertyprocess__property__postcode",
@@ -354,7 +356,8 @@ class SalesProgressionAdmin(admin.ModelAdmin):
         if phase == 0:
             phase = "No Phase Complete"
         return phase
-    get_phase.short_description = 'Sales Progression Phase'
+
+    get_phase.short_description = "Sales Progression Phase"
 
 
 admin.site.register(SalesProgression, SalesProgressionAdmin)

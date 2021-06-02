@@ -1550,7 +1550,8 @@ with open(
     json.dump(saleprogression_model, json_data)
 
 with open(
-    "/workspace/laurels-staff/common/data_dump/salesprogressionsettings.json", "w"
+    "/workspace/laurels-staff/common/data_dump/salesprogressionsettings.json",
+    "w",
 ) as json_data:
     json.dump(salesprogressionsettings_dict, json_data)
 

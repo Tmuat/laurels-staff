@@ -669,7 +669,9 @@ class SalesProgression(UpdatedAndCreated):
     TRUE_FALSE_CHOICES = ((True, "Done"), (False, "Not Done"))
 
     propertyprocess = models.OneToOneField(
-        PropertyProcess, on_delete=models.CASCADE, related_name="sales_progression"
+        PropertyProcess,
+        on_delete=models.CASCADE,
+        related_name="sales_progression",
     )
 
     buyers_aml_checks_and_sales_memo = models.BooleanField(
@@ -839,7 +841,10 @@ class SalesProgressionSettings(UpdatedAndCreated):
     )
 
     def __str__(self):
-        if self.sales_progression.propertyprocess.property.address_line_2 == "":
+        if (
+            self.sales_progression.propertyprocess.property.address_line_2
+            == ""
+        ):
             property_address = "%s, %s" % (
                 self.sales_progression.propertyprocess.property.postcode,
                 self.sales_progression.propertyprocess.property.address_line_1,
@@ -876,8 +881,9 @@ class SalesProgressionPhase(UpdatedAndCreated):
     )
 
     overall_phase = models.PositiveIntegerField(
-        default=0, validators=[MinValueValidator(0), MaxValueValidator(4)],
-        choices=PHASE_CHOICE
+        default=0,
+        validators=[MinValueValidator(0), MaxValueValidator(4)],
+        choices=PHASE_CHOICE,
     )
 
     phase_1 = models.BooleanField(default=False)
@@ -889,7 +895,10 @@ class SalesProgressionPhase(UpdatedAndCreated):
     phase_4 = models.BooleanField(default=False)
 
     def __str__(self):
-        if self.sales_progression.propertyprocess.property.address_line_2 == "":
+        if (
+            self.sales_progression.propertyprocess.property.address_line_2
+            == ""
+        ):
             property_address = "%s, %s" % (
                 self.sales_progression.propertyprocess.property.postcode,
                 self.sales_progression.propertyprocess.property.address_line_1,

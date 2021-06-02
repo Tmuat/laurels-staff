@@ -7,13 +7,25 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('properties', '0039_auto_20210602_1531'),
+        ("properties", "0039_auto_20210602_1531"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='salesprogressionphase',
-            name='overall_phase',
-            field=models.PositiveIntegerField(choices=[(1, 'Phase 1 Complete'), (2, 'Phase 2 Complete'), (3, 'Phase 3 Complete'), (4, 'Phase 4 Complete')], default=0, validators=[django.core.validators.MinValueValidator(0), django.core.validators.MaxValueValidator(4)]),
+            model_name="salesprogressionphase",
+            name="overall_phase",
+            field=models.PositiveIntegerField(
+                choices=[
+                    (1, "Phase 1 Complete"),
+                    (2, "Phase 2 Complete"),
+                    (3, "Phase 3 Complete"),
+                    (4, "Phase 4 Complete"),
+                ],
+                default=0,
+                validators=[
+                    django.core.validators.MinValueValidator(0),
+                    django.core.validators.MaxValueValidator(4),
+                ],
+            ),
         ),
     ]

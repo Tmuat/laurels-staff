@@ -7,41 +7,67 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('properties', '0038_auto_20210602_1528'),
+        ("properties", "0038_auto_20210602_1528"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='salesprogressionphase',
-            options={'ordering': ['sales_progression__propertyprocess__property__postcode', 'sales_progression__propertyprocess__property__address_line_1'], 'verbose_name': 'Sales Progression Phase', 'verbose_name_plural': 'Sales Progressions Phase'},
+            name="salesprogressionphase",
+            options={
+                "ordering": [
+                    "sales_progression__propertyprocess__property__postcode",
+                    "sales_progression__propertyprocess__property__address_line_1",
+                ],
+                "verbose_name": "Sales Progression Phase",
+                "verbose_name_plural": "Sales Progressions Phase",
+            },
         ),
         migrations.AlterModelOptions(
-            name='salesprogressionsettings',
-            options={'ordering': ['sales_progression__propertyprocess__property__postcode', 'sales_progression__propertyprocess__property__address_line_1'], 'verbose_name': 'Sales Progression Settings', 'verbose_name_plural': 'Sales Progressions Settings'},
+            name="salesprogressionsettings",
+            options={
+                "ordering": [
+                    "sales_progression__propertyprocess__property__postcode",
+                    "sales_progression__propertyprocess__property__address_line_1",
+                ],
+                "verbose_name": "Sales Progression Settings",
+                "verbose_name_plural": "Sales Progressions Settings",
+            },
         ),
         migrations.RemoveField(
-            model_name='salesprogressionphase',
-            name='sale_progression',
+            model_name="salesprogressionphase",
+            name="sale_progression",
         ),
         migrations.RemoveField(
-            model_name='salesprogressionsettings',
-            name='sale_progression',
+            model_name="salesprogressionsettings",
+            name="sale_progression",
         ),
         migrations.AddField(
-            model_name='salesprogressionphase',
-            name='sales_progression',
-            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='sales_progression_phase', to='properties.salesprogression'),
+            model_name="salesprogressionphase",
+            name="sales_progression",
+            field=models.OneToOneField(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="sales_progression_phase",
+                to="properties.salesprogression",
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='salesprogressionsettings',
-            name='sales_progression',
-            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='sales_progression_settings', to='properties.salesprogression'),
+            model_name="salesprogressionsettings",
+            name="sales_progression",
+            field=models.OneToOneField(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="sales_progression_settings",
+                to="properties.salesprogression",
+            ),
             preserve_default=False,
         ),
         migrations.AlterField(
-            model_name='salesprogression',
-            name='propertyprocess',
-            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='sales_progression', to='properties.propertyprocess'),
+            model_name="salesprogression",
+            name="propertyprocess",
+            field=models.OneToOneField(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="sales_progression",
+                to="properties.propertyprocess",
+            ),
         ),
     ]
