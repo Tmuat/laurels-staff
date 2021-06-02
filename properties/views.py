@@ -86,13 +86,16 @@ def property_detail(request, propertyprocess_id):
     A view to show individual property details
     """
 
+    percentages = None
+
     propertyprocess = get_object_or_404(PropertyProcess, id=propertyprocess_id)
     property_history = propertyprocess.history.all()
     offers = propertyprocess.offerer_details.all()
 
-    percentages = sales_progression_percentage(propertyprocess.id)
-
     status_integer = macro_status_calculator(propertyprocess.macro_status)
+
+    if status_integer > 3 < 6 and propertyprocess.sector == "sales":
+        percentages = sales_progression_percentage(propertyprocess.id)
 
     property_history_list_length = len(property_history)
     offers_length = len(offers)

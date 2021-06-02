@@ -46,10 +46,12 @@
             </div>
             <!-- end col -->
             
+            {% if status_integer > 3 and propertyprocess.sector == "sales" %}
             <div class="col-12">
                 {% include 'properties/includes/detail/sale_progression.html' %}
             </div>
             <!-- end col -->
+            {% endif %}
         </div>
         <!-- end row -->
     </div>
