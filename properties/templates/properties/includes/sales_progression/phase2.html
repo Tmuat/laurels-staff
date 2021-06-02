@@ -1,13 +1,82 @@
-<!-- overview section -->
+<!-- phase 2 section -->
 <!-- tab pane -->
 <div class="tab-pane" id="phase2">
     
     <h5 class="text-uppercase"><i class="mdi mdi-progress-check mr-1"></i>
         Phase 2</h5>
 
-    <div class="">
-        
+    <div>
+        <div class="row">
+            <div class="col-6 text-center">
+                <p class="mb-1"><strong>Mortgage Application
+                    Submitted:</strong></p>
+            </div>
+            <div class="col-6 col text-center">
+                <p class="mb-1"><strong>Mortgage Survey
+                    Booked:</strong></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6 text-center">
+                {% if propertyprocess.sales_progression.mortgage_application_submitted %}
+                    <h5 class="text-uppercase badge badge-success">Completed</h5>
+                    <p>
+                        <small>
+                            {{ propertyprocess.sales_progression.mortgage_application_submitted_date }}
+                        </small>
+                    </p>
+                {% else %}
+                    <p><span class="badge badge-danger">Incomplete</span></p>
+                {% endif %}
+            </div>
+            <div class="col-6 text-center">
+                {% if propertyprocess.sales_progression.mortgage_survey_arranged %}
+                    <h5 class="text-uppercase badge badge-success">Completed</h5>
+                    <p>
+                        <small>
+                            {{ propertyprocess.sales_progression.mortgage_survey_arranged_date }}
+                        </small>
+                    </p>
+                {% else %}
+                    <p><span class="badge badge-danger">Incomplete</span></p>
+                {% endif %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6 text-center">
+                <p class="mb-1"><strong>Mortgage Offer With Solicitors:</strong></p>
+            </div>
+            <div class="col-6 text-center">
+                <p class="mb-1"><strong>All Search Results Received:</strong></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6 text-center">
+                {% if propertyprocess.sales_progression.mortgage_survey_completed %}
+                    <h5 class="text-uppercase badge badge-success">Completed</h5>
+                    <p>
+                        <small>
+                            {{ propertyprocess.sales_progression.mortgage_survey_completed_date }}
+                        </small>
+                    </p>
+                {% else %}
+                    <p><span class="badge badge-danger">Incomplete</span></p>
+                {% endif %}
+            </div>
+            <div class="col-6 text-center">
+                {% if propertyprocess.sales_progression.all_search_results_recieved %}
+                    <h5 class="text-uppercase badge badge-success">Completed</h5>
+                    <p>
+                        <small>
+                            {{ propertyprocess.sales_progression.all_search_results_recieved_date }}
+                        </small>
+                    </p>
+                {% else %}
+                    <p><span class="badge badge-danger">Incomplete</span></p>
+                {% endif %}
+            </div>
+        </div>
     </div>
 </div>
 <!-- end tab-pane -->
-<!-- end overview section -->
+<!-- end phase 2 section -->
