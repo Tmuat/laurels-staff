@@ -108,6 +108,10 @@ body.authentication-bg {
     background-color: #357a32;
 }
 
+.notes p {
+    margin-bottom: 0px;
+}
+
 /* Multi Select Field */
 
 .multi-select {

@@ -291,3 +291,22 @@ def save_property_order(request):
         data["valid"] = True
 
     return JsonResponse(data)
+
+
+def property_chain_detail(request, property_chain_id):
+    """
+    A view to return an ajax response with property chain instance
+    """
+
+    data = dict()
+    chain_instance = get_object_or_404(
+        PropertyChain, id=property_chain_id
+    )
+
+    context = {"instance": chain_instance}
+    data["html_modal"] = render_to_string(
+        "properties/includes/detail/property_chain_detail.html",
+        context,
+        request=request,
+    )
+    return JsonResponse(data)

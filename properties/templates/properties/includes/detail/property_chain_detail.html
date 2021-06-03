@@ -1,0 +1,36 @@
+{% load static i18n %}
+<div class="modal-content green-gradient">
+    <div class="modal-body">
+        <div class="text-center mt-2 mb-3">
+            <span><img src="{% static 'custom/images/logo.png' %}" alt="laurels" height="80"></span>
+        </div>
+        <div class="text-center">
+            <h4 class="text-white">Property Chain Info</h4>
+        </div>
+        <h5 class="text-white text-center">Property</h5>
+        <p class="text-white text-center mb-0">
+            {{ instance.address_line_1 }}
+        </p>
+        <p class="text-white text-center mb-0">
+            {{ instance.address_line_2 }}
+        </p>
+        <p class="text-white text-center mb-0">
+            {{ instance.town }}
+        </p>
+        <p class="text-white text-center">
+            {{ instance.postcode }}
+        </p>
+        <h5 class="text-white text-center">Agent</h5>
+        <p class="text-white text-center mb-0">
+            {{ instance.company }}
+        </p>
+        <p class="text-white text-center mb-0">
+            {{ instance.branch }}
+        </p>
+        <h5 class="text-white text-center">Notes</h5>
+        <div class="text-white text-center mb-2 notes">
+            {{ instance.chain_notes|linebreaks }}
+        </div>
+    </div>
+</div>
+<!-- /.modal-content -->

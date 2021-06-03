@@ -30,10 +30,26 @@ $(document).ready(function () {
     });
 
     // Checks for change in the property chain div
-    // var propertyChange = false
     $("#simple-dragula").on("mousedown", ".dragula-handle", function () {
         $("#saved").addClass("d-none")
+        $("#error").addClass("d-none")
         $("#unsaved").removeClass("d-none")
+    });
+
+    // Deals with ajax for returning modal with property chain detail
+    $("#simple-dragula").on("click", ".js-property-chain-expand", function () {
+        var instance = $(this);
+        $.ajax({
+            url: instance.attr("data-url"),
+            type: 'get',
+            dataType: 'json',
+            beforeSend: function () {
+                $("#base-modal").modal("show");
+            },
+            success: function (data) {
+                $("#base-modal .modal-dialog").html(data.html_modal);
+            }
+        });
     });
 
     // Deals with the AJAX for showing property history notes
