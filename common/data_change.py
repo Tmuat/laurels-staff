@@ -7,8 +7,6 @@ from django.template.defaultfilters import slugify
 # COMMANDS
 # ------------------------------------------------------------------------------
 
-# python3 manage.py flush
-
 # python3 manage.py shell
 
 # exec(open('common/data_change.py').read())
@@ -28,6 +26,9 @@ from django.template.defaultfilters import slugify
 # python3 manage.py dumpdata home.deal > data/deal.json --settings=laurels_staff_portal.settings.production
 # python3 manage.py dumpdata home.exchangemove > data/exchangemove.json --settings=laurels_staff_portal.settings.production
 # python3 manage.py dumpdata home.salestatus > data/salesprogression.json --settings=laurels_staff_portal.settings.production
+# python3 manage.py dumpdata home.propertychain > data/propertychain.json --settings=laurels_staff_portal.settings.production
+
+# python3 manage.py flush
 
 # python3 manage.py loaddata common/data_dump/master.json
 
@@ -63,6 +64,7 @@ exchange_dict = None
 salesprogression_dict = None
 salesprogressionsettings_dict = None
 salesprogressionphase_dict = None
+propertychain_dict = None
 hub_dict = None
 hub_targets_dict = None
 user_dict = None
@@ -1561,6 +1563,65 @@ with open(
     json.dump(salesprogressionphase_dict, json_data)
 
 # ----------------------------------------
+# PROPERTY CHAIN MODEL
+# ----------------------------------------
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/originals/propertychain.json",
+    "r",
+) as json_data:
+    propertychain_model = json.load(json_data)
+
+for instance in propertychain_model:
+
+    # Changing the model to new value
+
+    instance["model"] = "properties.propertychain"
+
+    # End changing the model to new value
+
+    # Loop sales progression for link & delete old field
+
+    for salesprogression_instance in salesprogression_dict:
+        if (
+            salesprogression_instance["old_pk"]
+            == instance["fields"]["sale_status_link"]
+        ):
+            instance["fields"]["sales_progression"] = salesprogression_instance[
+                "pk"
+            ]
+
+    del instance["fields"]["sale_status_link"]
+
+    # End loop
+
+    # Add new fields
+
+    instance["fields"]["created_by"] = "Admin"
+    instance["fields"]["created"] = "2000-01-13T13:13:13.000Z"
+    instance["fields"]["updated_by"] = "Admin"
+    instance["fields"]["updated"] = "2000-01-13T13:13:13.000Z"
+
+    # End add new fields
+
+    # Move original PK
+
+    instance["old_pk"] = instance["pk"]
+
+    # End move original PK
+
+    # Create new UUID field
+
+    instance["pk"] = str(uuid.uuid4())
+
+propertychain_dict = propertychain_model
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/propertychain.json", "w"
+) as json_data:
+    json.dump(propertychain_model, json_data)
+
+# ----------------------------------------
 # CREATE MASTER JSON
 # ----------------------------------------
 
@@ -1624,6 +1685,9 @@ for object in salesprogressionsettings_dict:
     master_dict.append(object)
 
 for object in salesprogressionphase_dict:
+    master_dict.append(object)
+
+for object in propertychain_dict:
     master_dict.append(object)
 
 with open(

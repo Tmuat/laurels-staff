@@ -16,6 +16,7 @@ from properties.models import (
     SalesProgression,
     SalesProgressionSettings,
     SalesProgressionPhase,
+    PropertyChain
 )
 
 
@@ -305,10 +306,21 @@ class SalesProgressionSettingsAdminInline(admin.TabularInline):
     ]
 
 
+class PropertyChainAdminInline(admin.TabularInline):
+    model = PropertyChain
+    readonly_fields = [
+        "created",
+        "created_by",
+        "updated",
+        "updated_by",
+    ]
+
+
 class SalesProgressionAdmin(admin.ModelAdmin):
     inlines = [
         SalesProgressionPhaseAdminInline,
         SalesProgressionSettingsAdminInline,
+        PropertyChainAdminInline
     ]
 
     list_display = [
