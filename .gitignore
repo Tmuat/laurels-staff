@@ -227,4 +227,3 @@ data_dump
 *.json
 
 # End of https://www.toptal.com/developers/gitignore/api/python,django
-properties/templates/properties/includes/detail/property_chain.html

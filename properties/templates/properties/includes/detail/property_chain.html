@@ -1,0 +1,49 @@
+<div class="card">
+    <div class="card-body">
+        <button id="save-property-order" class="float-right btn btn-sm btn-success">Save Order</button>
+        <h4 class="header-title mb-3">Property Chain 
+            <span id="saved" class="text-success d-none"><small><span class="mdi mdi-check-circle-outline"></span> Saved</small></span>
+            <span id="unsaved" class="text-danger d-none"><small><span class="mdi mdi-close-circle-outline"></span> Not Saved</small></span>
+            <span id="error" class="text-danger d-none"><small><span class="mdi mdi-alert-circle-outline"></span> Error - Try Again</small></span>
+        </h4>
+
+        <div class="row" id="simple-dragula" data-plugin="dragula" data-handleClass="dragula-handle">
+            {% for instance in property_chain %}
+                <div class="col-12" id="property_chain{{ instance.order }}" data-pk="{{ instance.pk }}">
+                    <div class="card mb-0 mt-1">
+                        <div class="card-body">
+                            <div class="row w-100 overflow-hidden">
+                                <div class="col-10 col-md-5 order-1">
+                                    <h5 class="mb-1 mt-1">{{ instance.address_line_1 }}</h5>
+                                    <p class="mb-0"> {{ instance.address_line_2 }} </p>
+                                    <p class="mb-0"> {{ instance.town }} </p>
+                                    <p class="mb-0"> {{ instance.postcode }} </p>
+                                </div>
+                                <div class="col-10 col-md-5 order-3 order-md-2">
+                                    <h5 class="mb-1 mt-1">{{ instance.company }}</h5>
+                                    <p class="mb-0"> {{ instance.branch }} </p>
+                                </div>
+                                <div class="col-2 order-2 order-md-3 pr-0">
+                                    <span class="d-block dragula-handle float-right"></span>
+                                </div>
+                                <div class="col-12 order-4 p-0">
+                                    <button class="btn btn-sm btn-info float-right"><span class="mdi mdi-arrow-expand-all"></span> Expand</button>
+                                </div>
+                            </div>
+                            <!-- end d-flex -->
+                        </div>
+                        <!-- end card-body -->
+                    </div>
+                    <!-- end card -->
+                </div>
+                <!-- end col -->
+            {% endfor %}
+
+        </div>
+        <!-- end row-->
+    </div>
+    <form id="property-chain-reorder" action="{% url 'properties:save_property_order' %}" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="order" id="order">
+    </form>
+</div>
