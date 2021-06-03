@@ -94,6 +94,20 @@ body.authentication-bg {
     text-decoration: underline;
 }
 
+/* Property Detail */
+
+.expand {
+    position: relative;
+    height: 36px;
+    font-size: 14px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.save-overlay {
+    background-color: #357a32;
+}
+
 /* Multi Select Field */
 
 .multi-select {

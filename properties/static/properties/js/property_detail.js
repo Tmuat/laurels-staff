@@ -1,4 +1,41 @@
 $(document).ready(function () {
+    // Deals with the re-ordering of property chain
+    $("#save-property-order").click(function () {
+        var order = [];
+        $("div[id^='property_chain']").each(function () {
+            var instance = $(this);
+            order.push(instance.attr("data-pk"));
+        });
+        $('#order').val(order);
+
+        var form = $("#property-chain-reorder");
+        $.ajax({
+            url: form.attr("action"),
+            data: form.serialize(),
+            type: form.attr("method"),
+            dataType: 'json',
+            success: function (data) {
+                if (data.valid) {
+                    $("#saved").removeClass("d-none")
+                    $("#unsaved").addClass("d-none")
+                    $("#error").addClass("d-none")
+                } else {
+                    $("#saved").addClass("d-none")
+                    $("#unsaved").addClass("d-none")
+                    $("#error").removeClass("d-none")
+                }
+            }
+        });
+        return false;
+    });
+
+    // Checks for change in the property chain div
+    // var propertyChange = false
+    $("#simple-dragula").on("mousedown", ".dragula-handle", function () {
+        $("#saved").addClass("d-none")
+        $("#unsaved").removeClass("d-none")
+    });
+
     // Deals with the AJAX for showing property history notes
     $("#tbody-history").on("click", ".js-show-notes", function () {
         var instance = $(this);

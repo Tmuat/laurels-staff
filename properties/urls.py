@@ -7,6 +7,7 @@ from properties.views import (
     property_history_detail,
     offer_history,
     offers_pagination,
+    save_property_order
 )
 
 
@@ -37,5 +38,10 @@ urlpatterns = [
         "properties/offers/<offerer_id>/",
         offer_history,
         name="offerer_offers",
+    ),
+    path(
+        "properties/property-chain/new-order/",
+        save_property_order,
+        name="save_property_order",
     ),
 ]

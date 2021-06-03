@@ -45,20 +45,45 @@
                 {% include 'properties/includes/detail/property_tabs.html' %}
             </div>
             <!-- end col -->
-            
-            {% if status_integer > 3  and status_integer < 6 and propertyprocess.sector == "sales" %}
+        </div>
+        <!-- end row -->
+
+        {% if status_integer > 3  and status_integer < 6 and propertyprocess.sector == "sales" %}
+        <div class="row">
             <div class="col-12">
                 {% include 'properties/includes/detail/sale_progression.html' %}
             </div>
             <!-- end col -->
-            {% endif %}
         </div>
         <!-- end row -->
+        {% endif %}
+    
+        <div class="row">
+            <div class="col-lg-8">
+                {% include 'properties/includes/detail/property_chain.html' %}
+            </div>
+            <!-- end col -->
+
+            <div class="col-lg-4">
+                {% include 'properties/includes/detail/property_info.html' %}
+            </div>
+            <!-- end col -->
+        </div>
+        <!-- end row -->
+
     </div>
     <!-- container --> 
 {% endblock %}
 
 {% block extra_javascript %}
 {{ block.super }}
+    <!-- third party js -->
+    <script src="{% static 'core/js/vendor/dragula.min.js' %}"></script>
+    <!-- third party js ends -->
+
+    <!-- demo app -->
+            <script src="{% static 'core/js/ui/component.dragula.js' %}"></script>
+    <!-- end demo js-->
+
     <script src="{% static 'properties/js/property_detail.js' %}"></script>
 {% endblock %}

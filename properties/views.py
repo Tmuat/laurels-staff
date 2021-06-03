@@ -10,6 +10,7 @@ from properties.models import (
     PropertyHistory,
     Offer,
     OffererDetails,
+    PropertyChain
 )
 
 
@@ -87,6 +88,7 @@ def property_detail(request, propertyprocess_id):
     """
 
     percentages = None
+    property_chain = None
 
     propertyprocess = get_object_or_404(PropertyProcess, id=propertyprocess_id)
     property_history = propertyprocess.history.all()
@@ -96,6 +98,7 @@ def property_detail(request, propertyprocess_id):
 
     if status_integer > 3 and status_integer < 6 and propertyprocess.sector == "sales":
         percentages = sales_progression_percentage(propertyprocess.id)
+        property_chain = propertyprocess.sales_progression.sales_progression_chain.all()
 
     property_history_list_length = len(property_history)
     offers_length = len(offers)
@@ -128,7 +131,8 @@ def property_detail(request, propertyprocess_id):
         "offers_length": offers_length,
         "offers_last_page": offers_last_page,
         "status_integer": status_integer,
-        "percentages": percentages
+        "percentages": percentages,
+        "property_chain": property_chain
     }
 
     template = "properties/property_detail.html"
@@ -259,5 +263,23 @@ def offer_history(request, offerer_id):
         context,
         request=request,
     )
+
+    return JsonResponse(data)
+
+
+def save_property_order(request):
+    data = dict()
+
+    if request.method == 'POST':
+        order = request.POST.get('order')
+        pk_split = order.split(",")
+
+        for idx, pk in enumerate(pk_split):
+            instance = PropertyChain.objects.get(
+                pk=pk)
+            instance.order = idx + 1
+            instance.save()
+
+        data["valid"] = True
 
     return JsonResponse(data)
