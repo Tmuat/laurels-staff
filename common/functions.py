@@ -115,18 +115,18 @@ def sales_progression_percentage(propertyprocess_id):
     if instance.completion_date_agreed:
         phase_4 += 1
 
-    percentages["phase_1"] = round(phase_1/6, 2)*100
+    percentages["phase_1"] = round(phase_1 / 6, 2) * 100
 
     if instance.sales_progression_settings.show_mortgage:
-        percentages["phase_2"] = round(phase_2/4, 2)*100
+        percentages["phase_2"] = round(phase_2 / 4, 2) * 100
     else:
-        percentages["phase_2"] = round(phase_2/1, 2)*100
+        percentages["phase_2"] = round(phase_2 / 1, 2) * 100
 
     if instance.sales_progression_settings.show_survey:
-        percentages["phase_3"] = round(phase_3/4, 2)*100
+        percentages["phase_3"] = round(phase_3 / 4, 2) * 100
     else:
-        percentages["phase_3"] = round(phase_3/2, 2)*100
+        percentages["phase_3"] = round(phase_3 / 2, 2) * 100
 
-    percentages["phase_4"] = round(phase_4/8, 2)*100
+    percentages["phase_4"] = round(phase_4 / 8, 2) * 100
 
     return percentages

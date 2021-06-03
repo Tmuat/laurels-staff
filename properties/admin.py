@@ -16,7 +16,7 @@ from properties.models import (
     SalesProgression,
     SalesProgressionSettings,
     SalesProgressionPhase,
-    PropertyChain
+    PropertyChain,
 )
 
 
@@ -320,7 +320,7 @@ class SalesProgressionAdmin(admin.ModelAdmin):
     inlines = [
         SalesProgressionPhaseAdminInline,
         SalesProgressionSettingsAdminInline,
-        PropertyChainAdminInline
+        PropertyChainAdminInline,
     ]
 
     list_display = [

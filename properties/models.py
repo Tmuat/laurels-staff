@@ -917,7 +917,7 @@ class PropertyChain(UpdatedAndCreated):
         ordering = [
             "sales_progression__propertyprocess__property__postcode",
             "sales_progression__propertyprocess__property__address_line_1",
-            "order"
+            "order",
         ]
         verbose_name = "Sales Progression Chain"
         verbose_name_plural = "Sales Progressions Chain"
@@ -927,22 +927,13 @@ class PropertyChain(UpdatedAndCreated):
         on_delete=models.CASCADE,
         related_name="sales_progression_chain",
     )
-    company = models.CharField(max_length=150,
-                               null=False)
-    branch = models.CharField(max_length=150,
-                              null=True)
-    address_line_1 = models.CharField(max_length=150,
-                                      null=False)
-    address_line_2 = models.CharField(max_length=150,
-                                      null=True,
-                                      blank=True)
-    town = models.CharField(max_length=100,
-                            null=False)
-    postcode = models.CharField(max_length=8,
-                                null=True)
-    chain_notes = models.CharField(max_length=1000,
-                                   null=True,
-                                   blank=True)
+    company = models.CharField(max_length=150, null=False)
+    branch = models.CharField(max_length=150, null=True)
+    address_line_1 = models.CharField(max_length=150, null=False)
+    address_line_2 = models.CharField(max_length=150, null=True, blank=True)
+    town = models.CharField(max_length=100, null=False)
+    postcode = models.CharField(max_length=8, null=True)
+    chain_notes = models.CharField(max_length=1000, null=True, blank=True)
     order = models.IntegerField(null=True)
 
     def __str__(self):

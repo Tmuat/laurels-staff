@@ -4,13 +4,16 @@ from django.http import JsonResponse
 from django.shortcuts import render, reverse, redirect, get_object_or_404
 from django.template.loader import render_to_string
 
-from common.functions import macro_status_calculator, sales_progression_percentage
+from common.functions import (
+    macro_status_calculator,
+    sales_progression_percentage,
+)
 from properties.models import (
     PropertyProcess,
     PropertyHistory,
     Offer,
     OffererDetails,
-    PropertyChain
+    PropertyChain,
 )
 
 
@@ -96,9 +99,15 @@ def property_detail(request, propertyprocess_id):
 
     status_integer = macro_status_calculator(propertyprocess.macro_status)
 
-    if status_integer > 3 and status_integer < 6 and propertyprocess.sector == "sales":
+    if (
+        status_integer > 3
+        and status_integer < 6
+        and propertyprocess.sector == "sales"
+    ):
         percentages = sales_progression_percentage(propertyprocess.id)
-        property_chain = propertyprocess.sales_progression.sales_progression_chain.all()
+        property_chain = (
+            propertyprocess.sales_progression.sales_progression_chain.all()
+        )
 
     property_history_list_length = len(property_history)
     offers_length = len(offers)
@@ -132,7 +141,7 @@ def property_detail(request, propertyprocess_id):
         "offers_last_page": offers_last_page,
         "status_integer": status_integer,
         "percentages": percentages,
-        "property_chain": property_chain
+        "property_chain": property_chain,
     }
 
     template = "properties/property_detail.html"
@@ -270,13 +279,12 @@ def offer_history(request, offerer_id):
 def save_property_order(request):
     data = dict()
 
-    if request.method == 'POST':
-        order = request.POST.get('order')
+    if request.method == "POST":
+        order = request.POST.get("order")
         pk_split = order.split(",")
 
         for idx, pk in enumerate(pk_split):
-            instance = PropertyChain.objects.get(
-                pk=pk)
+            instance = PropertyChain.objects.get(pk=pk)
             instance.order = idx + 1
             instance.save()
 

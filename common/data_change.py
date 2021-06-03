@@ -1587,9 +1587,9 @@ for instance in propertychain_model:
             salesprogression_instance["old_pk"]
             == instance["fields"]["sale_status_link"]
         ):
-            instance["fields"]["sales_progression"] = salesprogression_instance[
-                "pk"
-            ]
+            instance["fields"][
+                "sales_progression"
+            ] = salesprogression_instance["pk"]
 
     del instance["fields"]["sale_status_link"]
 
