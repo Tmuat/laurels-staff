@@ -952,3 +952,111 @@ class PropertyChain(UpdatedAndCreated):
                 self.sales_progression.propertyprocess.property.address_line_2,
             )
         return property_address
+
+
+class Marketing(UpdatedAndCreated):
+    class Meta:
+        ordering = [
+            "propertyprocess__property__postcode",
+            "propertyprocess__property__address_line_1",
+        ]
+        verbose_name = "Marketing"
+        verbose_name_plural = "Marketing"
+
+    PREVIOUSCLIENT = "previous_client"
+    APPLICANT = "applicant"
+    SOCIALMEDIA = "social_media"
+    RECOMMENDATION = "recommendation"
+    LAURELS = "laurels_team_member_friends_or_family_of_laurels"
+    FLYER = "sold_let_flyer"
+    TOUT = "tout_letter"
+    LETTER = "specific_letter"
+    BROCHURE = "brochure"
+    BUSINESSCARD = "business_card_drop"
+    COMBINEDTOUTING = "combined_touting"
+    GOOGLE = "google_search"
+    MARKETING = "marketing_boards"
+    LOCAL = "local_presence"
+    SOLDONROAD = "sold_on_road"
+
+    RIGHTMOVE = "rightmove"
+    ZOOPLA = "zoopla"
+    SOCIAL = "social_media"
+    LAURELSWEBSITE = "laurels_website_search"
+    LAURELSTEAM = "laurels_team_recommended"
+    MARKETINGBOARDS = "marketing_boards"
+    PUBLIC = "public_word_of_mouth"
+
+    LAURELSASKED = "laurels_pro-actively_asked"
+    SOCIALMEDIAMESSAGE = "social_media_message"
+    PHONECALL = "phone_call_to_office"
+    WEBSITE = "website_message"
+    DIRECTEMAIL = "direct_email"
+
+    HEAR_ABOUT_LAURELS = (
+        (PREVIOUSCLIENT, 'Previous Client'),
+        (APPLICANT, 'Applicant'),
+        (SOCIALMEDIA, 'Social Media Posts'),
+        (RECOMMENDATION, 'Recommendation'),
+        (LAURELS, 'Laurels Team Member/Friends or Family of Laurels'),
+        (FLYER, 'Sold/Let Flyer'),
+        (TOUT, 'Tout Letter'),
+        (LETTER, 'Specific Letter'),
+        (BROCHURE, 'Brochure Drop'),
+        (BUSINESSCARD, 'Business Card Drop'),
+        (COMBINEDTOUTING, 'Combined Touting'),
+        (GOOGLE, 'Google Search'),
+        (MARKETING, 'Marketing Boards'),
+        (LOCAL, 'Local Presence'),
+        (SOLDONROAD, 'Sold on Road')
+    )
+
+    APPLICANT_INTRO = (
+        (RIGHTMOVE, 'Rightmove'),
+        (ZOOPLA, 'Zoopla'),
+        (SOCIAL, 'Social Media'),
+        (LAURELSWEBSITE, 'Laurels Website Search'),
+        (LAURELSTEAM, 'Laurels Team Recommended'),
+        (MARKETINGBOARDS, 'Marketing Boards'),
+        (PUBLIC, 'Public Word of Mouth'),
+    )
+
+    CONTACT_LAURELS = (
+        (LAURELSASKED, 'Laurels Pro-actively Asked'),
+        (SOCIALMEDIAMESSAGE, 'Social Media Message'),
+        (PHONECALL, 'Phone Call To Office'),
+        (WEBSITE, 'Website Message'),
+        (DIRECTEMAIL, 'Direct Email'),
+    )
+
+    propertyprocess = models.OneToOneField(
+        PropertyProcess,
+        on_delete=models.CASCADE,
+        related_name="marketing",
+    )
+    hear_about_laurels = models.CharField(max_length=100,
+                                          null=True,
+                                          blank=False,
+                                          choices=HEAR_ABOUT_LAURELS)
+    applicant_intro = models.CharField(max_length=100,
+                                       null=True,
+                                       blank=False,
+                                       choices=APPLICANT_INTRO)
+    contact_laurels = models.CharField(max_length=100,
+                                       null=True,
+                                       blank=False,
+                                       choices=CONTACT_LAURELS)
+
+    def __str__(self):
+        if self.propertyprocess.property.address_line_2 == "":
+            property_address = "%s, %s" % (
+                self.propertyprocess.property.postcode,
+                self.propertyprocess.property.address_line_1,
+            )
+        else:
+            property_address = "%s, %s, %s" % (
+                self.propertyprocess.property.postcode,
+                self.propertyprocess.property.address_line_1,
+                self.propertyprocess.property.address_line_2,
+            )
+        return property_address

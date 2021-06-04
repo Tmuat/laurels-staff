@@ -17,6 +17,7 @@ from properties.models import (
     SalesProgressionSettings,
     SalesProgressionPhase,
     PropertyChain,
+    Marketing
 )
 
 
@@ -150,6 +151,16 @@ class SalesProgressionAdminInline(admin.StackedInline):
     ]
 
 
+class MarketingAdminInline(admin.StackedInline):
+    model = Marketing
+    readonly_fields = [
+        "created",
+        "created_by",
+        "updated",
+        "updated_by",
+    ]
+
+
 class PropertyProcessAdmin(admin.ModelAdmin):
     inlines = [
         PropertyHistoryAdminInline,
@@ -161,6 +172,7 @@ class PropertyProcessAdmin(admin.ModelAdmin):
         DealAdminInline,
         ExchangeAdminInline,
         SalesProgressionAdminInline,
+        MarketingAdminInline
     ]
 
     list_display = [
