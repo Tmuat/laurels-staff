@@ -299,9 +299,7 @@ def property_chain_detail(request, property_chain_id):
     """
 
     data = dict()
-    chain_instance = get_object_or_404(
-        PropertyChain, id=property_chain_id
-    )
+    chain_instance = get_object_or_404(PropertyChain, id=property_chain_id)
 
     context = {"instance": chain_instance}
     data["html_modal"] = render_to_string(

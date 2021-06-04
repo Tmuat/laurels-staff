@@ -8,7 +8,7 @@ from properties.views import (
     offer_history,
     offers_pagination,
     save_property_order,
-    property_chain_detail
+    property_chain_detail,
 )
 
 

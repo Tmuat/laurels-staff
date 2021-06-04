@@ -2,6 +2,8 @@ from datetime import date
 
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.dispatch import receiver
+from django.db.models.signals import pre_save
 
 from common.models import UpdatedAndCreated
 from regionandhub.models import Hub
@@ -994,39 +996,39 @@ class Marketing(UpdatedAndCreated):
     DIRECTEMAIL = "direct_email"
 
     HEAR_ABOUT_LAURELS = [
-        (PREVIOUSCLIENT, 'Previous Client'),
-        (APPLICANT, 'Applicant'),
-        (SOCIALMEDIA, 'Social Media Posts'),
-        (RECOMMENDATION, 'Recommendation'),
-        (LAURELS, 'Laurels Team Member/Friends or Family of Laurels'),
-        (FLYER, 'Sold/Let Flyer'),
-        (TOUT, 'Tout Letter'),
-        (LETTER, 'Specific Letter'),
-        (BROCHURE, 'Brochure Drop'),
-        (BUSINESSCARD, 'Business Card Drop'),
-        (COMBINEDTOUTING, 'Combined Touting'),
-        (GOOGLE, 'Google Search'),
-        (MARKETING, 'Marketing Boards'),
-        (LOCAL, 'Local Presence'),
-        (SOLDONROAD, 'Sold on Road')
+        (PREVIOUSCLIENT, "Previous Client"),
+        (APPLICANT, "Applicant"),
+        (SOCIALMEDIA, "Social Media Posts"),
+        (RECOMMENDATION, "Recommendation"),
+        (LAURELS, "Laurels Team Member/Friends or Family of Laurels"),
+        (FLYER, "Sold/Let Flyer"),
+        (TOUT, "Tout Letter"),
+        (LETTER, "Specific Letter"),
+        (BROCHURE, "Brochure Drop"),
+        (BUSINESSCARD, "Business Card Drop"),
+        (COMBINEDTOUTING, "Combined Touting"),
+        (GOOGLE, "Google Search"),
+        (MARKETING, "Marketing Boards"),
+        (LOCAL, "Local Presence"),
+        (SOLDONROAD, "Sold on Road"),
     ]
 
     APPLICANT_INTRO = [
-        (RIGHTMOVE, 'Rightmove'),
-        (ZOOPLA, 'Zoopla'),
-        (SOCIAL, 'Social Media'),
-        (LAURELSWEBSITE, 'Laurels Website Search'),
-        (LAURELSTEAM, 'Laurels Team Recommended'),
-        (MARKETINGBOARDS, 'Marketing Boards'),
-        (PUBLIC, 'Public Word of Mouth'),
+        (RIGHTMOVE, "Rightmove"),
+        (ZOOPLA, "Zoopla"),
+        (SOCIAL, "Social Media"),
+        (LAURELSWEBSITE, "Laurels Website Search"),
+        (LAURELSTEAM, "Laurels Team Recommended"),
+        (MARKETINGBOARDS, "Marketing Boards"),
+        (PUBLIC, "Public Word of Mouth"),
     ]
 
     CONTACT_LAURELS = [
-        (LAURELSASKED, 'Laurels Pro-actively Asked'),
-        (SOCIALMEDIAMESSAGE, 'Social Media Message'),
-        (PHONECALL, 'Phone Call To Office'),
-        (WEBSITE, 'Website Message'),
-        (DIRECTEMAIL, 'Direct Email'),
+        (LAURELSASKED, "Laurels Pro-actively Asked"),
+        (SOCIALMEDIAMESSAGE, "Social Media Message"),
+        (PHONECALL, "Phone Call To Office"),
+        (WEBSITE, "Website Message"),
+        (DIRECTEMAIL, "Direct Email"),
     ]
 
     propertyprocess = models.OneToOneField(
@@ -1034,18 +1036,15 @@ class Marketing(UpdatedAndCreated):
         on_delete=models.CASCADE,
         related_name="marketing",
     )
-    hear_about_laurels = models.CharField(max_length=100,
-                                          null=True,
-                                          blank=False,
-                                          choices=HEAR_ABOUT_LAURELS)
-    applicant_intro = models.CharField(max_length=100,
-                                       null=True,
-                                       blank=False,
-                                       choices=APPLICANT_INTRO)
-    contact_laurels = models.CharField(max_length=100,
-                                       null=True,
-                                       blank=False,
-                                       choices=CONTACT_LAURELS)
+    hear_about_laurels = models.CharField(
+        max_length=100, null=True, blank=False, choices=HEAR_ABOUT_LAURELS
+    )
+    applicant_intro = models.CharField(
+        max_length=100, null=True, blank=False, choices=APPLICANT_INTRO
+    )
+    contact_laurels = models.CharField(
+        max_length=100, null=True, blank=False, choices=CONTACT_LAURELS
+    )
 
     def __str__(self):
         if self.propertyprocess.property.address_line_2 == "":
@@ -1060,3 +1059,55 @@ class Marketing(UpdatedAndCreated):
                 self.propertyprocess.property.address_line_2,
             )
         return property_address
+
+
+class PropertyFees(UpdatedAndCreated):
+    class Meta:
+        ordering = [
+            "propertyprocess__property__postcode",
+            "propertyprocess__property__address_line_1",
+        ]
+        verbose_name = "Property Fee"
+        verbose_name_plural = "Property Fees"
+
+    propertyprocess = models.ForeignKey(
+        PropertyProcess,
+        on_delete=models.CASCADE,
+        related_name="property_fees",
+    )
+    fee = models.DecimalField(
+        decimal_places=2, max_digits=5, null=True, blank=True
+    )
+    price = models.IntegerField(null=True, blank=True)
+    deal_date = models.DateField(null=True, blank=True)
+    new_business = models.FloatField(null=True, blank=True)
+    deal = models.BooleanField(default=False, null=True, blank=False)
+    show_all = models.BooleanField(default=True, null=True, blank=False)
+    active = models.BooleanField(default=True, null=False, blank=False)
+
+    def __str__(self):
+        if self.propertyprocess.property.address_line_2 == "":
+            property_address = "%s, %s" % (
+                self.propertyprocess.property.postcode,
+                self.propertyprocess.property.address_line_1,
+            )
+        else:
+            property_address = "%s, %s, %s" % (
+                self.propertyprocess.property.postcode,
+                self.propertyprocess.property.address_line_1,
+                self.propertyprocess.property.address_line_2,
+            )
+        return property_address
+
+
+@receiver(pre_save, sender=PropertyFees)
+def save_field(sender, instance, **kwargs):
+    if True:
+        if instance.propertyprocess.sector == "sales":
+            instance.calculated_value = instance.price * (
+                instance.fee / 100
+            )
+        else:
+            instance.calculated_value = (
+                instance.price * (instance.fee / 100)
+            ) * 12

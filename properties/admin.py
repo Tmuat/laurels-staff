@@ -17,7 +17,7 @@ from properties.models import (
     SalesProgressionSettings,
     SalesProgressionPhase,
     PropertyChain,
-    Marketing
+    Marketing,
 )
 
 
@@ -172,7 +172,7 @@ class PropertyProcessAdmin(admin.ModelAdmin):
         DealAdminInline,
         ExchangeAdminInline,
         SalesProgressionAdminInline,
-        MarketingAdminInline
+        MarketingAdminInline,
     ]
 
     list_display = [

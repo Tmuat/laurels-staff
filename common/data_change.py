@@ -1666,8 +1666,13 @@ for instance in marketing_model:
         instance["fields"]["hear_about_laurels"] = "social_media"
     elif instance["fields"]["hear_about_laurels"] == "Recommendation":
         instance["fields"]["hear_about_laurels"] = "recommendation"
-    elif instance["fields"]["hear_about_laurels"] == "Laurels Team Member/Friends or Family of Laurels":
-        instance["fields"]["hear_about_laurels"] = "laurels_team_member_friends_or_family_of_laurels"
+    elif (
+        instance["fields"]["hear_about_laurels"]
+        == "Laurels Team Member/Friends or Family of Laurels"
+    ):
+        instance["fields"][
+            "hear_about_laurels"
+        ] = "laurels_team_member_friends_or_family_of_laurels"
     elif instance["fields"]["hear_about_laurels"] == "Sold/Let Flyer":
         instance["fields"]["hear_about_laurels"] = "sold_let_flyer"
     elif instance["fields"]["hear_about_laurels"] == "Tout Letter":
@@ -1688,7 +1693,7 @@ for instance in marketing_model:
         instance["fields"]["hear_about_laurels"] = "local_presence"
     elif instance["fields"]["hear_about_laurels"] == "Sold on Road":
         instance["fields"]["hear_about_laurels"] = "sold_on_road"
-    
+
     if instance["fields"]["applicant_intro"] == "Rightmove":
         instance["fields"]["applicant_intro"] = "rightmove"
     elif instance["fields"]["applicant_intro"] == "Zoopla":

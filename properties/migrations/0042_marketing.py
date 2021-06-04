@@ -8,27 +8,109 @@ import uuid
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('properties', '0041_propertychain'),
+        ("properties", "0041_propertychain"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Marketing',
+            name="Marketing",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('updated', models.DateTimeField(auto_now=True)),
-                ('created_by', models.CharField(blank=True, max_length=100)),
-                ('updated_by', models.CharField(blank=True, max_length=100)),
-                ('hear_about_laurels', models.CharField(choices=[('previous_client', 'Previous Client'), ('applicant', 'Applicant'), ('social_media', 'Social Media Posts'), ('recommendation', 'Recommendation'), ('laurels_team_member_friends_or_family_of_laurels', 'Laurels Team Member/Friends or Family of Laurels'), ('sold_let_flyer', 'Sold/Let Flyer'), ('tout_letter', 'Tout Letter'), ('specific_letter', 'Specific Letter'), ('brochure', 'Brochure Drop'), ('business_card_drop', 'Business Card Drop'), ('combined_touting', 'Combined Touting'), ('google_search', 'Google Search'), ('marketing_boards', 'Marketing Boards'), ('local_presence', 'Local Presence'), ('sold_on_road', 'Sold on Road')], max_length=100, null=True)),
-                ('applicant_intro', models.CharField(choices=[('rightmove', 'Rightmove'), ('zoopla', 'Zoopla'), ('social_media', 'Social Media'), ('laurels_website_search', 'Laurels Website Search'), ('laurels_team_recommended', 'Laurels Team Recommended'), ('marketing_boards', 'Marketing Boards'), ('public_word_of_mouth', 'Public Word of Mouth')], max_length=100, null=True)),
-                ('contact_laurels', models.CharField(blank=True, choices=[('laurels_pro-actively_asked', 'Laurels Pro-actively Asked'), ('social_media_message', 'Social Media Message'), ('phone_call_to_office', 'Phone Call To Office'), ('website_message', 'Website Message'), ('direct_email', 'Direct Email')], max_length=100, null=True)),
-                ('propertyprocess', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='marketing', to='properties.propertyprocess')),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                ("created", models.DateTimeField(auto_now_add=True)),
+                ("updated", models.DateTimeField(auto_now=True)),
+                ("created_by", models.CharField(blank=True, max_length=100)),
+                ("updated_by", models.CharField(blank=True, max_length=100)),
+                (
+                    "hear_about_laurels",
+                    models.CharField(
+                        choices=[
+                            ("previous_client", "Previous Client"),
+                            ("applicant", "Applicant"),
+                            ("social_media", "Social Media Posts"),
+                            ("recommendation", "Recommendation"),
+                            (
+                                "laurels_team_member_friends_or_family_of_laurels",
+                                "Laurels Team Member/Friends or Family of Laurels",
+                            ),
+                            ("sold_let_flyer", "Sold/Let Flyer"),
+                            ("tout_letter", "Tout Letter"),
+                            ("specific_letter", "Specific Letter"),
+                            ("brochure", "Brochure Drop"),
+                            ("business_card_drop", "Business Card Drop"),
+                            ("combined_touting", "Combined Touting"),
+                            ("google_search", "Google Search"),
+                            ("marketing_boards", "Marketing Boards"),
+                            ("local_presence", "Local Presence"),
+                            ("sold_on_road", "Sold on Road"),
+                        ],
+                        max_length=100,
+                        null=True,
+                    ),
+                ),
+                (
+                    "applicant_intro",
+                    models.CharField(
+                        choices=[
+                            ("rightmove", "Rightmove"),
+                            ("zoopla", "Zoopla"),
+                            ("social_media", "Social Media"),
+                            (
+                                "laurels_website_search",
+                                "Laurels Website Search",
+                            ),
+                            (
+                                "laurels_team_recommended",
+                                "Laurels Team Recommended",
+                            ),
+                            ("marketing_boards", "Marketing Boards"),
+                            ("public_word_of_mouth", "Public Word of Mouth"),
+                        ],
+                        max_length=100,
+                        null=True,
+                    ),
+                ),
+                (
+                    "contact_laurels",
+                    models.CharField(
+                        blank=True,
+                        choices=[
+                            (
+                                "laurels_pro-actively_asked",
+                                "Laurels Pro-actively Asked",
+                            ),
+                            ("social_media_message", "Social Media Message"),
+                            ("phone_call_to_office", "Phone Call To Office"),
+                            ("website_message", "Website Message"),
+                            ("direct_email", "Direct Email"),
+                        ],
+                        max_length=100,
+                        null=True,
+                    ),
+                ),
+                (
+                    "propertyprocess",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="marketing",
+                        to="properties.propertyprocess",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Marketing',
-                'verbose_name_plural': 'Marketing',
-                'ordering': ['propertyprocess__property__postcode', 'propertyprocess__property__address_line_1'],
+                "verbose_name": "Marketing",
+                "verbose_name_plural": "Marketing",
+                "ordering": [
+                    "propertyprocess__property__postcode",
+                    "propertyprocess__property__address_line_1",
+                ],
             },
         ),
     ]
