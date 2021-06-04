@@ -1104,10 +1104,8 @@ class PropertyFees(UpdatedAndCreated):
 def save_field(sender, instance, **kwargs):
     if True:
         if instance.propertyprocess.sector == "sales":
-            instance.calculated_value = instance.price * (
-                instance.fee / 100
-            )
+            instance.new_business = instance.price * (instance.fee / 100)
         else:
-            instance.calculated_value = (
+            instance.new_business = (
                 instance.price * (instance.fee / 100)
             ) * 12

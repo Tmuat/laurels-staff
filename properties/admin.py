@@ -18,6 +18,7 @@ from properties.models import (
     SalesProgressionPhase,
     PropertyChain,
     Marketing,
+    PropertyFees,
 )
 
 
@@ -161,8 +162,20 @@ class MarketingAdminInline(admin.StackedInline):
     ]
 
 
+class PropertyFeeAdminInline(admin.TabularInline):
+    model = PropertyFees
+    readonly_fields = [
+        "new_business",
+        "created",
+        "created_by",
+        "updated",
+        "updated_by",
+    ]
+
+
 class PropertyProcessAdmin(admin.ModelAdmin):
     inlines = [
+        PropertyFeeAdminInline,
         PropertyHistoryAdminInline,
         ValuationAdminInline,
         InstructionAdminInline,
