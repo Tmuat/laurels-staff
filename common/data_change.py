@@ -20,13 +20,14 @@ from django.template.defaultfilters import slugify
 
 # python3 manage.py dumpdata home.property > data/property.json --settings=laurels_staff_portal.settings.production
 # python3 manage.py dumpdata home.propertyprocess > data/property_process.json --settings=laurels_staff_portal.settings.production
-# python3 manage.py dumpdata home.valuation > data/valuations.json --settings=laurels_staff_portal.settings.production
+# python3 manage.py dumpdata home.valuation > data/valuation.json --settings=laurels_staff_portal.settings.production
 # python3 manage.py dumpdata home.instruction > data/instruction.json --settings=laurels_staff_portal.settings.production
 # python3 manage.py dumpdata home.offer > data/offer.json --settings=laurels_staff_portal.settings.production
 # python3 manage.py dumpdata home.deal > data/deal.json --settings=laurels_staff_portal.settings.production
 # python3 manage.py dumpdata home.exchangemove > data/exchangemove.json --settings=laurels_staff_portal.settings.production
 # python3 manage.py dumpdata home.salestatus > data/salesprogression.json --settings=laurels_staff_portal.settings.production
 # python3 manage.py dumpdata home.propertychain > data/propertychain.json --settings=laurels_staff_portal.settings.production
+# python3 manage.py dumpdata home.marketing > data/marketing.json --settings=laurels_staff_portal.settings.production
 
 # python3 manage.py flush
 
@@ -65,6 +66,7 @@ salesprogression_dict = None
 salesprogressionsettings_dict = None
 salesprogressionphase_dict = None
 propertychain_dict = None
+marketing_dict = None
 hub_dict = None
 hub_targets_dict = None
 user_dict = None
@@ -1622,6 +1624,124 @@ with open(
     json.dump(propertychain_model, json_data)
 
 # ----------------------------------------
+# MARKETING MODEL
+# ----------------------------------------
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/originals/marketing.json",
+    "r",
+) as json_data:
+    marketing_model = json.load(json_data)
+
+for instance in marketing_model:
+
+    # Changing the model to new value
+
+    instance["model"] = "properties.marketing"
+
+    # End changing the model to new value
+
+    # Loop property list for property process & delete old field
+
+    for propertyprocess_instance in propertyprocess_dict:
+        if (
+            propertyprocess_instance["old_pk"]
+            == instance["fields"]["propertyprocess_link"]
+        ):
+            instance["fields"]["propertyprocess"] = propertyprocess_instance[
+                "pk"
+            ]
+
+    del instance["fields"]["propertyprocess_link"]
+
+    # End loop
+
+    # Changing the old values to new values
+
+    if instance["fields"]["hear_about_laurels"] == "Previous Client":
+        instance["fields"]["hear_about_laurels"] = "previous_client"
+    elif instance["fields"]["hear_about_laurels"] == "Applicant":
+        instance["fields"]["hear_about_laurels"] = "applicant"
+    elif instance["fields"]["hear_about_laurels"] == "Social Media Posts":
+        instance["fields"]["hear_about_laurels"] = "social_media"
+    elif instance["fields"]["hear_about_laurels"] == "Recommendation":
+        instance["fields"]["hear_about_laurels"] = "recommendation"
+    elif instance["fields"]["hear_about_laurels"] == "Laurels Team Member/Friends or Family of Laurels":
+        instance["fields"]["hear_about_laurels"] = "laurels_team_member_friends_or_family_of_laurels"
+    elif instance["fields"]["hear_about_laurels"] == "Sold/Let Flyer":
+        instance["fields"]["hear_about_laurels"] = "sold_let_flyer"
+    elif instance["fields"]["hear_about_laurels"] == "Tout Letter":
+        instance["fields"]["hear_about_laurels"] = "tout_letter"
+    elif instance["fields"]["hear_about_laurels"] == "Specific Letter":
+        instance["fields"]["hear_about_laurels"] = "specific_letter"
+    elif instance["fields"]["hear_about_laurels"] == "Brochure Drop":
+        instance["fields"]["hear_about_laurels"] = "brochure"
+    elif instance["fields"]["hear_about_laurels"] == "Business Card Drop":
+        instance["fields"]["hear_about_laurels"] = "business_card_drop"
+    elif instance["fields"]["hear_about_laurels"] == "Combined Touting":
+        instance["fields"]["hear_about_laurels"] = "combined_touting"
+    elif instance["fields"]["hear_about_laurels"] == "Google Search":
+        instance["fields"]["hear_about_laurels"] = "google_search"
+    elif instance["fields"]["hear_about_laurels"] == "Marketing Boards":
+        instance["fields"]["hear_about_laurels"] = "marketing_boards"
+    elif instance["fields"]["hear_about_laurels"] == "Local Presence":
+        instance["fields"]["hear_about_laurels"] = "local_presence"
+    elif instance["fields"]["hear_about_laurels"] == "Sold on Road":
+        instance["fields"]["hear_about_laurels"] = "sold_on_road"
+    
+    if instance["fields"]["applicant_intro"] == "Rightmove":
+        instance["fields"]["applicant_intro"] = "rightmove"
+    elif instance["fields"]["applicant_intro"] == "Zoopla":
+        instance["fields"]["applicant_intro"] = "zoopla"
+    elif instance["fields"]["applicant_intro"] == "Social Media":
+        instance["fields"]["applicant_intro"] = "social_media"
+    elif instance["fields"]["applicant_intro"] == "Laurels Website Search":
+        instance["fields"]["applicant_intro"] = "laurels_website_search"
+    elif instance["fields"]["applicant_intro"] == "Laurels Team Recommended":
+        instance["fields"]["applicant_intro"] = "laurels_team_recommended"
+    elif instance["fields"]["applicant_intro"] == "Marketing Boards":
+        instance["fields"]["applicant_intro"] = "marketing_boards"
+    elif instance["fields"]["applicant_intro"] == "Public Word of Mouth":
+        instance["fields"]["applicant_intro"] = "public_word_of_mouth"
+
+    if instance["fields"]["contact_laurels"] == "Laurels Pro-actively Asked":
+        instance["fields"]["contact_laurels"] = "laurels_pro-actively_asked"
+    elif instance["fields"]["contact_laurels"] == "Social Media Message":
+        instance["fields"]["contact_laurels"] = "social_media_message"
+    elif instance["fields"]["contact_laurels"] == "Phone Call To Office":
+        instance["fields"]["contact_laurels"] = "phone_call_to_office"
+    elif instance["fields"]["contact_laurels"] == "Website Message":
+        instance["fields"]["contact_laurels"] = "website_message"
+    elif instance["fields"]["contact_laurels"] == "Direct Email":
+        instance["fields"]["contact_laurels"] = "direct_email"
+
+    # Add new fields
+
+    instance["fields"]["created_by"] = "Admin"
+    instance["fields"]["created"] = "2000-01-13T13:13:13.000Z"
+    instance["fields"]["updated_by"] = "Admin"
+    instance["fields"]["updated"] = "2000-01-13T13:13:13.000Z"
+
+    # End add new fields
+
+    # Move original PK
+
+    instance["old_pk"] = instance["pk"]
+
+    # End move original PK
+
+    # Create new UUID field
+
+    instance["pk"] = str(uuid.uuid4())
+
+marketing_dict = marketing_model
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/marketing.json", "w"
+) as json_data:
+    json.dump(marketing_model, json_data)
+
+# ----------------------------------------
 # CREATE MASTER JSON
 # ----------------------------------------
 
@@ -1688,6 +1808,9 @@ for object in salesprogressionphase_dict:
     master_dict.append(object)
 
 for object in propertychain_dict:
+    master_dict.append(object)
+
+for object in marketing_dict:
     master_dict.append(object)
 
 with open(

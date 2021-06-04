@@ -993,7 +993,7 @@ class Marketing(UpdatedAndCreated):
     WEBSITE = "website_message"
     DIRECTEMAIL = "direct_email"
 
-    HEAR_ABOUT_LAURELS = (
+    HEAR_ABOUT_LAURELS = [
         (PREVIOUSCLIENT, 'Previous Client'),
         (APPLICANT, 'Applicant'),
         (SOCIALMEDIA, 'Social Media Posts'),
@@ -1009,9 +1009,9 @@ class Marketing(UpdatedAndCreated):
         (MARKETING, 'Marketing Boards'),
         (LOCAL, 'Local Presence'),
         (SOLDONROAD, 'Sold on Road')
-    )
+    ]
 
-    APPLICANT_INTRO = (
+    APPLICANT_INTRO = [
         (RIGHTMOVE, 'Rightmove'),
         (ZOOPLA, 'Zoopla'),
         (SOCIAL, 'Social Media'),
@@ -1019,15 +1019,15 @@ class Marketing(UpdatedAndCreated):
         (LAURELSTEAM, 'Laurels Team Recommended'),
         (MARKETINGBOARDS, 'Marketing Boards'),
         (PUBLIC, 'Public Word of Mouth'),
-    )
+    ]
 
-    CONTACT_LAURELS = (
+    CONTACT_LAURELS = [
         (LAURELSASKED, 'Laurels Pro-actively Asked'),
         (SOCIALMEDIAMESSAGE, 'Social Media Message'),
         (PHONECALL, 'Phone Call To Office'),
         (WEBSITE, 'Website Message'),
         (DIRECTEMAIL, 'Direct Email'),
-    )
+    ]
 
     propertyprocess = models.OneToOneField(
         PropertyProcess,
