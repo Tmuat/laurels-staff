@@ -1,3 +1,4 @@
+{% load humanize %}
 <!-- Property -->
 <div class="card bg-success">
     <div class="card-body">
@@ -17,10 +18,40 @@
                                 <h5 class="mb-1">{{ propertyprocess.get_macro_status_display }}</h5>
                                 <p class="mb-0 font-13 text-white-50">Status</p>
                             </li>
-                            <li class="list-inline-item">
-                                <h5 class="mb-1">-</h5>
-                                <p class="mb-0 font-13 text-white-50">Another Field</p>
+                            {% if status_integer > 3 and status_integer < 6 %}
+                            <li class="list-inline-item mr-3">
+                                <h5 class="mb-1">£{{ propertyprocess.property_fees.first.new_business|intcomma }}</h5>
+                                <p class="mb-0 font-13 text-white-50">New Business</p>
                             </li>
+                            <li class="list-inline-item mr-3">
+                                <h5 class="mb-1">{{ propertyprocess.property_fees.first.fee }}%</h5>
+                                <p class="mb-0 font-13 text-white-50">Fee</p>
+                            </li>
+                            <li class="list-inline-item mr-3">
+                                <h5 class="mb-1">£{{ propertyprocess.deal.offer_accepted.offer|intcomma }}</h5>
+                                <p class="mb-0 font-13 text-white-50">Price Agreed</p>
+                            </li>
+                            {% endif %}
+                            {% if status_integer == 2 %}
+                            <li class="list-inline-item mr-3">
+                                <h5 class="mb-1">£{{ propertyprocess.valuations.price_quoted|intcomma }}</h5>
+                                <p class="mb-0 font-13 text-white-50">Price Quoted</p>
+                            </li>
+                            <li class="list-inline-item mr-3">
+                                <h5 class="mb-1">{{ propertyprocess.valuation.fee_quoted }}%</h5>
+                                <p class="mb-0 font-13 text-white-50">Fee Quoted</p>
+                            </li>
+                            {% endif %}
+                            {% if status_integer == 3 %}
+                            <li class="list-inline-item mr-3">
+                                <h5 class="mb-1">£{{ propertyprocess.instruction.listing_price|intcomma }}</h5>
+                                <p class="mb-0 font-13 text-white-50">Listing Price</p>
+                            </li>
+                            <li class="list-inline-item mr-3">
+                                <h5 class="mb-1">{{ propertyprocess.instruction.fee_agreed }}%</h5>
+                                <p class="mb-0 font-13 text-white-50">Fee Agreed</p>
+                            </li>
+                            {% endif %}
                         </ul>
                     </div>
                     <!-- end media-body-->
