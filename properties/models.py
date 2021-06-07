@@ -608,7 +608,7 @@ class Deal(UpdatedAndCreated):
     )
     date = models.DateField(null=False, blank=False)
     target_move_date = models.DateField()
-    offer_accepted = models.ForeignKey(
+    offer_accepted = models.OneToOneField(
         Offer, on_delete=models.CASCADE, related_name="offer_accepted"
     )
 
@@ -1066,6 +1066,7 @@ class PropertyFees(UpdatedAndCreated):
         ordering = [
             "propertyprocess__property__postcode",
             "propertyprocess__property__address_line_1",
+            "date"
         ]
         verbose_name = "Property Fee"
         verbose_name_plural = "Property Fees"
@@ -1079,7 +1080,7 @@ class PropertyFees(UpdatedAndCreated):
         decimal_places=2, max_digits=5, null=True, blank=True
     )
     price = models.IntegerField(null=True, blank=True)
-    deal_date = models.DateField(null=True, blank=True)
+    date = models.DateField(null=True, blank=True)
     new_business = models.FloatField(null=True, blank=True)
     active = models.BooleanField(default=False, null=True, blank=False)
     show_all = models.BooleanField(default=True, null=True, blank=False)
