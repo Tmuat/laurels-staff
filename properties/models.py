@@ -1081,9 +1081,8 @@ class PropertyFees(UpdatedAndCreated):
     price = models.IntegerField(null=True, blank=True)
     deal_date = models.DateField(null=True, blank=True)
     new_business = models.FloatField(null=True, blank=True)
-    deal = models.BooleanField(default=False, null=True, blank=False)
+    active = models.BooleanField(default=False, null=True, blank=False)
     show_all = models.BooleanField(default=True, null=True, blank=False)
-    active = models.BooleanField(default=True, null=False, blank=False)
 
     def __str__(self):
         if self.propertyprocess.property.address_line_2 == "":
@@ -1105,7 +1104,7 @@ def save_field(sender, instance, **kwargs):
     if True:
         if instance.propertyprocess.sector == "sales":
             instance.new_business = instance.price * (instance.fee / 100)
-        else:
+        elif instance.propertyprocess.sector == "lettings":
             instance.new_business = (
                 instance.price * (instance.fee / 100)
             ) * 12

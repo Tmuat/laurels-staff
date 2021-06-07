@@ -28,6 +28,7 @@ from django.template.defaultfilters import slugify
 # python3 manage.py dumpdata home.salestatus > data/salesprogression.json --settings=laurels_staff_portal.settings.production
 # python3 manage.py dumpdata home.propertychain > data/propertychain.json --settings=laurels_staff_portal.settings.production
 # python3 manage.py dumpdata home.marketing > data/marketing.json --settings=laurels_staff_portal.settings.production
+# python3 manage.py dumpdata home.newbusiness > data/propertyfee.json --settings=laurels_staff_portal.settings.production
 
 # python3 manage.py flush
 
@@ -66,7 +67,9 @@ salesprogression_dict = None
 salesprogressionsettings_dict = None
 salesprogressionphase_dict = None
 propertychain_dict = None
+propertyfee_dict = None
 marketing_dict = None
+property_fee_dict = None
 hub_dict = None
 hub_targets_dict = None
 user_dict = None
@@ -1747,6 +1750,83 @@ with open(
     json.dump(marketing_model, json_data)
 
 # ----------------------------------------
+# PROPERTY FEE MODEL
+# ----------------------------------------
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/originals/propertyfee.json",
+    "r",
+) as json_data:
+    property_fee_model = json.load(json_data)
+
+for instance in property_fee_model:
+
+    # Changing the model to new value
+
+    instance["model"] = "properties.propertyfees"
+
+    # End changing the model to new value
+
+    # Loop property list for property process & delete old field
+
+    for propertyprocess_instance in propertyprocess_dict:
+        if (
+            propertyprocess_instance["old_pk"]
+            == instance["fields"]["propertyprocess_link"]
+        ):
+            instance["fields"]["propertyprocess"] = propertyprocess_instance[
+                "pk"
+            ]
+
+    del instance["fields"]["propertyprocess_link"]
+
+    # End loop
+
+    # Edit old fields
+
+    instance["fields"]["price"] = instance["fields"]["final_price"]
+    del instance["fields"]["final_price"]
+
+    instance["fields"]["fee"] = instance["fields"]["final_fee"]
+    del instance["fields"]["final_fee"]
+
+    instance["fields"]["new_business"] = instance["fields"]["calculated_value"]
+    del instance["fields"]["calculated_value"]
+
+    instance["fields"]["active"] = instance["fields"]["deal_time"]
+    del instance["fields"]["deal_time"]
+
+    del instance["fields"]["sector"]
+
+    # End edit old fields
+
+    # Add new fields
+
+    instance["fields"]["created_by"] = "Admin"
+    instance["fields"]["created"] = "2000-01-13T13:13:13.000Z"
+    instance["fields"]["updated_by"] = "Admin"
+    instance["fields"]["updated"] = "2000-01-13T13:13:13.000Z"
+
+    # End add new fields
+
+    # Move original PK
+
+    instance["old_pk"] = instance["pk"]
+
+    # End move original PK
+
+    # Create new UUID field
+
+    instance["pk"] = str(uuid.uuid4())
+
+propertyfee_dict = property_fee_model
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/propertyfee.json", "w"
+) as json_data:
+    json.dump(property_fee_model, json_data)
+
+# ----------------------------------------
 # CREATE MASTER JSON
 # ----------------------------------------
 
@@ -1816,6 +1896,9 @@ for object in propertychain_dict:
     master_dict.append(object)
 
 for object in marketing_dict:
+    master_dict.append(object)
+
+for object in propertyfee_dict:
     master_dict.append(object)
 
 with open(
