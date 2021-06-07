@@ -1796,6 +1796,9 @@ for instance in property_fee_model:
     instance["fields"]["active"] = instance["fields"]["deal_time"]
     del instance["fields"]["deal_time"]
 
+    instance["fields"]["date"] = instance["fields"]["deal_date"]
+    del instance["fields"]["deal_date"]
+
     del instance["fields"]["sector"]
 
     # End edit old fields
