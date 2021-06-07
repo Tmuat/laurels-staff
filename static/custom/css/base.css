@@ -142,6 +142,27 @@ body.authentication-bg {
     background-color: #0acf97;
 }
 
+/* Select 2 Customisation */
+
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+    background-color: #0acf97;
+    color: #fff;
+}
+
+.select2-selection__rendered {
+    line-height: 31px !important;
+}
+.select2-container .select2-selection--single {
+    height: 35px !important;
+}
+.select2-selection__arrow {
+    height: 34px !important;
+}
+
+.select2-selection__rendered {
+    color: #6c757d !important;
+}
+
 /* Media Queries */
 
 /* Extra small devices (portrait phones, less than 576px) */

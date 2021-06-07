@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from django.http import JsonResponse
@@ -7,6 +8,9 @@ from django.template.loader import render_to_string
 from common.functions import (
     macro_status_calculator,
     sales_progression_percentage,
+)
+from properties.forms import (
+    PropertyForm
 )
 from properties.models import (
     PropertyProcess,
@@ -304,6 +308,25 @@ def property_chain_detail(request, property_chain_id):
     context = {"instance": chain_instance}
     data["html_modal"] = render_to_string(
         "properties/includes/detail/property_chain_detail.html",
+        context,
+        request=request,
+    )
+    return JsonResponse(data)
+
+
+def add_property_and_valuation(request):
+    """
+    A view to return an ajax response with add property & valuation form
+    """
+
+    data = dict()
+
+    form = PropertyForm()
+    get_address_api_key = settings.GET_ADDRESS_KEY
+
+    context = {"form": form, "get_address_api_key": get_address_api_key}
+    data["html_modal"] = render_to_string(
+        "properties/stages/add_property_and_valuation_modal.html",
         context,
         request=request,
     )

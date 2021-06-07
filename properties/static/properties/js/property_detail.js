@@ -113,4 +113,81 @@ $(document).ready(function () {
         });
         return false;
     });
+
+    // Deals with the AJAX for showing add property/valuation form
+    $(".js-add-property").click(function () {
+        var instance = $(this);
+        $.ajax({
+            url: instance.attr("data-url"),
+            type: 'get',
+            dataType: 'json',
+            beforeSend: function () {
+                $("#base-large-modal").modal("show");
+            },
+            success: function (data) {
+                $("#base-large-modal .modal-dialog").html(data.html_modal);
+                var api_key = $('#base-large-modal #id_get_address_api_key').text().slice(1, -1);
+
+                $('.get-address-select2').select2({
+                    dropdownParent: $("#base-large-modal"),
+                    width: '100%',
+                    minimumInputLength: 4,
+                    placeholder: "Type The Postcode",
+                    language: {
+                        inputTooShort: function () {
+                            return '';
+                        }
+                    },
+                    ajax: {
+                        url: function (params) {
+                            if (params.term) return 'https://api.getaddress.io/suggest/' + params.term;
+                            return '';
+                        },
+                        dataType: 'json',
+                        data: function (params) {
+                            var query = {
+                                'api-key': api_key
+                            };
+                            return query;
+                        },
+                        processResults: function (data) {
+                            var results = [];
+
+                            if (data.suggestions && data.suggestions.length > 0) {
+
+                                for (var i = 0; i < data.suggestions.length; i++) {
+                                    var suggestion = data.suggestions[i];
+                                    var result = {
+                                        id: suggestion.id,
+                                        text: suggestion.address
+                                    }
+                                    results.push(result);
+                                }
+                            }
+
+                            return {
+                                results: results
+                            };
+                        }
+                    }
+                });
+            }
+        });
+    });
+
+    // Deals with the get address request
+    $('#base-large-modal').on('change', 'select', function () {
+        var option = $(".get-address-select2 option:selected")
+        var api_key = $('#base-large-modal #id_get_address_api_key').text().slice(1, -1);
+        var id = option.attr("value");
+        $.get('https://api.getaddress.io/get/' + id, {
+            'api-key': api_key
+        }, function (address, status) {
+            $("#id_address_line_1").val(address["line_1"]);
+            $("#id_address_line_2").val(address["line_2"]);
+            $("#id_town").val(address["town_or_city"]);
+            $("#id_postcode").val(address["postcode"]);
+        });
+    });
+
 });

@@ -271,3 +271,10 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")  # noqa
 # https://django-crispy-forms.readthedocs.io/en/latest/index.html
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
+
+# ------------------------------------------------------------------------------
+# get-address
+# ------------------------------------------------------------------------------
+# https://getaddress.io/Documentation
+
+GET_ADDRESS_KEY = env("GET_ADDRESS_API_KEY")

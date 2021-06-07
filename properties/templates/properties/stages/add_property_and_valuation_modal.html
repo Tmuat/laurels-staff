@@ -1,0 +1,56 @@
+{% load static i18n %}
+<div class="modal-content green-gradient">
+    <div class="modal-body">
+        <div class="text-center mt-2 mb-3">
+            <span><img src="{% static 'custom/images/logo.png' %}" alt="laurels" height="80"></span>
+        </div>
+        <div class="text-center text-white">
+            <h4 class="text-white">Add Property & Valuation</h4>
+            <div class="row">
+                <div class="col-6 offset-3 mb-2">
+                    <select class="get-address-select2 text-muted"></select>
+                </div>
+            </div>
+            <form method="post" action="" class="text-center text-white p-2">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-12 col-sm-6">
+                        {{ form.address_line_1|as_crispy_field }}
+                    </div>
+                    <div class="col-12 col-sm-6">
+                        {{ form.address_line_2|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-sm-6">
+                        {{ form.town|as_crispy_field }}
+                    </div>
+                    <div class="col-12 col-sm-6">
+                        {{ form.postcode|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-sm-6">
+                        {{ form.property_type|as_crispy_field }}
+                    </div>
+                    <div class="col-12 col-sm-6">
+                        {{ form.property_style|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-sm-6">
+                        {{ form.number_of_bedrooms|as_crispy_field }}
+                    </div>
+                    <div class="col-12 col-sm-6">
+                        {{ form.tenure|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="mb-2 text-center">
+                    <button type="submit" class="btn btn-info" id="add-button">{% trans "Save & Add Valuation" %}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{{ get_address_api_key|json_script:"id_get_address_api_key" }}
+<!-- /.modal-content -->
