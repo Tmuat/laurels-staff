@@ -132,7 +132,7 @@ $(document).ready(function () {
                     dropdownParent: $("#base-large-modal"),
                     width: '100%',
                     minimumInputLength: 4,
-                    placeholder: "Type The Postcode",
+                    placeholder: "Postcode or Address Line 1",
                     language: {
                         inputTooShort: function () {
                             return '';
@@ -187,7 +187,99 @@ $(document).ready(function () {
             $("#id_address_line_2").val(address["line_2"]);
             $("#id_town").val(address["town_or_city"]);
             $("#id_postcode").val(address["postcode"]);
+            $.ajax({
+                url: '/properties/validate/address/',
+                data: {
+                    'address_line_1': address["line_1"],
+                    'address_line_2': address["line_2"],
+                    'postcode': address["postcode"],
+                },
+                dataType: 'json',
+                success: function (data) {
+                    if (data.is_taken) {
+                        $("#alert-div").html(data.html_alert);
+                        $("#base-large-modal").find("#add-button").addClass("d-none");
+                        $("#base-large-modal").find("#alert-div").removeClass("d-none");
+
+                        $("#base-large-modal").find("#id_address_line_1").attr("disabled", true);
+                        $("#base-large-modal").find("#id_address_line_2").attr("disabled", true);
+                        $("#base-large-modal").find("#id_town").attr("disabled", true);
+                        $("#base-large-modal").find("#id_postcode").attr("disabled", true);
+                        $("#base-large-modal").find("#id_property_type").attr("disabled", true);
+                        $("#base-large-modal").find("#id_property_style").attr("disabled", true);
+                        $("#base-large-modal").find("#id_number_of_bedrooms").attr("disabled", true);
+                        $("#base-large-modal").find("#id_tenure").attr("disabled", true);
+                    } else {
+                        $("#base-large-modal").find("#add-button").removeAttr("disabled");
+                        $("#base-large-modal").find("#alert-div").addClass("d-none");
+                        $("#base-large-modal").find("#add-button").removeClass("d-none");
+
+                        $("#base-large-modal").find("#id_address_line_1").removeAttr("disabled");
+                        $("#base-large-modal").find("#id_address_line_2").removeAttr("disabled");
+                        $("#base-large-modal").find("#id_town").removeAttr("disabled");
+                        $("#base-large-modal").find("#id_postcode").removeAttr("disabled");
+                        $("#base-large-modal").find("#id_property_type").removeAttr("disabled");
+                        $("#base-large-modal").find("#id_property_style").removeAttr("disabled");
+                        $("#base-large-modal").find("#id_number_of_bedrooms").removeAttr("disabled");
+                        $("#base-large-modal").find("#id_tenure").removeAttr("disabled");
+                    };
+                }
+            });
         });
     });
+
+    // Checks the uniqueness of the address, utilised when address' are typed in
+    var address_line_1 = false
+    var postcode = false
+    $("#base-large-modal").on("change", "#id_address_line_1", function () {
+        address_line_1 = true
+        checkUniqueness()
+    });
+    $("#base-large-modal").on("change", "#id_postcode", function () {
+        postcode = true
+        checkUniqueness()
+    });
+    function checkUniqueness() {
+        if (address_line_1 && postcode) {
+            $.ajax({
+                url: '/properties/validate/address/',
+                data: {
+                    'address_line_1': $("#id_address_line_1").val(),
+                    'address_line_2': $("#id_address_line_2").val(),
+                    'postcode': $("#id_postcode").val(),
+                },
+                dataType: 'json',
+                success: function (data) {
+                    if (data.is_taken) {
+                        $("#alert-div").html(data.html_alert);
+                        $("#base-large-modal").find("#add-button").addClass("d-none");
+                        $("#base-large-modal").find("#alert-div").removeClass("d-none");
+
+                        $("#base-large-modal").find("#id_address_line_1").attr("disabled", true);
+                        $("#base-large-modal").find("#id_address_line_2").attr("disabled", true);
+                        $("#base-large-modal").find("#id_town").attr("disabled", true);
+                        $("#base-large-modal").find("#id_postcode").attr("disabled", true);
+                        $("#base-large-modal").find("#id_property_type").attr("disabled", true);
+                        $("#base-large-modal").find("#id_property_style").attr("disabled", true);
+                        $("#base-large-modal").find("#id_number_of_bedrooms").attr("disabled", true);
+                        $("#base-large-modal").find("#id_tenure").attr("disabled", true);
+                    } else {
+                        $("#base-large-modal").find("#add-button").removeAttr("disabled");
+                        $("#base-large-modal").find("#alert-div").addClass("d-none");
+                        $("#base-large-modal").find("#add-button").removeClass("d-none");
+
+                        $("#base-large-modal").find("#id_address_line_1").removeAttr("disabled");
+                        $("#base-large-modal").find("#id_address_line_2").removeAttr("disabled");
+                        $("#base-large-modal").find("#id_town").removeAttr("disabled");
+                        $("#base-large-modal").find("#id_postcode").removeAttr("disabled");
+                        $("#base-large-modal").find("#id_property_type").removeAttr("disabled");
+                        $("#base-large-modal").find("#id_property_style").removeAttr("disabled");
+                        $("#base-large-modal").find("#id_number_of_bedrooms").removeAttr("disabled");
+                        $("#base-large-modal").find("#id_tenure").removeAttr("disabled");
+                    };
+                }
+            });
+        }
+    }
 
 });

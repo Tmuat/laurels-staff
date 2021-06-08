@@ -13,6 +13,7 @@ from properties.forms import (
     PropertyForm
 )
 from properties.models import (
+    Property,
     PropertyProcess,
     PropertyHistory,
     Offer,
@@ -330,4 +331,29 @@ def add_property_and_valuation(request):
         context,
         request=request,
     )
+    return JsonResponse(data)
+
+
+def validate_property_address(request):
+    """
+    Check that the property is not already in the database
+    """
+    data = dict()
+
+    address_line_1 = request.GET.get("address_line_1", None)
+    address_line_2 = request.GET.get("address_line_2", None)
+    postcode = request.GET.get("postcode", None)
+
+    context = {}
+    data["html_alert"] = render_to_string(
+        "properties/stages/includes/property_in_system.html",
+        context,
+        request=request,
+    )
+
+    data["is_taken"] = Property.objects.filter(
+            address_line_1__iexact=address_line_1,
+            address_line_2__iexact=address_line_2,
+            postcode__iexact=postcode).exists()
+
     return JsonResponse(data)
