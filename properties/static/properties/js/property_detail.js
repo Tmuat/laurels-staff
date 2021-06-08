@@ -469,4 +469,43 @@ $(document).ready(function () {
         });
         return false;
     });
+
+    $("#base-modal").on("click", ".js-notes", function () {
+        $('#modal-overlay').fadeToggle(100);
+        var instance = $(this);
+        $.ajax({
+            url: instance.attr("data-url"),
+            type: 'get',
+            dataType: 'json',
+            beforeSend: function () {
+                $("#base-modal").modal("show");
+            },
+            success: function (data) {
+                $('#modal-overlay').fadeToggle(100);
+                $("#base-modal .modal-dialog").html(data.html_modal);
+            }
+        });
+    });
+
+    // Deals with the form submission for adding history notes
+    $("#base-modal").on("submit", ".js-add-notes", function () {
+        $('#modal-overlay').fadeToggle(100);
+        var form = $(this);
+        $.ajax({
+            url: form.attr("action"),
+            data: form.serialize(),
+            type: form.attr("method"),
+            dataType: 'json',
+            success: function (data) {
+                if (data.form_is_valid) {
+                    $("#base-modal").modal("hide");
+                    $('#modal-overlay').fadeToggle(100);
+                } else {
+                    $('#modal-overlay').fadeToggle(100);
+                    $("#base-modal .modal-dialog").html(data.html_modal);
+                }
+            }
+        });
+        return false;
+    });
 });

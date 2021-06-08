@@ -1,6 +1,6 @@
 from django import forms
 
-from properties.models import Property, PropertyProcess, Valuation, Marketing
+from properties.models import Property, PropertyProcess, Valuation, Marketing, PropertyHistory
 from properties.widgets import DateInput
 from users.models import Profile
 
@@ -117,6 +117,27 @@ class SellerMarketingForm(forms.ModelForm):
         labels = {
             "hear_about_laurels": "How Did The Seller Hear About Laurels?",
             "contact_laurels": "How Did The Seller Contact Laurels?",
+        }
+
+        for field in self.fields:
+            label = f"{labels[field]}"
+            self.fields[field].label = label
+
+
+class HistoryNotesForm(forms.ModelForm):
+    class Meta:
+        model = PropertyHistory
+        fields = (
+            "notes",
+        )
+
+    def __init__(self, *args, **kwargs):
+        """
+        Add new labels
+        """
+        super().__init__(*args, **kwargs)
+        labels = {
+            "notes": "Update Notes",
         }
 
         for field in self.fields:

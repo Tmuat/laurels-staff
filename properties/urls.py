@@ -15,6 +15,8 @@ from properties.views import (
     add_propertyprocess,
     render_valuation,
     add_valuation,
+    render_history_notes,
+    add_history_notes
 )
 
 
@@ -85,5 +87,15 @@ urlpatterns = [
         "properties/add/valuation/<propertyprocess_id>/",
         add_valuation,
         name="add_valuation",
+    ),
+    path(
+        "properties/render/history-notes/<history_id>/",
+        render_history_notes,
+        name="render_history_notes",
+    ),
+    path(
+        "properties/add/history-notes/<history_id>/",
+        add_history_notes,
+        name="add_history_notes",
     ),
 ]

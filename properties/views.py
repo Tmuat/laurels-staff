@@ -9,7 +9,7 @@ from common.functions import (
     macro_status_calculator,
     sales_progression_percentage,
 )
-from properties.forms import (PropertyForm, PropertyProcessForm, ValuationForm, SellerMarketingForm)
+from properties.forms import (PropertyForm, PropertyProcessForm, ValuationForm, SellerMarketingForm, HistoryNotesForm)
 from properties.models import (
     Property,
     PropertyProcess,
@@ -561,7 +561,7 @@ def add_valuation(request, propertyprocess_id):
                 f"{request.user.get_full_name()} has"
                 " added marketing info.")
 
-            PropertyHistory.objects.create(
+            history_valuation = PropertyHistory.objects.create(
                 propertyprocess=property_process,
                 type=PropertyHistory.PROPERTY_EVENT,
                 description=history_description,
@@ -580,6 +580,7 @@ def add_valuation(request, propertyprocess_id):
             data["form_is_valid"] = True
             context = {
                 "property_process": property_process,
+                "history_valuation": history_valuation,
             }
             data["html_success"] = render_to_string(
                 "properties/stages/includes/valuation_success.html",
@@ -600,6 +601,68 @@ def add_valuation(request, propertyprocess_id):
     }
     data["html_modal"] = render_to_string(
         "properties/stages/add_valuation_modal.html",
+        context,
+        request=request,
+    )
+    return JsonResponse(data)
+
+
+def render_history_notes(request, history_id):
+    """
+    A view to return an ajax response with edit history notes form
+    """
+
+    data = dict()
+
+    history_instance = get_object_or_404(PropertyHistory, id=history_id)
+
+    form = HistoryNotesForm(instance=history_instance)
+
+    context = {
+        "form": form,
+        "history_instance": history_instance,
+    }
+    data["html_modal"] = render_to_string(
+        "properties/stages/notes_modal.html",
+        context,
+        request=request,
+    )
+    return JsonResponse(data)
+
+
+def add_history_notes(request, history_id):
+    """
+    A view to deal with form submission for history notes
+    """
+    data = dict()
+
+    history_instance = get_object_or_404(PropertyHistory, id=history_id)
+
+    if request.method == "POST":
+        form = HistoryNotesForm(request.POST, instance=history_instance)
+        if form.is_valid():
+            instance = form.save(commit=False)
+
+            if history_instance.notes == "":
+                instance.created_by = request.user.get_full_name()
+
+            instance.updated_by = request.user.get_full_name()
+
+            instance.save()
+
+            data["form_is_valid"] = True
+        else:
+            data["form_is_valid"] = False
+
+    else:
+        HistoryNotesForm(instance=history_instance)
+
+    context = {
+        "form": form,
+        "history_instance": history_instance,
+    }
+    data["html_modal"] = render_to_string(
+        "properties/stages/notes_modal.html",
         context,
         request=request,
     )
