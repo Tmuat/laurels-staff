@@ -447,4 +447,26 @@ $(document).ready(function () {
         });
         return false;
     });
+
+    // Deals with the form submission for adding valuation
+    $("#base-modal").on("submit", ".js-add-valuation", function () {
+        $('#modal-overlay').fadeToggle(100);
+        var form = $(this);
+        $.ajax({
+            url: form.attr("action"),
+            data: form.serialize(),
+            type: form.attr("method"),
+            dataType: 'json',
+            success: function (data) {
+                if (data.form_is_valid) {
+                    $("#base-modal .modal-dialog").html(data.html_success);
+                    $('#modal-overlay').fadeToggle(100);
+                } else {
+                    $('#modal-overlay').fadeToggle(100);
+                    $("#base-modal .modal-dialog").html(data.html_modal);
+                }
+            }
+        });
+        return false;
+    });
 });

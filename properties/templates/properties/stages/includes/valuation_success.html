@@ -1,0 +1,15 @@
+{% load static i18n %}
+<div class="modal-content green-gradient">
+    <div class="modal-body">
+        <div class="text-center mt-2 mb-3">
+            <span><img src="{% static 'custom/images/logo.png' %}" alt="laurels" height="80"></span>
+        </div>
+        <div class="text-center text-white">
+            <h4 class="text-white">Congrats</h4>
+            <p class="text-white text-center">{% blocktrans trimmed %}Congrats you have added a property process and valuation.{% endblocktrans %}</p>
+            <a href="{% url 'properties:property_list' property_process.id %}" class="btn btn-info d-block w-50 mx-auto"><i class="mdi mdi-arrow-expand-all mr-1"></i> Go To Property Detail</a>
+            <button class="btn btn-warning mb-3 mt-2 w-50"><i class="mdi mdi-note-plus-outline mr-1"></i> Click To Add A Note.</button>
+        </div>
+    </div>
+</div>
+<!-- /.modal-content -->

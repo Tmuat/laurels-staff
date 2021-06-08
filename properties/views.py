@@ -382,7 +382,7 @@ def add_property(request):
     Ajax URL for adding a property.
     """
     data = dict()
-    print("add_property")
+
     if request.method == "POST":
         form = PropertyForm(request.POST)
         process_form = PropertyProcessForm(request.POST)
@@ -443,7 +443,7 @@ def add_propertyprocess(request, property_id):
     in the system
     """
     data = dict()
-    print("add_propertyprocess")
+
     if request.method == "POST":
         form = PropertyForm(request.POST)
         process_form = PropertyProcessForm(request.POST)
@@ -508,6 +508,95 @@ def render_valuation(request, propertyprocess_id):
     context = {
         "form": form,
         "marketing_form": marketing_form,
+        "propertyprocess_id": propertyprocess_id
+    }
+    data["html_modal"] = render_to_string(
+        "properties/stages/add_valuation_modal.html",
+        context,
+        request=request,
+    )
+    return JsonResponse(data)
+
+
+def add_valuation(request, propertyprocess_id):
+    """
+    Ajax URL for adding a valuation.
+    """
+    data = dict()
+
+    property_process = get_object_or_404(
+        PropertyProcess, id=propertyprocess_id
+    )
+
+    if request.method == "POST":
+        form = ValuationForm(request.POST)
+        marketing_form = SellerMarketingForm(request.POST)
+        if form.is_valid() and marketing_form.is_valid():
+            instance = form.save(commit=False)
+
+            instance.propertyprocess = property_process
+
+            instance.created_by = request.user.get_full_name()
+            instance.updated_by = request.user.get_full_name()
+
+            instance.save()
+
+            marketing_instance = marketing_form.save(commit=False)
+
+            marketing_instance.propertyprocess = property_process
+
+            marketing_instance.created_by = request.user.get_full_name()
+            marketing_instance.updated_by = request.user.get_full_name()
+
+            marketing_instance.save()
+
+            property_process.macro_status = PropertyProcess.INSTRUCTION
+            property_process.save()
+
+            history_description = (
+                f"{request.user.get_full_name()} has"
+                " added a valuation.")
+
+            history_description_two = (
+                f"{request.user.get_full_name()} has"
+                " added marketing info.")
+
+            PropertyHistory.objects.create(
+                propertyprocess=property_process,
+                type=PropertyHistory.PROPERTY_EVENT,
+                description=history_description,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
+
+            PropertyHistory.objects.create(
+                propertyprocess=property_process,
+                type=PropertyHistory.PROPERTY_EVENT,
+                description=history_description_two,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
+
+            data["form_is_valid"] = True
+            context = {
+                "property_process": property_process,
+            }
+            data["html_success"] = render_to_string(
+                "properties/stages/includes/valuation_success.html",
+                context,
+                request=request,
+            )
+        else:
+            data["form_is_valid"] = False
+
+    else:
+        form = ValuationForm()
+        marketing_form = SellerMarketingForm()
+
+    context = {
+        "form": form,
+        "propertyprocess_id": propertyprocess_id,
+        "marketing_form": marketing_form
     }
     data["html_modal"] = render_to_string(
         "properties/stages/add_valuation_modal.html",

@@ -14,6 +14,7 @@ from properties.views import (
     add_property,
     add_propertyprocess,
     render_valuation,
+    add_valuation,
 )
 
 
@@ -79,5 +80,10 @@ urlpatterns = [
         "properties/render/valuation/<propertyprocess_id>/",
         render_valuation,
         name="render_valuation",
+    ),
+    path(
+        "properties/add/valuation/<propertyprocess_id>/",
+        add_valuation,
+        name="add_valuation",
     ),
 ]
