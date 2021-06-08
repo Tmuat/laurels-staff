@@ -11,7 +11,8 @@ from properties.views import (
     property_chain_detail,
     render_property,
     validate_property_address,
-    add_property
+    add_property,
+    render_valuation
 )
 
 
@@ -54,12 +55,12 @@ urlpatterns = [
         name="property_chain_detail",
     ),
     path(
-        "properties/render/property-and-valuation/",
+        "properties/render/property/",
         render_property,
-        name="render_property_and_valuation",
+        name="render_property",
     ),
     path(
-        "properties/add/property-and-valuation/",
+        "properties/add/property/",
         add_property,
         name="add_property",
     ),
@@ -67,5 +68,10 @@ urlpatterns = [
         "properties/validate/address/",
         validate_property_address,
         name="validate_property_address",
+    ),
+    path(
+        "properties/render/valuation/<propertyprocess_id>/",
+        render_valuation,
+        name="render_valuation",
     ),
 ]

@@ -9,7 +9,7 @@ from common.functions import (
     macro_status_calculator,
     sales_progression_percentage,
 )
-from properties.forms import PropertyForm, PropertyProcessForm
+from properties.forms import (PropertyForm, PropertyProcessForm, ValuationForm, SellerMarketingForm)
 from properties.models import (
     Property,
     PropertyProcess,
@@ -17,6 +17,7 @@ from properties.models import (
     Offer,
     OffererDetails,
     PropertyChain,
+    Valuation
 )
 from users.models import Profile
 
@@ -335,7 +336,7 @@ def render_property(request):
         "get_address_api_key": get_address_api_key,
     }
     data["html_modal"] = render_to_string(
-        "properties/stages/add_property_and_valuation_modal.html",
+        "properties/stages/add_property_modal.html",
         context,
         request=request,
     )
@@ -405,6 +406,7 @@ def add_property(request):
             )
 
             data["form_is_valid"] = True
+            data["propertyprocess_id"] = process_instance.id
         else:
             data["form_is_valid"] = False
 
@@ -417,14 +419,14 @@ def add_property(request):
         "process_form": process_form,
     }
     data["html_modal"] = render_to_string(
-        "properties/stages/add_property_and_valuation_modal.html",
+        "properties/stages/add_property_modal.html",
         context,
         request=request,
     )
     return JsonResponse(data)
 
 
-def render_valuation(request):
+def render_valuation(request, propertyprocess_id):
     """
     A view to return an ajax response with add valuation form
     """
@@ -432,20 +434,17 @@ def render_valuation(request):
     data = dict()
 
     employee = Profile.objects.get(user=request.user.id)
-    hub = employee.hub.first()
-    instance = PropertyProcess(employee=employee, hub=hub)
+    instance = Valuation(valuer=employee)
 
-    form = PropertyForm()
-    process_form = PropertyProcessForm(instance=instance)
-    get_address_api_key = settings.GET_ADDRESS_KEY
+    form = ValuationForm(instance=instance)
+    marketing_form = SellerMarketingForm()
 
     context = {
         "form": form,
-        "process_form": process_form,
-        "get_address_api_key": get_address_api_key,
+        "marketing_form": marketing_form,
     }
     data["html_modal"] = render_to_string(
-        "properties/stages/add_property_and_valuation_modal.html",
+        "properties/stages/add_valuation_modal.html",
         context,
         request=request,
     )

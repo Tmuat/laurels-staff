@@ -117,6 +117,7 @@ $(document).ready(function () {
     // Deals with the AJAX for showing add property/valuation form
     $(".js-add-property").click(function () {
         var instance = $(this);
+        $('#modal-overlay').fadeToggle(100);
         $.ajax({
             url: instance.attr("data-url"),
             type: 'get',
@@ -125,6 +126,7 @@ $(document).ready(function () {
                 $("#base-large-modal").modal("show");
             },
             success: function (data) {
+                $('#modal-overlay').fadeToggle(100);
                 $("#base-large-modal .modal-dialog").html(data.html_modal);
                 var api_key = $('#base-large-modal #id_get_address_api_key').text().slice(1, -1);
 
@@ -283,6 +285,7 @@ $(document).ready(function () {
     }
 
     // Deals with the form submission for adding property & property process with AJAX
+    // If success, calls the ajax for adding a valuation
     $("#base-large-modal").on("submit", ".js-add-property", function () {
         $('#modal-overlay').fadeToggle(100);
         var form = $(this);
@@ -295,6 +298,18 @@ $(document).ready(function () {
                 if (data.form_is_valid) {
                     $('#modal-overlay').fadeToggle(100);
                     $("#base-large-modal").modal("hide");
+                    
+                    $.ajax({
+                        url: '/properties/render/valuation/' + data.propertyprocess_id + '/',
+                        type: 'get',
+                        dataType: 'json',
+                        beforeSend: function () {
+                            $("#base-modal").modal("show");
+                        },
+                        success: function (data) {
+                            $("#base-modal .modal-dialog").html(data.html_modal);
+                        }
+                    });
                 } else {
                     $('#modal-overlay').fadeToggle(100);
                     $("#base-large-modal .modal-dialog").html(data.html_modal);
@@ -344,6 +359,25 @@ $(document).ready(function () {
             }
         });
         return false;
+    });
+
+
+
+    $(".js-temp").click(function () {
+        var instance = $(this);
+        $('#modal-overlay').fadeToggle(100);
+        $.ajax({
+            url: instance.attr("data-url"),
+            type: 'get',
+            dataType: 'json',
+            beforeSend: function () {
+                $("#base-modal").modal("show");
+            },
+            success: function (data) {
+                $('#modal-overlay').fadeToggle(100);
+                $("#base-modal .modal-dialog").html(data.html_modal);
+            }
+        });
     });
 
 });

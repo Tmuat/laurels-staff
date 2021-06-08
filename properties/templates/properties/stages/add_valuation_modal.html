@@ -1,0 +1,44 @@
+{% load static i18n %}
+<div class="modal-content green-gradient">
+    <div class="modal-body">
+        <div class="text-center mt-2 mb-3">
+            <span><img src="{% static 'custom/images/logo.png' %}" alt="laurels" height="80"></span>
+        </div>
+        <div class="text-center text-white">
+            <h4 class="text-white">Add Valuation</h4>
+            <form method="post" action="" class="text-center text-white px-2 js-add-valuation custom-form-margin">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-12 col-sm-6">
+                        {{ form.valuer|as_crispy_field }}
+                    </div>
+                    <div class="col-12 col-sm-6">
+                        {{ form.date|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-sm-6">
+                        {{ form.price_quoted|as_crispy_field }}
+                    </div>
+                    <div class="col-12 col-sm-6">
+                        {{ form.fee_quoted|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        {{ marketing_form.hear_about_laurels|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        {{ marketing_form.contact_laurels|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="my-2 text-center">
+                    <button type="submit" class="btn btn-info" id="add-button">{% trans "Add Valuation" %}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- /.modal-content -->
