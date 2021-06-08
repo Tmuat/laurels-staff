@@ -9,9 +9,7 @@ from common.functions import (
     macro_status_calculator,
     sales_progression_percentage,
 )
-from properties.forms import (
-    PropertyForm
-)
+from properties.forms import PropertyForm, PropertyProcessForm
 from properties.models import (
     Property,
     PropertyProcess,
@@ -20,6 +18,7 @@ from properties.models import (
     OffererDetails,
     PropertyChain,
 )
+from users.models import Profile
 
 
 def property_list(request):
@@ -315,17 +314,26 @@ def property_chain_detail(request, property_chain_id):
     return JsonResponse(data)
 
 
-def add_property_and_valuation(request):
+def render_property_and_valuation(request):
     """
     A view to return an ajax response with add property & valuation form
     """
 
     data = dict()
 
+    employee = Profile.objects.get(user=request.user.id)
+    hub = employee.hub.first()
+    instance = PropertyProcess(employee=employee, hub=hub)
+
     form = PropertyForm()
+    process_form = PropertyProcessForm(instance=instance)
     get_address_api_key = settings.GET_ADDRESS_KEY
 
-    context = {"form": form, "get_address_api_key": get_address_api_key}
+    context = {
+        "form": form,
+        "process_form": process_form,
+        "get_address_api_key": get_address_api_key,
+    }
     data["html_modal"] = render_to_string(
         "properties/stages/add_property_and_valuation_modal.html",
         context,
@@ -352,8 +360,65 @@ def validate_property_address(request):
     )
 
     data["is_taken"] = Property.objects.filter(
-            address_line_1__iexact=address_line_1,
-            address_line_2__iexact=address_line_2,
-            postcode__iexact=postcode).exists()
+        address_line_1__iexact=address_line_1,
+        address_line_2__iexact=address_line_2,
+        postcode__iexact=postcode,
+    ).exists()
 
+    return JsonResponse(data)
+
+
+def add_property(request):
+    """
+    Ajax URL for adding a property.
+    """
+    data = dict()
+
+    if request.method == "POST":
+        form = PropertyForm(request.POST)
+        process_form = PropertyProcessForm(request.POST)
+        if form.is_valid() and process_form.is_valid():
+            instance = form.save(commit=False)
+
+            instance.created_by = request.user.get_full_name()
+            instance.updated_by = request.user.get_full_name()
+
+            instance.save()
+
+            process_instance = process_form.save(commit=False)
+
+            process_instance.property = instance
+            process_instance.macro_status = PropertyProcess.VALUATION
+
+            process_instance.save()
+
+            history_description = (
+                f"{request.user.get_full_name()} has"
+                " created the property process.")
+
+            PropertyHistory.objects.create(
+                propertyprocess=process_instance,
+                type=PropertyHistory.PROPERTY_EVENT,
+                description=history_description,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
+
+            data["form_is_valid"] = True
+        else:
+            data["form_is_valid"] = False
+
+    else:
+        form = PropertyForm()
+        process_form = PropertyProcessForm()
+
+    context = {
+        "form": form,
+        "process_form": process_form,
+    }
+    data["html_modal"] = render_to_string(
+        "properties/stages/add_property_and_valuation_modal.html",
+        context,
+        request=request,
+    )
     return JsonResponse(data)

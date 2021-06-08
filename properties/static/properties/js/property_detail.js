@@ -282,4 +282,68 @@ $(document).ready(function () {
         }
     }
 
+    // Deals with the form submission for adding property & property process with AJAX
+    $("#base-large-modal").on("submit", ".js-add-property", function () {
+        $('#modal-overlay').fadeToggle(100);
+        var form = $(this);
+        $.ajax({
+            url: form.attr("action"),
+            data: form.serialize(),
+            type: form.attr("method"),
+            dataType: 'json',
+            success: function (data) {
+                if (data.form_is_valid) {
+                    $('#modal-overlay').fadeToggle(100);
+                    $("#base-large-modal").modal("hide");
+                } else {
+                    $('#modal-overlay').fadeToggle(100);
+                    $("#base-large-modal .modal-dialog").html(data.html_modal);
+                    $("#base-large-modal").find("#add-button").removeAttr("disabled");
+                    $('.get-address-select2').select2({
+                        dropdownParent: $("#base-large-modal"),
+                        width: '100%',
+                        minimumInputLength: 4,
+                        placeholder: "Postcode or Address Line 1",
+                        language: {
+                            inputTooShort: function () {
+                                return '';
+                            }
+                        },
+                        ajax: {
+                            url: function (params) {
+                                if (params.term) return 'https://api.getaddress.io/suggest/' + params.term;
+                                return '';
+                            },
+                            dataType: 'json',
+                            data: function (params) {
+                                var query = {
+                                    'api-key': api_key
+                                };
+                                return query;
+                            },
+                            processResults: function (data) {
+                                var results = [];
+                                if (data.suggestions && data.suggestions.length > 0) {
+    
+                                    for (var i = 0; i < data.suggestions.length; i++) {
+                                        var suggestion = data.suggestions[i];
+                                        var result = {
+                                            id: suggestion.id,
+                                            text: suggestion.address
+                                        }
+                                        results.push(result);
+                                    }
+                                }
+                                return {
+                                    results: results
+                                };
+                            }
+                        }
+                    });
+                }
+            }
+        });
+        return false;
+    });
+
 });

@@ -4,6 +4,8 @@
     <td>{{ instance.description }}</td>
     {% if instance.type ==  "other" %}
         <td class="text-center"><span class="badge badge-info-lighten">Other</span></td>
+    {% elif instance.type ==  "property_event" %}
+        <td class="text-center"><span class="badge badge-warning-lighten">Property Event</span></td>
     {% endif %}
     {% if instance.notes is not None %}
         {% if instance.notes != "" %}

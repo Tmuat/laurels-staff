@@ -163,6 +163,16 @@ body.authentication-bg {
     color: #6c757d !important;
 }
 
+/* Custom forms */
+
+.custom-form-margin .form-group {
+    margin-bottom: 6px !important;
+}
+
+.custom-form-margin label {
+    margin-bottom: 3px !important;
+}
+
 /* Media Queries */
 
 /* Extra small devices (portrait phones, less than 576px) */

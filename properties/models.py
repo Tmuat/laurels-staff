@@ -101,7 +101,7 @@ class Property(UpdatedAndCreated):
     ]
 
     address_line_1 = models.CharField(max_length=150, null=False)
-    address_line_2 = models.CharField(max_length=150, null=True, blank=True)
+    address_line_2 = models.CharField(max_length=150, blank=True)
     town = models.CharField(max_length=100, null=False)
     postcode = models.CharField(max_length=8, null=False)
     property_type = models.CharField(
@@ -110,8 +110,8 @@ class Property(UpdatedAndCreated):
     property_style = models.CharField(
         max_length=30, null=False, choices=PROPERTY_STYLE
     )
-    number_of_bedrooms = models.CharField(
-        max_length=50, null=False, choices=NUMBER_BEDROOMS
+    number_of_bedrooms = models.IntegerField(
+        null=False, choices=NUMBER_BEDROOMS
     )
     tenure = models.CharField(
         max_length=50, null=True, blank=False, choices=TENURE
@@ -163,6 +163,7 @@ class PropertyProcess(UpdatedAndCreated):
     ]
 
     LEGACY = [(True, "Legacy"), (False, "Not Legacy")]
+
     sector = models.CharField(max_length=40, null=False, choices=SECTOR)
     property = models.ForeignKey(
         Property, on_delete=models.CASCADE, related_name="property"
@@ -1066,7 +1067,7 @@ class PropertyFees(UpdatedAndCreated):
         ordering = [
             "propertyprocess__property__postcode",
             "propertyprocess__property__address_line_1",
-            "date"
+            "date",
         ]
         verbose_name = "Property Fee"
         verbose_name_plural = "Property Fees"
