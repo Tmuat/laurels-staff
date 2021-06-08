@@ -12,7 +12,8 @@ from properties.views import (
     render_property,
     validate_property_address,
     add_property,
-    render_valuation
+    add_propertyprocess,
+    render_valuation,
 )
 
 
@@ -63,6 +64,11 @@ urlpatterns = [
         "properties/add/property/",
         add_property,
         name="add_property",
+    ),
+    path(
+        "properties/add/property-process/<property_id>/",
+        add_propertyprocess,
+        name="add_property_process",
     ),
     path(
         "properties/validate/address/",

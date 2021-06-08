@@ -348,23 +348,31 @@ def validate_property_address(request):
     Check that the property is not already in the database
     """
     data = dict()
+    instance = None
 
     address_line_1 = request.GET.get("address_line_1", None)
     address_line_2 = request.GET.get("address_line_2", None)
     postcode = request.GET.get("postcode", None)
-
-    context = {}
-    data["html_alert"] = render_to_string(
-        "properties/stages/includes/property_in_system.html",
-        context,
-        request=request,
-    )
 
     data["is_taken"] = Property.objects.filter(
         address_line_1__iexact=address_line_1,
         address_line_2__iexact=address_line_2,
         postcode__iexact=postcode,
     ).exists()
+
+    if data["is_taken"] is True:
+        instance = Property.objects.get(
+            address_line_1__iexact=address_line_1,
+            address_line_2__iexact=address_line_2,
+            postcode__iexact=postcode
+        )
+
+        context = {"instance": instance}
+        data["html_alert"] = render_to_string(
+            "properties/stages/includes/property_in_system.html",
+            context,
+            request=request,
+        )
 
     return JsonResponse(data)
 
@@ -374,7 +382,7 @@ def add_property(request):
     Ajax URL for adding a property.
     """
     data = dict()
-
+    print("add_property")
     if request.method == "POST":
         form = PropertyForm(request.POST)
         process_form = PropertyProcessForm(request.POST)
@@ -390,6 +398,9 @@ def add_property(request):
 
             process_instance.property = instance
             process_instance.macro_status = PropertyProcess.VALUATION
+
+            process_instance.created_by = request.user.get_full_name()
+            process_instance.updated_by = request.user.get_full_name()
 
             process_instance.save()
 
@@ -407,6 +418,61 @@ def add_property(request):
 
             data["form_is_valid"] = True
             data["propertyprocess_id"] = process_instance.id
+        else:
+            data["form_is_valid"] = False
+
+    else:
+        form = PropertyForm()
+        process_form = PropertyProcessForm()
+
+    context = {
+        "form": form,
+        "process_form": process_form,
+    }
+    data["html_modal"] = render_to_string(
+        "properties/stages/add_property_modal.html",
+        context,
+        request=request,
+    )
+    return JsonResponse(data)
+
+
+def add_propertyprocess(request, property_id):
+    """
+    Ajax URL for adding a propertyprocess when property is already
+    in the system
+    """
+    data = dict()
+    print("add_propertyprocess")
+    if request.method == "POST":
+        form = PropertyForm(request.POST)
+        process_form = PropertyProcessForm(request.POST)
+        property_instance = get_object_or_404(Property, id=property_id)
+        if process_form.is_valid():
+            instance = process_form.save(commit=False)
+
+            instance.property = property_instance
+            instance.macro_status = PropertyProcess.VALUATION
+
+            instance.created_by = request.user.get_full_name()
+            instance.updated_by = request.user.get_full_name()
+
+            instance.save()
+
+            history_description = (
+                f"{request.user.get_full_name()} has"
+                " created the property process.")
+
+            PropertyHistory.objects.create(
+                propertyprocess=instance,
+                type=PropertyHistory.PROPERTY_EVENT,
+                description=history_description,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
+
+            data["form_is_valid"] = True
+            data["propertyprocess_id"] = instance.id
         else:
             data["form_is_valid"] = False
 

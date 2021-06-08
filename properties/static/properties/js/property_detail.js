@@ -201,20 +201,24 @@ $(document).ready(function () {
                     if (data.is_taken) {
                         $("#alert-div").html(data.html_alert);
                         $("#base-large-modal").find("#add-button").addClass("d-none");
+                        $("#base-large-modal").find("#alert-info-div").removeClass("d-none");
                         $("#base-large-modal").find("#alert-div").removeClass("d-none");
+                        $("#base-large-modal").find("#property-form").removeClass("js-add-property").addClass("js-add-propertyprocess");
 
-                        $("#base-large-modal").find("#id_address_line_1").attr("disabled", true);
-                        $("#base-large-modal").find("#id_address_line_2").attr("disabled", true);
-                        $("#base-large-modal").find("#id_town").attr("disabled", true);
-                        $("#base-large-modal").find("#id_postcode").attr("disabled", true);
-                        $("#base-large-modal").find("#id_property_type").attr("disabled", true);
-                        $("#base-large-modal").find("#id_property_style").attr("disabled", true);
-                        $("#base-large-modal").find("#id_number_of_bedrooms").attr("disabled", true);
-                        $("#base-large-modal").find("#id_tenure").attr("disabled", true);
+                        $("#base-large-modal").find("#id_address_line_1").attr("disabled", true).removeAttr("required");
+                        $("#base-large-modal").find("#id_address_line_2").attr("disabled", true).removeAttr("required");
+                        $("#base-large-modal").find("#id_town").attr("disabled", true).removeAttr("required");
+                        $("#base-large-modal").find("#id_postcode").attr("disabled", true).removeAttr("required");
+                        $("#base-large-modal").find("#id_property_type").attr("disabled", true).removeAttr("required");
+                        $("#base-large-modal").find("#id_property_style").attr("disabled", true).removeAttr("required");
+                        $("#base-large-modal").find("#id_number_of_bedrooms").attr("disabled", true).removeAttr("required");
+                        $("#base-large-modal").find("#id_tenure").attr("disabled", true).removeAttr("required");
                     } else {
                         $("#base-large-modal").find("#add-button").removeAttr("disabled");
+                        $("#base-large-modal").find("#alert-info-div").addClass("d-none");
                         $("#base-large-modal").find("#alert-div").addClass("d-none");
                         $("#base-large-modal").find("#add-button").removeClass("d-none");
+                        $("#base-large-modal").find("#property-form").addClass("js-add-property").removeClass("js-add-propertyprocess");
 
                         $("#base-large-modal").find("#id_address_line_1").removeAttr("disabled");
                         $("#base-large-modal").find("#id_address_line_2").removeAttr("disabled");
@@ -254,21 +258,26 @@ $(document).ready(function () {
                 success: function (data) {
                     if (data.is_taken) {
                         $("#alert-div").html(data.html_alert);
+                        $("#alert-div").html(data.html_alert);
                         $("#base-large-modal").find("#add-button").addClass("d-none");
+                        $("#base-large-modal").find("#alert-info-div").removeClass("d-none");
                         $("#base-large-modal").find("#alert-div").removeClass("d-none");
+                        $("#base-large-modal").find("#property-form").removeClass("js-add-property").addClass("js-add-propertyprocess");
 
-                        $("#base-large-modal").find("#id_address_line_1").attr("disabled", true);
-                        $("#base-large-modal").find("#id_address_line_2").attr("disabled", true);
-                        $("#base-large-modal").find("#id_town").attr("disabled", true);
-                        $("#base-large-modal").find("#id_postcode").attr("disabled", true);
-                        $("#base-large-modal").find("#id_property_type").attr("disabled", true);
-                        $("#base-large-modal").find("#id_property_style").attr("disabled", true);
-                        $("#base-large-modal").find("#id_number_of_bedrooms").attr("disabled", true);
-                        $("#base-large-modal").find("#id_tenure").attr("disabled", true);
+                        $("#base-large-modal").find("#id_address_line_1").attr("disabled", true).removeAttr("required");
+                        $("#base-large-modal").find("#id_address_line_2").attr("disabled", true).removeAttr("required");
+                        $("#base-large-modal").find("#id_town").attr("disabled", true).removeAttr("required");
+                        $("#base-large-modal").find("#id_postcode").attr("disabled", true).removeAttr("required");
+                        $("#base-large-modal").find("#id_property_type").attr("disabled", true).removeAttr("required");
+                        $("#base-large-modal").find("#id_property_style").attr("disabled", true).removeAttr("required");
+                        $("#base-large-modal").find("#id_number_of_bedrooms").attr("disabled", true).removeAttr("required");
+                        $("#base-large-modal").find("#id_tenure").attr("disabled", true).removeAttr("required");
                     } else {
                         $("#base-large-modal").find("#add-button").removeAttr("disabled");
+                        $("#base-large-modal").find("#alert-info-div").addClass("d-none");
                         $("#base-large-modal").find("#alert-div").addClass("d-none");
                         $("#base-large-modal").find("#add-button").removeClass("d-none");
+                        $("#base-large-modal").find("#property-form").addClass("js-add-property").removeClass("js-add-propertyprocess");
 
                         $("#base-large-modal").find("#id_address_line_1").removeAttr("disabled");
                         $("#base-large-modal").find("#id_address_line_2").removeAttr("disabled");
@@ -296,8 +305,8 @@ $(document).ready(function () {
             dataType: 'json',
             success: function (data) {
                 if (data.form_is_valid) {
-                    $('#modal-overlay').fadeToggle(100);
                     $("#base-large-modal").modal("hide");
+                    $('#modal-overlay').fadeToggle(100);
                     
                     $.ajax({
                         url: '/properties/render/valuation/' + data.propertyprocess_id + '/',
@@ -361,23 +370,81 @@ $(document).ready(function () {
         return false;
     });
 
-
-
-    $(".js-temp").click(function () {
-        var instance = $(this);
+    // Deals with the form submission for adding property process when property in already in the system
+    // If success, calls the ajax for adding a valuation
+    $("#base-large-modal").on("submit", ".js-add-propertyprocess", function () {
         $('#modal-overlay').fadeToggle(100);
+        var form = $(this);
+        var button = $("#valuation-button")
         $.ajax({
-            url: instance.attr("data-url"),
-            type: 'get',
+            url: button.attr("data-url"),
+            data: form.serialize(),
+            type: form.attr("method"),
             dataType: 'json',
-            beforeSend: function () {
-                $("#base-modal").modal("show");
-            },
             success: function (data) {
-                $('#modal-overlay').fadeToggle(100);
-                $("#base-modal .modal-dialog").html(data.html_modal);
+                if (data.form_is_valid) {
+                    $("#base-large-modal").modal("hide");
+                    $('#modal-overlay').fadeToggle(100);
+
+                    $.ajax({
+                        url: '/properties/render/valuation/' + data.propertyprocess_id + '/',
+                        type: 'get',
+                        dataType: 'json',
+                        beforeSend: function () {
+                            $("#base-modal").modal("show");
+                        },
+                        success: function (data) {
+                            $("#base-modal .modal-dialog").html(data.html_modal);
+                        }
+                    });
+                } else {
+                    $('#modal-overlay').fadeToggle(100);
+                    $("#base-large-modal .modal-dialog").html(data.html_modal);
+                    $("#base-large-modal").find("#add-button").removeAttr("disabled");
+                    $('.get-address-select2').select2({
+                        dropdownParent: $("#base-large-modal"),
+                        width: '100%',
+                        minimumInputLength: 4,
+                        placeholder: "Postcode or Address Line 1",
+                        language: {
+                            inputTooShort: function () {
+                                return '';
+                            }
+                        },
+                        ajax: {
+                            url: function (params) {
+                                if (params.term) return 'https://api.getaddress.io/suggest/' + params.term;
+                                return '';
+                            },
+                            dataType: 'json',
+                            data: function (params) {
+                                var query = {
+                                    'api-key': api_key
+                                };
+                                return query;
+                            },
+                            processResults: function (data) {
+                                var results = [];
+                                if (data.suggestions && data.suggestions.length > 0) {
+    
+                                    for (var i = 0; i < data.suggestions.length; i++) {
+                                        var suggestion = data.suggestions[i];
+                                        var result = {
+                                            id: suggestion.id,
+                                            text: suggestion.address
+                                        }
+                                        results.push(result);
+                                    }
+                                }
+                                return {
+                                    results: results
+                                };
+                            }
+                        }
+                    });
+                }
             }
         });
+        return false;
     });
-
 });

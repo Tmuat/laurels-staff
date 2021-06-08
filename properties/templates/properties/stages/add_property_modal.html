@@ -11,7 +11,7 @@
                     <select class="get-address-select2 text-muted"></select>
                 </div>
             </div>
-            <form method="post" action="{% url 'properties:add_property' %}" class="text-center text-white p-2 js-add-property custom-form-margin">
+            <form method="post" id="property-form" action="{% url 'properties:add_property' %}" class="text-center text-white p-2 js-add-property custom-form-margin">
                 {% csrf_token %}
                 <div class="row">
                     <div class="col-12 col-sm-6">
@@ -45,6 +45,9 @@
                         {{ form.tenure|as_crispy_field }}
                     </div>
                 </div>
+                <div class="d-none mt-2" id="alert-info-div">
+                    {% include 'properties/stages/includes/property_in_system_alert.html' %}
+                </div>
                 <div class="row">
                     <div class="col-12 col-md-6 offset-md-3 mb-1">
                         {{ process_form.sector|as_crispy_field }}
@@ -60,7 +63,6 @@
                 </div>
                 <div class="my-2 text-center" id="submit-section">
                     <div class="d-none" id="alert-div">
-                        {% include 'properties/stages/includes/property_in_system.html' %}
                     </div>
                     <button type="submit" class="btn btn-info" id="add-button" disabled>{% trans "Save & Go To Valuation" %}</button>
                 </div>
