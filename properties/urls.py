@@ -9,7 +9,7 @@ from properties.views import (
     offers_pagination,
     save_property_order,
     property_chain_detail,
-    render_property_and_valuation,
+    render_property,
     validate_property_address,
     add_property
 )
@@ -55,7 +55,7 @@ urlpatterns = [
     ),
     path(
         "properties/render/property-and-valuation/",
-        render_property_and_valuation,
+        render_property,
         name="render_property_and_valuation",
     ),
     path(

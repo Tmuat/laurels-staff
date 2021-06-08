@@ -314,9 +314,9 @@ def property_chain_detail(request, property_chain_id):
     return JsonResponse(data)
 
 
-def render_property_and_valuation(request):
+def render_property(request):
     """
-    A view to return an ajax response with add property & valuation form
+    A view to return an ajax response with add property form
     """
 
     data = dict()
@@ -415,6 +415,34 @@ def add_property(request):
     context = {
         "form": form,
         "process_form": process_form,
+    }
+    data["html_modal"] = render_to_string(
+        "properties/stages/add_property_and_valuation_modal.html",
+        context,
+        request=request,
+    )
+    return JsonResponse(data)
+
+
+def render_valuation(request):
+    """
+    A view to return an ajax response with add valuation form
+    """
+
+    data = dict()
+
+    employee = Profile.objects.get(user=request.user.id)
+    hub = employee.hub.first()
+    instance = PropertyProcess(employee=employee, hub=hub)
+
+    form = PropertyForm()
+    process_form = PropertyProcessForm(instance=instance)
+    get_address_api_key = settings.GET_ADDRESS_KEY
+
+    context = {
+        "form": form,
+        "process_form": process_form,
+        "get_address_api_key": get_address_api_key,
     }
     data["html_modal"] = render_to_string(
         "properties/stages/add_property_and_valuation_modal.html",
