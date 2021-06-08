@@ -117,7 +117,7 @@ class Property(UpdatedAndCreated):
         max_length=50, null=True, blank=False, choices=TENURE
     )
     floor_space = models.DecimalField(
-        max_digits=6, decimal_places=2, null=True, blank=True
+        max_digits=6, decimal_places=2, null=True, blank=False
     )
 
     def __str__(self):
