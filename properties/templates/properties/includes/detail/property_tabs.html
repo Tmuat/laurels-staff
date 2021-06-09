@@ -35,13 +35,9 @@
             <!-- valuation section -->
             <!-- tab pane -->
             <div class="tab-pane" id="valuation">
-                {% if propertyprocess.macro_status == 2 %}
-                    {% include 'properties/includes/detail_tabs/valuation.html' %}
-                {% else %}
                     {% include 'properties/includes/detail_tabs/valuation.html' %}
                     <hr>
                     {% include 'properties/includes/detail_tabs/instruction.html' %}
-                {% endif %}
             </div>
             <!-- end tab pane -->
             <!-- end valuation section -->
