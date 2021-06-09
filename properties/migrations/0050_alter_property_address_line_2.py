@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('properties', '0049_alter_property_number_of_bedrooms'),
+        ("properties", "0049_alter_property_number_of_bedrooms"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='property',
-            name='address_line_2',
+            model_name="property",
+            name="address_line_2",
             field=models.CharField(blank=True, max_length=150),
             preserve_default=False,
         ),

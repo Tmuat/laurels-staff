@@ -6,13 +6,22 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('properties', '0051_auto_20210609_1023'),
+        ("properties", "0051_auto_20210609_1023"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='propertyprocess',
-            name='macro_status',
-            field=models.IntegerField(choices=[(0, 'Withdrawn'), (1, 'Awaiting Valuation'), (2, 'Valuation Complete'), (3, 'Instructed - On The Market'), (4, 'Deal'), (5, 'Complete')]),
+            model_name="propertyprocess",
+            name="macro_status",
+            field=models.IntegerField(
+                choices=[
+                    (0, "Withdrawn"),
+                    (1, "Awaiting Valuation"),
+                    (2, "Valuation Complete"),
+                    (3, "Instructed - On The Market"),
+                    (4, "Deal"),
+                    (5, "Complete"),
+                ]
+            ),
         ),
     ]

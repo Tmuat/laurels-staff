@@ -16,7 +16,7 @@ from properties.views import (
     render_valuation,
     add_valuation,
     render_history_notes,
-    add_history_notes
+    add_history_notes,
 )
 
 

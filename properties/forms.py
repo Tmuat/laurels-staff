@@ -1,6 +1,12 @@
 from django import forms
 
-from properties.models import Property, PropertyProcess, Valuation, Marketing, PropertyHistory
+from properties.models import (
+    Property,
+    PropertyProcess,
+    Valuation,
+    Marketing,
+    PropertyHistory,
+)
 from properties.widgets import DateInput
 from users.models import Profile
 
@@ -71,12 +77,7 @@ class PropertyProcessForm(forms.ModelForm):
 class ValuationForm(forms.ModelForm):
     class Meta:
         model = Valuation
-        fields = (
-            "price_quoted",
-            "fee_quoted",
-            "valuer",
-            "date"
-        )
+        fields = ("price_quoted", "fee_quoted", "valuer", "date")
 
     def __init__(self, *args, **kwargs):
         """
@@ -90,10 +91,10 @@ class ValuationForm(forms.ModelForm):
             "price_quoted": "Price Quoted",
             "fee_quoted": "Fee Quoted",
             "valuer": "Valuer",
-            "date": "Valuation Date"
+            "date": "Valuation Date",
         }
 
-        self.fields['date'].widget = DateInput()
+        self.fields["date"].widget = DateInput()
 
         for field in self.fields:
             label = f"{labels[field]}"
@@ -101,7 +102,6 @@ class ValuationForm(forms.ModelForm):
 
 
 class SellerMarketingForm(forms.ModelForm):
-
     class Meta:
         model = Marketing
         fields = (
@@ -127,9 +127,7 @@ class SellerMarketingForm(forms.ModelForm):
 class HistoryNotesForm(forms.ModelForm):
     class Meta:
         model = PropertyHistory
-        fields = (
-            "notes",
-        )
+        fields = ("notes",)
 
     def __init__(self, *args, **kwargs):
         """

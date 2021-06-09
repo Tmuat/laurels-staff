@@ -2,4 +2,4 @@ from django.forms.widgets import TextInput
 
 
 class DateInput(TextInput):
-    input_type = 'date'
+    input_type = "date"

@@ -6,13 +6,26 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('properties', '0048_alter_property_floor_space'),
+        ("properties", "0048_alter_property_floor_space"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='property',
-            name='number_of_bedrooms',
-            field=models.IntegerField(choices=[(1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6), (7, 7), (8, 8), (9, 9), (10, 10)]),
+            model_name="property",
+            name="number_of_bedrooms",
+            field=models.IntegerField(
+                choices=[
+                    (1, 1),
+                    (2, 2),
+                    (3, 3),
+                    (4, 4),
+                    (5, 5),
+                    (6, 6),
+                    (7, 7),
+                    (8, 8),
+                    (9, 9),
+                    (10, 10),
+                ]
+            ),
         ),
     ]

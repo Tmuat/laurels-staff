@@ -6,18 +6,28 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('properties', '0050_alter_property_address_line_2'),
+        ("properties", "0050_alter_property_address_line_2"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='property',
-            name='address_line_2',
+            model_name="property",
+            name="address_line_2",
             field=models.CharField(blank=True, max_length=150, null=True),
         ),
         migrations.AlterField(
-            model_name='propertyprocess',
-            name='macro_status',
-            field=models.IntegerField(choices=[(0, 'Withdrawn'), (1, 'Awaiting Valuation'), (2, 'Valuation'), (3, 'Instruction'), (4, 'Viewing'), (5, 'Deal'), (6, 'Complete')]),
+            model_name="propertyprocess",
+            name="macro_status",
+            field=models.IntegerField(
+                choices=[
+                    (0, "Withdrawn"),
+                    (1, "Awaiting Valuation"),
+                    (2, "Valuation"),
+                    (3, "Instruction"),
+                    (4, "Viewing"),
+                    (5, "Deal"),
+                    (6, "Complete"),
+                ]
+            ),
         ),
     ]
