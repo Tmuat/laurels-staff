@@ -4,6 +4,7 @@ from properties.models import (
     Property,
     PropertyProcess,
     Valuation,
+    Instruction,
     Marketing,
     PropertyHistory,
 )
@@ -137,6 +138,39 @@ class HistoryNotesForm(forms.ModelForm):
         labels = {
             "notes": "Update Notes",
         }
+
+        for field in self.fields:
+            label = f"{labels[field]}"
+            self.fields[field].label = label
+
+
+class InstructionForm(forms.ModelForm):
+    class Meta:
+        model = Instruction
+        fields = (
+            "date",
+            "agreement_type",
+            "listing_price",
+            "fee_agreed",
+            "length_of_contract",
+            "marketing_board",
+        )
+
+    def __init__(self, *args, **kwargs):
+        """
+        Add new labels and order foreign key field
+        """
+        super().__init__(*args, **kwargs)
+        labels = {
+            "date": "Date",
+            "agreement_type": "Agreement Type",
+            "listing_price": "Listing Price",
+            "fee_agreed": "Fee Agreed",
+            "length_of_contract": "Length of Contract",
+            "marketing_board": "Marketing Board",
+        }
+
+        self.fields["date"].widget = DateInput()
 
         for field in self.fields:
             label = f"{labels[field]}"

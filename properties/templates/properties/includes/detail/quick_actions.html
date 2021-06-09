@@ -6,3 +6,10 @@
     class="btn {% if propertyprocess.macro_status > 1 %}btn-secondary" disabled{% else %}btn-info js-add-valuation"{% endif %}>
         <i class="mdi mdi-clipboard-file-outline"></i>
 </button>
+<button 
+    data-url="{% url 'properties:render_instruction' propertyprocess.id %}" data-toggle="tooltip"
+    data-placement="top"
+    title="Instruction"
+    class="btn {% if propertyprocess.macro_status > 2 %}btn-secondary" disabled{% else %}btn-info js-add-instruction"{% endif %}>
+        <i class="mdi mdi-clipboard-text-outline"></i>
+</button>
