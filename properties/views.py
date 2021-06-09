@@ -6,7 +6,6 @@ from django.shortcuts import render, reverse, redirect, get_object_or_404
 from django.template.loader import render_to_string
 
 from common.functions import (
-    macro_status_calculator,
     sales_progression_percentage,
 )
 from properties.forms import (PropertyForm, PropertyProcessForm, ValuationForm, SellerMarketingForm, HistoryNotesForm)
@@ -102,8 +101,6 @@ def property_detail(request, propertyprocess_id):
     property_history = propertyprocess.history.all()
     offers = propertyprocess.offerer_details.all()
 
-    status_integer = macro_status_calculator(propertyprocess.macro_status)
-
     if (
         status_integer > 3
         and status_integer < 6
@@ -144,7 +141,6 @@ def property_detail(request, propertyprocess_id):
         "offers": offers,
         "offers_length": offers_length,
         "offers_last_page": offers_last_page,
-        "status_integer": status_integer,
         "percentages": percentages,
         "property_chain": property_chain,
     }
