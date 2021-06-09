@@ -12,8 +12,10 @@ from properties.forms import (
     PropertyForm,
     PropertyProcessForm,
     ValuationForm,
+    InstructionForm,
     SellerMarketingForm,
     HistoryNotesForm,
+    FloorSpaceForm,
 )
 from properties.models import (
     Property,
@@ -352,6 +354,9 @@ def validate_property_address(request):
     address_line_2 = request.GET.get("address_line_2", None)
     postcode = request.GET.get("postcode", None)
 
+    if address_line_2 == "":
+        address_line_2 = None
+
     data["is_taken"] = Property.objects.filter(
         address_line_1__iexact=address_line_1,
         address_line_2__iexact=address_line_2,
@@ -583,7 +588,7 @@ def add_valuation(request, propertyprocess_id):
                 "history_valuation": history_valuation,
             }
             data["html_success"] = render_to_string(
-                "properties/stages/includes/valuation_success.html",
+                "properties/stages/includes/form_success.html",
                 context,
                 request=request,
             )
@@ -663,6 +668,124 @@ def add_history_notes(request, history_id):
     }
     data["html_modal"] = render_to_string(
         "properties/stages/notes_modal.html",
+        context,
+        request=request,
+    )
+    return JsonResponse(data)
+
+
+def render_instruction(request, propertyprocess_id):
+    """
+    A view to return an ajax response with add instruction form
+    """
+
+    data = dict()
+
+    property_process = get_object_or_404(
+        PropertyProcess, id=propertyprocess_id
+    )
+
+    property = get_object_or_404(
+        Property, id=property_process.property.id
+    )
+
+    form = InstructionForm()
+    floor_space_form = FloorSpaceForm(instance=property)
+
+    context = {
+        "form": form,
+        "floor_space_form": floor_space_form,
+        "propertyprocess_id": propertyprocess_id,
+    }
+    data["html_modal"] = render_to_string(
+        "properties/stages/add_instruction_modal.html",
+        context,
+        request=request,
+    )
+    return JsonResponse(data)
+
+
+def add_instruction(request, propertyprocess_id):
+    """
+    Ajax URL for adding a instruction.
+    """
+    data = dict()
+
+    property_process = get_object_or_404(
+        PropertyProcess, id=propertyprocess_id
+    )
+
+    property = get_object_or_404(
+        Property, id=property_process.property.id
+    )
+
+    if request.method == "POST":
+        form = InstructionForm(request.POST)
+        floor_space_form = FloorSpaceForm(request.POST, instance=property)
+        if form.is_valid() and floor_space_form.is_valid():
+            instance = form.save(commit=False)
+
+            instance.propertyprocess = property_process
+
+            instance.created_by = request.user.get_full_name()
+            instance.updated_by = request.user.get_full_name()
+
+            instance.save()
+
+            floor_space_form.save()
+
+            property_process.macro_status = PropertyProcess.INSTRUCTION
+            property_process.save()
+
+            history_description = (
+                f"{request.user.get_full_name()} has added a instruction."
+            )
+
+            history_description_two = (
+                f"{request.user.get_full_name()} has updated"
+                " property info (floor space)."
+            )
+
+            history_valuation = PropertyHistory.objects.create(
+                propertyprocess=property_process,
+                type=PropertyHistory.PROPERTY_EVENT,
+                description=history_description,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
+
+            PropertyHistory.objects.create(
+                propertyprocess=property_process,
+                type=PropertyHistory.PROPERTY_EVENT,
+                description=history_description_two,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
+
+            data["form_is_valid"] = True
+            context = {
+                "property_process": property_process,
+                "history_valuation": history_valuation,
+            }
+            data["html_success"] = render_to_string(
+                "properties/stages/includes/form_success.html",
+                context,
+                request=request,
+            )
+        else:
+            data["form_is_valid"] = False
+
+    else:
+        form = InstructionForm()
+        floor_space_form = FloorSpaceForm()
+
+    context = {
+        "form": form,
+        "floor_space_form": floor_space_form,
+        "propertyprocess_id": propertyprocess_id,
+    }
+    data["html_modal"] = render_to_string(
+        "properties/stages/add_instruction_modal.html",
         context,
         request=request,
     )

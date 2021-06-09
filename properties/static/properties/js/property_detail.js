@@ -51,7 +51,6 @@ $(document).ready(function () {
     };
 
     function dataTaken() {
-        $("#alert-div").html(data.html_alert);
         $("#base-large-modal").find("#add-button").addClass("d-none");
         $("#base-large-modal").find("#alert-info-div").removeClass("d-none");
         $("#base-large-modal").find("#alert-div").removeClass("d-none");
@@ -194,6 +193,7 @@ $(document).ready(function () {
                 dataType: 'json',
                 success: function (data) {
                     if (data.is_taken) {
+                        $("#alert-div").html(data.html_alert);
                         dataTaken()
                     } else {
                         dataNotTaken()
@@ -226,6 +226,7 @@ $(document).ready(function () {
                 dataType: 'json',
                 success: function (data) {
                     if (data.is_taken) {
+                        $("#alert-div").html(data.html_alert);
                         dataTaken()
                     } else {
                         dataNotTaken()
@@ -310,8 +311,8 @@ $(document).ready(function () {
         return false;
     });
 
-    // Deals with the form submission for adding valuation
-    $("#base-modal").on("submit", ".js-add-valuation-form", function () {
+    // Deals with the form submission before loading success modal
+    var submitFormAndLoadSuccess = function () {
         $('#modal-overlay').fadeToggle(100);
         var form = $(this);
         $.ajax({
@@ -332,7 +333,7 @@ $(document).ready(function () {
             }
         });
         return false;
-    });
+    };
 
     // Deals with the form submission for adding history notes
     $("#base-static-modal").on("submit", ".js-add-notes", function () {
@@ -404,4 +405,6 @@ $(document).ready(function () {
     $("#tbody-offers").on("click", ".js-show-offers", loadFormBaseModal);
     $("#simple-dragula").on("click", ".js-property-chain-expand", loadFormBaseModal);
     $("#base-static-modal").on("click", ".js-notes", loadFormBaseStaticModal);
+    $("#base-modal").on("submit", ".js-add-valuation-form", submitFormAndLoadSuccess);
+    $("#base-modal").on("submit", ".js-add-instruction-form", submitFormAndLoadSuccess);
 });

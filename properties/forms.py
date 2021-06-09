@@ -175,3 +175,24 @@ class InstructionForm(forms.ModelForm):
         for field in self.fields:
             label = f"{labels[field]}"
             self.fields[field].label = label
+
+
+class FloorSpaceForm(forms.ModelForm):
+    class Meta:
+        model = Property
+        fields = (
+            "floor_space",
+        )
+
+    def __init__(self, *args, **kwargs):
+        """
+        Add new labels and order foreign key field
+        """
+        super().__init__(*args, **kwargs)
+        labels = {
+            "floor_space": "Floor Space (Sq Ft)",
+        }
+
+        for field in self.fields:
+            label = f"{labels[field]}"
+            self.fields[field].label = label

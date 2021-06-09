@@ -185,6 +185,13 @@ for instance in property_model:
 
     # End change property tenure
 
+    # Change Address Line 2
+
+    if instance["fields"]["address_line_2"] == "":
+        instance["fields"]["address_line_2"] = None
+
+    # End change Address Line 2
+
     # Add new fields
 
     instance["fields"]["created_by"] = "Admin"
