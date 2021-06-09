@@ -8,7 +8,13 @@ from django.template.loader import render_to_string
 from common.functions import (
     sales_progression_percentage,
 )
-from properties.forms import (PropertyForm, PropertyProcessForm, ValuationForm, SellerMarketingForm, HistoryNotesForm)
+from properties.forms import (
+    PropertyForm,
+    PropertyProcessForm,
+    ValuationForm,
+    SellerMarketingForm,
+    HistoryNotesForm,
+)
 from properties.models import (
     Property,
     PropertyProcess,
@@ -16,7 +22,7 @@ from properties.models import (
     Offer,
     OffererDetails,
     PropertyChain,
-    Valuation
+    Valuation,
 )
 from users.models import Profile
 
@@ -45,9 +51,9 @@ def property_list(request):
     if request.GET:
         if "status" in request.GET:
             status = request.GET["status"]
-            properties_list = properties_list.exclude(
-                macro_status="comp"
-            ).exclude(macro_status="withd")
+            properties_list = properties_list.exclude(macro_status=6).exclude(
+                macro_status=0
+            )
         if "sector" in request.GET:
             sector = request.GET["sector"]
             properties_list = properties_list.filter(sector=sector)
@@ -101,11 +107,7 @@ def property_detail(request, propertyprocess_id):
     property_history = propertyprocess.history.all()
     offers = propertyprocess.offerer_details.all()
 
-    if (
-        status_integer > 3
-        and status_integer < 6
-        and propertyprocess.sector == "sales"
-    ):
+    if propertyprocess.macro_status > 3 and propertyprocess.sector == "sales":
         percentages = sales_progression_percentage(propertyprocess.id)
         property_chain = (
             propertyprocess.sales_progression.sales_progression_chain.all()
@@ -360,7 +362,7 @@ def validate_property_address(request):
         instance = Property.objects.get(
             address_line_1__iexact=address_line_1,
             address_line_2__iexact=address_line_2,
-            postcode__iexact=postcode
+            postcode__iexact=postcode,
         )
 
         context = {"instance": instance}
@@ -393,7 +395,7 @@ def add_property(request):
             process_instance = process_form.save(commit=False)
 
             process_instance.property = instance
-            process_instance.macro_status = PropertyProcess.VALUATION
+            process_instance.macro_status = PropertyProcess.AWAITINGVALUATION
 
             process_instance.created_by = request.user.get_full_name()
             process_instance.updated_by = request.user.get_full_name()
@@ -402,7 +404,8 @@ def add_property(request):
 
             history_description = (
                 f"{request.user.get_full_name()} has"
-                " created the property process.")
+                " created the property process."
+            )
 
             PropertyHistory.objects.create(
                 propertyprocess=process_instance,
@@ -448,7 +451,7 @@ def add_propertyprocess(request, property_id):
             instance = process_form.save(commit=False)
 
             instance.property = property_instance
-            instance.macro_status = PropertyProcess.VALUATION
+            instance.macro_status = PropertyProcess.AWAITINGVALUATION
 
             instance.created_by = request.user.get_full_name()
             instance.updated_by = request.user.get_full_name()
@@ -457,7 +460,8 @@ def add_propertyprocess(request, property_id):
 
             history_description = (
                 f"{request.user.get_full_name()} has"
-                " created the property process.")
+                " created the property process."
+            )
 
             PropertyHistory.objects.create(
                 propertyprocess=instance,
@@ -504,7 +508,7 @@ def render_valuation(request, propertyprocess_id):
     context = {
         "form": form,
         "marketing_form": marketing_form,
-        "propertyprocess_id": propertyprocess_id
+        "propertyprocess_id": propertyprocess_id,
     }
     data["html_modal"] = render_to_string(
         "properties/stages/add_valuation_modal.html",
@@ -546,16 +550,16 @@ def add_valuation(request, propertyprocess_id):
 
             marketing_instance.save()
 
-            property_process.macro_status = PropertyProcess.INSTRUCTION
+            property_process.macro_status = PropertyProcess.VALUATION
             property_process.save()
 
             history_description = (
-                f"{request.user.get_full_name()} has"
-                " added a valuation.")
+                f"{request.user.get_full_name()} has" " added a valuation."
+            )
 
             history_description_two = (
-                f"{request.user.get_full_name()} has"
-                " added marketing info.")
+                f"{request.user.get_full_name()} has" " added marketing info."
+            )
 
             history_valuation = PropertyHistory.objects.create(
                 propertyprocess=property_process,
@@ -593,7 +597,7 @@ def add_valuation(request, propertyprocess_id):
     context = {
         "form": form,
         "propertyprocess_id": propertyprocess_id,
-        "marketing_form": marketing_form
+        "marketing_form": marketing_form,
     }
     data["html_modal"] = render_to_string(
         "properties/stages/add_valuation_modal.html",

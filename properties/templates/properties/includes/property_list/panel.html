@@ -18,7 +18,9 @@
                             <i class="mdi mdi-arrow-expand-all mr-1"></i> More Detail
                         </a>
                         <h4 class="mt-0 mb-1 font-15">Quick Actions</h4>
-                        <button data-url="{% url 'properties:render_valuation' instance.id %}" class="btn js-temp">Temp</button>
+                        <button data-url="{% url 'properties:render_valuation' instance.id %}" data-toggle="tooltip" data-placement="top" title="Valuation" class="btn btn-secondary">
+                            <i class="mdi mdi-clipboard-file-outline"></i>
+                        </button>
                     </div>
                     <!-- end property info -->
 

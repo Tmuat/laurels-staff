@@ -35,7 +35,7 @@
             <!-- valuation section -->
             <!-- tab pane -->
             <div class="tab-pane" id="valuation">
-                {% if propertyprocess.macro_status == "val" %}
+                {% if propertyprocess.macro_status == 2 %}
                     {% include 'properties/includes/detail_tabs/valuation.html' %}
                 {% else %}
                     {% include 'properties/includes/detail_tabs/valuation.html' %}
@@ -46,7 +46,7 @@
             <!-- end tab pane -->
             <!-- end valuation section -->
 
-            {% if status_integer > 2 %}
+            {% if propertyprocess.macro_status > 2 %}
             <!-- offer section -->
             <!-- tab pane -->
             <div class="tab-pane" id="offers">
@@ -79,7 +79,7 @@
             {% endif %}
             
             {% if propertyprocess.sector == "sales" %}
-            {% if status_integer > 3 %}
+            {% if propertyprocess.macro_status > 3 %}
             <!-- deal section -->
             <!-- tab pane -->
             <div class="tab-pane" id="deal">
@@ -108,7 +108,7 @@
             {% endif %}
 
             {% if propertyprocess.sector == "sales" %}
-            {% if status_integer > 4 %}
+            {% if propertyprocess.macro_status > 4 %}
             <!-- exchange section -->
             <!-- tab pane -->
             <div class="tab-pane" id="exchange">
