@@ -121,7 +121,7 @@ class Property(UpdatedAndCreated):
     )
 
     def __str__(self):
-        if self.address_line_2 == "":
+        if self.address_line_2 == "" or self.address_line_2 == None:
             property_address = "%s, %s" % (self.postcode, self.address_line_1)
         else:
             property_address = "%s, %s, %s" % (
@@ -169,16 +169,17 @@ class PropertyProcess(UpdatedAndCreated):
         Property, on_delete=models.CASCADE, related_name="property"
     )
     employee = models.ForeignKey(Profile, on_delete=models.CASCADE)
-    macro_status = models.IntegerField(
-        null=False, choices=STATUS
-    )
+    macro_status = models.IntegerField(null=False, choices=STATUS)
     hub = models.ForeignKey(
         Hub, on_delete=models.CASCADE, null=False, blank=False
     )
     legacy_property = models.BooleanField(default=False, choices=LEGACY)
 
     def __str__(self):
-        if self.property.address_line_2 == "":
+        if (
+            self.property.address_line_2 == ""
+            or self.property.address_line_2 == None
+        ):
             property_address = "%s, %s" % (
                 self.property.postcode,
                 self.property.address_line_1,
@@ -226,7 +227,10 @@ class PropertyHistory(UpdatedAndCreated):
     notes = models.TextField(null=True, blank=True)
 
     def __str__(self):
-        if self.propertyprocess.property.address_line_2 == "":
+        if (
+            self.propertyprocess.property.address_line_2 == ""
+            or self.propertyprocess.property.address_line_2 == None
+        ):
             property_address = "%s, %s" % (
                 self.propertyprocess.property.postcode,
                 self.propertyprocess.property.address_line_1,
@@ -258,7 +262,10 @@ class Valuation(UpdatedAndCreated):
     valuer = models.ForeignKey(Profile, on_delete=models.CASCADE)
 
     def __str__(self):
-        if self.propertyprocess.property.address_line_2 == "":
+        if (
+            self.propertyprocess.property.address_line_2 == ""
+            or self.propertyprocess.property.address_line_2 == None
+        ):
             property_address = "%s, %s" % (
                 self.propertyprocess.property.postcode,
                 self.propertyprocess.property.address_line_1,
@@ -322,7 +329,10 @@ class Instruction(UpdatedAndCreated):
     marketing_board = models.BooleanField(choices=BOOL_CHOICES)
 
     def __str__(self):
-        if self.propertyprocess.property.address_line_2 == "":
+        if (
+            self.propertyprocess.property.address_line_2 == ""
+            or self.propertyprocess.property.address_line_2 == None
+        ):
             property_address = "%s, %s" % (
                 self.propertyprocess.property.postcode,
                 self.propertyprocess.property.address_line_1,
@@ -372,7 +382,10 @@ class InstructionLettingsExtra(UpdatedAndCreated):
     )
 
     def __str__(self):
-        if self.propertyprocess.property.address_line_2 == "":
+        if (
+            self.propertyprocess.property.address_line_2 == ""
+            or self.propertyprocess.property.address_line_2 == None
+        ):
             property_address = "%s, %s" % (
                 self.propertyprocess.property.postcode,
                 self.propertyprocess.property.address_line_1,
@@ -418,7 +431,10 @@ class OffererDetails(UpdatedAndCreated):
     )
 
     def __str__(self):
-        if self.propertyprocess.property.address_line_2 == "":
+        if (
+            self.propertyprocess.property.address_line_2 == ""
+            or self.propertyprocess.property.address_line_2 == None
+        ):
             property_address = "%s, %s (%s)" % (
                 self.propertyprocess.property.postcode,
                 self.propertyprocess.property.address_line_1,
@@ -468,7 +484,11 @@ class OffererMortgage(UpdatedAndCreated):
     )
 
     def __str__(self):
-        if self.offerer_details.propertyprocess.property.address_line_2 == "":
+        if (
+            self.offerer_details.propertyprocess.property.address_line_2 == ""
+            or elf.offerer_details.propertyprocess.property.address_line_2
+            == None
+        ):
             property_address = "%s, %s (%s)" % (
                 self.offerer_details.propertyprocess.property.postcode,
                 self.offerer_details.propertyprocess.property.address_line_1,
@@ -516,7 +536,11 @@ class OffererCash(UpdatedAndCreated):
     )
 
     def __str__(self):
-        if self.offerer_details.propertyprocess.property.address_line_2 == "":
+        if (
+            self.offerer_details.propertyprocess.property.address_line_2 == ""
+            or self.offerer_details.propertyprocess.property.address_line_2
+            == None
+        ):
             property_address = "%s, %s (%s)" % (
                 self.offerer_details.propertyprocess.property.postcode,
                 self.offerer_details.propertyprocess.property.address_line_1,
@@ -576,7 +600,11 @@ class Offer(UpdatedAndCreated):
     )
 
     def __str__(self):
-        if self.offerer_details.propertyprocess.property.address_line_2 == "":
+        if (
+            self.offerer_details.propertyprocess.property.address_line_2 == ""
+            or self.offerer_details.propertyprocess.property.address_line_2
+            == None
+        ):
             property_address = "%s, %s (%s)" % (
                 self.offerer_details.propertyprocess.property.postcode,
                 self.offerer_details.propertyprocess.property.address_line_1,
@@ -614,7 +642,10 @@ class Deal(UpdatedAndCreated):
     )
 
     def __str__(self):
-        if self.propertyprocess.property.address_line_2 == "":
+        if (
+            self.propertyprocess.property.address_line_2 == ""
+            or self.propertyprocess.property.address_line_2 == None
+        ):
             property_address = "%s, %s" % (
                 self.propertyprocess.property.postcode,
                 self.propertyprocess.property.address_line_1,
@@ -646,7 +677,10 @@ class ExchangeMove(UpdatedAndCreated):
     completion_date = models.DateField()
 
     def __str__(self):
-        if self.propertyprocess.property.address_line_2 == "":
+        if (
+            self.propertyprocess.property.address_line_2 == ""
+            or self.propertyprocess.property.address_line_2 == None
+        ):
             property_address = "%s, %s" % (
                 self.propertyprocess.property.postcode,
                 self.propertyprocess.property.address_line_1,
@@ -804,7 +838,10 @@ class SalesProgression(UpdatedAndCreated):
     sales_notes = models.CharField(max_length=1000, null=True, blank=True)
 
     def __str__(self):
-        if self.propertyprocess.property.address_line_2 == "":
+        if (
+            self.propertyprocess.property.address_line_2 == ""
+            or self.propertyprocess.property.address_line_2 == None
+        ):
             property_address = "%s, %s" % (
                 self.propertyprocess.property.postcode,
                 self.propertyprocess.property.address_line_1,
@@ -847,6 +884,8 @@ class SalesProgressionSettings(UpdatedAndCreated):
         if (
             self.sales_progression.propertyprocess.property.address_line_2
             == ""
+            or self.sales_progression.propertyprocess.property.address_line_2
+            == None
         ):
             property_address = "%s, %s" % (
                 self.sales_progression.propertyprocess.property.postcode,
@@ -901,6 +940,8 @@ class SalesProgressionPhase(UpdatedAndCreated):
         if (
             self.sales_progression.propertyprocess.property.address_line_2
             == ""
+            or self.sales_progression.propertyprocess.property.address_line_2
+            == None
         ):
             property_address = "%s, %s" % (
                 self.sales_progression.propertyprocess.property.postcode,
@@ -943,6 +984,8 @@ class PropertyChain(UpdatedAndCreated):
         if (
             self.sales_progression.propertyprocess.property.address_line_2
             == ""
+            or self.sales_progression.propertyprocess.property.address_line_2
+            == None
         ):
             property_address = "%s, %s" % (
                 self.sales_progression.propertyprocess.property.postcode,
@@ -1048,7 +1091,10 @@ class Marketing(UpdatedAndCreated):
     )
 
     def __str__(self):
-        if self.propertyprocess.property.address_line_2 == "":
+        if (
+            self.propertyprocess.property.address_line_2 == ""
+            or self.propertyprocess.property.address_line_2 == None
+        ):
             property_address = "%s, %s" % (
                 self.propertyprocess.property.postcode,
                 self.propertyprocess.property.address_line_1,
@@ -1087,7 +1133,10 @@ class PropertyFees(UpdatedAndCreated):
     show_all = models.BooleanField(default=True, null=True, blank=False)
 
     def __str__(self):
-        if self.propertyprocess.property.address_line_2 == "":
+        if (
+            self.propertyprocess.property.address_line_2 == ""
+            or self.propertyprocess.property.address_line_2 == None
+        ):
             property_address = "%s, %s" % (
                 self.propertyprocess.property.postcode,
                 self.propertyprocess.property.address_line_1,
