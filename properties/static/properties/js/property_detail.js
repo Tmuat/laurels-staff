@@ -1,4 +1,8 @@
 $(document).ready(function () {
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+      })
+      
     // Deals with the re-ordering of property chain
     $("#save-property-order").click(function () {
         var order = [];
@@ -448,6 +452,23 @@ $(document).ready(function () {
         return false;
     });
 
+    // Deals with the AJAX for valuation
+    $("#quick-actions").on("click", ".js-add-valuation", function () {
+        var instance = $(this);
+        $.ajax({
+            url: instance.attr("data-url"),
+            type: 'get',
+            dataType: 'json',
+            beforeSend: function () {
+                $("#base-modal").modal("show");
+            },
+            success: function (data) {
+                $("#base-modal .modal-dialog").html(data.html_modal);
+            }
+        });
+        return false;
+    });
+
     // Deals with the form submission for adding valuation
     $("#base-modal").on("submit", ".js-add-valuation", function () {
         $('#modal-overlay').fadeToggle(100);
@@ -459,7 +480,9 @@ $(document).ready(function () {
             dataType: 'json',
             success: function (data) {
                 if (data.form_is_valid) {
-                    $("#base-modal .modal-dialog").html(data.html_success);
+                    $("#base-modal").modal("hide");
+                    $("#base-static-modal").modal("show");
+                    $("#base-static-modal .modal-dialog").html(data.html_success);
                     $('#modal-overlay').fadeToggle(100);
                 } else {
                     $('#modal-overlay').fadeToggle(100);
@@ -470,7 +493,7 @@ $(document).ready(function () {
         return false;
     });
 
-    $("#base-modal").on("click", ".js-notes", function () {
+    $("#base-static-modal").on("click", ".js-notes", function () {
         $('#modal-overlay').fadeToggle(100);
         var instance = $(this);
         $.ajax({
@@ -478,17 +501,17 @@ $(document).ready(function () {
             type: 'get',
             dataType: 'json',
             beforeSend: function () {
-                $("#base-modal").modal("show");
+                $("#base-static-modal").modal("show");
             },
             success: function (data) {
                 $('#modal-overlay').fadeToggle(100);
-                $("#base-modal .modal-dialog").html(data.html_modal);
+                $("#base-static-modal .modal-dialog").html(data.html_modal);
             }
         });
     });
 
     // Deals with the form submission for adding history notes
-    $("#base-modal").on("submit", ".js-add-notes", function () {
+    $("#base-static-modal").on("submit", ".js-add-notes", function () {
         $('#modal-overlay').fadeToggle(100);
         var form = $(this);
         $.ajax({
@@ -500,6 +523,7 @@ $(document).ready(function () {
                 if (data.form_is_valid) {
                     $("#base-modal").modal("hide");
                     $('#modal-overlay').fadeToggle(100);
+                    location.reload();
                 } else {
                     $('#modal-overlay').fadeToggle(100);
                     $("#base-modal .modal-dialog").html(data.html_modal);
@@ -508,4 +532,9 @@ $(document).ready(function () {
         });
         return false;
     });
+
+    $("#base-static-modal").on("click", ".js-reload", function () {
+        location.reload();
+    });
+
 });

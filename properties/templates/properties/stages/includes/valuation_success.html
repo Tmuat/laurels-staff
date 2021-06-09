@@ -1,4 +1,7 @@
 {% load static i18n %}
+
+{% url 'properties:property_list' as property_list_url %}
+
 <div class="modal-content green-gradient">
     <div class="modal-body">
         <div class="text-center mt-2 mb-3">
@@ -7,8 +10,12 @@
         <div class="text-center text-white">
             <h4 class="text-white">Congrats</h4>
             <p class="text-white text-center">{% blocktrans trimmed %}Congrats you have added a property process and valuation.{% endblocktrans %}</p>
-            <a href="{% url 'properties:property_list' property_process.id %}" class="btn btn-info d-block w-50 mx-auto"><i class="mdi mdi-arrow-expand-all mr-1"></i> Go To Property Detail</a>
-            <button class="btn btn-warning mb-3 mt-2 w-50 js-notes" data-url="{% url 'properties:render_history_notes' history_valuation.id %}"><i class="mdi mdi-note-plus-outline mr-1"></i> Click To Add A Note.</button>
+
+            <button class="btn btn-warning mb-2 mt-2 mx-auto d-block w-50 js-notes" data-url="{% url 'properties:render_history_notes' history_valuation.id %}"><i class="mdi mdi-note-plus-outline mr-1"></i> Click To Add A Note.</button>
+
+            <button type="button" class="btn btn-secondary mb-2 mx-auto d-block w-50 js-reload" data-bs-dismiss="modal">
+                <i class="mdi mdi-close"></i> Close
+            </button>
         </div>
     </div>
 </div>
