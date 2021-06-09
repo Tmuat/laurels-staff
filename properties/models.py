@@ -101,7 +101,7 @@ class Property(UpdatedAndCreated):
     ]
 
     address_line_1 = models.CharField(max_length=150, null=False)
-    address_line_2 = models.CharField(max_length=150, blank=True)
+    address_line_2 = models.CharField(max_length=150, null=True, blank=True)
     town = models.CharField(max_length=100, null=False)
     postcode = models.CharField(max_length=8, null=False)
     property_type = models.CharField(
@@ -141,12 +141,12 @@ class PropertyProcess(UpdatedAndCreated):
     LETTINGS = "lettings"
     SALES = "sales"
 
-    VALUATION = "val"
-    INSTRUCTION = "inst"
-    VIEWING = "view"
-    DEAL = "deal"
-    COMPLETE = "comp"
-    WITHDRAWN = "withd"
+    WITHDRAWN = 0
+    AWAITINGVALUATION = 1
+    VALUATION = 2
+    INSTRUCTION = 3
+    DEAL = 4
+    COMPLETE = 5
 
     SECTOR = [
         (LETTINGS, "Lettings"),
@@ -154,12 +154,12 @@ class PropertyProcess(UpdatedAndCreated):
     ]
 
     STATUS = [
-        (VALUATION, "Valuation"),
-        (INSTRUCTION, "Instruction"),
-        (VIEWING, "Viewing"),
+        (WITHDRAWN, "Withdrawn"),
+        (AWAITINGVALUATION, "Awaiting Valuation"),
+        (VALUATION, "Valuation Complete"),
+        (INSTRUCTION, "Instructed - On The Market"),
         (DEAL, "Deal"),
         (COMPLETE, "Complete"),
-        (WITHDRAWN, "Withdrawn"),
     ]
 
     LEGACY = [(True, "Legacy"), (False, "Not Legacy")]
@@ -169,8 +169,8 @@ class PropertyProcess(UpdatedAndCreated):
         Property, on_delete=models.CASCADE, related_name="property"
     )
     employee = models.ForeignKey(Profile, on_delete=models.CASCADE)
-    macro_status = models.CharField(
-        max_length=40, null=False, blank=False, choices=STATUS
+    macro_status = models.IntegerField(
+        null=False, choices=STATUS
     )
     hub = models.ForeignKey(
         Hub, on_delete=models.CASCADE, null=False, blank=False

@@ -682,22 +682,22 @@ for instance in property_process_model:
     # Changing the macro_status to new values
 
     if instance["fields"]["macro_status"] == "Valuation":
-        instance["fields"]["macro_status"] = "val"
+        instance["fields"]["macro_status"] = 1
 
     elif instance["fields"]["macro_status"] == "Instruction":
-        instance["fields"]["macro_status"] = "inst"
+        instance["fields"]["macro_status"] = 2
 
     elif instance["fields"]["macro_status"] == "Viewing":
-        instance["fields"]["macro_status"] = "view"
+        instance["fields"]["macro_status"] = 3
 
     elif instance["fields"]["macro_status"] == "Deal":
-        instance["fields"]["macro_status"] = "deal"
+        instance["fields"]["macro_status"] = 4
 
     elif instance["fields"]["macro_status"] == "Complete":
-        instance["fields"]["macro_status"] = "comp"
+        instance["fields"]["macro_status"] = 5
 
     elif instance["fields"]["macro_status"] == "Withdrawn":
-        instance["fields"]["macro_status"] = "withd"
+        instance["fields"]["macro_status"] = 0
 
     # End change macro_status
 
