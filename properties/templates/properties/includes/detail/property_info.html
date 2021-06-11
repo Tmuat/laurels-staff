@@ -6,8 +6,14 @@
             <p class="text-muted"><strong>Address Line 1:</strong> <span
                     class="ml-2">{{ propertyprocess.property.address_line_1 }}</span></p>
 
-            <p class="text-muted"><strong>Address Line 2:</strong><span
-                    class="ml-2">{{ propertyprocess.property.address_line_2 }}</span></p>
+            <p class="text-muted"><strong>Address Line 2:</strong>
+                <span
+                    class="ml-2">
+                    {% if propertyprocess.property.address_line_2 != None or "" %}
+                        {{ propertyprocess.property.address_line_2 }}
+                    {% endif %}
+                </span>
+            </p>
 
             <p class="text-muted"><strong>Town:</strong> <span class="ml-2">{{ propertyprocess.property.town }}</span>
             </p>
