@@ -29,6 +29,7 @@ from django.template.defaultfilters import slugify
 # python3 manage.py dumpdata home.propertychain > data/propertychain.json --settings=laurels_staff_portal.settings.production
 # python3 manage.py dumpdata home.marketing > data/marketing.json --settings=laurels_staff_portal.settings.production
 # python3 manage.py dumpdata home.newbusiness > data/propertyfee.json --settings=laurels_staff_portal.settings.production
+# python3 manage.py dumpdata home.instructionchange > data/instructionchange.json --settings=laurels_staff_portal.settings.production
 
 # python3 manage.py flush
 
@@ -56,6 +57,7 @@ super_dict = None
 property_dict = None
 propertyprocess_dict = None
 property_history_dict = None
+property_history_extra_dict = None
 valuation_dict = None
 instruction_dict = None
 instruction_lettings_extra_dict = None
@@ -70,6 +72,7 @@ propertychain_dict = None
 propertyfee_dict = None
 marketing_dict = None
 property_fee_dict = None
+instruction_change_dict = None
 hub_dict = None
 hub_targets_dict = None
 user_dict = None
@@ -808,13 +811,15 @@ for instance in propertyprocess_dict:
     property_history_fields["type"] = "other"
 
     if instance["fields"]["sector"] == "sales":
-        property_history_fields[
-            "description"
-        ] = "There is no history for this property sale"
+        property_history_fields["description"] = (
+            "This is a legacy property and property"
+            " history for this sale starts here."
+        )
     else:
-        property_history_fields[
-            "description"
-        ] = "There is no history for this Property Letting"
+        property_history_fields["description"] = (
+            "This is a legacy property and property"
+            " history for this letting starts here."
+        )
 
     property_history_fields["created_by"] = "Admin"
     property_history_fields["created"] = "2000-01-13T13:13:13.000Z"
@@ -939,9 +944,11 @@ for instance in instruction_model:
             instance["fields"]["propertyprocess"] = propertyprocess_instance[
                 "pk"
             ]
+            instance["old_pp_pk"] = propertyprocess_instance["old_pk"]
             instruction_extra_fields[
                 "propertyprocess"
             ] = propertyprocess_instance["pk"]
+            instruction_extra["old_pp_pk"] = propertyprocess_instance["old_pk"]
 
     del instance["fields"]["propertyprocess_link"]
 
@@ -991,7 +998,7 @@ for instance in instruction_model:
         instruction_extra_fields["lettings_service_level"] = "fully_managed"
 
     elif instance["fields"]["lettings_service_level"] == "Fully Managed RI":
-        instruction_extra_fields["lettings_service_level"] = "fully_managed_ri"
+        instruction_extra_fields["lettings_service_level"] = "fully_managed"
 
     instruction_extra_fields["managed_property"] = instance["fields"][
         "managed_property"
@@ -1837,6 +1844,401 @@ with open(
     json.dump(property_fee_model, json_data)
 
 # ----------------------------------------
+# INSTRUCTION CHANGE MODEL
+# ----------------------------------------
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/originals/instructionchange.json",
+    "r",
+) as json_data:
+    instruction_change_model = json.load(json_data)
+
+history_extra = []
+withdrawn_but_active = []
+
+print("Fee Change Properties:")
+for instance in instruction_change_model:
+
+    history_withdrawn = {}
+    history_withdrawn_fields = {}
+
+    history_agreement_type_change = {}
+    history_agreement_type_change_fields = {}
+
+    history_fee_agreed_change = {}
+    history_fee_agreed_change_fields = {}
+
+    history_length_of_contract_change = {}
+    history_length_of_contract_change_fields = {}
+
+    history_lettings_service_level_change = {}
+    history_lettings_service_level_change_fields = {}
+
+    # Changing the model to new value
+
+    history_withdrawn["model"] = "properties.propertyhistory"
+    history_agreement_type_change["model"] = "properties.propertyhistory"
+    history_fee_agreed_change["model"] = "properties.propertyhistory"
+    history_length_of_contract_change["model"] = "properties.propertyhistory"
+    history_lettings_service_level_change[
+        "model"
+    ] = "properties.propertyhistory"
+
+    # End changing the model to new value
+
+    # Loop property list for property process & delete old field
+
+    for propertyprocess_instance in propertyprocess_dict:
+        if (
+            propertyprocess_instance["old_pk"]
+            == instance["fields"]["propertyprocess_link"]
+        ):
+            history_withdrawn_fields[
+                "propertyprocess"
+            ] = propertyprocess_instance["pk"]
+            history_agreement_type_change_fields[
+                "propertyprocess"
+            ] = propertyprocess_instance["pk"]
+            history_fee_agreed_change_fields[
+                "propertyprocess"
+            ] = propertyprocess_instance["pk"]
+            history_length_of_contract_change_fields[
+                "propertyprocess"
+            ] = propertyprocess_instance["pk"]
+            history_lettings_service_level_change_fields[
+                "propertyprocess"
+            ] = propertyprocess_instance["pk"]
+
+            history_withdrawn["old_pp_pk"] = instance["fields"][
+                "propertyprocess_link"
+            ]
+            history_agreement_type_change["old_pp_pk"] = instance["fields"][
+                "propertyprocess_link"
+            ]
+            history_fee_agreed_change["old_pp_pk"] = instance["fields"][
+                "propertyprocess_link"
+            ]
+            history_length_of_contract_change["old_pp_pk"] = instance[
+                "fields"
+            ]["propertyprocess_link"]
+            history_lettings_service_level_change["old_pp_pk"] = instance[
+                "fields"
+            ]["propertyprocess_link"]
+
+    # End loop
+
+    # Add new fields
+
+    history_withdrawn_fields["created_by"] = "Admin"
+    history_withdrawn_fields["updated_by"] = "Admin"
+    history_withdrawn_fields["updated"] = "2000-01-13T13:13:13.000Z"
+
+    history_agreement_type_change_fields["created_by"] = "Admin"
+    history_agreement_type_change_fields["updated_by"] = "Admin"
+    history_agreement_type_change_fields[
+        "updated"
+    ] = "2000-01-13T13:13:13.000Z"
+
+    history_fee_agreed_change_fields["created_by"] = "Admin"
+    history_fee_agreed_change_fields["updated_by"] = "Admin"
+    history_fee_agreed_change_fields["updated"] = "2000-01-13T13:13:13.000Z"
+
+    history_length_of_contract_change_fields["created_by"] = "Admin"
+    history_length_of_contract_change_fields["updated_by"] = "Admin"
+    history_length_of_contract_change_fields[
+        "updated"
+    ] = "2000-01-13T13:13:13.000Z"
+
+    history_lettings_service_level_change_fields["created_by"] = "Admin"
+    history_lettings_service_level_change_fields["updated_by"] = "Admin"
+    history_lettings_service_level_change_fields[
+        "updated"
+    ] = "2000-01-13T13:13:13.000Z"
+
+    # End add new fields
+
+    # Property history fields
+
+    history_withdrawn_fields["type"] = "property_event"
+    history_agreement_type_change_fields["type"] = "property_event"
+    history_fee_agreed_change_fields["type"] = "property_event"
+    history_length_of_contract_change_fields["type"] = "property_event"
+    history_lettings_service_level_change_fields["type"] = "property_event"
+
+    # End property history fields
+
+    if instance["fields"]["withdrawn"] is True:
+
+        for property_process_instance in propertyprocess_dict:
+            if (
+                instance["fields"]["propertyprocess_link"]
+                == property_process_instance["old_pk"]
+            ):
+                if property_process_instance["fields"]["macro_status"] == 0:
+                    for property_fee_instance in propertyfee_dict:
+                        if (
+                            property_fee_instance["fields"]["propertyprocess"]
+                            == property_process_instance["pk"]
+                        ):
+                            if (
+                                property_fee_instance["fields"]["active"]
+                                is True
+                            ):
+                                if (
+                                    property_process_instance["pk"]
+                                    not in withdrawn_but_active
+                                ):
+                                    withdrawn_but_active.append(
+                                        property_process_instance["pk"]
+                                    )
+        # Property history fields
+
+        history_withdrawn_fields[
+            "description"
+        ] = "This property has been withdrawn from the market."
+
+        history_withdrawn_fields["notes"] = instance["fields"][
+            "withdrawn_reason"
+        ]
+        history_withdrawn_fields["created"] = instance["fields"][
+            "instruction_change_date"
+        ]
+
+        # Create new UUID field
+
+        history_withdrawn["pk"] = str(uuid.uuid4())
+
+        # End create new UUID field
+
+        # End property history fields
+
+        history_withdrawn["fields"] = history_withdrawn_fields
+
+        history_extra.append(history_withdrawn)
+
+    if instance["fields"]["agreement_type_change"] is not None:
+
+        for instruction_instance in instruction_dict:
+            if (
+                instruction_instance["old_pp_pk"]
+                == instance["fields"]["propertyprocess_link"]
+            ):
+                if (
+                    instance["fields"]["agreement_type_change"]
+                    == "Multi To Sole"
+                ):
+                    instruction_instance["fields"]["agreement_type"] = "sole"
+                else:
+                    instruction_instance["fields"]["agreement_type"] = "multi"
+
+        # Property history fields
+
+        history_agreement_type_change_fields[
+            "description"
+        ] = "There has been an instruction agreement type change."
+
+        history_agreement_type_change_fields["notes"] = instance["fields"][
+            "agreement_type_change"
+        ]
+        history_agreement_type_change_fields["created"] = instance["fields"][
+            "instruction_change_date"
+        ]
+
+        # Create new UUID field
+
+        history_agreement_type_change["pk"] = str(uuid.uuid4())
+
+        # End create new UUID field
+
+        # End property history fields
+
+        history_agreement_type_change[
+            "fields"
+        ] = history_agreement_type_change_fields
+
+        history_extra.append(history_agreement_type_change)
+
+    if instance["fields"]["fee_agreed_change"] is not None:
+
+        # Property history fields
+
+        history_fee_agreed_change_fields[
+            "description"
+        ] = "There has been an instruction fee change."
+
+        new_fee = instance["fields"]["fee_agreed_change"]
+
+        for instruction_instance in instruction_dict:
+            if (
+                instruction_instance["old_pp_pk"]
+                == instance["fields"]["propertyprocess_link"]
+            ):
+                old_fee = instruction_instance["fields"]["fee_agreed"]
+
+                instruction_instance["fields"]["fee_agreed"] = new_fee
+
+        for property_process_instance in propertyprocess_dict:
+            if (
+                instance["fields"]["propertyprocess_link"]
+                == property_process_instance["old_pk"]
+            ):
+                if property_process_instance["fields"]["macro_status"] == 0:
+                    print("Withdrawn -", property_process_instance["old_pk"])
+                elif property_process_instance["fields"]["macro_status"] == 1:
+                    print(
+                        "*****ALERT*****  Awaiting Valuation -",
+                        property_process_instance["old_pk"],
+                    )
+                elif property_process_instance["fields"]["macro_status"] == 2:
+                    print(
+                        "*****ALERT*****  Valuation Complete -",
+                        property_process_instance["old_pk"],
+                    )
+                elif property_process_instance["fields"]["macro_status"] == 3:
+                    print(
+                        "*****ALERT***** Instructed - On The Market -",
+                        property_process_instance["old_pk"],
+                    )
+                elif property_process_instance["fields"]["macro_status"] == 4:
+                    print("Deal -", property_process_instance["old_pk"])
+                elif property_process_instance["fields"]["macro_status"] == 5:
+                    print("Complete -", property_process_instance["old_pk"])
+
+        note = f"The fee has been changed from {old_fee}% to {new_fee}%"
+
+        history_fee_agreed_change_fields["notes"] = note
+        history_fee_agreed_change_fields["created"] = instance["fields"][
+            "instruction_change_date"
+        ]
+        instruction_instance["fields"]["updated"] = instance["fields"][
+            "instruction_change_date"
+        ]
+
+        # Create new UUID field
+
+        history_fee_agreed_change["pk"] = str(uuid.uuid4())
+
+        # End create new UUID field
+
+        # End property history fields
+
+        history_fee_agreed_change["fields"] = history_fee_agreed_change_fields
+
+        history_extra.append(history_fee_agreed_change)
+
+    if instance["fields"]["length_of_contract_change"] is not None:
+
+        print("*****ALERT***** There is a length change *****ALERT*****")
+
+    if instance["fields"]["lettings_service_level_change"] is not None:
+
+        # Property history fields
+
+        history_lettings_service_level_change_fields[
+            "description"
+        ] = "There has been an instruction service level change."
+
+        new_fee = instance["fields"]["fee_agreed_change"]
+
+        for instruction_instance in instruction_lettings_extra_dict:
+            if (
+                instruction_instance["old_pp_pk"]
+                == instance["fields"]["propertyprocess_link"]
+            ):
+                old_service_level = instruction_instance["fields"][
+                    "lettings_service_level"
+                ]
+
+                if (
+                    instance["fields"]["lettings_service_level_change"]
+                    == "Intro Only"
+                ):
+                    new_service_level = "'Intro Only'"
+                    new_service_level_programatic = "intro_only"
+                    managed = False
+
+                elif (
+                    instance["fields"]["lettings_service_level_change"]
+                    == "Rent Collect"
+                ):
+                    new_service_level = "'Rent Collect'"
+                    new_service_level_programatic = "rent_collect"
+                    managed = True
+
+                elif (
+                    instance["fields"]["lettings_service_level_change"]
+                    == "Fully Managed"
+                ):
+                    new_service_level = "'Fully Managed'"
+                    new_service_level_programatic = "fully_managed"
+                    managed = True
+
+                elif (
+                    instance["fields"]["lettings_service_level_change"]
+                    == "Fully Managed RI"
+                ):
+                    new_service_level = "'Fully Managed'"
+                    new_service_level_programatic = "fully_managed"
+                    managed = True
+
+                if old_service_level == "intro_only":
+                    old_service_level = "'Intro Only'"
+
+                elif old_service_level == "rent_collect":
+                    old_service_level = "'Rent Collect'"
+
+                elif old_service_level == "fully_managed":
+                    old_service_level = "'Fully Managed'"
+
+                elif old_service_level == "fully_managed_ri":
+                    old_service_level = "'Fully Managed'"
+
+                instruction_instance["fields"][
+                    "lettings_service_level"
+                ] = new_service_level_programatic
+                instruction_instance["fields"]["managed_property"] = managed
+                instruction_instance["fields"]["updated"] = instance["fields"][
+                    "instruction_change_date"
+                ]
+
+        note = (
+            f"The service level has been changed from {old_service_level}"
+            f" to {new_service_level}"
+        )
+
+        history_lettings_service_level_change_fields["notes"] = note
+        history_lettings_service_level_change_fields["created"] = instance[
+            "fields"
+        ]["instruction_change_date"]
+
+        # Create new UUID field
+
+        history_lettings_service_level_change["pk"] = str(uuid.uuid4())
+
+        # End create new UUID field
+
+        # End property history fields
+
+        history_lettings_service_level_change[
+            "fields"
+        ] = history_lettings_service_level_change_fields
+
+        history_extra.append(history_lettings_service_level_change)
+
+print("")
+print("Withdrawn But Active Properties:")
+for instance in withdrawn_but_active:
+    print(instance)
+
+property_history_extra_dict = history_extra
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/property_history_extra.json",
+    "w",
+) as json_data:
+    json.dump(history_extra, json_data)
+
+# ----------------------------------------
 # CREATE MASTER JSON
 # ----------------------------------------
 
@@ -1909,6 +2311,9 @@ for object in marketing_dict:
     master_dict.append(object)
 
 for object in propertyfee_dict:
+    master_dict.append(object)
+
+for object in property_history_extra_dict:
     master_dict.append(object)
 
 with open(
