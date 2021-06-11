@@ -180,9 +180,7 @@ class InstructionForm(forms.ModelForm):
 class FloorSpaceForm(forms.ModelForm):
     class Meta:
         model = Property
-        fields = (
-            "floor_space",
-        )
+        fields = ("floor_space",)
 
     def __init__(self, *args, **kwargs):
         """

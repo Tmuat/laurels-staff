@@ -685,9 +685,7 @@ def render_instruction(request, propertyprocess_id):
         PropertyProcess, id=propertyprocess_id
     )
 
-    property = get_object_or_404(
-        Property, id=property_process.property.id
-    )
+    property = get_object_or_404(Property, id=property_process.property.id)
 
     form = InstructionForm()
     floor_space_form = FloorSpaceForm(instance=property)
@@ -715,9 +713,7 @@ def add_instruction(request, propertyprocess_id):
         PropertyProcess, id=propertyprocess_id
     )
 
-    property = get_object_or_404(
-        Property, id=property_process.property.id
-    )
+    property = get_object_or_404(Property, id=property_process.property.id)
 
     if request.method == "POST":
         form = InstructionForm(request.POST)
