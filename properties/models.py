@@ -358,13 +358,11 @@ class InstructionLettingsExtra(UpdatedAndCreated):
     INTRO = "intro_only"
     RENTCOLLECT = "rent_collect"
     FULLYMANAGED = "fully_managed"
-    FULLYMANAGEDRI = "fully_managed_ri"
 
     SERVICE_LEVEL = [
         (INTRO, "Intro Only"),
         (RENTCOLLECT, "Rent Collect"),
         (FULLYMANAGED, "Fully Managed"),
-        (FULLYMANAGEDRI, "Fully Managed Rent Insurance Included"),
     ]
 
     TRUE_FALSE_CHOICES = [(True, "Yes"), (False, "No")]
