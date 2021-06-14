@@ -1,3 +1,4 @@
+import humanize
 import json
 import uuid
 
@@ -30,6 +31,7 @@ from django.template.defaultfilters import slugify
 # python3 manage.py dumpdata home.marketing > data/marketing.json --settings=laurels_staff_portal.settings.production
 # python3 manage.py dumpdata home.newbusiness > data/propertyfee.json --settings=laurels_staff_portal.settings.production
 # python3 manage.py dumpdata home.instructionchange > data/instructionchange.json --settings=laurels_staff_portal.settings.production
+# python3 manage.py dumpdata home.listingpricechange > data/listingpricechange.json --settings=laurels_staff_portal.settings.production
 
 # python3 manage.py flush
 
@@ -73,6 +75,7 @@ propertyfee_dict = None
 marketing_dict = None
 property_fee_dict = None
 instruction_change_dict = None
+property_history_reduction_dict = None
 hub_dict = None
 hub_targets_dict = None
 user_dict = None
@@ -1893,6 +1896,7 @@ for instance in instruction_change_model:
             propertyprocess_instance["old_pk"]
             == instance["fields"]["propertyprocess_link"]
         ):
+            instance["new_pp_pk"] = propertyprocess_instance["pk"]
             history_withdrawn_fields[
                 "propertyprocess"
             ] = propertyprocess_instance["pk"]
@@ -2231,12 +2235,118 @@ for instance in withdrawn_but_active:
     print(instance)
 
 property_history_extra_dict = history_extra
+instruction_change_dict = instruction_change_model
 
 with open(
     "/workspace/laurels-staff/common/data_dump/property_history_extra.json",
     "w",
 ) as json_data:
     json.dump(history_extra, json_data)
+
+# ----------------------------------------
+# REDUCTION MODEL
+# ----------------------------------------
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/originals/listingpricechange.json",
+    "r",
+) as json_data:
+    reduction_model = json.load(json_data)
+
+property_history_reduction_dict = []
+
+for instance in reduction_model:
+
+    if instance["fields"]["date"] is None:
+        pass
+    else:
+        # Changing the model to new value
+
+        instance["model"] = "properties.propertyhistory"
+
+        # End changing the model to new value
+
+        # Loop property list for property process & delete old field
+
+        for instruction_change_instance in instruction_change_dict:
+            if (
+                instruction_change_instance["pk"]
+                == instance["fields"]["instruction_change"]
+            ):
+                instance["fields"][
+                    "propertyprocess"
+                ] = instruction_change_instance["new_pp_pk"]
+
+        del instance["fields"]["instruction_change"]
+
+        # End loop
+
+        # Add property history fields
+
+        pp_reduction_history_dict = []
+
+        for prop_history_reduction_instance in property_history_reduction_dict:
+            if (
+                instance["fields"]["propertyprocess"]
+                == prop_history_reduction_instance["fields"]["propertyprocess"]
+            ):
+                pp_reduction_history_dict.append(
+                    prop_history_reduction_instance
+                )
+
+        instance["fields"]["type"] = "property_event"
+        instance["fields"]["description"] = "There has been a price reduction."
+
+        new_price = instance["fields"]["price_change"]
+
+        if len(pp_reduction_history_dict) == 0:
+            notes = (
+                "The price has been reduced"
+                f" from listing price to £{humanize.intcomma(new_price)}"
+            )
+
+        else:
+            last = pp_reduction_history_dict[-1]
+            old_price = last["old_price"]
+            notes = (
+                "The price has been reduced from "
+                f"£{humanize.intcomma(old_price)}"
+                f" to £{humanize.intcomma(new_price)}"
+            )
+
+        instance["fields"]["notes"] = notes
+
+        instance["old_price"] = instance["fields"]["price_change"]
+        del instance["fields"]["price_change"]
+
+        # End add property history fields
+
+        # Add new fields
+
+        instance["fields"]["created_by"] = "Admin"
+        instance["fields"]["created"] = instance["fields"]["date"]
+        del instance["fields"]["date"]
+        instance["fields"]["updated_by"] = "Admin"
+        instance["fields"]["updated"] = "2000-01-13T13:13:13.000Z"
+
+        # End add new fields
+
+        # Move original PK
+
+        instance["old_pk"] = instance["pk"]
+
+        # End move original PK
+
+        # Create new UUID field
+
+        instance["pk"] = str(uuid.uuid4())
+
+        property_history_reduction_dict.append(instance)
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/reduction.json", "w"
+) as json_data:
+    json.dump(property_history_reduction_dict, json_data)
 
 # ----------------------------------------
 # CREATE MASTER JSON
@@ -2314,6 +2424,9 @@ for object in propertyfee_dict:
     master_dict.append(object)
 
 for object in property_history_extra_dict:
+    master_dict.append(object)
+
+for object in property_history_reduction_dict:
     master_dict.append(object)
 
 with open(
