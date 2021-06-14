@@ -20,6 +20,7 @@ from properties.forms import (
 from properties.models import (
     Property,
     PropertyProcess,
+    PropertyFees,
     PropertyHistory,
     Offer,
     OffererDetails,
@@ -732,6 +733,15 @@ def add_instruction(request, propertyprocess_id):
 
             property_process.macro_status = PropertyProcess.INSTRUCTION
             property_process.save()
+
+            PropertyFees.objects.create(
+                propertyprocess=property_process,
+                fee=form.cleaned_data["fee_agreed"],
+                price=form.cleaned_data["listing_price"],
+                date=instance.date,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
 
             history_description = (
                 f"{request.user.get_full_name()} has added a instruction."
