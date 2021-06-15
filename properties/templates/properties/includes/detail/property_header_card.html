@@ -19,21 +19,26 @@
                                 <h5 class="mb-1">{{ propertyprocess.get_macro_status_display }}</h5>
                                 <p class="mb-0 font-13 text-white-50">Status</p>
                             </li>
-                            {% if propertyprocess.macro_status > 3 %}
+                            {% if propertyprocess.furthest_status > 3 %}
                             <li class="list-inline-item mr-3">
                                 <h5 class="mb-1">£{{ propertyprocess.property_fees.first.new_business|intcomma }}</h5>
                                 <p class="mb-0 font-13 text-white-50">New Business</p>
                             </li>
+                            {% endif %}
+
                             <li class="list-inline-item mr-3">
                                 <h5 class="mb-1">{{ propertyprocess.property_fees.first.fee }}%</h5>
                                 <p class="mb-0 font-13 text-white-50">Fee</p>
                             </li>
                             <li class="list-inline-item mr-3">
-                                <h5 class="mb-1">£{{ propertyprocess.deal.offer_accepted.offer|intcomma }}</h5>
-                                <p class="mb-0 font-13 text-white-50">Price Agreed</p>
+                                <h5 class="mb-1">£{{ propertyprocess.property_fees.first.price|intcomma }}</h5>
+                                {% if propertyprocess.furthest_status > 3 %}
+                                    <p class="mb-0 font-13 text-white-50">Price Agreed</p>
+                                {% else %}
+                                    <p class="mb-0 font-13 text-white-50">Latest Price</p>
+                                {% endif %}
                             </li>
-                            {% endif %}
-                            {% if propertyprocess.macro_status == 2 %}
+                            {% if propertyprocess.furthest_status == 2 %}
                             <li class="list-inline-item mr-3">
                                 <h5 class="mb-1">£{{ propertyprocess.valuation.price_quoted|intcomma }}</h5>
                                 <p class="mb-0 font-13 text-white-50">Price Quoted</p>
@@ -41,16 +46,6 @@
                             <li class="list-inline-item mr-3">
                                 <h5 class="mb-1">{{ propertyprocess.valuation.fee_quoted }}%</h5>
                                 <p class="mb-0 font-13 text-white-50">Fee Quoted</p>
-                            </li>
-                            {% endif %}
-                            {% if propertyprocess.macro_status == 3 %}
-                            <li class="list-inline-item mr-3">
-                                <h5 class="mb-1">£{{ propertyprocess.instruction.listing_price|intcomma }}</h5>
-                                <p class="mb-0 font-13 text-white-50">Listing Price</p>
-                            </li>
-                            <li class="list-inline-item mr-3">
-                                <h5 class="mb-1">{{ propertyprocess.instruction.fee_agreed }}%</h5>
-                                <p class="mb-0 font-13 text-white-50">Fee Agreed</p>
                             </li>
                             {% endif %}
                         </ul>
