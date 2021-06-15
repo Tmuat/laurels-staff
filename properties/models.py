@@ -170,6 +170,7 @@ class PropertyProcess(UpdatedAndCreated):
     )
     employee = models.ForeignKey(Profile, on_delete=models.CASCADE)
     macro_status = models.IntegerField(null=False, choices=STATUS)
+    furthest_status = models.IntegerField(null=False, choices=STATUS)
     hub = models.ForeignKey(
         Hub, on_delete=models.CASCADE, null=False, blank=False
     )
