@@ -4,7 +4,7 @@
             History
         </a>
     </li>
-    {% if propertyprocess.macro_status > 1 %}
+    {% if propertyprocess.furthest_status > 1 %}
     <li class="nav-item">
         <a href="#valuation" data-toggle="tab" aria-expanded="false" class="nav-link rounded-0">
             {% if propertyprocess.macro_status == "val" %}
@@ -16,7 +16,7 @@
         </a>
     </li>
     {% endif %}
-    {% if propertyprocess.macro_status > 2 %}
+    {% if propertyprocess.furthest_status > 2 %}
     <li class="nav-item">
         <a href="#offers" data-toggle="tab" aria-expanded="false" class="nav-link rounded-0">
             Offers
@@ -24,7 +24,7 @@
     </li>
     {% endif %}
     {% if propertyprocess.sector == "sales" %}
-        {% if propertyprocess.macro_status > 3 %}
+        {% if propertyprocess.furthest_status > 3 %}
         <li class="nav-item">
             <a href="#deal" data-toggle="tab" aria-expanded="false" class="nav-link rounded-0">
                 Deal
@@ -33,7 +33,7 @@
         {% endif %}
     {% endif %}
     {% if propertyprocess.sector == "sales" %}
-        {% if propertyprocess.macro_status > 4 %}
+        {% if propertyprocess.furthest_status > 4 %}
         <li class="nav-item">
             <a href="#exchange" data-toggle="tab" aria-expanded="false" class="nav-link px-1 rounded-0">
                 Exchange
