@@ -32,6 +32,7 @@ from django.template.defaultfilters import slugify
 # python3 manage.py dumpdata home.newbusiness > data/propertyfee.json --settings=laurels_staff_portal.settings.production
 # python3 manage.py dumpdata home.instructionchange > data/instructionchange.json --settings=laurels_staff_portal.settings.production
 # python3 manage.py dumpdata home.listingpricechange > data/listingpricechange.json --settings=laurels_staff_portal.settings.production
+# python3 manage.py dumpdata home.dealchange > data/dealchange.json --settings=laurels_staff_portal.settings.production
 
 # python3 manage.py flush
 
@@ -2271,7 +2272,10 @@ for instance in reduction_model:
         previous_prop_fee = []
 
         for prop_fee_instance in propertyfee_dict:
-            if prop_fee_instance["fields"]["propertyprocess"] == instance["fields"]["propertyprocess"]:
+            if (
+                prop_fee_instance["fields"]["propertyprocess"]
+                == instance["fields"]["propertyprocess"]
+            ):
                 previous_prop_fee.append(prop_fee_instance)
 
         last = previous_prop_fee[-1]
@@ -2298,10 +2302,14 @@ for instance in reduction_model:
 
                     new_property_fee_fields["fee"] = last["fields"]["fee"]
 
-                    new_property_fee_fields["date"] = instance["fields"]["created"]
+                    new_property_fee_fields["date"] = instance["fields"][
+                        "created"
+                    ]
 
                     new_property_fee_fields["created_by"] = "Admin"
-                    new_property_fee_fields["created"] = instance["fields"]["created"]
+                    new_property_fee_fields["created"] = instance["fields"][
+                        "created"
+                    ]
                     new_property_fee_fields["updated_by"] = "Admin"
                     new_property_fee_fields[
                         "updated"
@@ -2314,6 +2322,170 @@ for instance in reduction_model:
                     propertyfee_dict.append(new_property_fee)
 
         property_history_reduction_dict.append(instance)
+
+# ----------------------------------------
+# DEAL CHANGE MODEL
+# ----------------------------------------
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/originals/dealchange.json",
+    "r",
+) as json_data:
+    deal_change_model = json.load(json_data)
+
+for instance in deal_change_model:
+
+    if instance["fields"]["deal_change_date"] is not None:
+        history_price_agreed_change = {}
+        history_price_agreed_change_fields = {}
+
+        history_fee_agreed_change = {}
+        history_fee_agreed_change_fields = {}
+
+        # Changing the model to new value
+
+        history_price_agreed_change["model"] = "properties.propertyhistory"
+        history_fee_agreed_change["model"] = "properties.propertyhistory"
+
+        # End changing the model to new value
+
+        # Loop property list for property process & delete old field
+
+        for propertyprocess_instance in propertyprocess_dict:
+            if (
+                propertyprocess_instance["old_pk"]
+                == instance["fields"]["propertyprocess_link"]
+            ):
+                instance["new_pp_pk"] = propertyprocess_instance["pk"]
+                history_price_agreed_change_fields[
+                    "propertyprocess"
+                ] = propertyprocess_instance["pk"]
+
+                history_fee_agreed_change_fields[
+                    "propertyprocess"
+                ] = propertyprocess_instance["pk"]
+
+                history_price_agreed_change["old_pp_pk"] = instance["fields"][
+                    "propertyprocess_link"
+                ]
+
+                history_fee_agreed_change["old_pp_pk"] = instance["fields"][
+                    "propertyprocess_link"
+                ]
+
+        # End loop
+
+        # Add new fields
+
+        history_fee_agreed_change_fields["created_by"] = "Admin"
+        history_fee_agreed_change_fields["updated_by"] = "Admin"
+        history_fee_agreed_change_fields[
+            "updated"
+        ] = "2000-01-13T13:13:13.000Z"
+
+        history_price_agreed_change_fields["created_by"] = "Admin"
+        history_price_agreed_change_fields["updated_by"] = "Admin"
+        history_price_agreed_change_fields[
+            "updated"
+        ] = "2000-01-13T13:13:13.000Z"
+
+        if instance["fields"]["deal_price_agreed_change"]:
+            # Property history fields
+
+            history_price_agreed_change_fields[
+                "description"
+            ] = "There has been an deal price agreed change."
+
+            new_price = instance["fields"]["deal_price_agreed_change"]
+
+            for prop_fee_instance in propertyfee_dict:
+                if (
+                    prop_fee_instance["fields"]["propertyprocess"]
+                    == instance["new_pp_pk"]
+                ):
+                    previous_prop_fee.append(prop_fee_instance)
+
+            last = previous_prop_fee[-1]
+
+            for offer_instance in offer_dict:
+                if (
+                    offer_instance["fields"]["propertyprocess"]
+                    == instance["new_pp_pk"]
+                ):
+                    if offer_instance["fields"]["status"] == "accepted":
+
+                        old_price = offer_instance["fields"]["offer"]
+
+            note = f"The agreed price has changed from £{humanize.intcomma(old_price)} to £{humanize.intcomma(new_price)}"
+
+            history_price_agreed_change_fields["notes"] = note
+            history_price_agreed_change_fields["created"] = instance["fields"][
+                "deal_change_date"
+            ]
+            history_price_agreed_change_fields["type"] = "property_event"
+
+            # Create new UUID field
+
+            history_price_agreed_change["pk"] = str(uuid.uuid4())
+
+            # End create new UUID field
+
+            # End property history fields
+
+            history_price_agreed_change[
+                "fields"
+            ] = history_price_agreed_change_fields
+
+            history_extra.append(history_price_agreed_change)
+
+        if instance["fields"]["deal_fee_agreed_change"]:
+            # Property history fields
+
+            history_fee_agreed_change_fields[
+                "description"
+            ] = "There has been a fee change for the deal."
+
+            new_fee = instance["fields"]["deal_fee_agreed_change"]
+
+            previous_prop_fee = []
+
+            for prop_fee_instance in propertyfee_dict:
+                if (
+                    prop_fee_instance["fields"]["propertyprocess"]
+                    == instance["new_pp_pk"]
+                ):
+                    previous_prop_fee.append(prop_fee_instance)
+
+            last = previous_prop_fee[-1]
+
+            for instruction_instance in instruction_dict:
+                if (
+                    instruction_instance["fields"]["propertyprocess"]
+                    == instance["new_pp_pk"]
+                ):
+                    old_fee = instruction_instance["fields"]["fee_agreed"]
+
+            note = f"The agreed fee has changed from {old_fee}% to {new_fee}%"
+
+            history_fee_agreed_change_fields["notes"] = note
+            history_fee_agreed_change_fields["created"] = instance["fields"][
+                "deal_change_date"
+            ]
+            history_fee_agreed_change_fields["type"] = "property_event"
+
+            # Create new UUID field
+
+            history_fee_agreed_change["pk"] = str(uuid.uuid4())
+
+            # End create new UUID field
+
+            # End property history fields
+
+            history_fee_agreed_change[
+                "fields"
+            ] = history_fee_agreed_change_fields
+
+            history_extra.append(history_fee_agreed_change)
 
 # ----------------------------------------
 # WRITE JSON
