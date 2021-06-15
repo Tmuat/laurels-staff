@@ -36,6 +36,12 @@ class CustomUser(AbstractUser):
 
 
 class Profile(UpdatedAndCreated):
+    class Meta:
+        ordering = [
+            "user__email",
+        ]
+        verbose_name = "Profile"
+        verbose_name_plural = "Profiles"
 
     user = models.OneToOneField(
         CustomUser, on_delete=models.CASCADE, related_name="profile"
