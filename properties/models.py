@@ -1112,7 +1112,7 @@ class PropertyFees(UpdatedAndCreated):
         ordering = [
             "propertyprocess__property__postcode",
             "propertyprocess__property__address_line_1",
-            "date",
+            "-date",
         ]
         verbose_name = "Property Fee"
         verbose_name_plural = "Property Fees"
