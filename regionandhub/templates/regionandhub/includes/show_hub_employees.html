@@ -1,0 +1,37 @@
+{% load static i18n %}
+<div class="modal-content green-gradient">
+    <div class="modal-body">
+        <div class="text-center mt-2 mb-3">
+            <span><img src="{% static 'custom/images/logo.png' %}" alt="laurels" height="80"></span>
+        </div>
+        <div class="text-center">
+            <h4 class="text-white">Hub Employees</h4>
+        </div>
+        <p class="text-white text-center">Below are the employees currently associated with {{ hub }}.</p>
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm table-centered mb-0 font-14">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>Name</th>
+                                <th class="text-center">View</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for instance in hub.employee.all %}
+                            <tr>
+                                <td>{{ instance }}</td>
+                                <td class="text-center"><span class="mdi mdi-view-list pointer js-show-offers" data-url=""></span></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <!-- end table-responsive-->
+            </div>
+            <!-- end card-body-->
+        </div>
+    </div>
+</div>
+<!-- /.modal-content -->

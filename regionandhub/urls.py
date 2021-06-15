@@ -15,6 +15,7 @@ from regionandhub.views import (
     hub_add_specific_targets,
     hub_edit_targets,
     check_hub_employees,
+    show_hub_employees,
 )
 
 
@@ -57,5 +58,10 @@ urlpatterns = [
         "add/hub-targets/<hub_slug>/<year>/",
         hub_add_specific_targets,
         name="hub_add_specific_targets",
+    ),
+    path(
+        "show/hub/<hub_slug>/employees/",
+        show_hub_employees,
+        name="show_hub_employees",
     ),
 ]

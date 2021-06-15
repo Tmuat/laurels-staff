@@ -1,4 +1,21 @@
 $(document).ready(function () {
+    // Deals with rendering a form with AJAX to the base modal
+    var loadFormBaseModal = function () {
+        var instance = $(this);
+        $.ajax({
+            url: instance.attr("data-url"),
+            type: 'get',
+            dataType: 'json',
+            beforeSend: function () {
+                $("#base-modal").modal("show");
+            },
+            success: function (data) {
+                $("#base-modal .modal-dialog").html(data.html_modal);
+            }
+        });
+        return false;
+    };
+
     // Deals with the AJAX for adding a region. Loads the template
     $(".js-add-region").click(function () {
         $.ajax({
@@ -59,22 +76,6 @@ $(document).ready(function () {
             }
         });
         return false;
-    });
-
-    // Deals with the AJAX for editing a region.
-    $(".js-edit-region").click(function () {
-        var button = $(this);
-        $.ajax({
-            url: button.attr("data-url"),
-            type: 'get',
-            dataType: 'json',
-            beforeSend: function () {
-                $("#base-modal").modal("show");
-            },
-            success: function (data) {
-                $("#base-modal .modal-dialog").html(data.html_modal);
-            }
-        });
     });
 
     // Checks the uniqueness of the region name whilst editing
@@ -263,22 +264,6 @@ $(document).ready(function () {
         });
     });
 
-    // Deals with the AJAX for editing a hub.
-    $(".js-edit-hub").click(function () {
-        var button = $(this);
-        $.ajax({
-            url: button.attr("data-url"),
-            type: 'get',
-            dataType: 'json',
-            beforeSend: function () {
-                $("#base-modal").modal("show");
-            },
-            success: function (data) {
-                $("#base-modal .modal-dialog").html(data.html_modal);
-            }
-        });
-    });
-
     // Checks the uniqueness of the hub name
     $("#base-modal").on("change", "#id_change_hub_name", function () {
         var hubName = $(this).val();
@@ -365,5 +350,11 @@ $(document).ready(function () {
             }
         });
     });
+
+    // Binding functions
+    // Links
+    $("#panel-div").on("click", ".js-edit-hub", loadFormBaseModal);
+    $(".js-edit-region").on("click", loadFormBaseModal);
+    $("#panel-div").on("click", ".js-hub-employees", loadFormBaseModal);
 
 });

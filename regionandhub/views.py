@@ -474,3 +474,23 @@ def hub_add_specific_targets(request, hub_slug, year):
         )
 
     return JsonResponse(data)
+
+
+def show_hub_employees(request, hub_slug):
+    """
+    A view to return an ajax response with hub employees
+    """
+
+    data = dict()
+
+    hub = Hub.objects.get(slug=hub_slug)
+
+    context = {
+        "hub": hub,
+    }
+    data["html_modal"] = render_to_string(
+        "regionandhub/includes/show_hub_employees.html",
+        context,
+        request=request,
+    )
+    return JsonResponse(data)
