@@ -73,7 +73,6 @@ salesprogressionphase_dict = None
 propertychain_dict = None
 propertyfee_dict = None
 marketing_dict = None
-property_fee_dict = None
 instruction_change_dict = None
 property_history_reduction_dict = None
 hub_dict = None
@@ -219,11 +218,6 @@ for instance in property_model:
 
 property_dict = property_model
 
-with open(
-    "/workspace/laurels-staff/common/data_dump/property.json", "w"
-) as json_data:
-    json.dump(property_model, json_data)
-
 # ----------------------------------------
 # HUB MODEL
 # ----------------------------------------
@@ -277,12 +271,6 @@ for instance in hub_model:
     instance["pk"] = str(uuid.uuid4())
 
 hub_dict = hub_model
-
-with open(
-    "/workspace/laurels-staff/common/data_dump/hub.json", "w"
-) as json_data:
-    json.dump(hub_model, json_data)
-
 
 # ----------------------------------------
 # HUB TARGETS MODEL
@@ -466,11 +454,6 @@ for instance in hub_targets_model:
 
 hub_targets_dict = hub_targets
 
-with open(
-    "/workspace/laurels-staff/common/data_dump/hubtargets.json", "w"
-) as json_data:
-    json.dump(hub_targets, json_data)
-
 # ----------------------------------------
 # USER PREP
 # ----------------------------------------
@@ -552,11 +535,6 @@ for instance in custom_user_model:
     instance["pk"] = str(uuid.uuid4())
 
 user_dict = custom_user_model
-
-with open(
-    "/workspace/laurels-staff/common/data_dump/users.json", "w"
-) as json_data:
-    json.dump(custom_user_model, json_data)
 
 # ----------------------------------------
 # PROFILE MODEL
@@ -640,12 +618,6 @@ for instance in profile_model:
 
 profile_dict = profile_model
 
-with open(
-    "/workspace/laurels-staff/common/data_dump/profile.json", "w"
-) as json_data:
-    json.dump(profile_model, json_data)
-
-
 # ----------------------------------------
 # TOTP MODEL
 # ----------------------------------------
@@ -667,12 +639,6 @@ for instance in totp_model:
     # End loop
 
 totp_dict = totp_model
-
-with open(
-    "/workspace/laurels-staff/common/data_dump/totp.json", "w"
-) as json_data:
-    json.dump(totp_model, json_data)
-
 
 # ----------------------------------------
 # PROPERTY PROCESS MODEL
@@ -696,21 +662,27 @@ for instance in property_process_model:
 
     if instance["fields"]["macro_status"] == "Valuation":
         instance["fields"]["macro_status"] = 1
+        instance["fields"]["furthest_status"] = 1
 
     elif instance["fields"]["macro_status"] == "Instruction":
         instance["fields"]["macro_status"] = 2
+        instance["fields"]["furthest_status"] = 2
 
     elif instance["fields"]["macro_status"] == "Viewing":
         instance["fields"]["macro_status"] = 3
+        instance["fields"]["furthest_status"] = 3
 
     elif instance["fields"]["macro_status"] == "Deal":
         instance["fields"]["macro_status"] = 4
+        instance["fields"]["furthest_status"] = 4
 
     elif instance["fields"]["macro_status"] == "Complete":
         instance["fields"]["macro_status"] = 5
+        instance["fields"]["furthest_status"] = 5
 
     elif instance["fields"]["macro_status"] == "Withdrawn":
         instance["fields"]["macro_status"] = 0
+        instance["fields"]["furthest_status"] = 3
 
     # End change macro_status
 
@@ -776,12 +748,6 @@ for instance in property_process_model:
 
 propertyprocess_dict = property_process_model
 
-with open(
-    "/workspace/laurels-staff/common/data_dump/property_link.json", "w"
-) as json_data:
-    json.dump(property_process_model, json_data)
-
-
 # ----------------------------------------
 # PROPERTY HISTORY MODEL
 # ----------------------------------------
@@ -836,12 +802,6 @@ for instance in propertyprocess_dict:
     history.append(property_history)
 
 property_history_dict = history
-
-with open(
-    "/workspace/laurels-staff/common/data_dump/property_history.json", "w"
-) as json_data:
-    json.dump(history, json_data)
-
 
 # ----------------------------------------
 # VALUATION MODEL
@@ -906,12 +866,6 @@ for instance in valuation_model:
     instance["pk"] = str(uuid.uuid4())
 
 valuation_dict = valuation_model
-
-with open(
-    "/workspace/laurels-staff/common/data_dump/valuation.json", "w"
-) as json_data:
-    json.dump(valuation_model, json_data)
-
 
 # ----------------------------------------
 # INSTRUCTION MODEL
@@ -1054,18 +1008,6 @@ for instance in instruction_model:
 instruction_dict = instruction_model
 instruction_lettings_extra_dict = instruction_extra_dict
 
-with open(
-    "/workspace/laurels-staff/common/data_dump/instruction.json", "w"
-) as json_data:
-    json.dump(instruction_model, json_data)
-
-with open(
-    "/workspace/laurels-staff/common/data_dump/instruction_letting_extra.json",
-    "w",
-) as json_data:
-    json.dump(instruction_extra_dict, json_data)
-
-
 # ----------------------------------------
 # OFFER MODEL
 # ----------------------------------------
@@ -1180,20 +1122,17 @@ for instance in offer_model:
         if deal_instance["fields"]["offer_accepted"] == instance["old_pk"]:
             instance["fields"]["status"] = "accepted"
 
+    for propertyprocess_instance in propertyprocess_dict:
+        if (
+            propertyprocess_instance["pk"]
+            == instance["fields"]["propertyprocess"]
+        ):
+            if propertyprocess_instance["fields"]["macro_status"] == 0:
+                instance["fields"]["status"] = "rejected"
+
 offerer_dict = offerer_extra_dict
 
 offer_dict = offer_model
-
-with open(
-    "/workspace/laurels-staff/common/data_dump/offer.json", "w"
-) as json_data:
-    json.dump(offer_model, json_data)
-
-with open(
-    "/workspace/laurels-staff/common/data_dump/offerer.json",
-    "w",
-) as json_data:
-    json.dump(offerer_extra_dict, json_data)
 
 # ----------------------------------------
 # DEAL MODEL
@@ -1223,6 +1162,7 @@ for instance in deal_model:
             instance["fields"]["propertyprocess"] = propertyprocess_instance[
                 "pk"
             ]
+            propertyprocess_instance["fields"]["furthest_status"] = 4
 
     del instance["fields"]["propertyprocess_link"]
 
@@ -1262,11 +1202,6 @@ for instance in deal_model:
 
 deal_dict = deal_model
 
-with open(
-    "/workspace/laurels-staff/common/data_dump/deal.json", "w"
-) as json_data:
-    json.dump(deal_model, json_data)
-
 # ----------------------------------------
 # EXCHANGE MODEL
 # ----------------------------------------
@@ -1297,6 +1232,7 @@ for instance in exchange_model:
             instance["fields"]["propertyprocess"] = propertyprocess_instance[
                 "pk"
             ]
+            propertyprocess_instance["fields"]["furthest_status"] = 5
 
     del instance["fields"]["propertyprocess_link"]
 
@@ -1341,11 +1277,6 @@ for instance in exchange_model:
         ):
             if propertyprocess_instance["fields"]["sector"] == "sales":
                 exchange_dict.append(instance)
-
-with open(
-    "/workspace/laurels-staff/common/data_dump/exchangemove.json", "w"
-) as json_data:
-    json.dump(exchange_dict, json_data)
 
 # ----------------------------------------
 # SALE PROGRESSION MODEL
@@ -1568,22 +1499,6 @@ salesprogression_dict = saleprogression_model
 salesprogressionsettings_dict = settings_extra
 salesprogressionphase_dict = phase_extra
 
-with open(
-    "/workspace/laurels-staff/common/data_dump/salesprogression.json", "w"
-) as json_data:
-    json.dump(saleprogression_model, json_data)
-
-with open(
-    "/workspace/laurels-staff/common/data_dump/salesprogressionsettings.json",
-    "w",
-) as json_data:
-    json.dump(salesprogressionsettings_dict, json_data)
-
-with open(
-    "/workspace/laurels-staff/common/data_dump/salesprogressionphase.json", "w"
-) as json_data:
-    json.dump(salesprogressionphase_dict, json_data)
-
 # ----------------------------------------
 # PROPERTY CHAIN MODEL
 # ----------------------------------------
@@ -1637,11 +1552,6 @@ for instance in propertychain_model:
     instance["pk"] = str(uuid.uuid4())
 
 propertychain_dict = propertychain_model
-
-with open(
-    "/workspace/laurels-staff/common/data_dump/propertychain.json", "w"
-) as json_data:
-    json.dump(propertychain_model, json_data)
 
 # ----------------------------------------
 # MARKETING MODEL
@@ -1761,11 +1671,6 @@ for instance in marketing_model:
 
 marketing_dict = marketing_model
 
-with open(
-    "/workspace/laurels-staff/common/data_dump/marketing.json", "w"
-) as json_data:
-    json.dump(marketing_model, json_data)
-
 # ----------------------------------------
 # PROPERTY FEE MODEL
 # ----------------------------------------
@@ -1840,11 +1745,6 @@ for instance in property_fee_model:
     instance["pk"] = str(uuid.uuid4())
 
 propertyfee_dict = property_fee_model
-
-with open(
-    "/workspace/laurels-staff/common/data_dump/propertyfee.json", "w"
-) as json_data:
-    json.dump(property_fee_model, json_data)
 
 # ----------------------------------------
 # INSTRUCTION CHANGE MODEL
@@ -2072,6 +1972,9 @@ for instance in instruction_change_model:
 
         new_fee = instance["fields"]["fee_agreed_change"]
 
+        new_property_fee = {}
+        new_property_fee_fields = {}
+
         for instruction_instance in instruction_dict:
             if (
                 instruction_instance["old_pp_pk"]
@@ -2079,7 +1982,34 @@ for instance in instruction_change_model:
             ):
                 old_fee = instruction_instance["fields"]["fee_agreed"]
 
-                instruction_instance["fields"]["fee_agreed"] = new_fee
+                new_property_fee["model"] = "properties.propertyfees"
+
+                new_property_fee_fields[
+                    "propertyprocess"
+                ] = history_fee_agreed_change_fields["propertyprocess"]
+
+                new_property_fee_fields["price"] = instruction_instance[
+                    "fields"
+                ]["listing_price"]
+
+                new_property_fee_fields["fee"] = new_fee
+
+                new_property_fee_fields["date"] = instance["fields"][
+                    "instruction_change_date"
+                ]
+
+                new_property_fee_fields["created_by"] = "Admin"
+                new_property_fee_fields["created"] = instance["fields"][
+                    "instruction_change_date"
+                ]
+                new_property_fee_fields["updated_by"] = "Admin"
+                new_property_fee_fields["updated"] = "2000-01-13T13:13:13.000Z"
+
+                new_property_fee["pk"] = str(uuid.uuid4())
+
+                new_property_fee["fields"] = new_property_fee_fields
+
+                propertyfee_dict.append(new_property_fee)
 
         for property_process_instance in propertyprocess_dict:
             if (
@@ -2230,18 +2160,12 @@ for instance in instruction_change_model:
         history_extra.append(history_lettings_service_level_change)
 
 print("")
-print("Withdrawn But Active Properties:")
+print("Withdrawn But Active, Properties:")
 for instance in withdrawn_but_active:
     print(instance)
 
 property_history_extra_dict = history_extra
 instruction_change_dict = instruction_change_model
-
-with open(
-    "/workspace/laurels-staff/common/data_dump/property_history_extra.json",
-    "w",
-) as json_data:
-    json.dump(history_extra, json_data)
 
 # ----------------------------------------
 # REDUCTION MODEL
@@ -2341,10 +2265,177 @@ for instance in reduction_model:
 
         instance["pk"] = str(uuid.uuid4())
 
+        # Create a new property fee for reduction only if
+        # they aren't passed instruction
+
+        previous_prop_fee = []
+
+        for prop_fee_instance in propertyfee_dict:
+            if prop_fee_instance["fields"]["propertyprocess"] == instance["fields"]["propertyprocess"]:
+                previous_prop_fee.append(prop_fee_instance)
+
+        last = previous_prop_fee[-1]
+
+        new_property_fee = {}
+        new_property_fee_fields = {}
+
+        for propertyprocess_instance in propertyprocess_dict:
+            if (
+                propertyprocess_instance["pk"]
+                == instance["fields"]["propertyprocess"]
+            ):
+                if (
+                    propertyprocess_instance["fields"]["macro_status"] > 0
+                    and propertyprocess_instance["fields"]["macro_status"] < 4
+                ):
+                    new_property_fee["model"] = "properties.propertyfees"
+
+                    new_property_fee_fields[
+                        "propertyprocess"
+                    ] = propertyprocess_instance["pk"]
+
+                    new_property_fee_fields["price"] = new_price
+
+                    new_property_fee_fields["fee"] = last["fields"]["fee"]
+
+                    new_property_fee_fields["date"] = instance["fields"]["created"]
+
+                    new_property_fee_fields["created_by"] = "Admin"
+                    new_property_fee_fields["created"] = instance["fields"]["created"]
+                    new_property_fee_fields["updated_by"] = "Admin"
+                    new_property_fee_fields[
+                        "updated"
+                    ] = "2000-01-13T13:13:13.000Z"
+
+                    new_property_fee["pk"] = str(uuid.uuid4())
+
+                    new_property_fee["fields"] = new_property_fee_fields
+
+                    propertyfee_dict.append(new_property_fee)
+
         property_history_reduction_dict.append(instance)
 
+# ----------------------------------------
+# WRITE JSON
+# ----------------------------------------
+
 with open(
-    "/workspace/laurels-staff/common/data_dump/reduction.json", "w"
+    "/workspace/laurels-staff/common/data_dump/new/property.json", "w"
+) as json_data:
+    json.dump(property_model, json_data)
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/new/hub.json", "w"
+) as json_data:
+    json.dump(hub_model, json_data)
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/new/hubtargets.json", "w"
+) as json_data:
+    json.dump(hub_targets, json_data)
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/new/users.json", "w"
+) as json_data:
+    json.dump(custom_user_model, json_data)
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/new/profile.json", "w"
+) as json_data:
+    json.dump(profile_model, json_data)
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/new/totp.json", "w"
+) as json_data:
+    json.dump(totp_model, json_data)
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/new/property_link.json", "w"
+) as json_data:
+    json.dump(property_process_model, json_data)
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/new/property_history.json", "w"
+) as json_data:
+    json.dump(history, json_data)
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/new/valuation.json", "w"
+) as json_data:
+    json.dump(valuation_model, json_data)
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/new/instruction.json", "w"
+) as json_data:
+    json.dump(instruction_model, json_data)
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/new/instruction_letting_extra.json",
+    "w",
+) as json_data:
+    json.dump(instruction_extra_dict, json_data)
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/new/offer.json", "w"
+) as json_data:
+    json.dump(offer_model, json_data)
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/new/offerer.json",
+    "w",
+) as json_data:
+    json.dump(offerer_extra_dict, json_data)
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/new/deal.json", "w"
+) as json_data:
+    json.dump(deal_model, json_data)
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/new/exchangemove.json", "w"
+) as json_data:
+    json.dump(exchange_dict, json_data)
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/new/salesprogression.json", "w"
+) as json_data:
+    json.dump(saleprogression_model, json_data)
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/new/salesprogressionsettings.json",
+    "w",
+) as json_data:
+    json.dump(salesprogressionsettings_dict, json_data)
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/new/salesprogressionphase.json",
+    "w",
+) as json_data:
+    json.dump(salesprogressionphase_dict, json_data)
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/new/propertychain.json", "w"
+) as json_data:
+    json.dump(propertychain_model, json_data)
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/new/marketing.json", "w"
+) as json_data:
+    json.dump(marketing_model, json_data)
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/new/propertyfee.json", "w"
+) as json_data:
+    json.dump(property_fee_model, json_data)
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/new/property_history_extra.json",
+    "w",
+) as json_data:
+    json.dump(history_extra, json_data)
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/new/reduction.json", "w"
 ) as json_data:
     json.dump(property_history_reduction_dict, json_data)
 
