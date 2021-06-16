@@ -76,6 +76,7 @@ propertyfee_dict = None
 marketing_dict = None
 instruction_change_dict = None
 property_history_reduction_dict = None
+progress_notes_dict = None
 hub_dict = None
 hub_targets_dict = None
 user_dict = None
@@ -1452,6 +1453,7 @@ with open(
 
 settings_extra = []
 phase_extra = []
+prog_notes_extra = []
 
 for instance in saleprogression_model:
 
@@ -1461,11 +1463,15 @@ for instance in saleprogression_model:
     phase = {}
     phase_fields = {}
 
+    prog_notes = {}
+    prog_notes_fields = {}
+
     # Changing the model to new value
 
     instance["model"] = "properties.salesprogression"
     settings["model"] = "properties.salesprogressionsettings"
     phase["model"] = "properties.salesprogressionphase"
+    prog_notes["model"] = "properties.progressionnotes"
 
     # End changing the model to new value
 
@@ -1477,6 +1483,9 @@ for instance in saleprogression_model:
             == instance["fields"]["propertyprocess_link"]
         ):
             instance["fields"]["propertyprocess"] = propertyprocess_instance[
+                "pk"
+            ]
+            prog_notes_fields["propertyprocess"] = propertyprocess_instance[
                 "pk"
             ]
 
@@ -1491,6 +1500,9 @@ for instance in saleprogression_model:
 
     settings_fields["show_survey"] = instance["fields"]["show_survey"]
     del instance["fields"]["show_survey"]
+
+    prog_notes_fields["notes"] = instance["fields"]["sales_notes"]
+    del instance["fields"]["sales_notes"]
 
     # End move fields to new model
 
@@ -1629,6 +1641,11 @@ for instance in saleprogression_model:
     phase_fields["updated_by"] = "Admin"
     phase_fields["updated"] = "2000-01-13T13:13:13.000Z"
 
+    prog_notes_fields["created_by"] = "Admin"
+    prog_notes_fields["created"] = "2000-01-13T13:13:13.000Z"
+    prog_notes_fields["updated_by"] = "Admin"
+    prog_notes_fields["updated"] = "2000-01-13T13:13:13.000Z"
+
     # End add new fields
 
     # Move original PK
@@ -1651,15 +1668,18 @@ for instance in saleprogression_model:
 
     settings["fields"] = settings_fields
     phase["fields"] = phase_fields
+    prog_notes["fields"] = prog_notes_fields
 
     settings_extra.append(settings)
     phase_extra.append(phase)
+    prog_notes_extra.append(prog_notes)
 
     # End new model extra fields
 
 salesprogression_dict = saleprogression_model
 salesprogressionsettings_dict = settings_extra
 salesprogressionphase_dict = phase_extra
+progress_notes_dict = prog_notes_extra
 
 # ----------------------------------------
 # PROPERTY CHAIN MODEL
@@ -2771,6 +2791,11 @@ with open(
 ) as json_data:
     json.dump(property_history_reduction_dict, json_data)
 
+with open(
+    "/workspace/laurels-staff/common/data_dump/new/progress_notes.json", "w"
+) as json_data:
+    json.dump(progress_notes_dict, json_data)
+
 # ----------------------------------------
 # CREATE MASTER JSON
 # ----------------------------------------
@@ -2850,6 +2875,9 @@ for object in property_history_extra_dict:
     master_dict.append(object)
 
 for object in property_history_reduction_dict:
+    master_dict.append(object)
+
+for object in progress_notes_dict:
     master_dict.append(object)
 
 with open(
