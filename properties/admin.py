@@ -19,7 +19,7 @@ from properties.models import (
     PropertyChain,
     Marketing,
     PropertyFees,
-    ProgressionNotes
+    ProgressionNotes,
 )
 
 
