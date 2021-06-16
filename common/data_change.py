@@ -286,172 +286,175 @@ hub_targets = []
 
 for instance in hub_targets_model:
 
-    q1_2021 = {}
-    q2_2021 = {}
-    q3_2021 = {}
-    q4_2021 = {}
+    if instance["pk"] == 1:
+        pass
+    else:
+        q1_2021 = {}
+        q2_2021 = {}
+        q3_2021 = {}
+        q4_2021 = {}
 
-    q1_2021_fields = {}
-    q2_2021_fields = {}
-    q3_2021_fields = {}
-    q4_2021_fields = {}
+        q1_2021_fields = {}
+        q2_2021_fields = {}
+        q3_2021_fields = {}
+        q4_2021_fields = {}
 
-    hub_targets_year = {}
-    hub_targets_year_fields = {}
+        hub_targets_year = {}
+        hub_targets_year_fields = {}
 
-    # Changing the model to new value
+        # Changing the model to new value
 
-    q1_2021["model"] = "regionandhub.hubtargets"
-    q2_2021["model"] = "regionandhub.hubtargets"
-    q3_2021["model"] = "regionandhub.hubtargets"
-    q4_2021["model"] = "regionandhub.hubtargets"
+        q1_2021["model"] = "regionandhub.hubtargets"
+        q2_2021["model"] = "regionandhub.hubtargets"
+        q3_2021["model"] = "regionandhub.hubtargets"
+        q4_2021["model"] = "regionandhub.hubtargets"
 
-    hub_targets_year["model"] = "regionandhub.hubtargetsyear"
+        hub_targets_year["model"] = "regionandhub.hubtargetsyear"
 
-    # End changing the model to new value
+        # End changing the model to new value
 
-    # Create pk for new instances
+        # Create pk for new instances
 
-    q1_2021["pk"] = str(uuid.uuid4())
-    q2_2021["pk"] = str(uuid.uuid4())
-    q3_2021["pk"] = str(uuid.uuid4())
-    q4_2021["pk"] = str(uuid.uuid4())
+        q1_2021["pk"] = str(uuid.uuid4())
+        q2_2021["pk"] = str(uuid.uuid4())
+        q3_2021["pk"] = str(uuid.uuid4())
+        q4_2021["pk"] = str(uuid.uuid4())
 
-    hub_targets_year["pk"] = str(uuid.uuid4())
+        hub_targets_year["pk"] = str(uuid.uuid4())
 
-    # End creating new instances
+        # End creating new instances
 
-    # Adding year & quarter for new instances
+        # Adding year & quarter for new instances
 
-    q1_2021_fields["year"] = "2021"
-    q2_2021_fields["year"] = "2021"
-    q3_2021_fields["year"] = "2021"
-    q4_2021_fields["year"] = "2021"
+        q1_2021_fields["year"] = "2021"
+        q2_2021_fields["year"] = "2021"
+        q3_2021_fields["year"] = "2021"
+        q4_2021_fields["year"] = "2021"
 
-    hub_targets_year_fields["year"] = "2021"
+        hub_targets_year_fields["year"] = "2021"
 
-    q1_2021_fields["quarter"] = "q1"
-    q2_2021_fields["quarter"] = "q2"
-    q3_2021_fields["quarter"] = "q3"
-    q4_2021_fields["quarter"] = "q4"
+        q1_2021_fields["quarter"] = "q1"
+        q2_2021_fields["quarter"] = "q2"
+        q3_2021_fields["quarter"] = "q3"
+        q4_2021_fields["quarter"] = "q4"
 
-    # End adding year & quarter new instances
+        # End adding year & quarter new instances
 
-    # Adding hub link
+        # Adding hub link
 
-    for hub_instance in hub_dict:
-        if hub_instance["hub_targets_link"] == instance["pk"]:
+        for hub_instance in hub_dict:
+            if hub_instance["hub_targets_link"] == instance["pk"]:
 
-            q1_2021_fields["hub_targets"] = hub_instance["pk"]
-            q2_2021_fields["hub_targets"] = hub_instance["pk"]
-            q3_2021_fields["hub_targets"] = hub_instance["pk"]
-            q4_2021_fields["hub_targets"] = hub_instance["pk"]
+                q1_2021_fields["hub_targets"] = hub_instance["pk"]
+                q2_2021_fields["hub_targets"] = hub_instance["pk"]
+                q3_2021_fields["hub_targets"] = hub_instance["pk"]
+                q4_2021_fields["hub_targets"] = hub_instance["pk"]
 
-            hub_targets_year_fields["hub"] = hub_instance["pk"]
+                hub_targets_year_fields["hub"] = hub_instance["pk"]
 
-    # End hub link
+        # End hub link
 
-    # Set hub targets to true
+        # Set hub targets to true
 
-    hub_targets_year_fields["targets_set"] = True
+        hub_targets_year_fields["targets_set"] = True
 
-    # End set hub targets to true
+        # End set hub targets to true
 
-    # Update fields
+        # Update fields
 
-    q1_2021_fields["instructions"] = instance["fields"][
-        "q1_2021_instructions_hub"
-    ]
-    q2_2021_fields["instructions"] = instance["fields"][
-        "q2_2021_instructions_hub"
-    ]
-    q3_2021_fields["instructions"] = instance["fields"][
-        "q3_2021_instructions_hub"
-    ]
-    q4_2021_fields["instructions"] = instance["fields"][
-        "q4_2021_instructions_hub"
-    ]
+        q1_2021_fields["instructions"] = instance["fields"][
+            "q1_2021_instructions_hub"
+        ]
+        q2_2021_fields["instructions"] = instance["fields"][
+            "q2_2021_instructions_hub"
+        ]
+        q3_2021_fields["instructions"] = instance["fields"][
+            "q3_2021_instructions_hub"
+        ]
+        q4_2021_fields["instructions"] = instance["fields"][
+            "q4_2021_instructions_hub"
+        ]
 
-    q1_2021_fields["reductions"] = instance["fields"]["q1_2021_reductions_hub"]
-    q2_2021_fields["reductions"] = instance["fields"]["q2_2021_reductions_hub"]
-    q3_2021_fields["reductions"] = instance["fields"]["q3_2021_reductions_hub"]
-    q4_2021_fields["reductions"] = instance["fields"]["q4_2021_reductions_hub"]
+        q1_2021_fields["reductions"] = instance["fields"]["q1_2021_reductions_hub"]
+        q2_2021_fields["reductions"] = instance["fields"]["q2_2021_reductions_hub"]
+        q3_2021_fields["reductions"] = instance["fields"]["q3_2021_reductions_hub"]
+        q4_2021_fields["reductions"] = instance["fields"]["q4_2021_reductions_hub"]
 
-    q1_2021_fields["new_business"] = instance["fields"][
-        "q1_2021_new_business_hub"
-    ]
-    q2_2021_fields["new_business"] = instance["fields"][
-        "q2_2021_new_business_hub"
-    ]
-    q3_2021_fields["new_business"] = instance["fields"][
-        "q3_2021_new_business_hub"
-    ]
-    q4_2021_fields["new_business"] = instance["fields"][
-        "q4_2021_new_business_hub"
-    ]
+        q1_2021_fields["new_business"] = instance["fields"][
+            "q1_2021_new_business_hub"
+        ]
+        q2_2021_fields["new_business"] = instance["fields"][
+            "q2_2021_new_business_hub"
+        ]
+        q3_2021_fields["new_business"] = instance["fields"][
+            "q3_2021_new_business_hub"
+        ]
+        q4_2021_fields["new_business"] = instance["fields"][
+            "q4_2021_new_business_hub"
+        ]
 
-    q1_2021_fields["exchange_and_move"] = instance["fields"][
-        "q1_2021_exchange_and_move_hub"
-    ]
-    q2_2021_fields["exchange_and_move"] = instance["fields"][
-        "q2_2021_exchange_and_move_hub"
-    ]
-    q3_2021_fields["exchange_and_move"] = instance["fields"][
-        "q3_2021_exchange_and_move_hub"
-    ]
-    q4_2021_fields["exchange_and_move"] = instance["fields"][
-        "q4_2021_exchange_and_move_hub"
-    ]
+        q1_2021_fields["exchange_and_move"] = instance["fields"][
+            "q1_2021_exchange_and_move_hub"
+        ]
+        q2_2021_fields["exchange_and_move"] = instance["fields"][
+            "q2_2021_exchange_and_move_hub"
+        ]
+        q3_2021_fields["exchange_and_move"] = instance["fields"][
+            "q3_2021_exchange_and_move_hub"
+        ]
+        q4_2021_fields["exchange_and_move"] = instance["fields"][
+            "q4_2021_exchange_and_move_hub"
+        ]
 
-    # End Update fields
+        # End Update fields
 
-    # Add new fields
+        # Add new fields
 
-    q1_2021_fields["created_by"] = "Admin"
-    q1_2021_fields["created"] = "2000-01-13T13:13:13.000Z"
-    q1_2021_fields["updated_by"] = "Admin"
-    q1_2021_fields["updated"] = "2000-01-13T13:13:13.000Z"
+        q1_2021_fields["created_by"] = "Admin"
+        q1_2021_fields["created"] = "2000-01-13T13:13:13.000Z"
+        q1_2021_fields["updated_by"] = "Admin"
+        q1_2021_fields["updated"] = "2000-01-13T13:13:13.000Z"
 
-    q2_2021_fields["created_by"] = "Admin"
-    q2_2021_fields["created"] = "2000-01-13T13:13:13.000Z"
-    q2_2021_fields["updated_by"] = "Admin"
-    q2_2021_fields["updated"] = "2000-01-13T13:13:13.000Z"
+        q2_2021_fields["created_by"] = "Admin"
+        q2_2021_fields["created"] = "2000-01-13T13:13:13.000Z"
+        q2_2021_fields["updated_by"] = "Admin"
+        q2_2021_fields["updated"] = "2000-01-13T13:13:13.000Z"
 
-    q3_2021_fields["created_by"] = "Admin"
-    q3_2021_fields["created"] = "2000-01-13T13:13:13.000Z"
-    q3_2021_fields["updated_by"] = "Admin"
-    q3_2021_fields["updated"] = "2000-01-13T13:13:13.000Z"
+        q3_2021_fields["created_by"] = "Admin"
+        q3_2021_fields["created"] = "2000-01-13T13:13:13.000Z"
+        q3_2021_fields["updated_by"] = "Admin"
+        q3_2021_fields["updated"] = "2000-01-13T13:13:13.000Z"
 
-    q4_2021_fields["created_by"] = "Admin"
-    q4_2021_fields["created"] = "2000-01-13T13:13:13.000Z"
-    q4_2021_fields["updated_by"] = "Admin"
-    q4_2021_fields["updated"] = "2000-01-13T13:13:13.000Z"
+        q4_2021_fields["created_by"] = "Admin"
+        q4_2021_fields["created"] = "2000-01-13T13:13:13.000Z"
+        q4_2021_fields["updated_by"] = "Admin"
+        q4_2021_fields["updated"] = "2000-01-13T13:13:13.000Z"
 
-    hub_targets_year_fields["created_by"] = "Admin"
-    hub_targets_year_fields["created"] = "2000-01-13T13:13:13.000Z"
-    hub_targets_year_fields["updated_by"] = "Admin"
-    hub_targets_year_fields["updated"] = "2000-01-13T13:13:13.000Z"
+        hub_targets_year_fields["created_by"] = "Admin"
+        hub_targets_year_fields["created"] = "2000-01-13T13:13:13.000Z"
+        hub_targets_year_fields["updated_by"] = "Admin"
+        hub_targets_year_fields["updated"] = "2000-01-13T13:13:13.000Z"
 
-    # End add new fields
+        # End add new fields
 
-    # Add fields to larger dict
+        # Add fields to larger dict
 
-    q1_2021["fields"] = q1_2021_fields
-    q2_2021["fields"] = q2_2021_fields
-    q3_2021["fields"] = q3_2021_fields
-    q4_2021["fields"] = q4_2021_fields
+        q1_2021["fields"] = q1_2021_fields
+        q2_2021["fields"] = q2_2021_fields
+        q3_2021["fields"] = q3_2021_fields
+        q4_2021["fields"] = q4_2021_fields
 
-    hub_targets_year["fields"] = hub_targets_year_fields
+        hub_targets_year["fields"] = hub_targets_year_fields
 
-    # End adding fields to larger dict
+        # End adding fields to larger dict
 
-    # Add to dict
+        # Add to dict
 
-    hub_targets.append(q1_2021)
-    hub_targets.append(q2_2021)
-    hub_targets.append(q3_2021)
-    hub_targets.append(q4_2021)
-    hub_targets.append(hub_targets_year)
+        hub_targets.append(q1_2021)
+        hub_targets.append(q2_2021)
+        hub_targets.append(q3_2021)
+        hub_targets.append(q4_2021)
+        hub_targets.append(hub_targets_year)
 
 hub_targets_dict = hub_targets
 
@@ -753,7 +756,7 @@ propertyprocess_dict = property_process_model
 # PROPERTY HISTORY MODEL
 # ----------------------------------------
 
-history = []
+history_temp_dict = []
 
 for instance in propertyprocess_dict:
 
@@ -783,12 +786,12 @@ for instance in propertyprocess_dict:
     if instance["fields"]["sector"] == "sales":
         property_history_fields["description"] = (
             "This is a legacy property and property"
-            " history for this sale starts here."
+            " history is limited for this sale starts here."
         )
     else:
         property_history_fields["description"] = (
             "This is a legacy property and property"
-            " history for this letting starts here."
+            " history is limited for this letting starts here."
         )
 
     property_history_fields["created_by"] = "Admin"
@@ -800,9 +803,9 @@ for instance in propertyprocess_dict:
 
     property_history["fields"] = property_history_fields
 
-    history.append(property_history)
+    history_temp_dict.append(property_history)
 
-property_history_dict = history
+property_history_dict = history_temp_dict
 
 # ----------------------------------------
 # VALUATION MODEL
@@ -813,6 +816,8 @@ with open(
     "r",
 ) as json_data:
     valuation_model = json.load(json_data)
+
+history_extra = []
 
 for instance in valuation_model:
 
@@ -865,6 +870,52 @@ for instance in valuation_model:
     # Create new UUID field
 
     instance["pk"] = str(uuid.uuid4())
+
+    # Property history fields
+
+    history = {}
+    history_fields = {}
+
+    # Add model
+
+    history["model"] = "properties.propertyhistory"
+
+    # End add model
+
+    # Add new fields
+
+    history_fields[
+        "propertyprocess"
+    ] = instance["fields"]["propertyprocess"]
+    history_fields["created_by"] = "Admin"
+    history_fields["updated_by"] = "Admin"
+    history_fields[
+        "updated"
+    ] = "2000-01-13T13:13:13.000Z"
+
+    history_fields[
+        "description"
+    ] = "The property has been valued."
+
+    history_fields["created"] = instance["fields"][
+        "date"
+    ]
+
+    history_fields["type"] = "property_event"
+
+    # Create new UUID field
+
+    history["pk"] = str(uuid.uuid4())
+
+    # End create new UUID field
+
+    # End property history fields
+
+    history[
+        "fields"
+    ] = history_fields
+
+    history_extra.append(history)
 
 valuation_dict = valuation_model
 
@@ -1005,6 +1056,52 @@ for instance in instruction_model:
 
     instance["pk"] = str(uuid.uuid4())
     instruction_extra["pk"] = str(uuid.uuid4())
+
+    # Property history fields
+
+    history = {}
+    history_fields = {}
+
+    # Add model
+
+    history["model"] = "properties.propertyhistory"
+
+    # End add model
+
+    # Add new fields
+
+    history_fields[
+        "propertyprocess"
+    ] = instance["fields"]["propertyprocess"]
+    history_fields["created_by"] = "Admin"
+    history_fields["updated_by"] = "Admin"
+    history_fields[
+        "updated"
+    ] = "2000-01-13T13:13:13.000Z"
+
+    history_fields[
+        "description"
+    ] = "The property has been instructed."
+
+    history_fields["created"] = instance["fields"][
+        "date"
+    ]
+
+    history_fields["type"] = "property_event"
+
+    # Create new UUID field
+
+    history["pk"] = str(uuid.uuid4())
+
+    # End create new UUID field
+
+    # End property history fields
+
+    history[
+        "fields"
+    ] = history_fields
+
+    history_extra.append(history)
 
 instruction_dict = instruction_model
 instruction_lettings_extra_dict = instruction_extra_dict
@@ -1201,6 +1298,52 @@ for instance in deal_model:
 
     instance["pk"] = str(uuid.uuid4())
 
+    # Property history fields
+
+    history = {}
+    history_fields = {}
+
+    # Add model
+
+    history["model"] = "properties.propertyhistory"
+
+    # End add model
+
+    # Add new fields
+
+    history_fields[
+        "propertyprocess"
+    ] = instance["fields"]["propertyprocess"]
+    history_fields["created_by"] = "Admin"
+    history_fields["updated_by"] = "Admin"
+    history_fields[
+        "updated"
+    ] = "2000-01-13T13:13:13.000Z"
+
+    history_fields[
+        "description"
+    ] = "A deal has been processed for this property."
+
+    history_fields["created"] = instance["fields"][
+        "date"
+    ]
+
+    history_fields["type"] = "property_event"
+
+    # Create new UUID field
+
+    history["pk"] = str(uuid.uuid4())
+
+    # End create new UUID field
+
+    # End property history fields
+
+    history[
+        "fields"
+    ] = history_fields
+
+    history_extra.append(history)
+
 deal_dict = deal_model
 
 # ----------------------------------------
@@ -1278,6 +1421,52 @@ for instance in exchange_model:
         ):
             if propertyprocess_instance["fields"]["sector"] == "sales":
                 exchange_dict.append(instance)
+
+                # Property history fields
+
+                history = {}
+                history_fields = {}
+
+                # Add model
+
+                history["model"] = "properties.propertyhistory"
+
+                # End add model
+
+                # Add new fields
+
+                history_fields[
+                    "propertyprocess"
+                ] = instance["fields"]["propertyprocess"]
+                history_fields["created_by"] = "Admin"
+                history_fields["updated_by"] = "Admin"
+                history_fields[
+                    "updated"
+                ] = "2000-01-13T13:13:13.000Z"
+
+                history_fields[
+                    "description"
+                ] = "The property has exchanged."
+
+                history_fields["created"] = instance["fields"][
+                    "exchange_date"
+                ]
+
+                history_fields["type"] = "property_event"
+
+                # Create new UUID field
+
+                history["pk"] = str(uuid.uuid4())
+
+                # End create new UUID field
+
+                # End property history fields
+
+                history[
+                    "fields"
+                ] = history_fields
+
+                history_extra.append(history)
 
 # ----------------------------------------
 # SALE PROGRESSION MODEL
@@ -1757,7 +1946,6 @@ with open(
 ) as json_data:
     instruction_change_model = json.load(json_data)
 
-history_extra = []
 withdrawn_but_active = []
 
 print("Fee Change Properties:")
@@ -2436,7 +2624,7 @@ for instance in deal_change_model:
                 "fields"
             ] = history_price_agreed_change_fields
 
-            history_extra.append(history_price_agreed_change)
+            property_history_extra_dict.append(history_price_agreed_change)
 
         if instance["fields"]["deal_fee_agreed_change"]:
             # Property history fields
@@ -2485,7 +2673,7 @@ for instance in deal_change_model:
                 "fields"
             ] = history_fee_agreed_change_fields
 
-            history_extra.append(history_fee_agreed_change)
+            property_history_extra_dict.append(history_fee_agreed_change)
 
 # ----------------------------------------
 # WRITE JSON
@@ -2529,7 +2717,7 @@ with open(
 with open(
     "/workspace/laurels-staff/common/data_dump/new/property_history.json", "w"
 ) as json_data:
-    json.dump(history, json_data)
+    json.dump(property_history_dict, json_data)
 
 with open(
     "/workspace/laurels-staff/common/data_dump/new/valuation.json", "w"
@@ -2604,7 +2792,7 @@ with open(
     "/workspace/laurels-staff/common/data_dump/new/property_history_extra.json",
     "w",
 ) as json_data:
-    json.dump(history_extra, json_data)
+    json.dump(property_history_extra_dict, json_data)
 
 with open(
     "/workspace/laurels-staff/common/data_dump/new/reduction.json", "w"
