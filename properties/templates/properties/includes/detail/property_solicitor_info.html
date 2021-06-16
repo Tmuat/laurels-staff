@@ -1,0 +1,145 @@
+<!-- Marketing-Information -->
+<div class="card">
+    <div class="card-body">
+        <h4 class="header-title mt-0 mb-3">Sols/Broker/Client Information</h4>
+
+        <ul class="nav nav-pills bg-nav-pills nav-justified mb-3 flex-wrap">
+            <li class="nav-item">
+                <a href="#seller" data-toggle="tab" aria-expanded="true" class="nav-link rounded-0 active">
+                    Seller
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#buyer" data-toggle="tab" aria-expanded="false" class="nav-link rounded-0">
+                    Buyer
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#broker" data-toggle="tab" aria-expanded="false" class="nav-link rounded-0">
+                    Broker
+                </a>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <!-- seller section -->
+            <!-- tab pane -->
+            <div class="tab-pane show active" id="seller">
+                <p class="text-muted mb-1"><strong>Sellers</strong><span
+                    class="ml-2"></span></p>
+                <p class="text-muted"><strong>Name:</strong> <span
+                    class="ml-2">{{ propertyprocess.selling_information.seller_name }}</span></p>
+                <p class="text-muted"><strong>Phone:</strong> <span
+                    class="ml-2">{{ propertyprocess.selling_information.seller_phone }}</span></p>
+                <p class="text-muted"><strong>Email:</strong> <span
+                    class="ml-2"><a href="mailto:{{ propertyprocess.selling_information.seller_name }}">{{ propertyprocess.selling_information.seller_email }}</a></span></p>
+                <hr>
+                <p class="text-muted mb-1"><strong>Sellers Solicitors</strong><span
+                    class="ml-2"></span></p>
+                <p class="text-muted"><strong>Name:</strong> <span
+                    class="ml-2">{{ propertyprocess.selling_information.seller_sol_name }}</span></p>
+                <p class="text-muted"><strong>Firm:</strong> <span
+                    class="ml-2">{{ propertyprocess.selling_information.seller_sol_firm }}</span></p>
+                <p class="text-muted"><strong>Phone:</strong> <span
+                    class="ml-2">{{ propertyprocess.selling_information.seller_sol_phone }}</span></p>
+                <p class="text-muted"><strong>Email:</strong> <span
+                    class="ml-2"><a href="mailto:{{ propertyprocess.selling_information.seller_sol_email }}">{{ propertyprocess.selling_information.seller_sol_email }}</a></span></p>
+            </div>
+            <!-- end tab-pane -->
+            <!-- end seller section -->
+
+            <!-- buyer section -->
+            <!-- tab pane -->
+            <div class="tab-pane" id="buyer">
+                <p class="text-muted mb-1"><strong>Buyer</strong><span
+                    class="ml-2"></span></p>
+                <p class="text-muted"><strong>Name:</strong> <span
+                    class="ml-2">{{ propertyprocess.selling_information.buyer_name }}</span></p>
+                <p class="text-muted"><strong>Phone:</strong> <span
+                    class="ml-2">{{ propertyprocess.selling_information.buyer_phone }}</span></p>
+                <p class="text-muted"><strong>Email:</strong> <span
+                    class="ml-2"><a href="mailto:{{ propertyprocess.selling_information.buyer_name }}">{{ propertyprocess.selling_information.buyer_email }}</a></span></p>
+                <hr>
+                <p class="text-muted mb-1"><strong>Buyers Solicitors</strong><span
+                    class="ml-2"></span></p>
+                <p class="text-muted"><strong>Name:</strong> <span
+                    class="ml-2">{{ propertyprocess.selling_information.buyer_sol_name }}</span></p>
+                <p class="text-muted"><strong>Firm:</strong> <span
+                    class="ml-2">{{ propertyprocess.selling_information.buyer_sol_firm }}</span></p>
+                <p class="text-muted"><strong>Phone:</strong> <span
+                    class="ml-2">{{ propertyprocess.selling_information.buyer_sol_phone }}</span></p>
+                <p class="text-muted"><strong>Email:</strong> <span
+                    class="ml-2"><a href="mailto:{{ propertyprocess.selling_information.buyer_sol_email }}">{{ propertyprocess.selling_information.buyer_sol_email }}</a></span></p>
+            </div>
+            <!-- end tab-pane -->
+            <!-- end buyer section -->
+        
+            <!-- broker section -->
+            <!-- tab pane -->
+            <div class="tab-pane" id="broker">
+                <p class="text-muted mb-1"><strong>Broker</strong><span
+                    class="ml-2"></span></p>
+                <p class="text-muted"><strong>Name:</strong> <span
+                    class="ml-2">{{ propertyprocess.selling_information.broker_name }}</span></p>
+                <p class="text-muted"><strong>Firm:</strong> <span
+                    class="ml-2">{{ propertyprocess.selling_information.broker_firm }}</span></p>
+                <p class="text-muted"><strong>Phone:</strong> <span
+                    class="ml-2">{{ propertyprocess.selling_information.broker_phone }}</span></p>
+                <p class="text-muted"><strong>Email:</strong> <span
+                    class="ml-2"><a href="mailto:{{ propertyprocess.selling_information.broker_email }}">{{ propertyprocess.selling_information.broker_email }}</a></span></p>
+            </div>
+            <!-- end tab-pane -->
+            <!-- end broker section -->
+
+        </div>
+        <!-- end tab-content -->
+
+        <!-- <div class="text-left">
+            
+            
+            <p class="text-muted mb-1 text-underline"><u><strong>Sellers Solicitors</strong></u><span
+                class="ml-2"></span></p>
+            <p class="text-muted"><strong>Name:</strong> <span
+                class="ml-2">Thomas Muat</span></p>
+            <p class="text-muted"><strong>Firm:</strong> <span
+                class="ml-2">Thomas Muat</span></p>
+            <p class="text-muted"><strong>Phone:</strong> <span
+                class="ml-2">Thomas Muat</span></p>
+            <p class="text-muted"><strong>Email:</strong> <span
+                class="ml-2"><a href="mailto:">My Email</a></span></p>
+            
+            <p class="text-muted mb-1 text-underline"><u><strong>Buyers</strong></u><span
+                class="ml-2"></span></p>
+            <p class="text-muted"><strong>Name:</strong> <span
+                class="ml-2">Thomas Muat</span></p>
+            <p class="text-muted"><strong>Phone:</strong> <span
+                class="ml-2">Thomas Muat</span></p>
+            <p class="text-muted"><strong>Email:</strong> <span
+                class="ml-2"><a href="mailto:">My Email</a></span></p>
+            
+            <p class="text-muted mb-1 text-underline"><u><strong>Buyers Solicitors</strong></u><span
+                class="ml-2"></span></p>
+            <p class="text-muted"><strong>Name:</strong> <span
+                class="ml-2">Thomas Muat</span></p>
+            <p class="text-muted"><strong>Firm:</strong> <span
+                class="ml-2">Thomas Muat</span></p>
+            <p class="text-muted"><strong>Phone:</strong> <span
+                class="ml-2">Thomas Muat</span></p>
+            <p class="text-muted"><strong>Email:</strong> <span
+                class="ml-2"><a href="mailto:">My Email</a></span></p>
+            
+            <p class="text-muted mb-1 text-underline"><u><strong>Broker</strong></u><span
+                class="ml-2"></span></p>
+            <p class="text-muted"><strong>Name:</strong> <span
+                class="ml-2">Thomas Muat</span></p>
+            <p class="text-muted"><strong>Firm:</strong> <span
+                class="ml-2">Thomas Muat</span></p>
+            <p class="text-muted"><strong>Phone:</strong> <span
+                class="ml-2">Thomas Muat</span></p>
+            <p class="text-muted"><strong>Email:</strong> <span
+                class="ml-2"><a href="mailto:">My Email</a></span></p>
+
+        </div> -->
+    </div>
+</div>
+<!-- End Marketing Information -->
