@@ -54,7 +54,7 @@ def property_list(request):
     if request.GET:
         if "status" in request.GET:
             status = request.GET["status"]
-            properties_list = properties_list.exclude(macro_status=6).exclude(
+            properties_list = properties_list.exclude(macro_status=5).exclude(
                 macro_status=0
             )
         if "sector" in request.GET:
