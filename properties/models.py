@@ -1222,11 +1222,11 @@ class PropertySellingInformation(UpdatedAndCreated):
     buyer_sol_name = models.CharField(max_length=100, null=True, blank=False)
     buyer_sol_firm = models.CharField(max_length=100, null=True, blank=False)
     buyer_sol_phone = models.IntegerField(null=True, blank=False)
-    buyer_sol_name = models.EmailField(max_length=100, null=True, blank=False)
+    buyer_sol_email = models.EmailField(max_length=100, null=True, blank=False)
     broker_name = models.CharField(max_length=100, null=True, blank=False)
     broker_firm = models.CharField(max_length=100, null=True, blank=False)
     broker_phone = models.IntegerField(null=True, blank=False)
-    broker_name = models.EmailField(max_length=100, null=True, blank=False)
+    broker_email = models.EmailField(max_length=100, null=True, blank=False)
 
     def __str__(self):
         if (
