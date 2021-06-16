@@ -375,10 +375,18 @@ for instance in hub_targets_model:
             "q4_2021_instructions_hub"
         ]
 
-        q1_2021_fields["reductions"] = instance["fields"]["q1_2021_reductions_hub"]
-        q2_2021_fields["reductions"] = instance["fields"]["q2_2021_reductions_hub"]
-        q3_2021_fields["reductions"] = instance["fields"]["q3_2021_reductions_hub"]
-        q4_2021_fields["reductions"] = instance["fields"]["q4_2021_reductions_hub"]
+        q1_2021_fields["reductions"] = instance["fields"][
+            "q1_2021_reductions_hub"
+        ]
+        q2_2021_fields["reductions"] = instance["fields"][
+            "q2_2021_reductions_hub"
+        ]
+        q3_2021_fields["reductions"] = instance["fields"][
+            "q3_2021_reductions_hub"
+        ]
+        q4_2021_fields["reductions"] = instance["fields"][
+            "q4_2021_reductions_hub"
+        ]
 
         q1_2021_fields["new_business"] = instance["fields"][
             "q1_2021_new_business_hub"
@@ -884,22 +892,14 @@ for instance in valuation_model:
 
     # Add new fields
 
-    history_fields[
-        "propertyprocess"
-    ] = instance["fields"]["propertyprocess"]
+    history_fields["propertyprocess"] = instance["fields"]["propertyprocess"]
     history_fields["created_by"] = "Admin"
     history_fields["updated_by"] = "Admin"
-    history_fields[
-        "updated"
-    ] = "2000-01-13T13:13:13.000Z"
+    history_fields["updated"] = "2000-01-13T13:13:13.000Z"
 
-    history_fields[
-        "description"
-    ] = "The property has been valued."
+    history_fields["description"] = "The property has been valued."
 
-    history_fields["created"] = instance["fields"][
-        "date"
-    ]
+    history_fields["created"] = instance["fields"]["date"]
 
     history_fields["type"] = "property_event"
 
@@ -911,9 +911,7 @@ for instance in valuation_model:
 
     # End property history fields
 
-    history[
-        "fields"
-    ] = history_fields
+    history["fields"] = history_fields
 
     history_extra.append(history)
 
@@ -1070,22 +1068,14 @@ for instance in instruction_model:
 
     # Add new fields
 
-    history_fields[
-        "propertyprocess"
-    ] = instance["fields"]["propertyprocess"]
+    history_fields["propertyprocess"] = instance["fields"]["propertyprocess"]
     history_fields["created_by"] = "Admin"
     history_fields["updated_by"] = "Admin"
-    history_fields[
-        "updated"
-    ] = "2000-01-13T13:13:13.000Z"
+    history_fields["updated"] = "2000-01-13T13:13:13.000Z"
 
-    history_fields[
-        "description"
-    ] = "The property has been instructed."
+    history_fields["description"] = "The property has been instructed."
 
-    history_fields["created"] = instance["fields"][
-        "date"
-    ]
+    history_fields["created"] = instance["fields"]["date"]
 
     history_fields["type"] = "property_event"
 
@@ -1097,9 +1087,7 @@ for instance in instruction_model:
 
     # End property history fields
 
-    history[
-        "fields"
-    ] = history_fields
+    history["fields"] = history_fields
 
     history_extra.append(history)
 
@@ -1311,22 +1299,16 @@ for instance in deal_model:
 
     # Add new fields
 
-    history_fields[
-        "propertyprocess"
-    ] = instance["fields"]["propertyprocess"]
+    history_fields["propertyprocess"] = instance["fields"]["propertyprocess"]
     history_fields["created_by"] = "Admin"
     history_fields["updated_by"] = "Admin"
-    history_fields[
-        "updated"
-    ] = "2000-01-13T13:13:13.000Z"
+    history_fields["updated"] = "2000-01-13T13:13:13.000Z"
 
     history_fields[
         "description"
     ] = "A deal has been processed for this property."
 
-    history_fields["created"] = instance["fields"][
-        "date"
-    ]
+    history_fields["created"] = instance["fields"]["date"]
 
     history_fields["type"] = "property_event"
 
@@ -1338,9 +1320,7 @@ for instance in deal_model:
 
     # End property history fields
 
-    history[
-        "fields"
-    ] = history_fields
+    history["fields"] = history_fields
 
     history_extra.append(history)
 
@@ -1435,22 +1415,16 @@ for instance in exchange_model:
 
                 # Add new fields
 
-                history_fields[
+                history_fields["propertyprocess"] = instance["fields"][
                     "propertyprocess"
-                ] = instance["fields"]["propertyprocess"]
+                ]
                 history_fields["created_by"] = "Admin"
                 history_fields["updated_by"] = "Admin"
-                history_fields[
-                    "updated"
-                ] = "2000-01-13T13:13:13.000Z"
+                history_fields["updated"] = "2000-01-13T13:13:13.000Z"
 
-                history_fields[
-                    "description"
-                ] = "The property has exchanged."
+                history_fields["description"] = "The property has exchanged."
 
-                history_fields["created"] = instance["fields"][
-                    "exchange_date"
-                ]
+                history_fields["created"] = instance["fields"]["exchange_date"]
 
                 history_fields["type"] = "property_event"
 
@@ -1462,9 +1436,7 @@ for instance in exchange_model:
 
                 # End property history fields
 
-                history[
-                    "fields"
-                ] = history_fields
+                history["fields"] = history_fields
 
                 history_extra.append(history)
 
