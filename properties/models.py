@@ -1191,3 +1191,56 @@ class ProgressionNotes(UpdatedAndCreated):
                 self.propertyprocess.property.address_line_2,
             )
         return property_address
+
+
+class PropertySellingInformation(UpdatedAndCreated):
+    class Meta:
+        ordering = [
+            "propertyprocess__property__postcode",
+            "propertyprocess__property__address_line_1",
+        ]
+        verbose_name = "Selling Information"
+        verbose_name_plural = "Selling Information"
+
+    propertyprocess = models.ForeignKey(
+        PropertyProcess,
+        on_delete=models.CASCADE,
+        related_name="selling_information",
+    )
+    seller_name = models.CharField(max_length=100, null=True, blank=False)
+    seller_phone = models.IntegerField(null=True, blank=False)
+    seller_email = models.EmailField(max_length=100, null=True, blank=False)
+    buyer_name = models.CharField(max_length=100, null=True, blank=False)
+    buyer_phone = models.IntegerField(null=True, blank=False)
+    buyer_email = models.EmailField(max_length=100, null=True, blank=False)
+    seller_sol_name = models.CharField(max_length=100, null=True, blank=False)
+    seller_sol_firm = models.CharField(max_length=100, null=True, blank=False)
+    seller_sol_phone = models.IntegerField(null=True, blank=False)
+    seller_sol_email = models.EmailField(
+        max_length=100, null=True, blank=False
+    )
+    buyer_sol_name = models.CharField(max_length=100, null=True, blank=False)
+    buyer_sol_firm = models.CharField(max_length=100, null=True, blank=False)
+    buyer_sol_phone = models.IntegerField(null=True, blank=False)
+    buyer_sol_name = models.EmailField(max_length=100, null=True, blank=False)
+    broker_name = models.CharField(max_length=100, null=True, blank=False)
+    broker_firm = models.CharField(max_length=100, null=True, blank=False)
+    broker_phone = models.IntegerField(null=True, blank=False)
+    broker_name = models.EmailField(max_length=100, null=True, blank=False)
+
+    def __str__(self):
+        if (
+            self.propertyprocess.property.address_line_2 == ""
+            or self.propertyprocess.property.address_line_2 == None
+        ):
+            property_address = "%s, %s" % (
+                self.propertyprocess.property.postcode,
+                self.propertyprocess.property.address_line_1,
+            )
+        else:
+            property_address = "%s, %s, %s" % (
+                self.propertyprocess.property.postcode,
+                self.propertyprocess.property.address_line_1,
+                self.propertyprocess.property.address_line_2,
+            )
+        return property_address
