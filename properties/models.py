@@ -1202,7 +1202,7 @@ class PropertySellingInformation(UpdatedAndCreated):
         verbose_name = "Selling Information"
         verbose_name_plural = "Selling Information"
 
-    propertyprocess = models.ForeignKey(
+    propertyprocess = models.OneToOneField(
         PropertyProcess,
         on_delete=models.CASCADE,
         related_name="selling_information",
