@@ -273,8 +273,16 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")  # noqa
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 # ------------------------------------------------------------------------------
-# get-address
+# GET-ADDRESS
 # ------------------------------------------------------------------------------
 # https://getaddress.io/Documentation
 
 GET_ADDRESS_KEY = env("GET_ADDRESS_API_KEY")
+
+
+# ------------------------------------------------------------------------------
+# EMAILS
+# ------------------------------------------------------------------------------
+
+NO_REPLY_EMAIL = env("NO_REPLY_EMAIL")
+ADMIN_EMAIL = env("ADMIN_EMAIL")

@@ -1,9 +1,12 @@
 from datetime import date
 
+from django.conf import settings
+from django.core.mail import send_mail, BadHeaderError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.dispatch import receiver
 from django.db.models.signals import pre_save
+from django.template.loader import render_to_string
 
 from common.models import UpdatedAndCreated
 from regionandhub.models import Hub
@@ -328,6 +331,35 @@ class Instruction(UpdatedAndCreated):
         null=False, blank=False, choices=LENGTH_OF_CONTRACT
     )
     marketing_board = models.BooleanField(choices=BOOL_CHOICES)
+
+    def send_mail(self, request, **kwargs):
+        no_reply_email = settings.NO_REPLY_EMAIL
+        admin_email = settings.ADMIN_EMAIL
+        context = kwargs
+        context.update(
+            {
+                "marketing_board": self.marketing_board,
+                "address": self.__str__,
+                "hub": self.propertyprocess.hub,
+                "employee": self.propertyprocess.employee,
+            }
+        )
+        subject = f"Sales Instruction: {self.__str__}"
+        body = render_to_string(
+            "properties/emails/new_instruction.txt", context
+        )
+
+        try:
+            send_mail(
+                subject=subject,
+                message=body,
+                from_email=f'"Laurels Auto Emails" <{no_reply_email}>',
+                recipient_list=[
+                    admin_email, ],
+                fail_silently=False,
+            )
+        except BadHeaderError:
+            return HttpResponse("Invalid header found.")
 
     def __str__(self):
         if (
