@@ -19,13 +19,11 @@
                                 <h5 class="mb-1">{{ propertyprocess.get_macro_status_display }}</h5>
                                 <p class="mb-0 font-13 text-white-50">Status</p>
                             </li>
-                            {% if propertyprocess.furthest_status > 3 %}
+                            {% if propertyprocess.furthest_status > 2 %}
                             <li class="list-inline-item mr-3">
                                 <h5 class="mb-1">£{{ propertyprocess.property_fees.first.new_business|intcomma }}</h5>
                                 <p class="mb-0 font-13 text-white-50">New Business</p>
                             </li>
-                            {% endif %}
-
                             <li class="list-inline-item mr-3">
                                 <h5 class="mb-1">{{ propertyprocess.property_fees.first.fee }}%</h5>
                                 <p class="mb-0 font-13 text-white-50">Fee</p>
@@ -38,6 +36,7 @@
                                     <p class="mb-0 font-13 text-white-50">Latest Price</p>
                                 {% endif %}
                             </li>
+                            {% endif %}
                             {% if propertyprocess.furthest_status == 2 %}
                             <li class="list-inline-item mr-3">
                                 <h5 class="mb-1">£{{ propertyprocess.valuation.price_quoted|intcomma }}</h5>
