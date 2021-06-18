@@ -400,7 +400,9 @@ $(document).ready(function () {
     // Binding functions
     // Links
     $("#quick-actions").on("click", ".js-add-valuation", loadFormBaseModal);
+    $(".js-add-valuation").on("click", loadFormBaseModal);
     $("#quick-actions").on("click", ".js-add-instruction", loadFormBaseModal);
+    $(".js-add-instruction").on("click", loadFormBaseModal);
     $("#tbody-history").on("click", ".js-show-notes", loadFormBaseModal);
     $("#tbody-offers").on("click", ".js-show-offers", loadFormBaseModal);
     $("#simple-dragula").on("click", ".js-property-chain-expand", loadFormBaseModal);
