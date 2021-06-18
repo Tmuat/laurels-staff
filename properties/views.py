@@ -402,6 +402,7 @@ def add_property(request):
 
             process_instance.property = instance
             process_instance.macro_status = PropertyProcess.AWAITINGVALUATION
+            process_instance.furthest_status = PropertyProcess.AWAITINGVALUATION
 
             process_instance.created_by = request.user.get_full_name()
             process_instance.updated_by = request.user.get_full_name()
@@ -458,6 +459,7 @@ def add_propertyprocess(request, property_id):
 
             instance.property = property_instance
             instance.macro_status = PropertyProcess.AWAITINGVALUATION
+            instance.furthest_status = PropertyProcess.AWAITINGVALUATION
 
             instance.created_by = request.user.get_full_name()
             instance.updated_by = request.user.get_full_name()
@@ -557,6 +559,7 @@ def add_valuation(request, propertyprocess_id):
             marketing_instance.save()
 
             property_process.macro_status = PropertyProcess.VALUATION
+            property_process.furthest_status = PropertyProcess.VALUATION
             property_process.save()
 
             history_description = (
@@ -729,9 +732,12 @@ def add_instruction(request, propertyprocess_id):
 
             instance.save()
 
+            instance.send_mail(request)
+
             floor_space_form.save()
 
             property_process.macro_status = PropertyProcess.INSTRUCTION
+            property_process.furthest_status = PropertyProcess.INSTRUCTION
             property_process.save()
 
             PropertyFees.objects.create(
