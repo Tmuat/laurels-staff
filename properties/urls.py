@@ -21,6 +21,7 @@ from properties.views import (
     add_history_notes,
     render_reduction,
     add_reduction,
+    render_offerer
 )
 
 
@@ -121,5 +122,10 @@ urlpatterns = [
         "properties/add/reduction/<propertyprocess_id>/",
         add_reduction,
         name="add_reduction",
+    ),
+    path(
+        "properties/render/offerer/<propertyprocess_id>/",
+        render_offerer,
+        name="render_offerer",
     ),
 ]

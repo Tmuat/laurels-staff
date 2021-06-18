@@ -8,6 +8,7 @@ from properties.models import (
     Marketing,
     PropertyHistory,
     PropertyFees,
+    OffererDetails
 )
 from properties.widgets import DateInput
 from users.models import Profile
@@ -228,6 +229,35 @@ class ReductionForm(forms.ModelForm):
         self.fields["date"].widget = DateInput()
 
         self.fields["price"].widget.attrs["min"] = 0
+
+        for field in self.fields:
+            label = f"{labels[field]}"
+            self.fields[field].label = label
+
+
+class OffererForm(forms.ModelForm):
+
+    completed_offer_form = forms.BooleanField()
+
+    class Meta:
+        model = OffererDetails
+        fields = (
+            "full_name",
+            "completed_offer_form",
+            "funding"
+        )
+        widgets = {'funding': forms.RadioSelect}
+
+    def __init__(self, *args, **kwargs):
+        """
+        Add new labels and order foreign key field
+        """
+        super().__init__(*args, **kwargs)
+        labels = {
+            "full_name": "Full Name/s",
+            "completed_offer_form": "Completed Offer Form?",
+            "funding": "Funding Type"
+        }
 
         for field in self.fields:
             label = f"{labels[field]}"

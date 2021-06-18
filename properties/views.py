@@ -20,6 +20,7 @@ from properties.forms import (
     HistoryNotesForm,
     FloorSpaceForm,
     ReductionForm,
+    OffererForm
 )
 from properties.models import (
     Property,
@@ -907,6 +908,27 @@ def add_reduction(request, propertyprocess_id):
     }
     data["html_modal"] = render_to_string(
         "properties/stages/add_reduction_modal.html",
+        context,
+        request=request,
+    )
+    return JsonResponse(data)
+
+
+def render_offerer(request, propertyprocess_id):
+    """
+    A view to return an ajax response with add offerer form
+    """
+
+    data = dict()
+
+    form = OffererForm()
+
+    context = {
+        "form": form,
+        "propertyprocess_id": propertyprocess_id,
+    }
+    data["html_modal"] = render_to_string(
+        "properties/stages/add_offerer_modal.html",
         context,
         request=request,
     )

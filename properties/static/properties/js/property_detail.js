@@ -397,6 +397,14 @@ $(document).ready(function () {
         });
     };
 
+    $("#base-modal").on("change", "#id_completed_offer_form", function() {
+        if ($(this).is(':checked')) {
+            $("#base-modal").find("#add-button").removeAttr("disabled");
+        } else {
+            $("#base-modal").find("#add-button").attr("disabled", true);
+        }
+    });
+
     // Binding functions
     // Links
     $("#quick-actions").on("click", ".js-add-valuation", loadFormBaseModal);
@@ -404,6 +412,10 @@ $(document).ready(function () {
     $("#quick-actions").on("click", ".js-add-instruction", loadFormBaseModal);
     $(".js-add-instruction").on("click", loadFormBaseModal);
     $("#quick-actions").on("click", ".js-add-reduction", loadFormBaseModal);
+    $(".js-add-reduction").on("click", loadFormBaseModal);
+    $("#quick-actions").on("click", ".js-add-offerer", loadFormBaseModal);
+    $(".js-add-offerer").on("click", loadFormBaseModal);
+    
     $("#tbody-history").on("click", ".js-show-notes", loadFormBaseModal);
     $("#tbody-offers").on("click", ".js-show-offers", loadFormBaseModal);
     $("#simple-dragula").on("click", ".js-property-chain-expand", loadFormBaseModal);

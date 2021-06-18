@@ -20,3 +20,10 @@
     class="btn {% if propertyprocess.macro_status != 3 %}btn-secondary" disabled{% else %}btn-info js-add-reduction"{% endif %}>
         <i class="mdi mdi-cash-minus"></i>
 </button>
+<button 
+    data-url="{% url 'properties:render_offerer' propertyprocess.id %}" data-toggle="tooltip"
+    data-placement="top"
+    title="Add Offerer"
+    class="btn {% if propertyprocess.macro_status != 3 %}btn-secondary" disabled{% else %}btn-info js-add-offerer"{% endif %}>
+        <i class="mdi mdi-offer"></i>
+</button>
