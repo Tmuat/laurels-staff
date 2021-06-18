@@ -454,7 +454,6 @@ class OffererDetails(UpdatedAndCreated):
         related_name="offerer_details",
     )
     full_name = models.CharField(max_length=100, null=False, blank=False)
-    email = models.EmailField(blank=True)
     completed_offer_form = models.BooleanField(
         default=False, null=True, blank=False, choices=COMPLETED
     )
