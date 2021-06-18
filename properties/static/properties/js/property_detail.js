@@ -369,10 +369,8 @@ $(document).ready(function () {
             url: instance.attr("data-url"),
             type: 'get',
             dataType: 'json',
-            beforeSend: function () {
-                $("#base-modal").modal("show");
-            },
             success: function (data) {
+                $("#base-modal").modal("show");
                 $("#base-modal .modal-dialog").html(data.html_modal);
             }
         });
@@ -387,11 +385,9 @@ $(document).ready(function () {
             url: instance.attr("data-url"),
             type: 'get',
             dataType: 'json',
-            beforeSend: function () {
-                $("#base-static-modal").modal("show");
-            },
             success: function (data) {
                 $('#modal-overlay').fadeToggle(100);
+                $("#base-static-modal").modal("show");
                 $("#base-static-modal .modal-dialog").html(data.html_modal);
             }
         });
