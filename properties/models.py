@@ -355,7 +355,8 @@ class Instruction(UpdatedAndCreated):
                 message=body,
                 from_email=f'"Laurels Auto Emails" <{no_reply_email}>',
                 recipient_list=[
-                    admin_email, ],
+                    admin_email,
+                ],
                 fail_silently=False,
             )
         except BadHeaderError:
@@ -593,7 +594,8 @@ class Offer(UpdatedAndCreated):
             "offerer_details__propertyprocess__property__postcode",
             "offerer_details__propertyprocess__property__address_line_1",
             "offerer_details__full_name",
-            "date",
+            "-date",
+            "-created",
         ]
         verbose_name = "Offer Details"
         verbose_name_plural = "Offer Details"
@@ -1143,6 +1145,7 @@ class PropertyFees(UpdatedAndCreated):
             "propertyprocess__property__postcode",
             "propertyprocess__property__address_line_1",
             "-date",
+            "-created",
         ]
         verbose_name = "Property Fee"
         verbose_name_plural = "Property Fees"
