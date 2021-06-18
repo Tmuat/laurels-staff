@@ -1,3 +1,6 @@
+import datetime
+import humanize
+
 from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
@@ -16,6 +19,7 @@ from properties.forms import (
     SellerMarketingForm,
     HistoryNotesForm,
     FloorSpaceForm,
+    ReductionForm,
 )
 from properties.models import (
     Property,
@@ -402,7 +406,9 @@ def add_property(request):
 
             process_instance.property = instance
             process_instance.macro_status = PropertyProcess.AWAITINGVALUATION
-            process_instance.furthest_status = PropertyProcess.AWAITINGVALUATION
+            process_instance.furthest_status = (
+                PropertyProcess.AWAITINGVALUATION
+            )
 
             process_instance.created_by = request.user.get_full_name()
             process_instance.updated_by = request.user.get_full_name()
@@ -798,6 +804,109 @@ def add_instruction(request, propertyprocess_id):
     }
     data["html_modal"] = render_to_string(
         "properties/stages/add_instruction_modal.html",
+        context,
+        request=request,
+    )
+    return JsonResponse(data)
+
+
+def render_reduction(request, propertyprocess_id):
+    """
+    A view to return an ajax response with add reduction form
+    """
+
+    data = dict()
+
+    instance = PropertyFees.objects.filter(
+        propertyprocess=propertyprocess_id
+    ).first()
+
+    form = ReductionForm(
+        initial={"price": instance.price, "date": datetime.date.today}
+    )
+
+    context = {
+        "form": form,
+        "propertyprocess_id": propertyprocess_id,
+    }
+    data["html_modal"] = render_to_string(
+        "properties/stages/add_reduction_modal.html",
+        context,
+        request=request,
+    )
+    return JsonResponse(data)
+
+
+def add_reduction(request, propertyprocess_id):
+    """
+    Ajax URL for adding a reduction.
+    """
+    data = dict()
+
+    property_process = get_object_or_404(
+        PropertyProcess, id=propertyprocess_id
+    )
+
+    property_fee = PropertyFees.objects.filter(
+        propertyprocess=propertyprocess_id
+    ).first()
+
+    if request.method == "POST":
+        form = ReductionForm(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+
+            instance.propertyprocess = property_process
+            instance.fee = abs(property_fee.fee)
+
+            instance.created_by = request.user.get_full_name()
+            instance.updated_by = request.user.get_full_name()
+
+            instance.save()
+
+            history_description = (
+                f"{request.user.get_full_name()} has added a reduction."
+            )
+
+            old_price = abs(property_fee.price)
+
+            notes = (
+                "The price has been reduced from "
+                f"£{humanize.intcomma(old_price)}"
+                f" to £{humanize.intcomma(instance.price)}"
+            )
+
+            history_valuation = PropertyHistory.objects.create(
+                propertyprocess=property_process,
+                type=PropertyHistory.PROPERTY_EVENT,
+                description=history_description,
+                notes=notes,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
+
+            data["form_is_valid"] = True
+            context = {
+                "property_process": property_process,
+                "history_valuation": history_valuation,
+            }
+            data["html_success"] = render_to_string(
+                "properties/stages/includes/form_success.html",
+                context,
+                request=request,
+            )
+        else:
+            data["form_is_valid"] = False
+
+    else:
+        form = ReductionForm()
+
+    context = {
+        "form": form,
+        "propertyprocess_id": propertyprocess_id,
+    }
+    data["html_modal"] = render_to_string(
+        "properties/stages/add_reduction_modal.html",
         context,
         request=request,
     )

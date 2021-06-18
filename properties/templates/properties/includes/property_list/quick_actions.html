@@ -3,13 +3,20 @@
     data-url="{% url 'properties:render_valuation' instance.id %}" data-toggle="tooltip"
     data-placement="top"
     title="Valuation"
-    class="btn {% if instance.macro_status > 1 %}btn-secondary" disabled{% else %}btn-info js-add-valuation"{% endif %}>
+    class="btn {% if instance.macro_status != 1 %}btn-secondary" disabled{% else %}btn-info js-add-valuation"{% endif %}>
         <i class="mdi mdi-clipboard-file-outline"></i>
 </button>
 <button 
     data-url="{% url 'properties:render_instruction' instance.id %}" data-toggle="tooltip"
     data-placement="top"
     title="Instruction"
-    class="btn {% if instance.macro_status > 2 %}btn-secondary" disabled{% else %}btn-info js-add-instruction"{% endif %}>
+    class="btn {% if instance.macro_status != 2 %}btn-secondary" disabled{% else %}btn-info js-add-instruction"{% endif %}>
         <i class="mdi mdi-clipboard-text-outline"></i>
+</button>
+<button 
+    data-url="{% url 'properties:render_reduction' instance.id %}" data-toggle="tooltip"
+    data-placement="top"
+    title="Reduction"
+    class="btn {% if instance.macro_status != 3 %}btn-secondary" disabled{% else %}btn-info js-add-reduction"{% endif %}>
+        <i class="mdi mdi-cash-minus"></i>
 </button>

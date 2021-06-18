@@ -7,6 +7,7 @@ from properties.models import (
     Instruction,
     Marketing,
     PropertyHistory,
+    PropertyFees,
 )
 from properties.widgets import DateInput
 from users.models import Profile
@@ -97,6 +98,10 @@ class ValuationForm(forms.ModelForm):
 
         self.fields["date"].widget = DateInput()
 
+        self.fields["price_quoted"].widget.attrs["min"] = 0
+
+        self.fields["fee_quoted"].widget.attrs["min"] = 0
+
         for field in self.fields:
             label = f"{labels[field]}"
             self.fields[field].label = label
@@ -172,6 +177,10 @@ class InstructionForm(forms.ModelForm):
 
         self.fields["date"].widget = DateInput()
 
+        self.fields["listing_price"].widget.attrs["min"] = 0
+
+        self.fields["fee_agreed"].widget.attrs["min"] = 0
+
         for field in self.fields:
             label = f"{labels[field]}"
             self.fields[field].label = label
@@ -190,6 +199,35 @@ class FloorSpaceForm(forms.ModelForm):
         labels = {
             "floor_space": "Floor Space (Sq Ft)",
         }
+
+        self.fields["floor_space"].widget.attrs["min"] = 0
+
+        for field in self.fields:
+            label = f"{labels[field]}"
+            self.fields[field].label = label
+
+
+class ReductionForm(forms.ModelForm):
+    class Meta:
+        model = PropertyFees
+        fields = (
+            "date",
+            "price",
+        )
+
+    def __init__(self, *args, **kwargs):
+        """
+        Add new labels and order foreign key field
+        """
+        super().__init__(*args, **kwargs)
+        labels = {
+            "date": "Date",
+            "price": "New Price (£)",
+        }
+
+        self.fields["date"].widget = DateInput()
+
+        self.fields["price"].widget.attrs["min"] = 0
 
         for field in self.fields:
             label = f"{labels[field]}"
