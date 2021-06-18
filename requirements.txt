@@ -11,6 +11,7 @@ django-crispy-forms==1.11.2
 django-debug-toolbar==3.2.1
 django-environ==0.4.5
 django-formtools==2.3
+django-mathfilters==1.0.0
 django-otp==1.0.4
 django-phonenumber-field==5.1.0
 django-ses==2.0.0
@@ -18,6 +19,7 @@ django-storages==1.11.1
 django-two-factor-auth==1.13.1
 future==0.18.2
 gunicorn==20.1.0
+humanize==3.8.0
 iniconfig==1.1.1
 jmespath==0.10.0
 pathspec==0.8.1
