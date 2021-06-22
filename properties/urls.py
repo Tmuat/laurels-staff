@@ -13,15 +13,12 @@ from properties.views import (
     validate_property_address,
     add_property,
     add_propertyprocess,
-    render_valuation,
     add_valuation,
-    render_instruction,
     add_instruction,
     render_history_notes,
     add_history_notes,
-    render_reduction,
     add_reduction,
-    render_offerer
+    add_offerer,
 )
 
 
@@ -84,11 +81,6 @@ urlpatterns = [
         name="validate_property_address",
     ),
     path(
-        "properties/render/valuation/<propertyprocess_id>/",
-        render_valuation,
-        name="render_valuation",
-    ),
-    path(
         "properties/add/valuation/<propertyprocess_id>/",
         add_valuation,
         name="add_valuation",
@@ -104,19 +96,9 @@ urlpatterns = [
         name="add_history_notes",
     ),
     path(
-        "properties/render/instruction/<propertyprocess_id>/",
-        render_instruction,
-        name="render_instruction",
-    ),
-    path(
         "properties/add/instruction/<propertyprocess_id>/",
         add_instruction,
         name="add_instruction",
-    ),
-    path(
-        "properties/render/reduction/<propertyprocess_id>/",
-        render_reduction,
-        name="render_reduction",
     ),
     path(
         "properties/add/reduction/<propertyprocess_id>/",
@@ -124,8 +106,8 @@ urlpatterns = [
         name="add_reduction",
     ),
     path(
-        "properties/render/offerer/<propertyprocess_id>/",
-        render_offerer,
-        name="render_offerer",
+        "properties/add/offerer/<propertyprocess_id>/",
+        add_offerer,
+        name="add_offerer",
     ),
 ]

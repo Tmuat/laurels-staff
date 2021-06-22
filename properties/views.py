@@ -507,32 +507,6 @@ def add_propertyprocess(request, property_id):
     return JsonResponse(data)
 
 
-def render_valuation(request, propertyprocess_id):
-    """
-    A view to return an ajax response with add valuation form
-    """
-
-    data = dict()
-
-    employee = Profile.objects.get(user=request.user.id)
-    instance = Valuation(valuer=employee)
-
-    form = ValuationForm(instance=instance)
-    marketing_form = SellerMarketingForm()
-
-    context = {
-        "form": form,
-        "marketing_form": marketing_form,
-        "propertyprocess_id": propertyprocess_id,
-    }
-    data["html_modal"] = render_to_string(
-        "properties/stages/add_valuation_modal.html",
-        context,
-        request=request,
-    )
-    return JsonResponse(data)
-
-
 def add_valuation(request, propertyprocess_id):
     """
     Ajax URL for adding a valuation.
@@ -685,35 +659,6 @@ def add_history_notes(request, history_id):
     return JsonResponse(data)
 
 
-def render_instruction(request, propertyprocess_id):
-    """
-    A view to return an ajax response with add instruction form
-    """
-
-    data = dict()
-
-    property_process = get_object_or_404(
-        PropertyProcess, id=propertyprocess_id
-    )
-
-    property = get_object_or_404(Property, id=property_process.property.id)
-
-    form = InstructionForm()
-    floor_space_form = FloorSpaceForm(instance=property)
-
-    context = {
-        "form": form,
-        "floor_space_form": floor_space_form,
-        "propertyprocess_id": propertyprocess_id,
-    }
-    data["html_modal"] = render_to_string(
-        "properties/stages/add_instruction_modal.html",
-        context,
-        request=request,
-    )
-    return JsonResponse(data)
-
-
 def add_instruction(request, propertyprocess_id):
     """
     Ajax URL for adding a instruction.
@@ -811,33 +756,6 @@ def add_instruction(request, propertyprocess_id):
     return JsonResponse(data)
 
 
-def render_reduction(request, propertyprocess_id):
-    """
-    A view to return an ajax response with add reduction form
-    """
-
-    data = dict()
-
-    instance = PropertyFees.objects.filter(
-        propertyprocess=propertyprocess_id
-    ).first()
-
-    form = ReductionForm(
-        initial={"price": instance.price, "date": datetime.date.today}
-    )
-
-    context = {
-        "form": form,
-        "propertyprocess_id": propertyprocess_id,
-    }
-    data["html_modal"] = render_to_string(
-        "properties/stages/add_reduction_modal.html",
-        context,
-        request=request,
-    )
-    return JsonResponse(data)
-
-
 def add_reduction(request, propertyprocess_id):
     """
     Ajax URL for adding a reduction.
@@ -914,14 +832,60 @@ def add_reduction(request, propertyprocess_id):
     return JsonResponse(data)
 
 
-def render_offerer(request, propertyprocess_id):
+def add_offerer(request, propertyprocess_id):
     """
-    A view to return an ajax response with add offerer form
+    Ajax URL for adding a offerer.
     """
-
     data = dict()
 
-    form = OffererForm()
+    property_process = get_object_or_404(
+        PropertyProcess, id=propertyprocess_id
+    )
+
+    if request.method == "POST":
+        form = OffererForm(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+
+            instance.propertyprocess = property_process
+
+            instance.created_by = request.user.get_full_name()
+            instance.updated_by = request.user.get_full_name()
+
+            instance.save()
+
+            history_description = (
+                f"{request.user.get_full_name()} has added an offerer."
+            )
+
+            notes = (
+                f"The offerer added was {instance.full_name} "
+            )
+
+            history_valuation = PropertyHistory.objects.create(
+                propertyprocess=property_process,
+                type=PropertyHistory.PROPERTY_EVENT,
+                description=history_description,
+                notes=notes,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
+
+            data["form_is_valid"] = True
+            context = {
+                "property_process": property_process,
+                "history_valuation": history_valuation,
+            }
+            data["html_success"] = render_to_string(
+                "properties/stages/includes/form_success.html",
+                context,
+                request=request,
+            )
+        else:
+            data["form_is_valid"] = False
+
+    else:
+        form = OffererForm()
 
     context = {
         "form": form,

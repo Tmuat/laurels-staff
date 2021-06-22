@@ -252,7 +252,7 @@ $(document).ready(function () {
                     $('#modal-overlay').fadeToggle(100);
                     
                     $.ajax({
-                        url: '/properties/render/valuation/' + data.propertyprocess_id + '/',
+                        url: '/properties/add/valuation/' + data.propertyprocess_id + '/',
                         type: 'get',
                         dataType: 'json',
                         beforeSend: function () {
@@ -290,7 +290,7 @@ $(document).ready(function () {
                     $('#modal-overlay').fadeToggle(100);
 
                     $.ajax({
-                        url: '/properties/render/valuation/' + data.propertyprocess_id + '/',
+                        url: '/properties/add/valuation/' + data.propertyprocess_id + '/',
                         type: 'get',
                         dataType: 'json',
                         beforeSend: function () {
