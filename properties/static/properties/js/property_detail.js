@@ -419,4 +419,5 @@ $(document).ready(function () {
     $("#base-modal").on("submit", ".js-add-valuation-form", submitFormAndLoadSuccess);
     $("#base-modal").on("submit", ".js-add-instruction-form", submitFormAndLoadSuccess);
     $("#base-modal").on("submit", ".js-add-reduction-form", submitFormAndLoadSuccess);
+    $("#base-modal").on("submit", ".js-add-offerer-form", submitFormAndLoadSuccess);
 });

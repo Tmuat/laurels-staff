@@ -6,7 +6,7 @@
         </div>
         <div class="text-center text-white">
             <h4 class="text-white">Add New Offerer</h4>
-            <form method="post" action="{% url 'properties:add_reduction' propertyprocess_id%}" class="text-center text-white px-2 js-add-reduction-form custom-form-margin">
+            <form method="post" action="{% url 'properties:add_offerer' propertyprocess_id%}" class="text-center text-white px-2 js-add-offerer-form custom-form-margin">
                 {% csrf_token %}
                 <div class="row">
                     <div class="col-12">

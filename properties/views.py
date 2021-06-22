@@ -859,7 +859,9 @@ def add_offerer(request, propertyprocess_id):
             )
 
             notes = (
-                f"The offerer added was {instance.full_name} "
+                f"The offerer added was '{instance.full_name}' "
+                f"with '{instance.funding}' chosen as the "
+                "funding type."
             )
 
             history_valuation = PropertyHistory.objects.create(
