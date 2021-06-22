@@ -581,7 +581,10 @@ def add_valuation(request, propertyprocess_id):
             data["form_is_valid"] = False
 
     else:
-        form = ValuationForm()
+        employee = Profile.objects.get(user=request.user.id)
+        instance = Valuation(valuer=employee)
+
+        form = ValuationForm(instance=instance)
         marketing_form = SellerMarketingForm()
 
     context = {

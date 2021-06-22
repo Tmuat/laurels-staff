@@ -346,6 +346,38 @@ $(document).ready(function () {
             dataType: 'json',
             success: function (data) {
                 if (data.form_is_valid) {
+                    $("#base-static-modal").modal("hide");
+
+                    $.ajax({
+                        url: '/properties/add/valuation/' + data.propertyprocess_id + '/',
+                        type: 'get',
+                        dataType: 'json',
+                        success: function (data) {
+                            $("#base-static-modal").modal("show");
+                            $('#modal-overlay').fadeToggle(100);
+                            $("#base-static-modal .modal-dialog").html(data.html_modal);
+                        }
+                    });
+                } else {
+                    $('#modal-overlay').fadeToggle(100);
+                    $("#base-static-modal .modal-dialog").html(data.html_modal);
+                }
+            }
+        });
+        return false;
+    });
+
+    // Deals with the form submission for adding offerer
+    $("#base-static-modal").on("submit", ".js-add-offerer-form", function () {
+        $('#modal-overlay').fadeToggle(100);
+        var form = $(this);
+        $.ajax({
+            url: form.attr("action"),
+            data: form.serialize(),
+            type: form.attr("method"),
+            dataType: 'json',
+            success: function (data) {
+                if (data.form_is_valid) {
                     $("#base-modal").modal("hide");
                     $('#modal-overlay').fadeToggle(100);
                     location.reload();
@@ -419,5 +451,4 @@ $(document).ready(function () {
     $("#base-modal").on("submit", ".js-add-valuation-form", submitFormAndLoadSuccess);
     $("#base-modal").on("submit", ".js-add-instruction-form", submitFormAndLoadSuccess);
     $("#base-modal").on("submit", ".js-add-reduction-form", submitFormAndLoadSuccess);
-    $("#base-modal").on("submit", ".js-add-offerer-form", submitFormAndLoadSuccess);
 });
