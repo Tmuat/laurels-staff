@@ -1,4 +1,3 @@
-import datetime
 import humanize
 
 from django.conf import settings
@@ -20,7 +19,8 @@ from properties.forms import (
     HistoryNotesForm,
     FloorSpaceForm,
     ReductionForm,
-    OffererForm
+    OffererForm,
+    OffererMortgageForm,
 )
 from properties.models import (
     Property,
@@ -31,6 +31,7 @@ from properties.models import (
     OffererDetails,
     PropertyChain,
     Valuation,
+    OffererMortgage,
 )
 from users.models import Profile
 
@@ -570,7 +571,7 @@ def add_valuation(request, propertyprocess_id):
             data["form_is_valid"] = True
             context = {
                 "property_process": property_process,
-                "history_valuation": history_valuation,
+                "history": history_valuation,
             }
             data["html_success"] = render_to_string(
                 "properties/stages/includes/form_success.html",
@@ -713,7 +714,7 @@ def add_instruction(request, propertyprocess_id):
                 " property info (floor space)."
             )
 
-            history_valuation = PropertyHistory.objects.create(
+            history_instruction = PropertyHistory.objects.create(
                 propertyprocess=property_process,
                 type=PropertyHistory.PROPERTY_EVENT,
                 description=history_description,
@@ -732,7 +733,7 @@ def add_instruction(request, propertyprocess_id):
             data["form_is_valid"] = True
             context = {
                 "property_process": property_process,
-                "history_valuation": history_valuation,
+                "history": history_instruction,
             }
             data["html_success"] = render_to_string(
                 "properties/stages/includes/form_success.html",
@@ -798,7 +799,7 @@ def add_reduction(request, propertyprocess_id):
                 f" to £{humanize.intcomma(instance.price)}"
             )
 
-            history_valuation = PropertyHistory.objects.create(
+            history = PropertyHistory.objects.create(
                 propertyprocess=property_process,
                 type=PropertyHistory.PROPERTY_EVENT,
                 description=history_description,
@@ -810,7 +811,7 @@ def add_reduction(request, propertyprocess_id):
             data["form_is_valid"] = True
             context = {
                 "property_process": property_process,
-                "history_valuation": history_valuation,
+                "history": history,
             }
             data["html_success"] = render_to_string(
                 "properties/stages/includes/form_success.html",
@@ -857,35 +858,15 @@ def add_offerer(request, propertyprocess_id):
 
             instance.save()
 
-            history_description = (
-                f"{request.user.get_full_name()} has added an offerer."
-            )
-
-            notes = (
-                f"The offerer added was '{instance.full_name}' "
-                f"with '{instance.funding}' chosen as the "
-                "funding type."
-            )
-
-            history_valuation = PropertyHistory.objects.create(
-                propertyprocess=property_process,
-                type=PropertyHistory.PROPERTY_EVENT,
-                description=history_description,
-                notes=notes,
-                created_by=request.user.get_full_name(),
-                updated_by=request.user.get_full_name(),
-            )
-
             data["form_is_valid"] = True
-            context = {
-                "property_process": property_process,
-                "history_valuation": history_valuation,
-            }
-            data["html_success"] = render_to_string(
-                "properties/stages/includes/form_success.html",
-                context,
-                request=request,
-            )
+            if instance.funding == OffererDetails.MORTGAGE:
+                data["url"] = reverse(
+                                'properties:add_offerer_mortgage',
+                                kwargs={
+                                        'propertyprocess_id': propertyprocess_id,
+                                        'offerer_id': instance.id,
+                                    }
+                                )
         else:
             data["form_is_valid"] = False
 
@@ -898,6 +879,57 @@ def add_offerer(request, propertyprocess_id):
     }
     data["html_modal"] = render_to_string(
         "properties/stages/add_offerer_modal.html",
+        context,
+        request=request,
+    )
+    return JsonResponse(data)
+
+
+def add_offerer_mortgage(request, propertyprocess_id, offerer_id):
+    """
+    Ajax URL for adding a offerer mortgage options.
+    """
+    data = dict()
+
+    property_process = get_object_or_404(
+        PropertyProcess, id=propertyprocess_id
+    )
+
+    offerer = get_object_or_404(
+        OffererDetails, id=offerer_id
+    )
+
+    if request.method == "POST":
+        form = OffererMortgageForm(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+
+            instance.offerer_details = offerer
+
+            instance.created_by = request.user.get_full_name()
+            instance.updated_by = request.user.get_full_name()
+
+            if instance.verified_status == OffererMortgage.VERIFIEDMR:
+                instance.verified = True
+            elif instance.verified_status == OffererMortgage.MIP:
+                instance.verified = True
+
+            instance.save()
+
+            data["form_is_valid"] = True
+        else:
+            data["form_is_valid"] = False
+
+    else:
+        form = OffererMortgageForm()
+
+    context = {
+        "form": form,
+        "propertyprocess_id": propertyprocess_id,
+        "offerer_id": offerer_id,
+    }
+    data["html_modal"] = render_to_string(
+        "properties/stages/add_offerer_mortgage_modal.html",
         context,
         request=request,
     )

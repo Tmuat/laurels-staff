@@ -346,21 +346,12 @@ $(document).ready(function () {
             dataType: 'json',
             success: function (data) {
                 if (data.form_is_valid) {
-                    $("#base-static-modal").modal("hide");
-
-                    $.ajax({
-                        url: '/properties/add/valuation/' + data.propertyprocess_id + '/',
-                        type: 'get',
-                        dataType: 'json',
-                        success: function (data) {
-                            $("#base-static-modal").modal("show");
-                            $('#modal-overlay').fadeToggle(100);
-                            $("#base-static-modal .modal-dialog").html(data.html_modal);
-                        }
-                    });
+                    $("#base-modal").modal("hide");
+                    $('#modal-overlay').fadeToggle(100);
+                    location.reload();
                 } else {
                     $('#modal-overlay').fadeToggle(100);
-                    $("#base-static-modal .modal-dialog").html(data.html_modal);
+                    $("#base-modal .modal-dialog").html(data.html_modal);
                 }
             }
         });
@@ -368,7 +359,7 @@ $(document).ready(function () {
     });
 
     // Deals with the form submission for adding offerer
-    $("#base-static-modal").on("submit", ".js-add-offerer-form", function () {
+    $("#base-modal").on("submit", ".js-add-offerer-form", function () {
         $('#modal-overlay').fadeToggle(100);
         var form = $(this);
         $.ajax({
@@ -379,11 +370,52 @@ $(document).ready(function () {
             success: function (data) {
                 if (data.form_is_valid) {
                     $("#base-modal").modal("hide");
-                    $('#modal-overlay').fadeToggle(100);
-                    location.reload();
+
+                    $.ajax({
+                        url: data.url,
+                        type: 'get',
+                        dataType: 'json',
+                        success: function (data) {
+                            $("#base-static-modal").modal("show");
+                            $('#modal-overlay').fadeToggle(100);
+                            $("#base-static-modal .modal-dialog").html(data.html_modal);
+                        }
+                    });
                 } else {
                     $('#modal-overlay').fadeToggle(100);
                     $("#base-modal .modal-dialog").html(data.html_modal);
+                }
+            }
+        });
+        return false;
+    });
+
+    // Deals with the form submission for adding offerer mortgage
+    $("#base-static-modal").on("submit", ".js-add-offerer-mortgage-form", function () {
+        $('#modal-overlay').fadeToggle(100);
+        var form = $(this);
+        $.ajax({
+            url: form.attr("action"),
+            data: form.serialize(),
+            type: form.attr("method"),
+            dataType: 'json',
+            success: function (data) {
+                if (data.form_is_valid) {
+                    $("#base-static-modal").modal("hide");
+
+                    // $.ajax({
+                    //     url: data.url,
+                    //     type: 'get',
+                    //     dataType: 'json',
+                    //     success: function (data) {
+                    //         $("#base-static-modal").modal("show");
+                    //         $('#modal-overlay').fadeToggle(100);
+                    //         $("#base-static-modal .modal-dialog").html(data.html_modal);
+                    //     }
+                    // });
+                } else {
+                    $('#modal-overlay').fadeToggle(100);
+                    $("#base-static-modal .modal-dialog").html(data.html_modal);
                 }
             }
         });

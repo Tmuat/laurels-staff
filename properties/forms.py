@@ -8,7 +8,8 @@ from properties.models import (
     Marketing,
     PropertyHistory,
     PropertyFees,
-    OffererDetails
+    OffererDetails,
+    OffererMortgage,
 )
 from properties.widgets import DateInput
 from users.models import Profile
@@ -257,6 +258,29 @@ class OffererForm(forms.ModelForm):
             "full_name": "Full Name/s",
             "completed_offer_form": "Completed Offer Form?",
             "funding": "Funding Type"
+        }
+
+        for field in self.fields:
+            label = f"{labels[field]}"
+            self.fields[field].label = label
+
+
+class OffererMortgageForm(forms.ModelForm):
+    class Meta:
+        model = OffererMortgage
+        fields = (
+            "deposit_percentage",
+            "verified_status",
+        )
+
+    def __init__(self, *args, **kwargs):
+        """
+        Add new labels and order foreign key field
+        """
+        super().__init__(*args, **kwargs)
+        labels = {
+            "deposit_percentage": "Deposit Percentage",
+            "verified_status": "Mortgage Verified Status",
         }
 
         for field in self.fields:

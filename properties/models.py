@@ -517,7 +517,7 @@ class OffererMortgage(UpdatedAndCreated):
     def __str__(self):
         if (
             self.offerer_details.propertyprocess.property.address_line_2 == ""
-            or elf.offerer_details.propertyprocess.property.address_line_2
+            or self.offerer_details.propertyprocess.property.address_line_2
             == None
         ):
             property_address = "%s, %s (%s)" % (
