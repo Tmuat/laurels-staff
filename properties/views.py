@@ -21,6 +21,7 @@ from properties.forms import (
     ReductionForm,
     OffererForm,
     OffererMortgageForm,
+    OffererCashForm,
 )
 from properties.models import (
     Property,
@@ -867,6 +868,14 @@ def add_offerer(request, propertyprocess_id):
                                         'offerer_id': instance.id,
                                     }
                                 )
+            else:
+                data["url"] = reverse(
+                                'properties:add_offerer_cash',
+                                kwargs={
+                                        'propertyprocess_id': propertyprocess_id,
+                                        'offerer_id': instance.id,
+                                    }
+                                )
         else:
             data["form_is_valid"] = False
 
@@ -890,10 +899,6 @@ def add_offerer_mortgage(request, propertyprocess_id, offerer_id):
     Ajax URL for adding a offerer mortgage options.
     """
     data = dict()
-
-    property_process = get_object_or_404(
-        PropertyProcess, id=propertyprocess_id
-    )
 
     offerer = get_object_or_404(
         OffererDetails, id=offerer_id
@@ -930,6 +935,48 @@ def add_offerer_mortgage(request, propertyprocess_id, offerer_id):
     }
     data["html_modal"] = render_to_string(
         "properties/stages/add_offerer_mortgage_modal.html",
+        context,
+        request=request,
+    )
+    return JsonResponse(data)
+
+
+def add_offerer_cash(request, propertyprocess_id, offerer_id):
+    """
+    Ajax URL for adding a offerer cash options.
+    """
+    data = dict()
+
+    offerer = get_object_or_404(
+        OffererDetails, id=offerer_id
+    )
+
+    if request.method == "POST":
+        form = OffererCashForm(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+
+            instance.offerer_details = offerer
+
+            instance.created_by = request.user.get_full_name()
+            instance.updated_by = request.user.get_full_name()
+
+            instance.save()
+
+            data["form_is_valid"] = True
+        else:
+            data["form_is_valid"] = False
+
+    else:
+        form = OffererCashForm()
+
+    context = {
+        "form": form,
+        "propertyprocess_id": propertyprocess_id,
+        "offerer_id": offerer_id,
+    }
+    data["html_modal"] = render_to_string(
+        "properties/stages/add_offerer_cash_modal.html",
         context,
         request=request,
     )

@@ -422,6 +422,38 @@ $(document).ready(function () {
         return false;
     });
 
+    // Deals with the form submission for adding offerer cash
+    $("#base-static-modal").on("submit", ".js-add-offerer-cash-form", function () {
+        $('#modal-overlay').fadeToggle(100);
+        var form = $(this);
+        $.ajax({
+            url: form.attr("action"),
+            data: form.serialize(),
+            type: form.attr("method"),
+            dataType: 'json',
+            success: function (data) {
+                if (data.form_is_valid) {
+                    $("#base-static-modal").modal("hide");
+
+                    // $.ajax({
+                    //     url: data.url,
+                    //     type: 'get',
+                    //     dataType: 'json',
+                    //     success: function (data) {
+                    //         $("#base-static-modal").modal("show");
+                    //         $('#modal-overlay').fadeToggle(100);
+                    //         $("#base-static-modal .modal-dialog").html(data.html_modal);
+                    //     }
+                    // });
+                } else {
+                    $('#modal-overlay').fadeToggle(100);
+                    $("#base-static-modal .modal-dialog").html(data.html_modal);
+                }
+            }
+        });
+        return false;
+    });
+
     $("#base-static-modal").on("click", ".js-reload", function () {
         location.reload();
     });
