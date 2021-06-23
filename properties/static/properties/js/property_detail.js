@@ -403,16 +403,16 @@ $(document).ready(function () {
                 if (data.form_is_valid) {
                     $("#base-static-modal").modal("hide");
 
-                    // $.ajax({
-                    //     url: data.url,
-                    //     type: 'get',
-                    //     dataType: 'json',
-                    //     success: function (data) {
-                    //         $("#base-static-modal").modal("show");
-                    //         $('#modal-overlay').fadeToggle(100);
-                    //         $("#base-static-modal .modal-dialog").html(data.html_modal);
-                    //     }
-                    // });
+                    $.ajax({
+                        url: data.url,
+                        type: 'get',
+                        dataType: 'json',
+                        success: function (data) {
+                            $("#base-static-modal").modal("show");
+                            $('#modal-overlay').fadeToggle(100);
+                            $("#base-static-modal .modal-dialog").html(data.html_modal);
+                        }
+                    });
                 } else {
                     $('#modal-overlay').fadeToggle(100);
                     $("#base-static-modal .modal-dialog").html(data.html_modal);
@@ -435,16 +435,16 @@ $(document).ready(function () {
                 if (data.form_is_valid) {
                     $("#base-static-modal").modal("hide");
 
-                    // $.ajax({
-                    //     url: data.url,
-                    //     type: 'get',
-                    //     dataType: 'json',
-                    //     success: function (data) {
-                    //         $("#base-static-modal").modal("show");
-                    //         $('#modal-overlay').fadeToggle(100);
-                    //         $("#base-static-modal .modal-dialog").html(data.html_modal);
-                    //     }
-                    // });
+                    $.ajax({
+                        url: data.url,
+                        type: 'get',
+                        dataType: 'json',
+                        success: function (data) {
+                            $("#base-static-modal").modal("show");
+                            $('#modal-overlay').fadeToggle(100);
+                            $("#base-static-modal .modal-dialog").html(data.html_modal);
+                        }
+                    });
                 } else {
                     $('#modal-overlay').fadeToggle(100);
                     $("#base-static-modal .modal-dialog").html(data.html_modal);
@@ -515,4 +515,5 @@ $(document).ready(function () {
     $("#base-modal").on("submit", ".js-add-valuation-form", submitFormAndLoadSuccess);
     $("#base-modal").on("submit", ".js-add-instruction-form", submitFormAndLoadSuccess);
     $("#base-modal").on("submit", ".js-add-reduction-form", submitFormAndLoadSuccess);
+    $("#base-static-modal").on("submit", ".js-add-offer-form", submitFormAndLoadSuccess);
 });

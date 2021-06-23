@@ -22,6 +22,7 @@ from properties.forms import (
     OffererForm,
     OffererMortgageForm,
     OffererCashForm,
+    OfferForm,
 )
 from properties.models import (
     Property,
@@ -922,6 +923,14 @@ def add_offerer_mortgage(request, propertyprocess_id, offerer_id):
             instance.save()
 
             data["form_is_valid"] = True
+
+            data["url"] = reverse(
+                'properties:add_offer',
+                kwargs={
+                        'propertyprocess_id': propertyprocess_id,
+                        'offerer_id': offerer_id,
+                    }
+                )
         else:
             data["form_is_valid"] = False
 
@@ -964,6 +973,14 @@ def add_offerer_cash(request, propertyprocess_id, offerer_id):
             instance.save()
 
             data["form_is_valid"] = True
+
+            data["url"] = reverse(
+                'properties:add_offer',
+                kwargs={
+                        'propertyprocess_id': propertyprocess_id,
+                        'offerer_id': offerer_id,
+                    }
+                )
         else:
             data["form_is_valid"] = False
 
@@ -977,6 +994,83 @@ def add_offerer_cash(request, propertyprocess_id, offerer_id):
     }
     data["html_modal"] = render_to_string(
         "properties/stages/add_offerer_cash_modal.html",
+        context,
+        request=request,
+    )
+    return JsonResponse(data)
+
+
+def add_offer(request, propertyprocess_id, offerer_id):
+    """
+    Ajax URL for adding an offer.
+    """
+    data = dict()
+
+    property_process = get_object_or_404(
+        PropertyProcess, id=propertyprocess_id
+    )
+
+    offerer = get_object_or_404(
+        OffererDetails, id=offerer_id
+    )
+
+    if request.method == "POST":
+        form = OfferForm(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+
+            instance.propertyprocess = property_process
+
+            instance.offerer_details = offerer
+
+            instance.created_by = request.user.get_full_name()
+            instance.updated_by = request.user.get_full_name()
+
+            instance.save()
+
+            history_description = (
+                f"{request.user.get_full_name()} has added an offerer."
+            )
+
+            notes = (
+                f"A new offerer has been added ({offerer.full_name}) "
+                f"with funding marked as '{offerer.funding}'. "
+                f"An initial offer of £{humanize.intcomma(instance.offer)}"
+                " was added."
+            )
+
+            history = PropertyHistory.objects.create(
+                propertyprocess=property_process,
+                type=PropertyHistory.PROPERTY_EVENT,
+                description=history_description,
+                notes=notes,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
+
+            data["form_is_valid"] = True
+            context = {
+                "property_process": property_process,
+                "history": history,
+            }
+            data["html_success"] = render_to_string(
+                "properties/stages/includes/form_success.html",
+                context,
+                request=request,
+            )
+        else:
+            data["form_is_valid"] = False
+
+    else:
+        form = OfferForm()
+
+    context = {
+        "form": form,
+        "propertyprocess_id": propertyprocess_id,
+        "offerer": offerer,
+    }
+    data["html_modal"] = render_to_string(
+        "properties/stages/add_offer_modal.html",
         context,
         request=request,
     )

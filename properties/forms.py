@@ -10,7 +10,8 @@ from properties.models import (
     PropertyFees,
     OffererDetails,
     OffererMortgage,
-    OffererCash
+    OffererCash,
+    Offer,
 )
 from properties.widgets import DateInput
 from users.models import Profile
@@ -304,6 +305,33 @@ class OffererCashForm(forms.ModelForm):
         labels = {
             "cash": "Where is the cash coming from?",
         }
+
+        for field in self.fields:
+            label = f"{labels[field]}"
+            self.fields[field].label = label
+
+
+class OfferForm(forms.ModelForm):
+    class Meta:
+        model = Offer
+        fields = (
+            "date",
+            "offer",
+            "status"
+        )
+
+    def __init__(self, *args, **kwargs):
+        """
+        Add new labels and order foreign key field
+        """
+        super().__init__(*args, **kwargs)
+        labels = {
+            "date": "Offer Date",
+            "offer": "Offer Amount (£)",
+            "status": "Offer Status"
+        }
+
+        self.fields["date"].widget = DateInput()
 
         for field in self.fields:
             label = f"{labels[field]}"

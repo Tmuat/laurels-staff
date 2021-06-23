@@ -21,6 +21,7 @@ from properties.views import (
     add_offerer,
     add_offerer_mortgage,
     add_offerer_cash,
+    add_offer,
 )
 
 
@@ -121,5 +122,10 @@ urlpatterns = [
         "properties/add/offerer-cash/<propertyprocess_id>/<offerer_id>/",
         add_offerer_cash,
         name="add_offerer_cash",
+    ),
+    path(
+        "properties/add/offer/<propertyprocess_id>/<offerer_id>/",
+        add_offer,
+        name="add_offer",
     ),
 ]
