@@ -25,6 +25,7 @@ from properties.views import (
     add_another_offer,
     edit_offerer_cash,
     edit_offerer_mortgage,
+    edit_offer_status,
 )
 
 
@@ -145,5 +146,10 @@ urlpatterns = [
         "properties/edit/offerer-mortgage/<offerer_id>/",
         edit_offerer_mortgage,
         name="edit_offerer_mortgage",
+    ),
+    path(
+        "properties/edit/offer-status/<offer_id>/",
+        edit_offer_status,
+        name="edit_offer_status",
     ),
 ]

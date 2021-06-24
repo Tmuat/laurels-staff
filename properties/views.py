@@ -25,6 +25,7 @@ from properties.forms import (
     OffererCashForm,
     OfferForm,
     AnotherOfferForm,
+    OfferStatusForm,
 )
 from properties.models import (
     Property,
@@ -1329,3 +1330,75 @@ def edit_offerer_mortgage(request, offerer_id):
     )
     return JsonResponse(data)
 
+
+def edit_offer_status(request, offer_id):
+    """
+    Ajax URL for editing an offer status.
+    """
+
+    data = dict()
+
+    offer = get_object_or_404(Offer, id=offer_id)
+    property_process = get_object_or_404(PropertyProcess, id=offer.propertyprocess.id)
+    old_status = offer.status
+
+    if request.method == "POST":
+        form = OfferStatusForm(request.POST, instance=offer)
+        if form.is_valid():
+            instance = form.save(commit=False)
+
+            instance.updated_by = request.user.get_full_name()
+
+            history_description = (
+                f"{request.user.get_full_name()} has updated offer status."
+            )
+
+            for choice in Offer.STATUS:
+                if choice[0] == old_status:
+                    old_status = choice[1]
+                if choice[0] == instance.status:
+                    new_status = choice[1]
+
+            notes = (
+                f"The status for the offer from {offer.offerer_details.full_name}"
+                f" for £{instance.offer} has been changed from "
+                f"'{old_status}' to '{new_status}'."
+            )
+
+            instance.save()
+
+            history = PropertyHistory.objects.create(
+                propertyprocess=property_process,
+                type=PropertyHistory.PROPERTY_EVENT,
+                description=history_description,
+                notes=notes,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
+
+            data["form_is_valid"] = True
+            context = {
+                "property_process": property_process,
+                "history": history,
+            }
+            data["html_success"] = render_to_string(
+                "properties/stages/includes/form_success.html",
+                context,
+                request=request,
+            )
+        else:
+            data["form_is_valid"] = False
+
+    else:
+        form = OfferStatusForm(instance=offer)
+
+    context = {
+        "form": form,
+        "offer": offer,
+    }
+    data["html_modal"] = render_to_string(
+        "properties/stages/edit_offer_status_modal.html",
+        context,
+        request=request,
+    )
+    return JsonResponse(data)

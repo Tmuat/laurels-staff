@@ -328,6 +328,25 @@ class OfferForm(forms.ModelForm):
             self.fields[field].label = label
 
 
+class OfferStatusForm(forms.ModelForm):
+    class Meta:
+        model = Offer
+        fields = ("status",)
+
+    def __init__(self, *args, **kwargs):
+        """
+        Add new labels and order foreign key field
+        """
+        super().__init__(*args, **kwargs)
+        labels = {
+            "status": "Offer Status",
+        }
+
+        for field in self.fields:
+            label = f"{labels[field]}"
+            self.fields[field].label = label
+
+
 class AnotherOfferForm(forms.ModelForm):
     class Meta:
         model = Offer

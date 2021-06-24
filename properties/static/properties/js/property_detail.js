@@ -510,6 +510,7 @@ $(document).ready(function () {
     $(".js-add-another-offer").on("click", loadFormBaseModal);
     $(".js-edit-offerer-cash").on("click", loadFormBaseModal);
     $(".js-edit-offerer-mortgage").on("click", loadFormBaseModal);
+    $(".js-edit-offer-status").on("click", loadFormBaseModal);
     
     $("#tbody-history").on("click", ".js-show-notes", loadFormBaseModal);
     $("#tbody-offers").on("click", ".js-show-offers", loadFormBaseModal);
@@ -522,4 +523,5 @@ $(document).ready(function () {
     $("#base-modal").on("submit", ".js-add-another-offer-form", submitFormAndLoadSuccess);
     $("#base-modal").on("submit", ".js-edit-offerer-cash-form", submitFormAndLoadSuccess);
     $("#base-modal").on("submit", ".js-edit-offerer-mortgage-form", submitFormAndLoadSuccess);
+    $("#base-modal").on("submit", ".js-edit-offer-status-form", submitFormAndLoadSuccess);
 });
