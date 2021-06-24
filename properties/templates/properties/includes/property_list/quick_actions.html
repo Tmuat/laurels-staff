@@ -23,7 +23,14 @@
 <button 
     data-url="{% url 'properties:add_offerer' instance.id %}" data-toggle="tooltip"
     data-placement="top"
-    title="Add Offerer"
+    title="Add Offer"
     class="btn {% if instance.macro_status != 3 %}btn-secondary" disabled{% else %}btn-info js-add-offerer"{% endif %}>
         <i class="mdi mdi-offer"></i>
+</button>
+<button 
+    data-url="{% url 'properties:add_another_offer' instance.id %}" data-toggle="tooltip"
+    data-placement="top"
+    title="Change Offer"
+    class="btn {% if propertyprocess.macro_status != 3 %}btn-secondary" disabled{% else %}btn-info js-add-another-offer"{% endif %}>
+        <i class="mdi mdi-piggy-bank"></i>
 </button>

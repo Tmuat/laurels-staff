@@ -244,12 +244,8 @@ class OffererForm(forms.ModelForm):
 
     class Meta:
         model = OffererDetails
-        fields = (
-            "full_name",
-            "completed_offer_form",
-            "funding"
-        )
-        widgets = {'funding': forms.RadioSelect}
+        fields = ("full_name", "completed_offer_form", "funding")
+        widgets = {"funding": forms.RadioSelect}
 
     def __init__(self, *args, **kwargs):
         """
@@ -259,7 +255,7 @@ class OffererForm(forms.ModelForm):
         labels = {
             "full_name": "Full Name/s",
             "completed_offer_form": "Completed Offer Form?",
-            "funding": "Funding Type"
+            "funding": "Funding Type",
         }
 
         for field in self.fields:
@@ -293,9 +289,7 @@ class OffererMortgageForm(forms.ModelForm):
 class OffererCashForm(forms.ModelForm):
     class Meta:
         model = OffererCash
-        fields = (
-            "cash",
-        )
+        fields = ("cash",)
 
     def __init__(self, *args, **kwargs):
         """
@@ -314,11 +308,7 @@ class OffererCashForm(forms.ModelForm):
 class OfferForm(forms.ModelForm):
     class Meta:
         model = Offer
-        fields = (
-            "date",
-            "offer",
-            "status"
-        )
+        fields = ("date", "offer", "status")
 
     def __init__(self, *args, **kwargs):
         """
@@ -328,7 +318,31 @@ class OfferForm(forms.ModelForm):
         labels = {
             "date": "Offer Date",
             "offer": "Offer Amount (£)",
-            "status": "Offer Status"
+            "status": "Offer Status",
+        }
+
+        self.fields["date"].widget = DateInput()
+
+        for field in self.fields:
+            label = f"{labels[field]}"
+            self.fields[field].label = label
+
+
+class AnotherOfferForm(forms.ModelForm):
+    class Meta:
+        model = Offer
+        fields = ("offerer_details", "date", "offer", "status")
+
+    def __init__(self, *args, **kwargs):
+        """
+        Add new labels and order foreign key field
+        """
+        super().__init__(*args, **kwargs)
+        labels = {
+            "offerer_details": "Offerer",
+            "date": "Offer Date",
+            "offer": "Offer Amount (£)",
+            "status": "Offer Status",
         }
 
         self.fields["date"].widget = DateInput()

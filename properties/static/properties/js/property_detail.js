@@ -507,6 +507,7 @@ $(document).ready(function () {
     $(".js-add-reduction").on("click", loadFormBaseModal);
     $("#quick-actions").on("click", ".js-add-offerer", loadFormBaseModal);
     $(".js-add-offerer").on("click", loadFormBaseModal);
+    $(".js-add-another-offer").on("click", loadFormBaseModal);
     
     $("#tbody-history").on("click", ".js-show-notes", loadFormBaseModal);
     $("#tbody-offers").on("click", ".js-show-offers", loadFormBaseModal);
@@ -516,4 +517,5 @@ $(document).ready(function () {
     $("#base-modal").on("submit", ".js-add-instruction-form", submitFormAndLoadSuccess);
     $("#base-modal").on("submit", ".js-add-reduction-form", submitFormAndLoadSuccess);
     $("#base-static-modal").on("submit", ".js-add-offer-form", submitFormAndLoadSuccess);
+    $("#base-modal").on("submit", ".js-add-another-offer-form", submitFormAndLoadSuccess);
 });

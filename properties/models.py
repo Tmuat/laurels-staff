@@ -462,23 +462,7 @@ class OffererDetails(UpdatedAndCreated):
     )
 
     def __str__(self):
-        if (
-            self.propertyprocess.property.address_line_2 == ""
-            or self.propertyprocess.property.address_line_2 == None
-        ):
-            property_address = "%s, %s (%s)" % (
-                self.propertyprocess.property.postcode,
-                self.propertyprocess.property.address_line_1,
-                self.full_name,
-            )
-        else:
-            property_address = "%s, %s, %s (%s)" % (
-                self.propertyprocess.property.postcode,
-                self.propertyprocess.property.address_line_1,
-                self.propertyprocess.property.address_line_2,
-                self.full_name,
-            )
-        return property_address
+        return self.full_name
 
 
 class OffererMortgage(UpdatedAndCreated):

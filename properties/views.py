@@ -1,3 +1,4 @@
+import datetime
 import humanize
 
 from django.conf import settings
@@ -23,6 +24,7 @@ from properties.forms import (
     OffererMortgageForm,
     OffererCashForm,
     OfferForm,
+    AnotherOfferForm,
 )
 from properties.models import (
     Property,
@@ -277,7 +279,7 @@ def offer_history(request, offerer_id):
     data = dict()
 
     offerer = get_object_or_404(OffererDetails, pk=offerer_id)
-    offers = Offer.objects.filter(offerer_details=offerer_id).order_by("-date")
+    offers = Offer.objects.filter(offerer_details=offerer_id)
 
     context = {"offers": offers, "offerer": offerer}
 
@@ -824,7 +826,9 @@ def add_reduction(request, propertyprocess_id):
             data["form_is_valid"] = False
 
     else:
-        form = ReductionForm()
+        form = ReductionForm(
+            initial={"date": datetime.date.today, "price": property_fee.price},
+        )
 
     context = {
         "form": form,
@@ -863,20 +867,20 @@ def add_offerer(request, propertyprocess_id):
             data["form_is_valid"] = True
             if instance.funding == OffererDetails.MORTGAGE:
                 data["url"] = reverse(
-                                'properties:add_offerer_mortgage',
-                                kwargs={
-                                        'propertyprocess_id': propertyprocess_id,
-                                        'offerer_id': instance.id,
-                                    }
-                                )
+                    "properties:add_offerer_mortgage",
+                    kwargs={
+                        "propertyprocess_id": propertyprocess_id,
+                        "offerer_id": instance.id,
+                    },
+                )
             else:
                 data["url"] = reverse(
-                                'properties:add_offerer_cash',
-                                kwargs={
-                                        'propertyprocess_id': propertyprocess_id,
-                                        'offerer_id': instance.id,
-                                    }
-                                )
+                    "properties:add_offerer_cash",
+                    kwargs={
+                        "propertyprocess_id": propertyprocess_id,
+                        "offerer_id": instance.id,
+                    },
+                )
         else:
             data["form_is_valid"] = False
 
@@ -901,9 +905,7 @@ def add_offerer_mortgage(request, propertyprocess_id, offerer_id):
     """
     data = dict()
 
-    offerer = get_object_or_404(
-        OffererDetails, id=offerer_id
-    )
+    offerer = get_object_or_404(OffererDetails, id=offerer_id)
 
     if request.method == "POST":
         form = OffererMortgageForm(request.POST)
@@ -925,12 +927,12 @@ def add_offerer_mortgage(request, propertyprocess_id, offerer_id):
             data["form_is_valid"] = True
 
             data["url"] = reverse(
-                'properties:add_offer',
+                "properties:add_offer",
                 kwargs={
-                        'propertyprocess_id': propertyprocess_id,
-                        'offerer_id': offerer_id,
-                    }
-                )
+                    "propertyprocess_id": propertyprocess_id,
+                    "offerer_id": offerer_id,
+                },
+            )
         else:
             data["form_is_valid"] = False
 
@@ -956,9 +958,7 @@ def add_offerer_cash(request, propertyprocess_id, offerer_id):
     """
     data = dict()
 
-    offerer = get_object_or_404(
-        OffererDetails, id=offerer_id
-    )
+    offerer = get_object_or_404(OffererDetails, id=offerer_id)
 
     if request.method == "POST":
         form = OffererCashForm(request.POST)
@@ -975,12 +975,12 @@ def add_offerer_cash(request, propertyprocess_id, offerer_id):
             data["form_is_valid"] = True
 
             data["url"] = reverse(
-                'properties:add_offer',
+                "properties:add_offer",
                 kwargs={
-                        'propertyprocess_id': propertyprocess_id,
-                        'offerer_id': offerer_id,
-                    }
-                )
+                    "propertyprocess_id": propertyprocess_id,
+                    "offerer_id": offerer_id,
+                },
+            )
         else:
             data["form_is_valid"] = False
 
@@ -1010,9 +1010,7 @@ def add_offer(request, propertyprocess_id, offerer_id):
         PropertyProcess, id=propertyprocess_id
     )
 
-    offerer = get_object_or_404(
-        OffererDetails, id=offerer_id
-    )
+    offerer = get_object_or_404(OffererDetails, id=offerer_id)
 
     if request.method == "POST":
         form = OfferForm(request.POST)
@@ -1029,11 +1027,11 @@ def add_offer(request, propertyprocess_id, offerer_id):
             instance.save()
 
             history_description = (
-                f"{request.user.get_full_name()} has added an offerer."
+                f"{request.user.get_full_name()} has added an offer."
             )
 
             notes = (
-                f"A new offerer has been added ({offerer.full_name}) "
+                f"A new offer has been added ({offerer.full_name}) "
                 f"with funding marked as '{offerer.funding}'. "
                 f"An initial offer of £{humanize.intcomma(instance.offer)}"
                 " was added."
@@ -1062,7 +1060,7 @@ def add_offer(request, propertyprocess_id, offerer_id):
             data["form_is_valid"] = False
 
     else:
-        form = OfferForm()
+        form = OfferForm(initial={"date": datetime.date.today})
 
     context = {
         "form": form,
@@ -1071,6 +1069,93 @@ def add_offer(request, propertyprocess_id, offerer_id):
     }
     data["html_modal"] = render_to_string(
         "properties/stages/add_offer_modal.html",
+        context,
+        request=request,
+    )
+    return JsonResponse(data)
+
+
+def add_another_offer(request, propertyprocess_id):
+    """
+    Ajax URL for adding an offer to an existing offerer.
+    """
+    data = dict()
+
+    property_process = get_object_or_404(
+        PropertyProcess, id=propertyprocess_id
+    )
+
+    if request.method == "POST":
+        form = AnotherOfferForm(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+
+            instance.propertyprocess = property_process
+
+            instance.created_by = request.user.get_full_name()
+            instance.updated_by = request.user.get_full_name()
+
+            offerer_offers = Offer.objects.filter(
+                offerer_details=instance.offerer_details.id
+            )
+
+            for offer in offerer_offers:
+                if offer.status == Offer.GETTINGVERIFIED or offer.status == Offer.NEGOTIATING:
+                    offer.status = Offer.REJECTED
+                    offer.updated_by = request.user.get_full_name()
+                offer.save()
+
+            instance.save()
+
+            offerer = get_object_or_404(
+                OffererDetails, id=instance.offerer_details.id
+            )
+
+            history_description = (
+                f"{request.user.get_full_name()} has added an offer."
+            )
+
+            notes = (
+                f"An offer has been changed for ({offerer.full_name}). "
+                f"The new offer is for £{humanize.intcomma(instance.offer)}"
+            )
+
+            history = PropertyHistory.objects.create(
+                propertyprocess=property_process,
+                type=PropertyHistory.PROPERTY_EVENT,
+                description=history_description,
+                notes=notes,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
+
+            data["form_is_valid"] = True
+            context = {
+                "property_process": property_process,
+                "history": history,
+            }
+            data["html_success"] = render_to_string(
+                "properties/stages/includes/form_success.html",
+                context,
+                request=request,
+            )
+        else:
+            data["form_is_valid"] = False
+
+    else:
+        form = AnotherOfferForm(initial={"date": datetime.date.today})
+        form.fields[
+            "offerer_details"
+        ].queryset = OffererDetails.objects.filter(
+            propertyprocess=propertyprocess_id
+        )
+
+    context = {
+        "form": form,
+        "propertyprocess_id": propertyprocess_id,
+    }
+    data["html_modal"] = render_to_string(
+        "properties/stages/add_another_offer_modal.html",
         context,
         request=request,
     )
