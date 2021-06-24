@@ -33,6 +33,7 @@ from properties.models import (
     PropertyHistory,
     Offer,
     OffererDetails,
+    OffererCash,
     PropertyChain,
     Valuation,
     OffererMortgage,
@@ -1060,7 +1061,9 @@ def add_offer(request, propertyprocess_id, offerer_id):
             data["form_is_valid"] = False
 
     else:
-        form = OfferForm(initial={"date": datetime.date.today})
+        form = OfferForm(
+            initial={"date": datetime.date.today}
+        )
 
     context = {
         "form": form,
@@ -1160,3 +1163,169 @@ def add_another_offer(request, propertyprocess_id):
         request=request,
     )
     return JsonResponse(data)
+
+
+def edit_offerer_cash(request, offerer_id):
+    """
+    Ajax URL for editing an offerer's cash type.
+    """
+
+    data = dict()
+
+    offerer = get_object_or_404(OffererDetails, id=offerer_id)
+    property_process = get_object_or_404(PropertyProcess, id=offerer.propertyprocess.id)
+    old_choice = offerer.offerer_cash_details.cash
+
+    if request.method == "POST":
+        form = OffererCashForm(request.POST, instance=offerer.offerer_cash_details)
+        if form.is_valid():
+            instance = form.save(commit=False)
+
+            instance.updated_by = request.user.get_full_name()
+
+            history_description = (
+                f"{request.user.get_full_name()} has updated cash details."
+            )
+
+            for choice in OffererCash.CASH_CHOICES:
+                if choice[0] == old_choice:
+                    old_choice = choice[1]
+                if choice[0] == instance.cash:
+                    new_choice = choice[1]
+
+            notes = (
+                f"Cash option changed for ({offerer.full_name}). "
+                f"Changing from '{old_choice}' to '{new_choice}'."
+            )
+
+            instance.save()
+
+            history = PropertyHistory.objects.create(
+                propertyprocess=property_process,
+                type=PropertyHistory.PROPERTY_EVENT,
+                description=history_description,
+                notes=notes,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
+
+            data["form_is_valid"] = True
+            context = {
+                "property_process": property_process,
+                "history": history,
+            }
+            data["html_success"] = render_to_string(
+                "properties/stages/includes/form_success.html",
+                context,
+                request=request,
+            )
+        else:
+            data["form_is_valid"] = False
+
+    else:
+        form = OffererCashForm(instance=offerer.offerer_cash_details)
+
+    context = {
+        "form": form,
+        "offerer": offerer,
+    }
+    data["html_modal"] = render_to_string(
+        "properties/stages/edit_offerer_cash_modal.html",
+        context,
+        request=request,
+    )
+    return JsonResponse(data)
+
+
+def edit_offerer_mortgage(request, offerer_id):
+    """
+    Ajax URL for editing an offerer's mortgage type.
+    """
+
+    data = dict()
+
+    offerer = get_object_or_404(OffererDetails, id=offerer_id)
+    property_process = get_object_or_404(PropertyProcess, id=offerer.propertyprocess.id)
+    old_deposit = offerer.offerer_mortgage_details.deposit_percentage
+    old_verified = offerer.offerer_mortgage_details.verified_status
+
+    if request.method == "POST":
+        form = OffererMortgageForm(request.POST, instance=offerer.offerer_mortgage_details)
+        if form.is_valid():
+            instance = form.save(commit=False)
+
+            if instance.verified_status == OffererMortgage.VERIFIEDMR:
+                instance.verified = True
+            elif instance.verified_status == OffererMortgage.MIP:
+                instance.verified = True
+            elif instance.verified_status == OffererMortgage.PENDING:
+                instance.verified = False
+            elif instance.verified_status == OffererMortgage.UNABLE:
+                instance.verified = False
+
+            instance.updated_by = request.user.get_full_name()
+
+            history_description = (
+                f"{request.user.get_full_name()} has updated mortgage details."
+            )
+
+            for choice in OffererMortgage.VERI_CHOICES:
+                if choice[0] == old_verified:
+                    old_verified = choice[1]
+                if choice[0] == instance.verified_status:
+                    new_verified = choice[1]
+
+            deposit_notes = ""
+            if old_deposit != instance.deposit_percentage:
+                deposit_notes = (
+                    f"The deposit percentage has changed from {old_deposit}%"
+                    f" to {round(instance.deposit_percentage, 2)}%. "
+                )
+
+            verified_notes = ""
+            if old_verified != new_verified:
+                verified_notes = (
+                    f"The mortgage verification status has changed from {old_verified}"
+                    f" to {new_verified}."
+                )
+
+            notes = deposit_notes + verified_notes
+
+            instance.save()
+
+            history = PropertyHistory.objects.create(
+                propertyprocess=property_process,
+                type=PropertyHistory.PROPERTY_EVENT,
+                description=history_description,
+                notes=notes,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
+
+            data["form_is_valid"] = True
+            context = {
+                "property_process": property_process,
+                "history": history,
+            }
+            data["html_success"] = render_to_string(
+                "properties/stages/includes/form_success.html",
+                context,
+                request=request,
+            )
+        else:
+            data["form_is_valid"] = False
+
+    else:
+        form = OffererMortgageForm(instance=offerer.offerer_mortgage_details)
+
+    context = {
+        "form": form,
+        "offerer": offerer,
+    }
+    data["html_modal"] = render_to_string(
+        "properties/stages/edit_offerer_mortgage_modal.html",
+        context,
+        request=request,
+    )
+    return JsonResponse(data)
+

@@ -4,7 +4,27 @@
     <td>{{ instance.full_name }}</td>
     <td class="text-center">
         {% if instance.funding is not none %}
+            {% if instance.funding == "cash" %}
+                <span 
+                    class="pointer text-primary js-edit-offerer-cash"
+                    data-url="{% url 'properties:edit_offerer_cash' instance.id %}"
+                    data-toggle="tooltip"
+                    data-placement="top"
+                    title="Edit Cash Option"
+                >
+                    {{ instance.get_funding_display }}
+                </span>
+            {% elif instance.funding == "mortgage" %}
+            <span 
+                class="pointer text-primary js-edit-offerer-mortgage"
+                data-url="{% url 'properties:edit_offerer_mortgage' instance.id %}"
+                data-toggle="tooltip"
+                data-placement="top"
+                title="Edit Mortgage Option"
+            >
             {{ instance.get_funding_display }}
+        </span>
+            {% endif %}
         {% endif %}
     </td>
     <td class="text-center">£{{ instance.offerdetails.first.offer|intcomma }}</td>

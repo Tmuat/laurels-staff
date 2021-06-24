@@ -508,6 +508,8 @@ $(document).ready(function () {
     $("#quick-actions").on("click", ".js-add-offerer", loadFormBaseModal);
     $(".js-add-offerer").on("click", loadFormBaseModal);
     $(".js-add-another-offer").on("click", loadFormBaseModal);
+    $(".js-edit-offerer-cash").on("click", loadFormBaseModal);
+    $(".js-edit-offerer-mortgage").on("click", loadFormBaseModal);
     
     $("#tbody-history").on("click", ".js-show-notes", loadFormBaseModal);
     $("#tbody-offers").on("click", ".js-show-offers", loadFormBaseModal);
@@ -518,4 +520,6 @@ $(document).ready(function () {
     $("#base-modal").on("submit", ".js-add-reduction-form", submitFormAndLoadSuccess);
     $("#base-static-modal").on("submit", ".js-add-offer-form", submitFormAndLoadSuccess);
     $("#base-modal").on("submit", ".js-add-another-offer-form", submitFormAndLoadSuccess);
+    $("#base-modal").on("submit", ".js-edit-offerer-cash-form", submitFormAndLoadSuccess);
+    $("#base-modal").on("submit", ".js-edit-offerer-mortgage-form", submitFormAndLoadSuccess);
 });
