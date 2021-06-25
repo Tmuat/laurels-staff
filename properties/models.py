@@ -444,7 +444,19 @@ class OffererDetails(UpdatedAndCreated):
     CASH = "cash"
     MORTGAGE = "mortgage"
 
+    UNDER_OFFER = "under_offer"
+    NO_CHAIN = "no_chain"
+    LET_TO_BUY = "let_to_buy"
+    NOT_ON_MARKET = "not_on_market"
+
     FUNDING = [(CASH, "Cash"), (MORTGAGE, "Mortgage")]
+
+    STATUS = [
+        (UNDER_OFFER, "Under Offer"),
+        (NO_CHAIN, "No Chain"),
+        (LET_TO_BUY, "Let To Buy"),
+        (NOT_ON_MARKET, "Not On Market"),
+    ]
 
     COMPLETED = [(True, "Completed"), (False, "Incomplete")]
 
@@ -459,6 +471,9 @@ class OffererDetails(UpdatedAndCreated):
     )
     funding = models.CharField(
         max_length=10, null=True, blank=False, choices=FUNDING
+    )
+    status = models.CharField(
+        max_length=20, null=True, blank=False, choices=STATUS
     )
 
     def __str__(self):

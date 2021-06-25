@@ -244,7 +244,7 @@ class OffererForm(forms.ModelForm):
 
     class Meta:
         model = OffererDetails
-        fields = ("full_name", "completed_offer_form", "funding")
+        fields = ("full_name", "completed_offer_form", "funding", "status")
         widgets = {"funding": forms.RadioSelect}
 
     def __init__(self, *args, **kwargs):
@@ -256,6 +256,7 @@ class OffererForm(forms.ModelForm):
             "full_name": "Full Name/s",
             "completed_offer_form": "Completed Offer Form?",
             "funding": "Funding Type",
+            "status": "Status"
         }
 
         for field in self.fields:

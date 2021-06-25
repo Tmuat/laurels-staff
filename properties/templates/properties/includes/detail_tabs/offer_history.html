@@ -16,10 +16,24 @@
                 </p>
             {% endif %}
             {% if offerer.funding == "cash" %}
-                <p class="text-white text-center">{{ offerer.offerer_cash_details.get_cash_display }}</p>
+                <p class="text-white text-center">
+                    {{ offerer.offerer_cash_details.get_cash_display }}
+                </p>
             {% elif offerer.funding == "mortgage" %}
-                <p class="text-white text-center mb-0">Deposit %: {{ offerer.offerer_mortgage_details.deposit_percentage }}</p>
-                <p class="text-white text-center mb-0">Verified: {{ offerer.offerer_mortgage_details.verified }} ({{ offerer.offerer_mortgage_details.get_verified_status_display }})</p>
+                <p class="text-white text-center mb-0">
+                    Deposit: {{ offerer.offerer_mortgage_details.deposit_percentage }}%
+                </p>
+                <p class="text-white text-center mb-0">
+                    Verified: {{ offerer.offerer_mortgage_details.verified }} ({{ offerer.offerer_mortgage_details.get_verified_status_display }})
+                </p>
+            {% endif %}
+            {% if offerer.status is not none %}
+                <p class="text-white text-center mb-0">
+                    <strong>
+                    Status:
+                    </strong>
+                </p>
+                <p class="text-white text-center">{{ offerer.get_status_display }}</p>
             {% endif %}
         </div>
         {% for instance in offers %}
@@ -32,15 +46,50 @@
                         </div>
                         <div class="col-6">
                             {% if instance.status == "getting_verified" %}
-                                <h4><span class="badge badge-warning-lighten">
+                                <h4>
+                                    <span 
+                                        class="pointer badge badge-warning-lighten js-edit-offer-status"
+                                        data-url="{% url 'properties:edit_offer_status' instance.id %}"
+                                        data-toggle="tooltip"
+                                        data-placement="top"
+                                        title="Edit Offer Status"
+                                    >
                             {% elif instance.status == "negotiating" %}
-                                <h4><span class="badge badge-info-lighten">
+                                <h4>
+                                    <span
+                                        class="pointer badge badge-info-lighten js-edit-offer-status"
+                                        data-url="{% url 'properties:edit_offer_status' instance.id %}"
+                                        data-toggle="tooltip"
+                                        data-placement="top"
+                                        title="Edit Offer Status"
+                                    >
                             {% elif instance.status == "rejected" %}
-                                <h4><span class="badge badge-danger-lighten">
+                                <h4>
+                                    <span
+                                        class="pointer badge badge-danger-lighten js-edit-offer-status"
+                                        data-url="{% url 'properties:edit_offer_status' instance.id %}"
+                                        data-toggle="tooltip"
+                                        data-placement="top"
+                                        title="Edit Offer Status"
+                                    >
                             {% elif instance.status == "accepted" %}
-                                <h4><span class="badge badge-success-lighten">
+                                <h4>
+                                    <span
+                                        class="pointer badge badge-success-lighten js-edit-offer-status"
+                                        data-url="{% url 'properties:edit_offer_status' instance.id %}"
+                                        data-toggle="tooltip"
+                                        data-placement="top"
+                                        title="Edit Offer Status"
+                                    >
                             {% elif instance.status == "withdrawn" %}
-                                <h4><span class="badge badge-secondary-lighten">
+                                <h4>
+                                    <span
+                                        class="pointer badge badge-secondary-lighten js-edit-offer-status"
+                                        data-url="{% url 'properties:edit_offer_status' instance.id %}"
+                                        data-toggle="tooltip"
+                                        data-placement="top"
+                                        title="Edit Offer Status"
+                                    >
                             {% endif %}
                                 {{ instance.get_status_display }}</span></h4>
                         </div>

@@ -455,6 +455,7 @@ $(document).ready(function () {
     });
 
     $("#base-static-modal").on("click", ".js-reload", function () {
+        $('#modal-overlay').fadeToggle(100);
         location.reload();
     });
 
@@ -511,6 +512,7 @@ $(document).ready(function () {
     $(".js-edit-offerer-cash").on("click", loadFormBaseModal);
     $(".js-edit-offerer-mortgage").on("click", loadFormBaseModal);
     $(".js-edit-offer-status").on("click", loadFormBaseModal);
+    $("#base-modal").on("click", ".js-edit-offer-status", loadFormBaseModal);
     
     $("#tbody-history").on("click", ".js-show-notes", loadFormBaseModal);
     $("#tbody-offers").on("click", ".js-show-offers", loadFormBaseModal);
