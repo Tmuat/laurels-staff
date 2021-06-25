@@ -3,34 +3,34 @@
     data-url="{% url 'properties:add_valuation' propertyprocess.id %}" data-toggle="tooltip"
     data-placement="top"
     title="Valuation"
-    class="btn {% if propertyprocess.macro_status != 1 %}btn-secondary" disabled{% else %}btn-info js-add-valuation"{% endif %}>
+    class="mb-1 btn {% if propertyprocess.macro_status != 1 %}btn-secondary" disabled{% else %}btn-info js-add-valuation"{% endif %}>
         <i class="mdi mdi-clipboard-file-outline"></i>
 </button>
 <button 
     data-url="{% url 'properties:add_instruction' propertyprocess.id %}" data-toggle="tooltip"
     data-placement="top"
     title="Instruction"
-    class="btn {% if propertyprocess.macro_status != 2 %}btn-secondary" disabled{% else %}btn-info js-add-instruction"{% endif %}>
+    class="mb-1 btn {% if propertyprocess.macro_status != 2 %}btn-secondary" disabled{% else %}btn-info js-add-instruction"{% endif %}>
         <i class="mdi mdi-clipboard-text-outline"></i>
 </button>
 <button 
     data-url="{% url 'properties:add_reduction' propertyprocess.id %}" data-toggle="tooltip"
     data-placement="top"
     title="Reduction"
-    class="btn {% if propertyprocess.macro_status != 3 %}btn-secondary" disabled{% else %}btn-info js-add-reduction"{% endif %}>
+    class="mb-1 btn {% if propertyprocess.macro_status != 3 %}btn-secondary" disabled{% else %}btn-info js-add-reduction"{% endif %}>
         <i class="mdi mdi-cash-minus"></i>
 </button>
 <button 
     data-url="{% url 'properties:add_offerer' propertyprocess.id %}" data-toggle="tooltip"
     data-placement="top"
     title="Add Offer"
-    class="btn {% if propertyprocess.macro_status != 3 %}btn-secondary" disabled{% else %}btn-info js-add-offerer"{% endif %}>
+    class="mb-1 btn {% if propertyprocess.macro_status != 3 %}btn-secondary" disabled{% else %}btn-info js-add-offerer"{% endif %}>
         <i class="mdi mdi-offer"></i>
 </button>
 <button 
     data-url="{% url 'properties:add_another_offer' propertyprocess.id %}" data-toggle="tooltip"
     data-placement="top"
     title="Change Offer"
-    class="btn {% if propertyprocess.macro_status != 3 %}btn-secondary" disabled{% else %}btn-info js-add-another-offer"{% endif %}>
+    class="mb-1 btn {% if propertyprocess.macro_status != 3 %}btn-secondary" disabled{% else %}btn-info js-add-another-offer"{% endif %}>
         <i class="mdi mdi-piggy-bank"></i>
 </button>
