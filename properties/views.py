@@ -1147,7 +1147,16 @@ def add_another_offer(request, propertyprocess_id):
             data["form_is_valid"] = False
 
     else:
-        form = AnotherOfferForm(initial={"date": datetime.date.today})
+        if "id" in request.GET:
+            offerer_id = request.GET["id"]
+            offerer = get_object_or_404(OffererDetails, id=offerer_id)
+            form = AnotherOfferForm(initial={
+                "date": datetime.date.today,
+                "offerer_details": offerer,
+            })
+        else:
+            form = AnotherOfferForm(initial={"date": datetime.date.today,})
+
         form.fields[
             "offerer_details"
         ].queryset = OffererDetails.objects.filter(

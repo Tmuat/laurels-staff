@@ -27,7 +27,13 @@
             {% endif %}
         {% endif %}
     </td>
-    <td class="text-center">£{{ instance.offerdetails.first.offer|intcomma }}</td>
+    <td class="text-center">
+        £{{ instance.offerdetails.first.offer|intcomma }}
+        <span
+            class="mdi mdi-plus-box {% if propertyprocess.macro_status != 3 %}text-secondary" disabled{% else %}pointer text-success js-add-another-offer"{% endif %}
+            data-url="{% url 'properties:add_another_offer' propertyprocess.id %}?id={{ instance.id }}" 
+        ></span>
+    </td>
     <td class="text-center">
         {% if instance.offerdetails.first.status == "getting_verified" %}
             <span 
