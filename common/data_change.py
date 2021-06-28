@@ -75,6 +75,7 @@ propertychain_dict = None
 propertyfee_dict = None
 marketing_dict = None
 instruction_change_dict = None
+instruction_change_new_dict = None
 property_history_reduction_dict = None
 progress_notes_dict = None
 hub_dict = None
@@ -967,7 +968,7 @@ for instance in instruction_model:
     if instance["fields"]["agreement_type"] == "Sole":
         instance["fields"]["agreement_type"] = "sole"
 
-    elif instance["fields"]["agreement_type"] == "Mutli":
+    elif instance["fields"]["agreement_type"] == "Multi":
         instance["fields"]["agreement_type"] = "multi"
 
     # End change agreement_type
@@ -1939,6 +1940,7 @@ with open(
     instruction_change_model = json.load(json_data)
 
 withdrawn_but_active = []
+inst_change_dict = []
 
 print("Fee Change Properties:")
 for instance in instruction_change_model:
@@ -1958,6 +1960,9 @@ for instance in instruction_change_model:
     history_lettings_service_level_change = {}
     history_lettings_service_level_change_fields = {}
 
+    instruction_change = {}
+    instruction_change_fields = {}
+
     # Changing the model to new value
 
     history_withdrawn["model"] = "properties.propertyhistory"
@@ -1967,6 +1972,7 @@ for instance in instruction_change_model:
     history_lettings_service_level_change[
         "model"
     ] = "properties.propertyhistory"
+    instruction_change["model"] = "properties.instructionchange"
 
     # End changing the model to new value
 
@@ -1993,6 +1999,9 @@ for instance in instruction_change_model:
             history_lettings_service_level_change_fields[
                 "propertyprocess"
             ] = propertyprocess_instance["pk"]
+            instruction_change_fields[
+                "propertyprocess"
+            ] = propertyprocess_instance["pk"]
 
             history_withdrawn["old_pp_pk"] = instance["fields"][
                 "propertyprocess_link"
@@ -2009,6 +2018,9 @@ for instance in instruction_change_model:
             history_lettings_service_level_change["old_pp_pk"] = instance[
                 "fields"
             ]["propertyprocess_link"]
+            instruction_change["old_pp_pk"] = instance["fields"][
+                "propertyprocess_link"
+            ]
 
     # End loop
 
@@ -2040,6 +2052,13 @@ for instance in instruction_change_model:
         "updated"
     ] = "2000-01-13T13:13:13.000Z"
 
+    instruction_change_fields["created_by"] = "Admin"
+    instruction_change_fields["updated_by"] = "Admin"
+    instruction_change_fields["created"] = instance["fields"][
+        "instruction_change_date"
+    ]
+    instruction_change_fields["updated"] = "2000-01-13T13:13:13.000Z"
+
     # End add new fields
 
     # Property history fields
@@ -2051,6 +2070,10 @@ for instance in instruction_change_model:
     history_lettings_service_level_change_fields["type"] = "property_event"
 
     # End property history fields
+
+    instruction_change_fields["agreement_type_bool"] = False
+    instruction_change_fields["fee_agreed_bool"] = False
+    instruction_change_fields["length_of_contract_bool"] = False
 
     if instance["fields"]["withdrawn"] is True:
 
@@ -2103,18 +2126,12 @@ for instance in instruction_change_model:
 
     if instance["fields"]["agreement_type_change"] is not None:
 
-        for instruction_instance in instruction_dict:
-            if (
-                instruction_instance["old_pp_pk"]
-                == instance["fields"]["propertyprocess_link"]
-            ):
-                if (
-                    instance["fields"]["agreement_type_change"]
-                    == "Multi To Sole"
-                ):
-                    instruction_instance["fields"]["agreement_type"] = "sole"
-                else:
-                    instruction_instance["fields"]["agreement_type"] = "multi"
+        instruction_change_fields["agreement_type_bool"] = True
+
+        if instance["fields"]["agreement_type_change"] == "Multi To Sole":
+            instruction_change_fields["agreement_type"] = "multi_to_sole"
+        else:
+            instruction_change_fields["agreement_type"] = "sole_to_multi"
 
         # Property history fields
 
@@ -2144,6 +2161,12 @@ for instance in instruction_change_model:
         history_extra.append(history_agreement_type_change)
 
     if instance["fields"]["fee_agreed_change"] is not None:
+
+        instruction_change_fields["fee_agreed_bool"] = True
+
+        instruction_change_fields["fee_agreed"] = instance["fields"][
+            "fee_agreed_change"
+        ]
 
         # Property history fields
 
@@ -2245,6 +2268,12 @@ for instance in instruction_change_model:
 
         print("*****ALERT***** There is a length change *****ALERT*****")
 
+        instruction_change_fields["length_of_contract_bool"] = True
+
+        instruction_change_fields["length_of_contract"] = instance["fields"][
+            "length_of_contract_change"
+        ]
+
     if instance["fields"]["lettings_service_level_change"] is not None:
 
         # Property history fields
@@ -2340,6 +2369,21 @@ for instance in instruction_change_model:
 
         history_extra.append(history_lettings_service_level_change)
 
+    # Create new UUID field
+
+    instruction_change["pk"] = str(uuid.uuid4())
+
+    instruction_change["fields"] = instruction_change_fields
+
+    if (
+        instruction_change_fields["agreement_type_bool"] is True
+        or instruction_change_fields["fee_agreed_bool"] is True
+        or instruction_change_fields["length_of_contract_bool"] is True
+    ):
+        inst_change_dict.append(instruction_change)
+
+    # End create new UUID field
+
 print("")
 print("Withdrawn But Active, Properties:")
 for instance in withdrawn_but_active:
@@ -2347,6 +2391,7 @@ for instance in withdrawn_but_active:
 
 property_history_extra_dict = history_extra
 instruction_change_dict = instruction_change_model
+instruction_change_new_dict = inst_change_dict
 
 # ----------------------------------------
 # REDUCTION MODEL
@@ -2796,6 +2841,12 @@ with open(
 ) as json_data:
     json.dump(progress_notes_dict, json_data)
 
+with open(
+    "/workspace/laurels-staff/common/data_dump/new/instruction_change.json",
+    "w",
+) as json_data:
+    json.dump(instruction_change_new_dict, json_data)
+
 # ----------------------------------------
 # CREATE MASTER JSON
 # ----------------------------------------
@@ -2878,6 +2929,9 @@ for object in property_history_reduction_dict:
     master_dict.append(object)
 
 for object in progress_notes_dict:
+    master_dict.append(object)
+
+for object in instruction_change_new_dict:
     master_dict.append(object)
 
 with open(

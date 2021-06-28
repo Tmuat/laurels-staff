@@ -380,6 +380,73 @@ class Instruction(UpdatedAndCreated):
         return property_address
 
 
+class InstructionChange(UpdatedAndCreated):
+    class Meta:
+        ordering = [
+            "propertyprocess__property__postcode",
+            "propertyprocess__property__address_line_1",
+        ]
+        verbose_name = "Instruction Change"
+        verbose_name_plural = "Instruction Changes"
+
+    SOLE_TO_MULTI = "sole_to_multi"
+    MULTI_TO_SOLE = "multi_to_sole"
+
+    WEEKS16 = 16
+    WEEKS12 = 12
+    WEEKS10 = 10
+    WEEKS8 = 8
+    WEEKS6 = 6
+    WEEKS4 = 4
+
+    AGREEMENT_TYPE = [
+        (SOLE_TO_MULTI, "Sole To Multi"),
+        (MULTI_TO_SOLE, "Multi To Sole"),
+    ]
+
+    LENGTH_OF_CONTRACT = [
+        (WEEKS16, "16 Weeks"),
+        (WEEKS12, "12 Weeks"),
+        (WEEKS10, "10 Weeks"),
+        (WEEKS8, "8 Weeks"),
+        (WEEKS6, "6 Weeks"),
+        (WEEKS4, "4 Weeks (Multi Only)"),
+    ]
+
+    propertyprocess = models.OneToOneField(
+        PropertyProcess,
+        on_delete=models.CASCADE,
+        related_name="instruction_change",
+    )
+    agreement_type_bool = models.BooleanField(default=False)
+    agreement_type = models.CharField(max_length=15, choices=AGREEMENT_TYPE)
+    fee_agreed_bool = models.BooleanField(default=False)
+    fee_agreed = models.DecimalField(
+        max_digits=5, decimal_places=2, null=True, blank=False
+    )
+    length_of_contract_bool = models.BooleanField(default=False)
+    length_of_contract = models.IntegerField(
+        null=True, blank=False, choices=LENGTH_OF_CONTRACT
+    )
+
+    def __str__(self):
+        if (
+            self.propertyprocess.property.address_line_2 == ""
+            or self.propertyprocess.property.address_line_2 == None
+        ):
+            property_address = "%s, %s" % (
+                self.propertyprocess.property.postcode,
+                self.propertyprocess.property.address_line_1,
+            )
+        else:
+            property_address = "%s, %s, %s" % (
+                self.propertyprocess.property.postcode,
+                self.propertyprocess.property.address_line_1,
+                self.propertyprocess.property.address_line_2,
+            )
+        return property_address
+
+
 class InstructionLettingsExtra(UpdatedAndCreated):
     class Meta:
         ordering = [

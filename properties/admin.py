@@ -6,6 +6,7 @@ from properties.models import (
     PropertyHistory,
     Valuation,
     Instruction,
+    InstructionChange,
     InstructionLettingsExtra,
     OffererDetails,
     OffererMortgage,
@@ -84,6 +85,16 @@ class ValuationAdminInline(admin.TabularInline):
 
 class InstructionAdminInline(admin.TabularInline):
     model = Instruction
+    readonly_fields = [
+        "created",
+        "created_by",
+        "updated",
+        "updated_by",
+    ]
+
+
+class InstructionChangeAdminInline(admin.TabularInline):
+    model = InstructionChange
     readonly_fields = [
         "created",
         "created_by",
@@ -201,6 +212,7 @@ class PropertyProcessAdmin(admin.ModelAdmin):
         PropertyHistoryAdminInline,
         ValuationAdminInline,
         InstructionAdminInline,
+        InstructionChangeAdminInline,
         InstructionLettingsExtraAdminInline,
         OffererDetailsAdminInline,
         OfferAdminInline,
