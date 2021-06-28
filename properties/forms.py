@@ -5,6 +5,7 @@ from properties.models import (
     PropertyProcess,
     Valuation,
     Instruction,
+    InstructionChange,
     Marketing,
     PropertyHistory,
     PropertyFees,
@@ -256,7 +257,7 @@ class OffererForm(forms.ModelForm):
             "full_name": "Full Name/s",
             "completed_offer_form": "Completed Offer Form?",
             "funding": "Funding Type",
-            "status": "Status"
+            "status": "Status",
         }
 
         for field in self.fields:
@@ -366,6 +367,27 @@ class AnotherOfferForm(forms.ModelForm):
         }
 
         self.fields["date"].widget = DateInput()
+
+        for field in self.fields:
+            label = f"{labels[field]}"
+            self.fields[field].label = label
+
+
+class InstructionChangeForm(forms.ModelForm):
+    class Meta:
+        model = InstructionChange
+        fields = ("agreement_type", "fee_agreed", "length_of_contract")
+
+    def __init__(self, *args, **kwargs):
+        """
+        Add new labels and order foreign key field
+        """
+        super().__init__(*args, **kwargs)
+        labels = {
+            "agreement_type": "Agreement Type Change",
+            "fee_agreed": "Fee Agreed Change",
+            "length_of_contract": "Length of Contract Change",
+        }
 
         for field in self.fields:
             label = f"{labels[field]}"

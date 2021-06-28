@@ -389,9 +389,6 @@ class InstructionChange(UpdatedAndCreated):
         verbose_name = "Instruction Change"
         verbose_name_plural = "Instruction Changes"
 
-    SOLE_TO_MULTI = "sole_to_multi"
-    MULTI_TO_SOLE = "multi_to_sole"
-
     WEEKS16 = 16
     WEEKS12 = 12
     WEEKS10 = 10
@@ -400,8 +397,8 @@ class InstructionChange(UpdatedAndCreated):
     WEEKS4 = 4
 
     AGREEMENT_TYPE = [
-        (SOLE_TO_MULTI, "Sole To Multi"),
-        (MULTI_TO_SOLE, "Multi To Sole"),
+        (Instruction.MULTI, "Multi"),
+        (Instruction.SOLE, "Sole"),
     ]
 
     LENGTH_OF_CONTRACT = [

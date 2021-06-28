@@ -1,6 +1,25 @@
 {% load humanize %}
-<h5 class="text-uppercase text-center text-sm-left"><i class="mdi mdi-clipboard-text-outline mr-1"></i>
-    Property Instruction</h5>
+<h5 class="text-uppercase text-center text-sm-left"><i class="mdi mdi-briefcase-check-outline mr-1"></i>
+    Property Instruction
+    {% if propertyprocess.macro_status > 2 %}
+    <span
+        {% if propertyprocess.instruction_change %}
+            data-url="{% url 'properties:edit_instruction_change' propertyprocess.instruction_change.id %}"
+        {% else %}
+            data-url="{% url 'properties:edit_instruction' propertyprocess.id %}"
+        {% endif %}
+        class="ml-2 mdi mdi-briefcase-edit-outline 
+        {% if propertyprocess.macro_status != 3 %}
+        text-secondary" disabled
+        {% else %}
+        pointer text-warning js-change-instruction" 
+        data-toggle="tooltip"
+        data-placement="top"
+        title="Change Instruction"
+        {% endif %}
+    ></span>
+    {% endif %}
+</h5>
 
 {% if propertyprocess.macro_status == 2 %}
 <div class="text-center mt-2">
@@ -19,19 +38,34 @@
         </div>
         <div class="col-6 col-md-4 text-center">
             <p class="mb-1"><strong>Listing Price:</strong></p>
-            <p><span>£{{ propertyprocess.instruction.listing_price|intcomma }}</span></p>
+                <p class="mb-0"><span>£{{ propertyprocess.instruction.listing_price|intcomma }}</span></p>
         </div>
         <div class="col-6 col-md-4 text-center">
             <p class="mb-1"><strong>Fee Agreed:</strong></p>
-            <p><span>{{ propertyprocess.instruction.fee_agreed }}%</span></p>
+            {% if propertyprocess.instruction_change.fee_agreed_bool %}
+                <p class="mb-0"><span><s>{{ propertyprocess.instruction.fee_agreed }}%</s></span></p>
+                <p><span>{{ propertyprocess.instruction_change.fee_agreed }}%</span></p>
+            {% else %}
+                <p><span>{{ propertyprocess.instruction.fee_agreed }}%</span></p>
+            {% endif %}
         </div>
         <div class="col-6 col-md-4 text-center">
             <p class="mb-1"><strong>Agreement Type:</strong></p>
-            <p><span>{{ propertyprocess.instruction.get_agreement_type_display }}</span></p>
+            {% if propertyprocess.instruction_change.agreement_type_bool %}
+                <p class="mb-0"><span><s>{{ propertyprocess.instruction.get_agreement_type_display }}</s></span></p>
+                <p><span>{{ propertyprocess.instruction_change.get_agreement_type_display }}</span></p>
+            {% else %}
+                <p><span>{{ propertyprocess.instruction.get_agreement_type_display }}</span></p>
+            {% endif %}
         </div>
         <div class="col-6 col-md-4 text-center">
             <p class="mb-1"><strong>Length of Contract:</strong></p>
-            <p><span>{{ propertyprocess.instruction.get_length_of_contract_display }}</span></p>
+            {% if propertyprocess.instruction_change.length_of_contract_bool %}
+                <p class="mb-0"><span><s>{{ propertyprocess.instruction.get_length_of_contract_display }}</s></span></p>
+                <p><span>{{ propertyprocess.instruction_change.get_length_of_contract_display }}</span></p>
+            {% else %}
+                <p><span>{{ propertyprocess.instruction.get_length_of_contract_display }}</span></p>
+            {% endif %}
         </div>
         <div class="col-6 col-md-4 text-center">
             <p class="mb-1"><strong>Marketing Board:</strong></p>

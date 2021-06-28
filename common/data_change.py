@@ -2129,9 +2129,9 @@ for instance in instruction_change_model:
         instruction_change_fields["agreement_type_bool"] = True
 
         if instance["fields"]["agreement_type_change"] == "Multi To Sole":
-            instruction_change_fields["agreement_type"] = "multi_to_sole"
+            instruction_change_fields["agreement_type"] = "sole"
         else:
-            instruction_change_fields["agreement_type"] = "sole_to_multi"
+            instruction_change_fields["agreement_type"] = "multi"
 
         # Property history fields
 

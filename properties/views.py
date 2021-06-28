@@ -2,6 +2,7 @@ import datetime
 import humanize
 
 from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from django.http import JsonResponse
@@ -26,12 +27,15 @@ from properties.forms import (
     OfferForm,
     AnotherOfferForm,
     OfferStatusForm,
+    InstructionChangeForm,
 )
 from properties.models import (
     Property,
     PropertyProcess,
     PropertyFees,
     PropertyHistory,
+    Instruction,
+    InstructionChange,
     Offer,
     OffererDetails,
     OffererCash,
@@ -1062,9 +1066,7 @@ def add_offer(request, propertyprocess_id, offerer_id):
             data["form_is_valid"] = False
 
     else:
-        form = OfferForm(
-            initial={"date": datetime.date.today}
-        )
+        form = OfferForm(initial={"date": datetime.date.today})
 
     context = {
         "form": form,
@@ -1104,7 +1106,10 @@ def add_another_offer(request, propertyprocess_id):
             )
 
             for offer in offerer_offers:
-                if offer.status == Offer.GETTINGVERIFIED or offer.status == Offer.NEGOTIATING:
+                if (
+                    offer.status == Offer.GETTINGVERIFIED
+                    or offer.status == Offer.NEGOTIATING
+                ):
                     offer.status = Offer.REJECTED
                     offer.updated_by = request.user.get_full_name()
                 offer.save()
@@ -1150,12 +1155,18 @@ def add_another_offer(request, propertyprocess_id):
         if "id" in request.GET:
             offerer_id = request.GET["id"]
             offerer = get_object_or_404(OffererDetails, id=offerer_id)
-            form = AnotherOfferForm(initial={
-                "date": datetime.date.today,
-                "offerer_details": offerer,
-            })
+            form = AnotherOfferForm(
+                initial={
+                    "date": datetime.date.today,
+                    "offerer_details": offerer,
+                }
+            )
         else:
-            form = AnotherOfferForm(initial={"date": datetime.date.today,})
+            form = AnotherOfferForm(
+                initial={
+                    "date": datetime.date.today,
+                }
+            )
 
         form.fields[
             "offerer_details"
@@ -1183,11 +1194,15 @@ def edit_offerer_cash(request, offerer_id):
     data = dict()
 
     offerer = get_object_or_404(OffererDetails, id=offerer_id)
-    property_process = get_object_or_404(PropertyProcess, id=offerer.propertyprocess.id)
+    property_process = get_object_or_404(
+        PropertyProcess, id=offerer.propertyprocess.id
+    )
     old_choice = offerer.offerer_cash_details.cash
 
     if request.method == "POST":
-        form = OffererCashForm(request.POST, instance=offerer.offerer_cash_details)
+        form = OffererCashForm(
+            request.POST, instance=offerer.offerer_cash_details
+        )
         if form.is_valid():
             instance = form.save(commit=False)
 
@@ -1255,12 +1270,16 @@ def edit_offerer_mortgage(request, offerer_id):
     data = dict()
 
     offerer = get_object_or_404(OffererDetails, id=offerer_id)
-    property_process = get_object_or_404(PropertyProcess, id=offerer.propertyprocess.id)
+    property_process = get_object_or_404(
+        PropertyProcess, id=offerer.propertyprocess.id
+    )
     old_deposit = offerer.offerer_mortgage_details.deposit_percentage
     old_verified = offerer.offerer_mortgage_details.verified_status
 
     if request.method == "POST":
-        form = OffererMortgageForm(request.POST, instance=offerer.offerer_mortgage_details)
+        form = OffererMortgageForm(
+            request.POST, instance=offerer.offerer_mortgage_details
+        )
         if form.is_valid():
             instance = form.save(commit=False)
 
@@ -1348,7 +1367,9 @@ def edit_offer_status(request, offer_id):
     data = dict()
 
     offer = get_object_or_404(Offer, id=offer_id)
-    property_process = get_object_or_404(PropertyProcess, id=offer.propertyprocess.id)
+    property_process = get_object_or_404(
+        PropertyProcess, id=offer.propertyprocess.id
+    )
     old_status = offer.status
 
     if request.method == "POST":
@@ -1407,6 +1428,285 @@ def edit_offer_status(request, offer_id):
     }
     data["html_modal"] = render_to_string(
         "properties/stages/edit_offer_status_modal.html",
+        context,
+        request=request,
+    )
+    return JsonResponse(data)
+
+
+def edit_instruction(request, propertyprocess_id):
+    """
+    Ajax URL for editing an instruction.
+    """
+
+    data = dict()
+
+    property_process = get_object_or_404(
+        PropertyProcess, id=propertyprocess_id
+    )
+    instruction = get_object_or_404(
+        Instruction, propertyprocess=property_process.id
+    )
+    property_fee = PropertyFees.objects.filter(
+        propertyprocess=property_process.id
+    ).first()
+
+    url = reverse(
+        "properties:edit_instruction",
+        kwargs={
+            "propertyprocess_id": property_process.id,
+        },
+    )
+
+    if request.method == "POST":
+        form = InstructionChangeForm(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+
+            new_agreement_type = form.cleaned_data["agreement_type"]
+            new_fee_agreed = form.cleaned_data["fee_agreed"]
+            new_length_of_contract = int(
+                form.cleaned_data["length_of_contract"]
+            )
+
+            instance.created_by = request.user.get_full_name()
+            instance.propertyprocess = property_process
+
+            for choice in Instruction.AGREEMENT_TYPE:
+                if choice[0] == instruction.agreement_type:
+                    old_agreement_type = choice[1]
+                if choice[0] == new_agreement_type:
+                    new_agreement_type = choice[1]
+
+            for choice in Instruction.LENGTH_OF_CONTRACT:
+                if choice[0] == instruction.length_of_contract:
+                    old_length_of_contract = choice[1]
+                if choice[0] == new_length_of_contract:
+                    new_length_of_contract = choice[1]
+
+            agreement_type_notes = ""
+            if new_agreement_type != old_agreement_type:
+                agreement_type_notes = (
+                    "The instructed agreement type"
+                    f" has changed from {old_agreement_type}"
+                    f" to {new_agreement_type}. "
+                )
+                instance.agreement_type_bool = True
+
+            fee_notes = ""
+            if new_fee_agreed != instruction.fee_agreed:
+                fee_notes = (
+                    "The instructed fee has changed "
+                    f"from {instruction.fee_agreed}%"
+                    f" to {new_fee_agreed}%. "
+                )
+                instance.fee_agreed_bool = True
+                PropertyFees.objects.create(
+                    propertyprocess=property_process,
+                    fee=new_fee_agreed,
+                    price=property_fee.price,
+                    date=datetime.date.today(),
+                    created_by=request.user.get_full_name(),
+                    updated_by=request.user.get_full_name(),
+                )
+
+            length_of_contract_notes = ""
+            if new_length_of_contract != old_length_of_contract:
+                length_of_contract_notes = (
+                    "The instructed length of contract "
+                    f"has changed from {old_length_of_contract}"
+                    f" to {new_length_of_contract}. "
+                )
+                instance.length_of_contract_bool = True
+
+            instance.updated_by = request.user.get_full_name()
+
+            instance.save()
+
+            history_description = (
+                f"{request.user.get_full_name()} has changed the Instruction."
+            )
+
+            notes = agreement_type_notes + fee_notes + length_of_contract_notes
+
+            history = PropertyHistory.objects.create(
+                propertyprocess=property_process,
+                type=PropertyHistory.PROPERTY_EVENT,
+                description=history_description,
+                notes=notes,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
+
+            data["form_is_valid"] = True
+            context = {
+                "property_process": property_process,
+                "history": history,
+            }
+            data["html_success"] = render_to_string(
+                "properties/stages/includes/form_success.html",
+                context,
+                request=request,
+            )
+        else:
+            data["form_is_valid"] = False
+    else:
+        agreement_type = instruction.agreement_type
+        fee_agreed = instruction.fee_agreed
+        length_of_contract = instruction.length_of_contract
+
+        form = InstructionChangeForm(
+            initial={
+                "agreement_type": agreement_type,
+                "fee_agreed": fee_agreed,
+                "length_of_contract": length_of_contract,
+            }
+        )
+
+    context = {
+        "form": form,
+        "url": url,
+    }
+    data["html_modal"] = render_to_string(
+        "properties/stages/edit_instruction_modal.html",
+        context,
+        request=request,
+    )
+    return JsonResponse(data)
+
+
+def edit_instruction_change(request, instruction_change_id):
+    """
+    Ajax URL for editing an instruction.
+    """
+
+    data = dict()
+
+    instruction_change = get_object_or_404(
+        InstructionChange, id=instruction_change_id
+    )
+
+    property_process = get_object_or_404(
+        PropertyProcess, id=instruction_change.propertyprocess.id
+    )
+
+    property_fee = PropertyFees.objects.filter(
+        propertyprocess=property_process.id
+    ).first()
+
+    url = reverse(
+        "properties:edit_instruction_change",
+        kwargs={
+            "instruction_change_id": instruction_change.id,
+        },
+    )
+
+    for choice in Instruction.AGREEMENT_TYPE:
+        if choice[0] == instruction_change.agreement_type:
+            old_agreement_type = choice[1]
+
+    for choice in Instruction.LENGTH_OF_CONTRACT:
+        if choice[0] == instruction_change.length_of_contract:
+            old_length_of_contract = choice[1]
+
+    old_fee = instruction_change.fee_agreed
+
+    if request.method == "POST":
+        form = InstructionChangeForm(request.POST, instance=instruction_change)
+        if form.is_valid():
+            instance = form.save(commit=False)
+
+            new_agreement_type = form.cleaned_data["agreement_type"]
+            new_fee_agreed = form.cleaned_data["fee_agreed"]
+            new_length_of_contract = int(
+                form.cleaned_data["length_of_contract"]
+            )
+
+            for choice in Instruction.AGREEMENT_TYPE:
+                if choice[0] == new_agreement_type:
+                    new_agreement_type = choice[1]
+
+            for choice in Instruction.LENGTH_OF_CONTRACT:
+                if choice[0] == new_length_of_contract:
+                    new_length_of_contract = choice[1]
+
+            agreement_type_notes = ""
+            if new_agreement_type != old_agreement_type:
+                agreement_type_notes = (
+                    "The instructed agreement type"
+                    f" has changed from {old_agreement_type}"
+                    f" to {new_agreement_type}. "
+                )
+                instance.agreement_type_bool = True
+
+            fee_notes = ""
+            if new_fee_agreed != old_fee:
+                fee_notes = (
+                    "The instructed fee has changed "
+                    f"from {old_fee}%"
+                    f" to {new_fee_agreed}%. "
+                )
+                instance.fee_agreed_bool = True
+                PropertyFees.objects.create(
+                    propertyprocess=property_process,
+                    fee=new_fee_agreed,
+                    price=property_fee.price,
+                    date=datetime.date.today(),
+                    created_by=request.user.get_full_name(),
+                    updated_by=request.user.get_full_name(),
+                )
+
+            length_of_contract_notes = ""
+            if new_length_of_contract != old_length_of_contract:
+                length_of_contract_notes = (
+                    "The instructed length of contract "
+                    f"has changed from {old_length_of_contract}"
+                    f" to {new_length_of_contract}. "
+                )
+                instance.length_of_contract_bool = True
+
+            instance.updated_by = request.user.get_full_name()
+
+            instance.save()
+
+            history_description = (
+                f"{request.user.get_full_name()} has changed the Instruction."
+            )
+
+            notes = agreement_type_notes + fee_notes + length_of_contract_notes
+
+            history = PropertyHistory.objects.create(
+                propertyprocess=property_process,
+                type=PropertyHistory.PROPERTY_EVENT,
+                description=history_description,
+                notes=notes,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
+
+            data["form_is_valid"] = True
+            context = {
+                "property_process": property_process,
+                "history": history,
+            }
+            data["html_success"] = render_to_string(
+                "properties/stages/includes/form_success.html",
+                context,
+                request=request,
+            )
+        else:
+            data["form_is_valid"] = False
+    else:
+        form = InstructionChangeForm(
+            instance=instruction_change,
+        )
+
+    context = {
+        "form": form,
+        "url": url,
+    }
+    data["html_modal"] = render_to_string(
+        "properties/stages/edit_instruction_modal.html",
         context,
         request=request,
     )
