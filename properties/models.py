@@ -6,6 +6,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.dispatch import receiver
 from django.db.models.signals import pre_save
+from django.http import HttpResponse
 from django.template.loader import render_to_string
 
 from common.models import UpdatedAndCreated
@@ -193,6 +194,36 @@ class PropertyProcess(UpdatedAndCreated):
         )
         subject = f"Withdrawal: {self.__str__}"
         body = render_to_string("properties/emails/withdrawal.txt", context)
+
+        try:
+            send_mail(
+                subject=subject,
+                message=body,
+                from_email=f'"Laurels Auto Emails" <{no_reply_email}>',
+                recipient_list=[
+                    admin_email,
+                ],
+                fail_silently=False,
+            )
+        except BadHeaderError:
+            return HttpResponse("Invalid header found.")
+
+    def send_back_on_market_mail(self, request, **kwargs):
+        no_reply_email = settings.NO_REPLY_EMAIL
+        admin_email = settings.ADMIN_EMAIL
+        context = kwargs
+        context.update(
+            {
+                "marketing_board": self.instruction.marketing_board,
+                "address": self.__str__,
+                "hub": self.hub,
+                "employee": self.employee,
+            }
+        )
+        subject = f"Back On The Market: {self.__str__}"
+        body = render_to_string(
+            "properties/emails/back_on_market.txt", context
+        )
 
         try:
             send_mail(

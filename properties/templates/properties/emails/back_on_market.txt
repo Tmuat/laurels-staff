@@ -1,0 +1,22 @@
+{% autoescape off %}
+Hello,
+
+A property has been put back on the market: 
+
+{{ address }}
+
+The property consultant and hub are: 
+
+Hub - {{ hub }}
+Employee - {{ employee }}
+{% if marketing_board %}
+The client had previously opted IN for a marketing board.
+{% else %}
+The client had previously opted OUT of a marketing board.
+{% endif %}
+Sincerely,
+The Laurels Website Team
+
+Note. This email was sent from a notification-only address that does not accept incoming emails. Please do not reply to this message.
+
+{% endautoescape %}

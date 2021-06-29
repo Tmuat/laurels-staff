@@ -1745,6 +1745,7 @@ def withdraw_property(request, propertyprocess_id):
                     created_by=request.user.get_full_name(),
                     updated_by=request.user.get_full_name(),
                 )
+                Deal.objects.get(propertyprocess=property_process).delete()
 
             property_process.macro_status = PropertyProcess.WITHDRAWN
             property_process.save()
@@ -1838,6 +1839,8 @@ def back_on_the_market(request, propertyprocess_id):
                 created_by=request.user.get_full_name(),
                 updated_by=request.user.get_full_name(),
             )
+
+            property_process.send_back_on_market_mail(request)
 
             context = {
                 "property_process": property_process,
