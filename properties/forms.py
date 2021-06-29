@@ -396,15 +396,15 @@ class InstructionChangeForm(forms.ModelForm):
 
 class WithdrawalForm(forms.Form):
 
-    NO_LONGER_MOVING = 'no_longer_moving'
-    OTHER_LAURELS_SUCCESS = 'other_laurels_success'
-    OTHER_AGENT = 'other_agent'
-    SOLD_OTHER_AGENT = 'sold_other_agent'
+    NO_LONGER_MOVING = "no_longer_moving"
+    OTHER_LAURELS_SUCCESS = "other_laurels_success"
+    OTHER_AGENT = "other_agent"
+    SOLD_OTHER_AGENT = "sold_other_agent"
 
     WITHDRAWN_REASON = (
-        (NO_LONGER_MOVING, 'No Longer Moving'),
-        (OTHER_LAURELS_SUCCESS, 'Other Laurels Success'),
-        (OTHER_AGENT, 'Going On The Market With Other Agent'),
-        (SOLD_OTHER_AGENT, 'Sold With Other Agent (Multi-Only)'),
+        (NO_LONGER_MOVING, "No Longer Moving"),
+        (OTHER_LAURELS_SUCCESS, "Other Laurels Success"),
+        (OTHER_AGENT, "Going On The Market With Other Agent"),
+        (SOLD_OTHER_AGENT, "Sold With Other Agent (Multi-Only)"),
     )
     withdrawal_reason = forms.ChoiceField(choices=WITHDRAWN_REASON)

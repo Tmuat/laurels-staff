@@ -192,9 +192,7 @@ class PropertyProcess(UpdatedAndCreated):
             }
         )
         subject = f"Withdrawal: {self.__str__}"
-        body = render_to_string(
-            "properties/emails/withdrawal.txt", context
-        )
+        body = render_to_string("properties/emails/withdrawal.txt", context)
 
         try:
             send_mail(

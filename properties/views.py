@@ -1727,7 +1727,7 @@ def withdraw_property(request, propertyprocess_id):
     if request.method == "POST":
         form = WithdrawalForm(request.POST)
         if form.is_valid():
-            reason = form.cleaned_data['withdrawal_reason']
+            reason = form.cleaned_data["withdrawal_reason"]
 
             property_process.macro_status = PropertyProcess.WITHDRAWN
             property_process.save()
@@ -1739,14 +1739,14 @@ def withdraw_property(request, propertyprocess_id):
             for withdrawal_reason in WithdrawalForm.WITHDRAWN_REASON:
                 if withdrawal_reason[0] == reason:
                     reason = withdrawal_reason[1]
-            
+
             history_notes = reason
 
             for offer in property_process.offer.all():
                 if (
-                    offer.status == Offer.GETTINGVERIFIED or
-                    offer.status == Offer.NEGOTIATING or
-                    offer.status == Offer.ACCEPTED
+                    offer.status == Offer.GETTINGVERIFIED
+                    or offer.status == Offer.NEGOTIATING
+                    or offer.status == Offer.ACCEPTED
                 ):
                     offer.status = Offer.REJECTED
 
