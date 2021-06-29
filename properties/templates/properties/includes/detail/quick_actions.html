@@ -38,6 +38,6 @@
     data-url="{% url 'properties:withdraw_property' propertyprocess.id %}" data-toggle="tooltip"
     data-placement="top"
     title="Withdraw"
-    class="mb-1 btn {% if propertyprocess.macro_status != 3 %}btn-secondary" disabled{% else %}btn-info js-withdraw"{% endif %}>
+    class="mb-1 btn {% if propertyprocess.macro_status == 3 or propertyprocess.macro_status == 4 %}btn-info js-withdraw"{% else %}btn-secondary" disabled{% endif %}>
         <i class="mdi mdi-alert-octagon"></i>
 </button>
