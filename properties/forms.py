@@ -414,3 +414,11 @@ class WithdrawalForm(forms.Form):
         label=('Withdrawal Date'),
         widget=DateInput(),
     )
+
+
+class DateForm(forms.Form):
+
+    date = forms.DateField(
+        label=('Date'),
+        widget=DateInput(),
+    )

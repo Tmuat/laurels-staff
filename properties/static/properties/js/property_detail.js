@@ -533,6 +533,7 @@ $(document).ready(function () {
     $("#base-modal").on("click", ".js-edit-offer-status", loadFormBaseModal);
     $(".js-change-instruction").on("click", loadFormBaseModal);
     $(".js-withdraw").on("click", loadFormBaseModal);
+    $(".js-back-on-market").on("click", loadFormBaseModal);
     
     $("#tbody-history").on("click", ".js-show-notes", loadFormBaseModal);
     $("#tbody-offers").on("click", ".js-show-offers", loadFormBaseModal);
@@ -548,4 +549,5 @@ $(document).ready(function () {
     $("#base-modal").on("submit", ".js-edit-offer-status-form", submitFormAndLoadSuccess);
     $("#base-modal").on("submit", ".js-edit-instruction-form", submitFormAndLoadSuccess);
     $("#base-modal").on("submit", ".js-withdraw-form", submitFormAndLoadSuccess);
+    $("#base-modal").on("submit", ".js-back-on-the-market-form", submitFormAndLoadSuccess);
 });

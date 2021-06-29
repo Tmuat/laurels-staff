@@ -34,10 +34,20 @@
     class="mb-1 btn {% if propertyprocess.macro_status != 3 %}btn-secondary" disabled{% else %}btn-info js-add-another-offer"{% endif %}>
         <i class="mdi mdi-piggy-bank"></i>
 </button>
-<button 
-    data-url="{% url 'properties:withdraw_property' propertyprocess.id %}" data-toggle="tooltip"
-    data-placement="top"
-    title="Withdraw"
-    class="mb-1 btn {% if propertyprocess.macro_status == 3 or propertyprocess.macro_status == 4 %}btn-info js-withdraw"{% else %}btn-secondary" disabled{% endif %}>
-        <i class="mdi mdi-alert-octagon"></i>
-</button>
+{% if propertyprocess.macro_status == 3 or propertyprocess.macro_status == 4 %}
+    <button 
+        data-url="{% url 'properties:withdraw_property' propertyprocess.id %}" data-toggle="tooltip"
+        data-placement="top"
+        title="Withdraw"
+        class="mb-1 btn {% if propertyprocess.macro_status == 3 or propertyprocess.macro_status == 4 %}btn-info js-withdraw"{% else %}btn-secondary" disabled{% endif %}>
+            <i class="mdi mdi-alert-octagon"></i>
+    </button>
+{% elif propertyprocess.macro_status == 0 %}
+    <button 
+        data-url="{% url 'properties:back_on_the_market' propertyprocess.id %}" data-toggle="tooltip"
+        data-placement="top"
+        title="Back On The Market"
+        class="mb-1 btn btn-info js-back-on-market">
+        <i class="mdi mdi-home-plus"></i>
+    </button>
+{% endif %}

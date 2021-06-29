@@ -28,6 +28,7 @@ from properties.forms import (
     OfferStatusForm,
     InstructionChangeForm,
     WithdrawalForm,
+    DateForm,
 )
 from properties.models import (
     Property,
@@ -1800,6 +1801,67 @@ def withdraw_property(request, propertyprocess_id):
         }
         data["html_modal"] = render_to_string(
             "properties/stages/withdraw_modal.html",
+            context,
+            request=request,
+        )
+
+    return JsonResponse(data)
+
+
+def back_on_the_market(request, propertyprocess_id):
+    """
+    Ajax URL for putting a property back on the market.
+    """
+
+    data = dict()
+
+    property_process = get_object_or_404(
+        PropertyProcess, id=propertyprocess_id
+    )
+
+    if request.method == "POST":
+        form = DateForm(request.POST)
+        if form.is_valid():
+            date = form.cleaned_data["date"]
+
+            property_process.macro_status = PropertyProcess.INSTRUCTION
+            property_process.save()
+
+            history_description = (
+                f"{request.user.get_full_name()} has put the property back on the market."
+            )
+
+            history = PropertyHistory.objects.create(
+                propertyprocess=property_process,
+                type=PropertyHistory.PROPERTY_EVENT,
+                description=history_description,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
+
+            context = {
+                "property_process": property_process,
+                "history": history,
+            }
+            data["html_success"] = render_to_string(
+                "properties/stages/includes/form_success.html",
+                context,
+                request=request,
+            )
+
+            data["form_is_valid"] = True
+        else:
+            data["form_is_valid"] = False
+    else:
+        form = DateForm(
+            initial={"date": datetime.date.today},
+        )
+        context = {
+            "property_process": property_process,
+            "form": form,
+        }
+        data["html_modal"] = render_to_string(
+            "properties/stages/back_on_the_market_modal.html",
             context,
             request=request,
         )
