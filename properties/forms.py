@@ -407,4 +407,10 @@ class WithdrawalForm(forms.Form):
         (OTHER_AGENT, "Going On The Market With Other Agent"),
         (SOLD_OTHER_AGENT, "Sold With Other Agent (Multi-Only)"),
     )
-    withdrawal_reason = forms.ChoiceField(choices=WITHDRAWN_REASON)
+    withdrawal_reason = forms.ChoiceField(
+        choices=WITHDRAWN_REASON,
+        label=('Withdrawal Reason'),)
+    date = forms.DateField(
+        label=('Withdrawal Date'),
+        widget=DateInput(),
+    )

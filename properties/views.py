@@ -1728,6 +1728,22 @@ def withdraw_property(request, propertyprocess_id):
         form = WithdrawalForm(request.POST)
         if form.is_valid():
             reason = form.cleaned_data["withdrawal_reason"]
+            date = form.cleaned_data["date"]
+
+            if property_process.macro_status == PropertyProcess.DEAL:
+                last_property_fee = PropertyFees.objects.filter(
+                    propertyprocess=property_process
+                ).first()
+                minus_fee = last_property_fee.fee * -1
+                PropertyFees.objects.create(
+                    propertyprocess=property_process,
+                    fee=minus_fee,
+                    price=last_property_fee.price,
+                    date=date,
+                    active=True,
+                    created_by=request.user.get_full_name(),
+                    updated_by=request.user.get_full_name(),
+                )
 
             property_process.macro_status = PropertyProcess.WITHDRAWN
             property_process.save()
@@ -1775,7 +1791,9 @@ def withdraw_property(request, propertyprocess_id):
         else:
             data["form_is_valid"] = False
     else:
-        form = WithdrawalForm()
+        form = WithdrawalForm(
+            initial={"date": datetime.date.today},
+        )
         context = {
             "property_process": property_process,
             "form": form,
