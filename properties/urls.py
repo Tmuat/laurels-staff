@@ -28,6 +28,7 @@ from properties.views import (
     edit_offer_status,
     edit_instruction,
     edit_instruction_change,
+    withdraw_property,
 )
 
 
@@ -163,5 +164,10 @@ urlpatterns = [
         "properties/edit/instruction-change/<instruction_change_id>/",
         edit_instruction_change,
         name="edit_instruction_change",
+    ),
+    path(
+        "properties/withdraw/<propertyprocess_id>/",
+        withdraw_property,
+        name="withdraw_property",
     ),
 ]

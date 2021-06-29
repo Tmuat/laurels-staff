@@ -2,7 +2,6 @@ import datetime
 import humanize
 
 from django.conf import settings
-from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from django.http import JsonResponse
@@ -28,6 +27,7 @@ from properties.forms import (
     AnotherOfferForm,
     OfferStatusForm,
     InstructionChangeForm,
+    WithdrawalForm,
 )
 from properties.models import (
     Property,
@@ -1710,4 +1710,80 @@ def edit_instruction_change(request, instruction_change_id):
         context,
         request=request,
     )
+    return JsonResponse(data)
+
+
+def withdraw_property(request, propertyprocess_id):
+    """
+    Ajax URL for withdrawing a property.
+    """
+
+    data = dict()
+
+    property_process = get_object_or_404(
+        PropertyProcess, id=propertyprocess_id
+    )
+
+    if request.method == "POST":
+        form = WithdrawalForm(request.POST)
+        if form.is_valid():
+            reason = form.cleaned_data['withdrawal_reason']
+
+            property_process.macro_status = PropertyProcess.WITHDRAWN
+            property_process.save()
+
+            history_description = (
+                f"{request.user.get_full_name()} has withdrawn this property."
+            )
+
+            for withdrawal_reason in WithdrawalForm.WITHDRAWN_REASON:
+                if withdrawal_reason[0] == reason:
+                    reason = withdrawal_reason[1]
+            
+            history_notes = reason
+
+            for offer in property_process.offer.all():
+                if (
+                    offer.status == Offer.GETTINGVERIFIED or
+                    offer.status == Offer.NEGOTIATING or
+                    offer.status == Offer.ACCEPTED
+                ):
+                    offer.status = Offer.REJECTED
+
+            history = PropertyHistory.objects.create(
+                propertyprocess=property_process,
+                type=PropertyHistory.PROPERTY_EVENT,
+                description=history_description,
+                notes=history_notes,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
+
+            property_process.send_withdrawn_mail(request, reason)
+
+            context = {
+                "property_process": property_process,
+                "history": history,
+            }
+            data["html_success"] = render_to_string(
+                "properties/stages/includes/form_success.html",
+                context,
+                request=request,
+            )
+
+            data["form_is_valid"] = True
+        else:
+            data["form_is_valid"] = False
+    else:
+        form = WithdrawalForm()
+        context = {
+            "property_process": property_process,
+            "form": form,
+        }
+        data["html_modal"] = render_to_string(
+            "properties/stages/withdraw_modal.html",
+            context,
+            request=request,
+        )
+
     return JsonResponse(data)

@@ -34,3 +34,10 @@
     class="mb-1 btn {% if propertyprocess.macro_status != 3 %}btn-secondary" disabled{% else %}btn-info js-add-another-offer"{% endif %}>
         <i class="mdi mdi-piggy-bank"></i>
 </button>
+<button 
+    data-url="{% url 'properties:withdraw_property' propertyprocess.id %}" data-toggle="tooltip"
+    data-placement="top"
+    title="Withdraw"
+    class="mb-1 btn {% if propertyprocess.macro_status != 3 %}btn-secondary" disabled{% else %}btn-info js-withdraw"{% endif %}>
+        <i class="mdi mdi-alert-octagon"></i>
+</button>

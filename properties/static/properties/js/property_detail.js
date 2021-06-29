@@ -459,6 +459,24 @@ $(document).ready(function () {
         location.reload();
     });
 
+    // Deals with the form submission before loading success modal
+    var GetAndLoadSuccess = function () {
+        $('#modal-overlay').fadeToggle(100);
+        var instance = $(this);
+        $.ajax({
+            url: instance.attr("data-url"),
+            type: 'get',
+            dataType: 'json',
+            success: function (data) {
+                $("#base-modal").modal("hide");
+                $("#base-static-modal").modal("show");
+                $("#base-static-modal .modal-dialog").html(data.html_success);
+                $('#modal-overlay').fadeToggle(100);
+            }
+        });
+        return false;
+    };
+
     // Deals with rendering a form with AJAX to the base modal
     var loadFormBaseModal = function () {
         var instance = $(this);
@@ -514,6 +532,7 @@ $(document).ready(function () {
     $(".js-edit-offer-status").on("click", loadFormBaseModal);
     $("#base-modal").on("click", ".js-edit-offer-status", loadFormBaseModal);
     $(".js-change-instruction").on("click", loadFormBaseModal);
+    $(".js-withdraw").on("click", loadFormBaseModal);
     
     $("#tbody-history").on("click", ".js-show-notes", loadFormBaseModal);
     $("#tbody-offers").on("click", ".js-show-offers", loadFormBaseModal);
@@ -528,4 +547,5 @@ $(document).ready(function () {
     $("#base-modal").on("submit", ".js-edit-offerer-mortgage-form", submitFormAndLoadSuccess);
     $("#base-modal").on("submit", ".js-edit-offer-status-form", submitFormAndLoadSuccess);
     $("#base-modal").on("submit", ".js-edit-instruction-form", submitFormAndLoadSuccess);
+    $("#base-modal").on("submit", ".js-withdraw-form", submitFormAndLoadSuccess);
 });

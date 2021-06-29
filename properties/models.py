@@ -179,6 +179,36 @@ class PropertyProcess(UpdatedAndCreated):
     )
     legacy_property = models.BooleanField(default=False, choices=LEGACY)
 
+    def send_withdrawn_mail(self, request, reason, **kwargs):
+        no_reply_email = settings.NO_REPLY_EMAIL
+        admin_email = settings.ADMIN_EMAIL
+        context = kwargs
+        context.update(
+            {
+                "withdrawn": reason,
+                "address": self.__str__,
+                "hub": self.hub,
+                "employee": self.employee,
+            }
+        )
+        subject = f"Withdrawal: {self.__str__}"
+        body = render_to_string(
+            "properties/emails/withdrawal.txt", context
+        )
+
+        try:
+            send_mail(
+                subject=subject,
+                message=body,
+                from_email=f'"Laurels Auto Emails" <{no_reply_email}>',
+                recipient_list=[
+                    admin_email,
+                ],
+                fail_silently=False,
+            )
+        except BadHeaderError:
+            return HttpResponse("Invalid header found.")
+
     def __str__(self):
         if (
             self.property.address_line_2 == ""

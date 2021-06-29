@@ -1,7 +1,7 @@
 {% autoescape off %}
 Hello,
 
-There has been an instruction for: 
+There has been a withdrawl for: 
 
 {{ address }}
 
@@ -9,11 +9,11 @@ The property consultant and hub are:
 
 Hub - {{ hub }}
 Employee - {{ employee }}
-{% if marketing_board %}
-The client has opted IN for a marketing board.
-{% else %}
-The client has opted OUT of a marketing board.
-{% endif %}
+
+The withdrawn reason is listed as:
+
+{{ withdrawn }}
+
 Sincerely,
 The Laurels Website Team
 
