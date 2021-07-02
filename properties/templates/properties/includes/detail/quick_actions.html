@@ -51,3 +51,10 @@
         <i class="mdi mdi-home-plus"></i>
     </button>
 {% endif %}
+<button 
+    data-url="{% url 'properties:add_deal' propertyprocess.id %}" data-toggle="tooltip"
+    data-placement="top"
+    title="Add Deal"
+    class="mb-1 btn {% if propertyprocess.macro_status != 3 %}btn-secondary" disabled{% else %}btn-info js-add-deal"{% endif %}>
+        <i class="mdi mdi-handshake"></i>
+</button>

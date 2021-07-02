@@ -13,6 +13,7 @@ from properties.models import (
     OffererMortgage,
     OffererCash,
     Offer,
+    Deal,
 )
 from properties.widgets import DateInput
 from users.models import Profile
@@ -409,9 +410,10 @@ class WithdrawalForm(forms.Form):
     )
     withdrawal_reason = forms.ChoiceField(
         choices=WITHDRAWN_REASON,
-        label=('Withdrawal Reason'),)
+        label=("Withdrawal Reason"),
+    )
     date = forms.DateField(
-        label=('Withdrawal Date'),
+        label=("Withdrawal Date"),
         widget=DateInput(),
     )
 
@@ -419,6 +421,59 @@ class WithdrawalForm(forms.Form):
 class DateForm(forms.Form):
 
     date = forms.DateField(
-        label=('Date'),
+        label=("Date"),
         widget=DateInput(),
+    )
+
+
+class DealForm(forms.ModelForm):
+    class Meta:
+        model = Deal
+        fields = ("date", "target_move_date", "offer_accepted")
+
+    def __init__(self, *args, **kwargs):
+        """
+        Add new labels and order foreign key field
+        """
+        super().__init__(*args, **kwargs)
+        labels = {
+            "date": "Deal Date",
+            "target_move_date": "Target Move Date",
+            "offer_accepted": "Offer Being Accepted",
+        }
+
+        self.fields["date"].widget = DateInput()
+        self.fields["target_move_date"].widget = DateInput()
+
+        for field in self.fields:
+            label = f"{labels[field]}"
+            self.fields[field].label = label
+
+
+class BuyerMarketingForm(forms.ModelForm):
+    class Meta:
+        model = Marketing
+        fields = ("applicant_intro",)
+
+    def __init__(self, *args, **kwargs):
+        """
+        Add new labels and order foreign key field
+        """
+        super().__init__(*args, **kwargs)
+        labels = {
+            "applicant_intro": "How Was The Applicant Introduced",
+        }
+
+        for field in self.fields:
+            label = f"{labels[field]}"
+            self.fields[field].label = label
+
+
+class SoldMarketingBoardForm(forms.Form):
+
+    TRUE_FALSE_CHOICES = ((True, "Yes"), (False, "No"))
+
+    sold_marketing_board = forms.ChoiceField(
+        choices=TRUE_FALSE_CHOICES,
+        label=("Sold Marketing Board"),
     )

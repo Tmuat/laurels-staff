@@ -1,4 +1,5 @@
 from datetime import date
+import humanize
 
 from django.conf import settings
 from django.core.mail import send_mail, BadHeaderError
@@ -754,24 +755,10 @@ class Offer(UpdatedAndCreated):
     )
 
     def __str__(self):
-        if (
-            self.offerer_details.propertyprocess.property.address_line_2 == ""
-            or self.offerer_details.propertyprocess.property.address_line_2
-            == None
-        ):
-            property_address = "%s, %s (%s)" % (
-                self.offerer_details.propertyprocess.property.postcode,
-                self.offerer_details.propertyprocess.property.address_line_1,
-                self.offerer_details.full_name,
-            )
-        else:
-            property_address = "%s, %s, %s (%s)" % (
-                self.offerer_details.propertyprocess.property.postcode,
-                self.offerer_details.propertyprocess.property.address_line_1,
-                self.offerer_details.propertyprocess.property.address_line_2,
-                self.offerer_details.full_name,
-            )
-        return property_address
+        return "%s (£%s)" % (
+            self.offerer_details.full_name,
+            humanize.intcomma(self.offer),
+        )
 
 
 class Deal(UpdatedAndCreated):
@@ -794,6 +781,36 @@ class Deal(UpdatedAndCreated):
     offer_accepted = models.OneToOneField(
         Offer, on_delete=models.CASCADE, related_name="offer_accepted"
     )
+
+    def send_deal_mail(self, request, marketing_board, **kwargs):
+        no_reply_email = settings.NO_REPLY_EMAIL
+        admin_email = settings.ADMIN_EMAIL
+        context = kwargs
+        context.update(
+            {
+                "marketing_board": marketing_board,
+                "address": self.__str__,
+                "hub": self.propertyprocess.hub,
+                "employee": self.propertyprocess.employee,
+            }
+        )
+        subject = f"Sales Deal: {self.__str__}"
+        body = render_to_string(
+            "properties/emails/new_deal.txt", context
+        )
+
+        try:
+            send_mail(
+                subject=subject,
+                message=body,
+                from_email=f'"Laurels Auto Emails" <{no_reply_email}>',
+                recipient_list=[
+                    admin_email,
+                ],
+                fail_silently=False,
+            )
+        except BadHeaderError:
+            return HttpResponse("Invalid header found.")
 
     def __str__(self):
         if (

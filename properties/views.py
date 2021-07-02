@@ -29,6 +29,9 @@ from properties.forms import (
     InstructionChangeForm,
     WithdrawalForm,
     DateForm,
+    DealForm,
+    BuyerMarketingForm,
+    SoldMarketingBoardForm,
 )
 from properties.models import (
     Property,
@@ -43,6 +46,10 @@ from properties.models import (
     PropertyChain,
     Valuation,
     OffererMortgage,
+    Marketing,
+    SalesProgression,
+    SalesProgressionSettings,
+    SalesProgressionPhase,
 )
 from users.models import Profile
 
@@ -1392,7 +1399,7 @@ def edit_offer_status(request, offer_id):
 
             notes = (
                 f"The status for the offer from {offer.offerer_details.full_name}"
-                f" for £{instance.offer} has been changed from "
+                f" for £{humanize.intcomma(instance.offer)} has been changed from "
                 f"'{old_status}' to '{new_status}'."
             )
 
@@ -1829,7 +1836,8 @@ def back_on_the_market(request, propertyprocess_id):
             property_process.save()
 
             history_description = (
-                f"{request.user.get_full_name()} has put the property back on the market."
+                f"{request.user.get_full_name()} has put the"
+                " property back on the market."
             )
 
             history = PropertyHistory.objects.create(
@@ -1868,5 +1876,170 @@ def back_on_the_market(request, propertyprocess_id):
             context,
             request=request,
         )
+
+    return JsonResponse(data)
+
+
+def add_deal(request, propertyprocess_id):
+    """
+    Ajax URL for adding a deal.
+    """
+    data = dict()
+
+    property_process = get_object_or_404(
+        PropertyProcess, id=propertyprocess_id
+    )
+    marketing_instance = get_object_or_404(
+        Marketing, propertyprocess=property_process
+    )
+    property_fee = PropertyFees.objects.filter(
+        propertyprocess=property_process.id
+    ).first()
+
+    if request.method == "POST":
+        form = DealForm(request.POST)
+        marketing_form = BuyerMarketingForm(
+            request.POST, instance=marketing_instance
+        )
+        marketing_board_form = SoldMarketingBoardForm(request.POST)
+        if (
+            form.is_valid()
+            and marketing_form.is_valid()
+            and marketing_board_form.is_valid()
+        ):
+            marketing_form.save()
+            instance = form.save(commit=False)
+
+            instance.propertyprocess = property_process
+
+            instance.created_by = request.user.get_full_name()
+            instance.updated_by = request.user.get_full_name()
+
+            offer_accepted = form.cleaned_data["offer_accepted"]
+            offer_accepted_date = form.cleaned_data["date"]
+            target_move_date = form.cleaned_data["target_move_date"]
+
+            instance.save()
+
+            property_process.macro_status = PropertyProcess.DEAL
+            property_process.furthest_status = PropertyProcess.DEAL
+            property_process.save()
+
+            offer = Offer.objects.get(pk=offer_accepted.pk)
+
+            for offer_instance in property_process.offer.all():
+                if (
+                    offer_instance.status == Offer.GETTINGVERIFIED
+                    or offer_instance.status == Offer.NEGOTIATING
+                    or offer_instance.status == Offer.ACCEPTED
+                ):
+                    if offer_instance.pk != offer.pk:
+                        offer_instance.status = Offer.REJECTED
+                        offer_instance.save()
+                    if offer_instance.pk == offer.pk:
+                        offer_instance.status = Offer.ACCEPTED
+                        offer_instance.save()
+
+            PropertyFees.objects.create(
+                propertyprocess=property_process,
+                fee=abs(property_fee.fee),
+                price=offer.offer,
+                date=offer_accepted_date,
+                active=True,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
+
+            if not SalesProgression.objects.filter(
+                propertyprocess=property_process
+            ).exists():
+                sales_prog = SalesProgression.objects.create(
+                    propertyprocess=property_process,
+                    created_by=request.user.get_full_name(),
+                    updated_by=request.user.get_full_name(),
+                )
+                SalesProgressionSettings.objects.create(
+                    sales_progression=sales_prog,
+                    created_by=request.user.get_full_name(),
+                    updated_by=request.user.get_full_name(),
+                )
+                SalesProgressionPhase.objects.create(
+                    sales_progression=sales_prog,
+                    created_by=request.user.get_full_name(),
+                    updated_by=request.user.get_full_name(),
+                )
+
+            history_description = (
+                f"{request.user.get_full_name()} has added a deal."
+            )
+
+            formatted_date = target_move_date.strftime("%d/%m/%Y")
+
+            notes = (
+                f"A deal been added ({offer.offerer_details.full_name}) "
+                f"for £{humanize.intcomma(offer.offer)}. "
+                f"The targeted move date is {formatted_date}."
+            )
+
+            history = PropertyHistory.objects.create(
+                propertyprocess=property_process,
+                type=PropertyHistory.PROPERTY_EVENT,
+                description=history_description,
+                notes=notes,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
+
+            marketing_board = marketing_board_form.cleaned_data[
+                'sold_marketing_board'
+            ]
+
+            if marketing_board == "True":
+                marketing_board = True
+            else:
+                marketing_board = False
+
+            instance.send_deal_mail(request, marketing_board)
+
+            data["form_is_valid"] = True
+
+            context = {
+                "property_process": property_process,
+                "history": history,
+            }
+            data["html_success"] = render_to_string(
+                "properties/stages/includes/form_success.html",
+                context,
+                request=request,
+            )
+
+        else:
+            data["form_is_valid"] = False
+    else:
+        form = DealForm(initial={"date": datetime.date.today})
+        marketing_form = BuyerMarketingForm(instance=marketing_instance)
+        marketing_board_form = SoldMarketingBoardForm(
+            initial={
+                "sold_marketing_board": property_process.instruction.marketing_board
+            }
+        )
+
+        form.fields["offer_accepted"].queryset = (
+            Offer.objects.filter(propertyprocess=propertyprocess_id)
+            .exclude(status=Offer.REJECTED)
+            .exclude(status=Offer.WITHDRAWN)
+        )
+
+    context = {
+        "form": form,
+        "marketing_form": marketing_form,
+        "marketing_board_form": marketing_board_form,
+        "propertyprocess_id": propertyprocess_id,
+    }
+    data["html_modal"] = render_to_string(
+        "properties/stages/add_deal_modal.html",
+        context,
+        request=request,
+    )
 
     return JsonResponse(data)

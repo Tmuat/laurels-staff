@@ -1,0 +1,23 @@
+{% autoescape off %}
+Hello,
+
+There has been a deal put through for: 
+
+{{ address }}
+
+The property consultant and hub are: 
+
+Hub - {{ hub }}
+Employee - {{ employee }}
+{% if marketing_board %}
+The client has opted IN for a 'sold' marketing board.
+{% else %}
+The client has opted OUT of a 'sold' marketing board.
+{% endif %}
+Sincerely,
+The Laurels Website Team
+
+Note. This email was sent from a notification-only address that does not accept incoming emails. Please do not reply to this message.
+
+
+{% endautoescape %}
