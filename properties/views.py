@@ -50,6 +50,7 @@ from properties.models import (
     SalesProgression,
     SalesProgressionSettings,
     SalesProgressionPhase,
+    Deal,
 )
 from users.models import Profile
 
