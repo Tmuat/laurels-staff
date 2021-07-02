@@ -1755,6 +1755,10 @@ def withdraw_property(request, propertyprocess_id):
                 )
                 Deal.objects.get(propertyprocess=property_process).delete()
 
+            for offer_instance in property_process.offer.all():
+                offer_instance.status = Offer.REJECTED
+                offer_instance.save()
+
             property_process.macro_status = PropertyProcess.WITHDRAWN
             property_process.save()
 
@@ -1831,7 +1835,6 @@ def back_on_the_market(request, propertyprocess_id):
     if request.method == "POST":
         form = DateForm(request.POST)
         if form.is_valid():
-            date = form.cleaned_data["date"]
 
             property_process.macro_status = PropertyProcess.INSTRUCTION
             property_process.save()

@@ -80,22 +80,32 @@
             <div class="tab-pane" id="deal">
                 <h5 class="text-uppercase"><i class="mdi mdi-handshake mr-1"></i>
                     Deal Information</h5>
-                <div class="mt-2">
-                    <div class="row">
-                        <div class="col-6 col-md-4 text-center">
-                            <p class="mb-1"><strong>Deal Date:</strong></p>
-                            <p><span>{{ propertyprocess.deal.date }}</span></p>
-                        </div>
-                        <div class="col-6 col-md-4 text-center">
-                            <p class="mb-1"><strong>Offer Accepted:</strong></p>
-                            <p><span>{{ propertyprocess.deal.offer_accepted.offerer_details.full_name }}<br>£{{ propertyprocess.deal.offer_accepted.offer|intcomma }}</span></p>
-                        </div>
-                        <div class="offset-3 offset-md-0 col-6 col-md-4 text-center">
-                            <p class="mb-1"><strong>Target Move Date:</strong></p>
-                            <p><span>{{ propertyprocess.deal.target_move_date }}</span></p>
+                {% if propertyprocess.macro_status < 4 %}
+                    <div class="text-center mt-2">
+                        <div class="row">
+                            <div class="col-12">
+                                <p class="mb-1"><strong>No deal for this property.</strong></p>
+                            </div>
                         </div>
                     </div>
-                </div>
+                {% else %}
+                    <div class="mt-2">
+                        <div class="row">
+                            <div class="col-6 col-md-4 text-center">
+                                <p class="mb-1"><strong>Deal Date:</strong></p>
+                                <p><span>{{ propertyprocess.deal.date }}</span></p>
+                            </div>
+                            <div class="col-6 col-md-4 text-center">
+                                <p class="mb-1"><strong>Offer Accepted:</strong></p>
+                                <p><span>{{ propertyprocess.deal.offer_accepted.offerer_details.full_name }}<br>£{{ propertyprocess.deal.offer_accepted.offer|intcomma }}</span></p>
+                            </div>
+                            <div class="offset-3 offset-md-0 col-6 col-md-4 text-center">
+                                <p class="mb-1"><strong>Target Move Date:</strong></p>
+                                <p><span>{{ propertyprocess.deal.target_move_date }}</span></p>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
             </div>
             <!-- end tab pane -->
             <!-- end deal section -->
