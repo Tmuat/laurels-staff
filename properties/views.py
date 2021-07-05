@@ -33,6 +33,7 @@ from properties.forms import (
     BuyerMarketingForm,
     SoldMarketingBoardForm,
     PropertyFeesForm,
+    ExchangeMoveForm,
 )
 from properties.models import (
     Property,
@@ -2143,6 +2144,96 @@ def edit_deal(request, propertyprocess_id):
     }
     data["html_modal"] = render_to_string(
         "properties/stages/edit_deal_modal.html",
+        context,
+        request=request,
+    )
+
+    return JsonResponse(data)
+
+
+def add_exchange(request, propertyprocess_id):
+    """
+    Ajax URL for adding an exchange.
+    """
+    data = dict()
+
+    property_process = get_object_or_404(
+        PropertyProcess, id=propertyprocess_id
+    )
+    property_fee = PropertyFees.objects.filter(
+        propertyprocess=property_process.id
+    ).first()
+
+    if request.method == "POST":
+        form = ExchangeMoveForm(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+
+            exchange_date = form.cleaned_data["exchange_date"]
+            completion_date = form.cleaned_data["completion_date"]
+
+            instance.propertyprocess = property_process
+
+            instance.created_by = request.user.get_full_name()
+            instance.updated_by = request.user.get_full_name()
+
+            instance.save()
+
+            instance.send_exchange_mail(request)
+
+            property_process.macro_status = PropertyProcess.COMPLETE
+            property_process.save()
+
+            history_description = (
+                f"{request.user.get_full_name()} has added an exchange."
+            )
+
+            formatted_exchange_date = exchange_date.strftime("%d/%m/%Y")
+            formatted_completion_date = completion_date.strftime("%d/%m/%Y")
+
+            notes = (
+                "An exchange/completion has been processed "
+                f" with an exchange date of {formatted_exchange_date} "
+                f"and a completion date of {formatted_completion_date}."
+            )
+
+            history = PropertyHistory.objects.create(
+                propertyprocess=property_process,
+                type=PropertyHistory.PROPERTY_EVENT,
+                description=history_description,
+                notes=notes,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
+
+            data["form_is_valid"] = True
+
+            context = {
+                "property_process": property_process,
+                "history": history,
+            }
+            data["html_success"] = render_to_string(
+                "properties/stages/includes/form_success.html",
+                context,
+                request=request,
+            )
+
+        else:
+            data["form_is_valid"] = False
+    else:
+        form = ExchangeMoveForm(
+            initial={
+                "exchange_date": datetime.date.today,
+                "completion_date": datetime.date.today
+            }
+        )
+
+    context = {
+        "form": form,
+        "propertyprocess_id": propertyprocess_id,
+    }
+    data["html_modal"] = render_to_string(
+        "properties/stages/add_exchange_modal.html",
         context,
         request=request,
     )

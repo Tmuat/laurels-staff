@@ -112,6 +112,10 @@ body.authentication-bg {
     margin-bottom: 0px;
 }
 
+.icon-lg-size {
+    font-size: 1.4rem;
+}
+
 /* Multi Select Field */
 
 .multi-select {

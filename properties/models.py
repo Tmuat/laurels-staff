@@ -845,6 +845,35 @@ class ExchangeMove(UpdatedAndCreated):
     exchange_date = models.DateField()
     completion_date = models.DateField()
 
+    def send_exchange_mail(self, request, **kwargs):
+        no_reply_email = settings.NO_REPLY_EMAIL
+        admin_email = settings.ADMIN_EMAIL
+        context = kwargs
+        context.update(
+            {
+                "address": self.propertyprocess.__str__,
+                "hub": self.propertyprocess.hub,
+                "employee": self.propertyprocess.employee,
+                "exchange": self.exchange_date.strftime("%d/%m/%Y"),
+                "completion": self.completion_date.strftime("%d/%m/%Y"),
+            }
+        )
+        subject = f"Exchange: {self.__str__}"
+        body = render_to_string("properties/emails/exchange.txt", context)
+
+        try:
+            send_mail(
+                subject=subject,
+                message=body,
+                from_email=f'"Laurels Auto Emails" <{no_reply_email}>',
+                recipient_list=[
+                    admin_email,
+                ],
+                fail_silently=False,
+            )
+        except BadHeaderError:
+            return HttpResponse("Invalid header found.")
+
     def __str__(self):
         if (
             self.propertyprocess.property.address_line_2 == ""

@@ -1,0 +1,24 @@
+{% autoescape off %}
+Hello,
+
+There has been an exchange put through for:
+
+{{ address }}
+
+The property consultant and hub are: 
+
+Hub - {{ hub }}
+Employee - {{ employee }}
+
+The exchange details are:
+
+Exchange Date - {{ exchange }}
+Completion Date - {{ completion }}
+
+Sincerely,
+The Laurels Website Team
+
+Note. This email was sent from a notification-only address that does not accept incoming emails. Please do not reply to this message.
+
+
+{% endautoescape %}

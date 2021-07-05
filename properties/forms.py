@@ -14,7 +14,7 @@ from properties.models import (
     OffererCash,
     Offer,
     Deal,
-    PropertyFees,
+    ExchangeMove
 )
 from properties.widgets import DateInput
 from users.models import Profile
@@ -498,6 +498,29 @@ class PropertyFeesForm(forms.ModelForm):
         self.fields["price"].widget.attrs["min"] = 0
 
         self.fields["fee"].widget.attrs["min"] = 0
+
+        for field in self.fields:
+            label = f"{labels[field]}"
+            self.fields[field].label = label
+
+
+class ExchangeMoveForm(forms.ModelForm):
+    class Meta:
+        model = ExchangeMove
+        fields = ("exchange_date", "completion_date")
+
+    def __init__(self, *args, **kwargs):
+        """
+        Add new labels and order foreign key field
+        """
+        super().__init__(*args, **kwargs)
+        labels = {
+            "exchange_date": "Exchange Date",
+            "completion_date": "Completion Date",
+        }
+
+        self.fields["exchange_date"].widget = DateInput()
+        self.fields["completion_date"].widget = DateInput()
 
         for field in self.fields:
             label = f"{labels[field]}"
