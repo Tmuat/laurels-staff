@@ -34,6 +34,7 @@ from properties.forms import (
     SoldMarketingBoardForm,
     PropertyFeesForm,
     ExchangeMoveForm,
+    SalesProgressionSettingsForm,
 )
 from properties.models import (
     Property,
@@ -2160,9 +2161,6 @@ def add_exchange(request, propertyprocess_id):
     property_process = get_object_or_404(
         PropertyProcess, id=propertyprocess_id
     )
-    property_fee = PropertyFees.objects.filter(
-        propertyprocess=property_process.id
-    ).first()
 
     if request.method == "POST":
         form = ExchangeMoveForm(request.POST)
@@ -2182,6 +2180,7 @@ def add_exchange(request, propertyprocess_id):
             instance.send_exchange_mail(request)
 
             property_process.macro_status = PropertyProcess.COMPLETE
+            property_process.furthest_status = PropertyProcess.COMPLETE
             property_process.save()
 
             history_description = (
@@ -2234,6 +2233,51 @@ def add_exchange(request, propertyprocess_id):
     }
     data["html_modal"] = render_to_string(
         "properties/stages/add_exchange_modal.html",
+        context,
+        request=request,
+    )
+
+    return JsonResponse(data)
+
+
+def edit_sales_prog_settings(request, propertyprocess_id):
+    """
+    Ajax URL for editing sales progression settings.
+    """
+    data = dict()
+
+    property_process = get_object_or_404(
+        PropertyProcess, id=propertyprocess_id
+    )
+
+    if request.method == "POST":
+        form = SalesProgressionSettingsForm(
+            request.POST,
+            instance=property_process.sales_progression.sales_progression_settings
+        )
+        if form.is_valid():
+            instance = form.save(commit=False)
+
+            instance.created_by = request.user.get_full_name()
+            instance.updated_by = request.user.get_full_name()
+
+            instance.save()
+
+            data["form_is_valid"] = True
+
+        else:
+            data["form_is_valid"] = False
+    else:
+        form = SalesProgressionSettingsForm(
+            instance=property_process.sales_progression.sales_progression_settings
+        )
+
+    context = {
+        "form": form,
+        "propertyprocess_id": propertyprocess_id,
+    }
+    data["html_modal"] = render_to_string(
+        "properties/sales_progression/edit_sales_prog_settings_modal.html",
         context,
         request=request,
     )

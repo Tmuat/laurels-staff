@@ -311,6 +311,29 @@ $(document).ready(function () {
         return false;
     });
 
+    // Deals with the form submission only
+    var submitForm = function () {
+        $('#modal-overlay').fadeToggle(100);
+        var form = $(this);
+        $.ajax({
+            url: form.attr("action"),
+            data: form.serialize(),
+            type: form.attr("method"),
+            dataType: 'json',
+            success: function (data) {
+                if (data.form_is_valid) {
+                    $("#base-modal").modal("hide");
+                    location.reload();
+                    $('#modal-overlay').fadeToggle(100);
+                } else {
+                    $('#modal-overlay').fadeToggle(100);
+                    $("#base-modal .modal-dialog").html(data.html_modal);
+                }
+            }
+        });
+        return false;
+    };
+
     // Deals with the form submission before loading success modal
     var submitFormAndLoadSuccess = function () {
         $('#modal-overlay').fadeToggle(100);
@@ -537,6 +560,7 @@ $(document).ready(function () {
     $(".js-add-deal").on("click", loadFormBaseModal);
     $(".js-edit-deal").on("click", loadFormBaseModal);
     $(".js-add-exchange").on("click", loadFormBaseModal);
+    $(".js-edit-prog-settings").on("click", loadFormBaseModal);
     
     $("#tbody-history").on("click", ".js-show-notes", loadFormBaseModal);
     $("#tbody-offers").on("click", ".js-show-offers", loadFormBaseModal);
@@ -556,4 +580,7 @@ $(document).ready(function () {
     $("#base-modal").on("submit", ".js-add-deal-form", submitFormAndLoadSuccess);
     $("#base-modal").on("submit", ".js-edit-deal-form", submitFormAndLoadSuccess);
     $("#base-modal").on("submit", ".js-add-exchange-form", submitFormAndLoadSuccess);
+
+    $("#base-modal").on("submit", ".js-submit-form-success", submitFormAndLoadSuccess);
+    $("#base-modal").on("submit", ".js-submit-form", submitForm);
 });

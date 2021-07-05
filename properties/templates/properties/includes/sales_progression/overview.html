@@ -1,9 +1,23 @@
 <!-- overview section -->
 <!-- tab pane -->
 <div class="tab-pane show active" id="overview">
-    
+
     <h5 class="text-uppercase"><i class="mdi mdi-home-analytics mr-1"></i>
-        Sales Progression</h5>
+        Sales Progression
+        {% if propertyprocess.macro_status > 3 %}
+        <span
+            data-url="{% url 'properties:edit_sales_prog_settings' propertyprocess.id %}"
+            class="ml-2 mdi mdi-cogs {% if propertyprocess.macro_status < 4 %}
+            text-secondary" disabled
+            {% else %}
+            pointer text-warning js-edit-prog-settings" 
+            {% endif %}
+            data-toggle="tooltip"
+            data-placement="top"
+            title="Edit Progression Settings"
+        ></span>
+        {% endif %}
+    </h5>
 
     <div class="row">
         <div class="col-12 col-sm-6 col-xl-3">
