@@ -32,6 +32,7 @@ from properties.forms import (
     DealForm,
     BuyerMarketingForm,
     SoldMarketingBoardForm,
+    PropertyFeesForm,
 )
 from properties.models import (
     Property,
@@ -1995,7 +1996,7 @@ def add_deal(request, propertyprocess_id):
             )
 
             marketing_board = marketing_board_form.cleaned_data[
-                'sold_marketing_board'
+                "sold_marketing_board"
             ]
 
             if marketing_board == "True":
@@ -2042,6 +2043,106 @@ def add_deal(request, propertyprocess_id):
     }
     data["html_modal"] = render_to_string(
         "properties/stages/add_deal_modal.html",
+        context,
+        request=request,
+    )
+
+    return JsonResponse(data)
+
+
+def edit_deal(request, propertyprocess_id):
+    """
+    Ajax URL for editing a deal.
+    """
+    data = dict()
+
+    property_process = get_object_or_404(
+        PropertyProcess, id=propertyprocess_id
+    )
+    property_fee = PropertyFees.objects.filter(
+        propertyprocess=property_process.id
+    ).first()
+
+    if request.method == "POST":
+        form = PropertyFeesForm(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+
+            new_fee = form.cleaned_data["fee"]
+            new_price = form.cleaned_data["price"]
+
+            instance.propertyprocess = property_process
+
+            instance.created_by = request.user.get_full_name()
+            instance.updated_by = request.user.get_full_name()
+
+            instance.date = datetime.date.today()
+            instance.active = True
+
+            instance.save()
+
+            property_fee.active = False
+
+            property_fee.save()
+
+            history_description = (
+                f"{request.user.get_full_name()} has changed a deal."
+            )
+
+            fee_notes = ""
+            if property_fee.fee != new_fee:
+                fee_notes = (
+                    f"The fee has been changed from {property_fee.fee}%"
+                    f" to {new_fee}%. "
+                )
+
+            price_notes = ""
+            if property_fee.price != new_price:
+                price_notes = (
+                    "The price has been changed from £"
+                    f"{humanize.intcomma(property_fee.price)}"
+                    f" to £{humanize.intcomma(new_price)}."
+                )
+
+            notes = fee_notes + price_notes
+
+            history = PropertyHistory.objects.create(
+                propertyprocess=property_process,
+                type=PropertyHistory.PROPERTY_EVENT,
+                description=history_description,
+                notes=notes,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
+
+            data["form_is_valid"] = True
+
+            context = {
+                "property_process": property_process,
+                "history": history,
+            }
+            data["html_success"] = render_to_string(
+                "properties/stages/includes/form_success.html",
+                context,
+                request=request,
+            )
+
+        else:
+            data["form_is_valid"] = False
+    else:
+        form = PropertyFeesForm(
+            initial={
+                "price": property_fee.price,
+                "fee": property_fee.fee,
+            }
+        )
+
+    context = {
+        "form": form,
+        "propertyprocess_id": propertyprocess_id,
+    }
+    data["html_modal"] = render_to_string(
+        "properties/stages/edit_deal_modal.html",
         context,
         request=request,
     )

@@ -14,6 +14,7 @@ from properties.models import (
     OffererCash,
     Offer,
     Deal,
+    PropertyFees,
 )
 from properties.widgets import DateInput
 from users.models import Profile
@@ -477,3 +478,27 @@ class SoldMarketingBoardForm(forms.Form):
         choices=TRUE_FALSE_CHOICES,
         label=("Sold Marketing Board"),
     )
+
+
+class PropertyFeesForm(forms.ModelForm):
+    class Meta:
+        model = PropertyFees
+        fields = ("price", "fee")
+
+    def __init__(self, *args, **kwargs):
+        """
+        Add new labels and order foreign key field
+        """
+        super().__init__(*args, **kwargs)
+        labels = {
+            "price": "Price Agreed Change",
+            "fee": "Fee Agreed Change",
+        }
+
+        self.fields["price"].widget.attrs["min"] = 0
+
+        self.fields["fee"].widget.attrs["min"] = 0
+
+        for field in self.fields:
+            label = f"{labels[field]}"
+            self.fields[field].label = label

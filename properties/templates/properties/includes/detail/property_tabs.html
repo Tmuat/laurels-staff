@@ -1,4 +1,5 @@
 {% load humanize %}
+{% load mathfilters %}
 <div class="card">
     <div class="card-body">
         {% include 'properties/includes/detail_tabs/tabs.html' %}
@@ -35,9 +36,9 @@
             <!-- valuation section -->
             <!-- tab pane -->
             <div class="tab-pane" id="valuation">
-                    {% include 'properties/includes/detail_tabs/valuation.html' %}
-                    <hr>
-                    {% include 'properties/includes/detail_tabs/instruction.html' %}
+                {% include 'properties/includes/detail_tabs/valuation.html' %}
+                <hr>
+                {% include 'properties/includes/detail_tabs/instruction.html' %}
             </div>
             <!-- end tab pane -->
             <!-- end valuation section -->
@@ -75,40 +76,55 @@
             
             {% if propertyprocess.sector == "sales" %}
             {% if propertyprocess.furthest_status > 3 %}
-            <!-- deal section -->
-            <!-- tab pane -->
-            <div class="tab-pane" id="deal">
-                <h5 class="text-uppercase"><i class="mdi mdi-handshake mr-1"></i>
-                    Deal Information</h5>
-                {% if propertyprocess.macro_status < 4 %}
-                    <div class="text-center mt-2">
-                        <div class="row">
-                            <div class="col-12">
-                                <p class="mb-1"><strong>No deal for this property.</strong></p>
+                <!-- deal section -->
+                <!-- tab pane -->
+                <div class="tab-pane" id="deal">
+                    <h5 class="text-uppercase"><i class="mdi mdi-handshake mr-1"></i>
+                        Deal Information
+                        {% if propertyprocess.macro_status > 3 %}
+                        <span
+                            data-url="{% url 'properties:edit_deal' propertyprocess.id %}"
+                            class="ml-2 mdi mdi-square-edit-outline 
+                            {% if propertyprocess.macro_status != 4 %}
+                            text-secondary" disabled
+                            {% else %}
+                            pointer text-warning js-edit-deal" 
+                            {% endif %}
+                            data-toggle="tooltip"
+                            data-placement="top"
+                            title="Edit Deal"
+                        ></span>
+                        {% endif %}
+                    </h5>
+                    {% if propertyprocess.macro_status < 4 %}
+                        <div class="text-center mt-2">
+                            <div class="row">
+                                <div class="col-12">
+                                    <p class="mb-1"><strong>No deal for this property.</strong></p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                {% else %}
-                    <div class="mt-2">
-                        <div class="row">
-                            <div class="col-6 col-md-4 text-center">
-                                <p class="mb-1"><strong>Deal Date:</strong></p>
-                                <p><span>{{ propertyprocess.deal.date }}</span></p>
-                            </div>
-                            <div class="col-6 col-md-4 text-center">
-                                <p class="mb-1"><strong>Offer Accepted:</strong></p>
-                                <p><span>{{ propertyprocess.deal.offer_accepted.offerer_details.full_name }}<br>£{{ propertyprocess.deal.offer_accepted.offer|intcomma }}</span></p>
-                            </div>
-                            <div class="offset-3 offset-md-0 col-6 col-md-4 text-center">
-                                <p class="mb-1"><strong>Target Move Date:</strong></p>
-                                <p><span>{{ propertyprocess.deal.target_move_date }}</span></p>
+                    {% else %}
+                        <div class="mt-2">
+                            <div class="row">
+                                <div class="col-6 col-md-4 text-center">
+                                    <p class="mb-1"><strong>Deal Date:</strong></p>
+                                    <p><span>{{ propertyprocess.deal.date }}</span></p>
+                                </div>
+                                <div class="col-6 col-md-4 text-center">
+                                    <p class="mb-1"><strong>Offer Accepted:</strong></p>
+                                    <p><span>{{ propertyprocess.deal.offer_accepted.offerer_details.full_name }}<br>£{{ propertyprocess.property_fees.first.price|abs|intcomma }}</span></p>
+                                </div>
+                                <div class="offset-3 offset-md-0 col-6 col-md-4 text-center">
+                                    <p class="mb-1"><strong>Target Move Date:</strong></p>
+                                    <p><span>{{ propertyprocess.deal.target_move_date }}</span></p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                {% endif %}
-            </div>
-            <!-- end tab pane -->
-            <!-- end deal section -->
+                    {% endif %}
+                </div>
+                <!-- end tab pane -->
+                <!-- end deal section -->
             {% endif %}
             {% endif %}
 

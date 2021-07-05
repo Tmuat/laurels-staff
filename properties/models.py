@@ -795,9 +795,7 @@ class Deal(UpdatedAndCreated):
             }
         )
         subject = f"Sales Deal: {self.__str__}"
-        body = render_to_string(
-            "properties/emails/new_deal.txt", context
-        )
+        body = render_to_string("properties/emails/new_deal.txt", context)
 
         try:
             send_mail(
