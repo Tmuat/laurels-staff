@@ -6,11 +6,9 @@ $(document).ready(function () {
             url: instance.attr("data-url"),
             type: 'get',
             dataType: 'json',
-            beforeSend: function () {
-                $("#base-modal").modal("show");
-            },
             success: function (data) {
                 $("#base-modal .modal-dialog").html(data.html_modal);
+                $("#base-modal").modal("show");
             }
         });
         return false;
@@ -22,11 +20,9 @@ $(document).ready(function () {
             url: '/region-hub/add/region/',
             type: 'get',
             dataType: 'json',
-            beforeSend: function () {
-                $("#base-modal").modal("show");
-            },
             success: function (data) {
                 $("#base-modal .modal-dialog").html(data.html_modal);
+                $("#base-modal").modal("show");
             }
         });
     });
@@ -155,11 +151,9 @@ $(document).ready(function () {
             url: '/region-hub/add/hub/',
             type: 'get',
             dataType: 'json',
-            beforeSend: function () {
-                $("#base-modal").modal("show");
-            },
             success: function (data) {
                 $("#base-modal .modal-dialog").html(data.html_modal);
+                $("#base-modal").modal("show");
             }
         });
     });
@@ -342,11 +336,9 @@ $(document).ready(function () {
             url: button.attr("data-url"),
             type: 'get',
             dataType: 'json',
-            beforeSend: function () {
-                $("#base-large-modal").modal("show");
-            },
             success: function (data) {
                 $("#base-large-modal .modal-dialog").html(data.html_large_modal);
+                $("#base-large-modal").modal("show");
             }
         });
     });
