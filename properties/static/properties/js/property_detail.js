@@ -561,11 +561,14 @@ $(document).ready(function () {
     $(".js-edit-deal").on("click", loadFormBaseModal);
     $(".js-add-exchange").on("click", loadFormBaseModal);
     $(".js-edit-prog-settings").on("click", loadFormBaseModal);
+
+    $(".js-load-form").on("click", loadFormBaseModal);
     
     $("#tbody-history").on("click", ".js-show-notes", loadFormBaseModal);
     $("#tbody-offers").on("click", ".js-show-offers", loadFormBaseModal);
     $("#simple-dragula").on("click", ".js-property-chain-expand", loadFormBaseModal);
     $("#base-static-modal").on("click", ".js-notes", loadFormBaseStaticModal);
+
     $("#base-modal").on("submit", ".js-add-valuation-form", submitFormAndLoadSuccess);
     $("#base-modal").on("submit", ".js-add-instruction-form", submitFormAndLoadSuccess);
     $("#base-modal").on("submit", ".js-add-reduction-form", submitFormAndLoadSuccess);

@@ -35,6 +35,7 @@ from properties.forms import (
     PropertyFeesForm,
     ExchangeMoveForm,
     SalesProgressionSettingsForm,
+    SalesProgressionPhaseOneForm,
 )
 from properties.models import (
     Property,
@@ -2278,6 +2279,171 @@ def edit_sales_prog_settings(request, propertyprocess_id):
     }
     data["html_modal"] = render_to_string(
         "properties/sales_progression/edit_sales_prog_settings_modal.html",
+        context,
+        request=request,
+    )
+
+    return JsonResponse(data)
+
+
+def phase_one(request, propertyprocess_id):
+    """
+    Ajax URL for phase one sales progression
+    """
+    data = dict()
+
+    property_process = get_object_or_404(
+        PropertyProcess, id=propertyprocess_id
+    )
+
+    sales_prog_phase = get_object_or_404(
+        SalesProgressionPhase,
+        sales_progression=property_process.sales_progression.id
+    )
+
+    progression = property_process.sales_progression
+
+    old_aml = progression.buyers_aml_checks_and_sales_memo
+    old_initial_sol = (
+        progression.buyers_initial_solicitors_paperwork
+    )
+    old_sellers_initial_sol = (
+        progression.sellers_inital_solicitors_paperwork
+    )
+    old_draft_contracts = (
+        progression.draft_contracts_recieved_by_buyers_solicitors
+    )
+    old_searches_paid = progression.searches_paid_for
+    old_searches_ordered = progression.searches_ordered
+
+    if request.method == "POST":
+        form = SalesProgressionPhaseOneForm(
+            request.POST,
+            instance=progression
+        )
+        if form.is_valid():
+            instance = form.save(commit=False)
+
+            instance.created_by = request.user.get_full_name()
+            instance.updated_by = request.user.get_full_name()
+
+            history_description = (
+                f"{request.user.get_full_name()} has "
+                "updated sales progression."
+            )
+
+            notes_dict = []
+
+            if old_aml != instance.buyers_aml_checks_and_sales_memo:
+                aml_notes = (
+                    "Buyers AML Checks & Sales Memo"
+                )
+                notes_dict.append(aml_notes)
+                instance.buyers_aml_checks_and_sales_memo_date = datetime. \
+                    date.today()
+
+            if old_initial_sol != instance.buyers_initial_solicitors_paperwork:
+                sol_notes = (
+                    "Buyers Initial Paperwork"
+                )
+                notes_dict.append(sol_notes)
+                instance.buyers_initial_solicitors_paperwork_date = datetime. \
+                    date.today()
+
+            if old_sellers_initial_sol != instance.sellers_inital_solicitors_paperwork:
+                seller_sol_notes = (
+                    "Sellers Initial Paperwork"
+                )
+                notes_dict.append(seller_sol_notes)
+                instance.sellers_inital_solicitors_paperwork_date = datetime. \
+                    date.today()
+
+            if old_draft_contracts != instance.draft_contracts_recieved_by_buyers_solicitors:
+                draft_contract_notes = (
+                    "Draft Contracts Received By Buyers Solicitors"
+                )
+                notes_dict.append(draft_contract_notes)
+                instance.draft_contracts_recieved_by_buyers_solicitors_date = datetime. \
+                    date.today()
+
+            if old_searches_paid != instance.searches_paid_for:
+                searches_paid_notes = (
+                    "Searches Paid For"
+                )
+                notes_dict.append(searches_paid_notes)
+                instance.searches_paid_for_date = datetime. \
+                    date.today()
+
+            if old_searches_ordered != instance.searches_ordered:
+                searches_ordered_notes = (
+                    "Searches Ordered"
+                )
+                notes_dict.append(searches_ordered_notes)
+                instance.searches_ordered_date = datetime. \
+                    date.today()
+
+            instance.save()
+
+            phases = sales_progression_percentage(property_process.id)
+
+            phase_one = phases.get("phase_1")
+            if phase_one == 100:
+                sales_prog_phase.phase_1 = True
+                sales_prog_phase.save()
+
+            notes = "The following has been marked as complete, "
+
+            for i, note in enumerate(notes_dict):
+                if len(notes_dict) == 1:
+                    notes += note
+                    notes += "."
+                else:
+                    if i == len(notes_dict)-1:
+                        notes += note
+                        notes += "."
+                    elif i == len(notes_dict)-2:
+                        notes += note
+                        notes += "and "
+                    else:
+                        notes += note
+                        notes += ", "
+
+            history = PropertyHistory.objects.create(
+                propertyprocess=property_process,
+                type=PropertyHistory.PROGRESSION,
+                description=history_description,
+                notes=notes,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
+
+            data["form_is_valid"] = True
+
+            context = {
+                "property_process": property_process,
+                "history": history,
+            }
+            data["html_success"] = render_to_string(
+                "properties/stages/includes/form_success.html",
+                context,
+                request=request,
+            )
+
+            data["form_is_valid"] = True
+
+        else:
+            data["form_is_valid"] = False
+    else:
+        form = SalesProgressionPhaseOneForm(
+            instance=progression,
+        )
+
+    context = {
+        "form": form,
+        "propertyprocess_id": propertyprocess_id,
+    }
+    data["html_modal"] = render_to_string(
+        "properties/sales_progression/phase_one_modal.html",
         context,
         request=request,
     )

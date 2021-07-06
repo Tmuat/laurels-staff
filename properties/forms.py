@@ -16,6 +16,7 @@ from properties.models import (
     Deal,
     ExchangeMove,
     SalesProgressionSettings,
+    SalesProgression,
 )
 from properties.widgets import DateInput
 from users.models import Profile
@@ -542,6 +543,45 @@ class SalesProgressionSettingsForm(forms.ModelForm):
             "show_mortgage": "Show Mortgage Options",
             "show_survey": "Show Survey Options",
         }
+
+        for field in self.fields:
+            label = f"{labels[field]}"
+            self.fields[field].label = label
+
+
+class SalesProgressionPhaseOneForm(forms.ModelForm):
+    class Meta:
+        model = SalesProgression
+        fields = (
+            "buyers_aml_checks_and_sales_memo",
+            "buyers_initial_solicitors_paperwork",
+            "sellers_inital_solicitors_paperwork",
+            "draft_contracts_recieved_by_buyers_solicitors",
+            "searches_paid_for",
+            "searches_ordered",
+        )
+
+    def __init__(self, *args, **kwargs):
+        """
+        Add new labels and order foreign key field
+        """
+
+        super().__init__(*args, **kwargs)
+        labels = {
+            "buyers_aml_checks_and_sales_memo": "Buyers AML Checks & Sales Memo's Complete:",
+            "buyers_initial_solicitors_paperwork": "Buyers Initial Paperwork Complete:",
+            "sellers_inital_solicitors_paperwork": "Sellers Initial Paperwork Complete:",
+            "draft_contracts_recieved_by_buyers_solicitors": "Draft Contracts Received By Buyers Solicitors:",
+            "searches_paid_for": "Searches Paid For:",
+            "searches_ordered": "Searches Ordered:"
+        }
+
+        instance = getattr(self, 'instance', None)
+        for model_field in instance._meta.get_fields():
+            for field in self.fields:
+                if model_field.name == field:
+                    if getattr(instance, model_field.name) is True:
+                        self.fields[field].disabled = True
 
         for field in self.fields:
             label = f"{labels[field]}"

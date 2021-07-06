@@ -34,6 +34,7 @@ from properties.views import (
     edit_deal,
     add_exchange,
     edit_sales_prog_settings,
+    phase_one,
 )
 
 
@@ -199,5 +200,10 @@ urlpatterns = [
         "properties/edit/sales-progression/settings/<propertyprocess_id>/",
         edit_sales_prog_settings,
         name="edit_sales_prog_settings",
+    ),
+    path(
+        "properties/edit/sales-progression/phase-one/<propertyprocess_id>/",
+        phase_one,
+        name="phase_one",
     ),
 ]
