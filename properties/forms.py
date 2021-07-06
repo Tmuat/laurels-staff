@@ -586,3 +586,117 @@ class SalesProgressionPhaseOneForm(forms.ModelForm):
         for field in self.fields:
             label = f"{labels[field]}"
             self.fields[field].label = label
+
+
+class SalesProgressionPhaseTwoForm(forms.ModelForm):
+    class Meta:
+        model = SalesProgression
+        fields = (
+            "mortgage_application_submitted",
+            "mortgage_survey_arranged",
+            "mortgage_offer_with_solicitors",
+            "all_search_results_recieved",
+        )
+
+    def __init__(self, *args, **kwargs):
+        """
+        Add new labels and order foreign key field
+        """
+
+        super().__init__(*args, **kwargs)
+        labels = {
+            "mortgage_application_submitted": "Mortgage Application Submitted:",
+            "mortgage_survey_arranged": "Mortgage Survey Booked:",
+            "mortgage_offer_with_solicitors": "Mortgage Offer With Solicitors:",
+            "all_search_results_recieved": "All Search Results Received:",
+        }
+
+        instance = getattr(self, 'instance', None)
+        for model_field in instance._meta.get_fields():
+            for field in self.fields:
+                if model_field.name == field:
+                    if getattr(instance, model_field.name) is True:
+                        self.fields[field].disabled = True
+
+        for field in self.fields:
+            label = f"{labels[field]}"
+            self.fields[field].label = label
+
+
+class SalesProgressionPhaseThreeForm(forms.ModelForm):
+    class Meta:
+        model = SalesProgression
+        fields = (
+            "enquiries_raised",
+            "structural_survey_booked",
+            "structural_survey_completed",
+            "enquiries_answered",
+        )
+
+    def __init__(self, *args, **kwargs):
+        """
+        Add new labels and order foreign key field
+        """
+
+        super().__init__(*args, **kwargs)
+        labels = {
+            "enquiries_raised": "Enquiries Raised:",
+            "structural_survey_booked": "Structural Survey Booked:",
+            "structural_survey_completed": "Structural Survey Completed:",
+            "enquiries_answered": "Enquiries Answered:",
+        }
+
+        instance = getattr(self, 'instance', None)
+        for model_field in instance._meta.get_fields():
+            for field in self.fields:
+                if model_field.name == field:
+                    if getattr(instance, model_field.name) is True:
+                        self.fields[field].disabled = True
+
+        for field in self.fields:
+            label = f"{labels[field]}"
+            self.fields[field].label = label
+
+
+class SalesProgressionPhaseFourForm(forms.ModelForm):
+    class Meta:
+        model = SalesProgression
+        fields = (
+            "additional_enquiries_raised",
+            "all_enquiries_answered",
+            "final_contracts_sent_out",
+            "buyers_final_contracts_signed",
+            "sellers_final_contracts_signed",
+            "buyers_deposit_sent",
+            "buyers_deposit_recieved",
+            "completion_date_agreed",
+        )
+
+    def __init__(self, *args, **kwargs):
+        """
+        Add new labels and order foreign key field
+        """
+
+        super().__init__(*args, **kwargs)
+        labels = {
+            "additional_enquiries_raised": "Additional Enquiries Raised:",
+            "all_enquiries_answered": "All Enquiries Answered:",
+            "final_contracts_sent_out": "Final Contracts Sent Out:",
+            "buyers_final_contracts_signed": "Buyers Final Contracts Signed:",
+            "sellers_final_contracts_signed": "Sellers Final Contracts Signed:",
+            "buyers_deposit_sent": "Buyers Deposit Sent:",
+            "buyers_deposit_recieved": "Buyers Deposit Received:",
+            "completion_date_agreed": "Completion Date Agreed:",
+
+        }
+
+        instance = getattr(self, 'instance', None)
+        for model_field in instance._meta.get_fields():
+            for field in self.fields:
+                if model_field.name == field:
+                    if getattr(instance, model_field.name) is True:
+                        self.fields[field].disabled = True
+
+        for field in self.fields:
+            label = f"{labels[field]}"
+            self.fields[field].label = label

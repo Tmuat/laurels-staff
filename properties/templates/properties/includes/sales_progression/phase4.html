@@ -3,8 +3,20 @@
 <div class="tab-pane" id="phase4">
     
     <h5 class="text-uppercase"><i class="mdi mdi-progress-check mr-1"></i>
-        Phase 4</h5>
-
+        Phase 4
+        <span
+            data-url="{% url 'properties:phase_four' propertyprocess.id %}"
+            class="ml-2 mdi mdi-square-edit-outline 
+            {% if propertyprocess.macro_status < 4 %}
+            text-secondary" disabled
+            {% else %}
+            pointer text-warning js-load-form" 
+            {% endif %}
+            data-toggle="tooltip"
+            data-placement="top"
+            title="Adjust Phase Four"
+        ></span>
+    </h5>
     <div class="d-none d-md-inline">
         <div class="row">
             <div class="col-md-4 text-center">

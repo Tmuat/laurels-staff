@@ -54,7 +54,7 @@ def sales_progression_percentage(propertyprocess_id):
             phase_2 += 1
         if instance.mortgage_survey_arranged:
             phase_2 += 1
-        if instance.mortgage_survey_completed:
+        if instance.mortgage_offer_with_solicitors:
             phase_2 += 1
         if instance.all_search_results_recieved:
             phase_2 += 1

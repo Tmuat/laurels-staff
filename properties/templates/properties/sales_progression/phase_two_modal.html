@@ -6,36 +6,28 @@
         </div>
         <div class="text-center text-white">
             <h4 class="text-white">Edit Sales Progression Settings</h4>
-            <form method="post" action="{% url 'properties:phase_one' propertyprocess_id %}" class="text-center text-white px-2 js-submit-form-success custom-form-margin">
+            <form method="post" action="{% url 'properties:phase_two' propertyprocess_id %}" class="text-center text-white px-2 js-submit-form-success custom-form-margin">
                 {% csrf_token %}
+                {% if propertyprocess.sales_progression.sales_progression_settings.show_mortgage %}
                 <div class="row">
                     <div class="col-12">
-                        {{ form.buyers_aml_checks_and_sales_memo|as_crispy_field }}
+                        {{ form.mortgage_application_submitted|as_crispy_field }}
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-12">
-                        {{ form.buyers_initial_solicitors_paperwork|as_crispy_field }}
+                        {{ form.mortgage_survey_arranged|as_crispy_field }}
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-12">
-                        {{ form.sellers_inital_solicitors_paperwork|as_crispy_field }}
+                        {{ form.mortgage_offer_with_solicitors|as_crispy_field }}
                     </div>
                 </div>
+                {% endif %}
                 <div class="row">
                     <div class="col-12">
-                        {{ form.draft_contracts_recieved_by_buyers_solicitors|as_crispy_field }}
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12">
-                        {{ form.searches_paid_for|as_crispy_field }}
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12">
-                        {{ form.searches_ordered|as_crispy_field }}
+                        {{ form.all_search_results_recieved|as_crispy_field }}
                     </div>
                 </div>
                 <div class="my-2 text-center">

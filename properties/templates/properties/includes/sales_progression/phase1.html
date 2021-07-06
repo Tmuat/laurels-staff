@@ -5,17 +5,17 @@
     <h5 class="text-uppercase"><i class="mdi mdi-progress-check mr-1"></i>
         Phase 1
         <span
-        data-url="{% url 'properties:phase_one' propertyprocess.id %}"
-        class="ml-2 mdi mdi-square-edit-outline 
-        {% if propertyprocess.macro_status < 4 %}
-        text-secondary" disabled
-        {% else %}
-        pointer text-warning js-load-form" 
-        {% endif %}
-        data-toggle="tooltip"
-        data-placement="top"
-        title="Adjust Phase One"
-    ></span>
+            data-url="{% url 'properties:phase_one' propertyprocess.id %}"
+            class="ml-2 mdi mdi-square-edit-outline 
+            {% if propertyprocess.macro_status < 4 %}
+            text-secondary" disabled
+            {% else %}
+            pointer text-warning js-load-form" 
+            {% endif %}
+            data-toggle="tooltip"
+            data-placement="top"
+            title="Adjust Phase One"
+        ></span>
     </h5>
 
     <div class="d-none d-md-inline">

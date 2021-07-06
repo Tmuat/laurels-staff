@@ -1539,6 +1539,16 @@ for instance in saleprogression_model:
     ]["sellers_inital_solicitors_paperwork_complete_date"]
     del instance["fields"]["sellers_inital_solicitors_paperwork_complete_date"]
 
+    instance["fields"]["mortgage_offer_with_solicitors"] = instance[
+        "fields"
+    ]["mortgage_survey_completed"]
+    del instance["fields"]["mortgage_survey_completed"]
+
+    instance["fields"]["mortgage_offer_with_solicitors_date"] = instance[
+        "fields"
+    ]["mortgage_survey_completed_date"]
+    del instance["fields"]["mortgage_survey_completed_date"]
+
     # del old fields
 
     del instance["fields"]["fallen_through"]
@@ -1568,7 +1578,7 @@ for instance in saleprogression_model:
         if (
             instance["fields"]["mortgage_application_submitted"]
             and instance["fields"]["mortgage_survey_arranged"]
-            and instance["fields"]["mortgage_survey_completed"]
+            and instance["fields"]["mortgage_offer_with_solicitors"]
             and instance["fields"]["all_search_results_recieved"]
         ):
             phase_fields["phase_2"] = True

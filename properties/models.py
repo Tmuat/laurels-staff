@@ -959,10 +959,10 @@ class SalesProgression(UpdatedAndCreated):
     )
     mortgage_survey_arranged_date = models.DateField(null=True, blank=True)
 
-    mortgage_survey_completed = models.BooleanField(
+    mortgage_offer_with_solicitors = models.BooleanField(
         null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
     )
-    mortgage_survey_completed_date = models.DateField(null=True, blank=True)
+    mortgage_offer_with_solicitors_date = models.DateField(null=True, blank=True)
 
     all_search_results_recieved = models.BooleanField(
         null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
