@@ -17,6 +17,7 @@ from properties.models import (
     ExchangeMove,
     SalesProgressionSettings,
     SalesProgression,
+    PropertySellingInformation,
 )
 from properties.widgets import DateInput
 from users.models import Profile
@@ -573,10 +574,10 @@ class SalesProgressionPhaseOneForm(forms.ModelForm):
             "sellers_inital_solicitors_paperwork": "Sellers Initial Paperwork Complete:",
             "draft_contracts_recieved_by_buyers_solicitors": "Draft Contracts Received By Buyers Solicitors:",
             "searches_paid_for": "Searches Paid For:",
-            "searches_ordered": "Searches Ordered:"
+            "searches_ordered": "Searches Ordered:",
         }
 
-        instance = getattr(self, 'instance', None)
+        instance = getattr(self, "instance", None)
         for model_field in instance._meta.get_fields():
             for field in self.fields:
                 if model_field.name == field:
@@ -611,7 +612,7 @@ class SalesProgressionPhaseTwoForm(forms.ModelForm):
             "all_search_results_recieved": "All Search Results Received:",
         }
 
-        instance = getattr(self, 'instance', None)
+        instance = getattr(self, "instance", None)
         for model_field in instance._meta.get_fields():
             for field in self.fields:
                 if model_field.name == field:
@@ -646,7 +647,7 @@ class SalesProgressionPhaseThreeForm(forms.ModelForm):
             "enquiries_answered": "Enquiries Answered:",
         }
 
-        instance = getattr(self, 'instance', None)
+        instance = getattr(self, "instance", None)
         for model_field in instance._meta.get_fields():
             for field in self.fields:
                 if model_field.name == field:
@@ -687,15 +688,70 @@ class SalesProgressionPhaseFourForm(forms.ModelForm):
             "buyers_deposit_sent": "Buyers Deposit Sent:",
             "buyers_deposit_recieved": "Buyers Deposit Received:",
             "completion_date_agreed": "Completion Date Agreed:",
-
         }
 
-        instance = getattr(self, 'instance', None)
+        instance = getattr(self, "instance", None)
         for model_field in instance._meta.get_fields():
             for field in self.fields:
                 if model_field.name == field:
                     if getattr(instance, model_field.name) is True:
                         self.fields[field].disabled = True
+
+        for field in self.fields:
+            label = f"{labels[field]}"
+            self.fields[field].label = label
+
+
+class PropertySellingInformationForm(forms.ModelForm):
+    class Meta:
+        model = PropertySellingInformation
+        fields = (
+            "seller_name",
+            "seller_phone",
+            "seller_email",
+            "buyer_name",
+            "buyer_phone",
+            "buyer_email",
+            "seller_sol_name",
+            "seller_sol_firm",
+            "seller_sol_phone",
+            "seller_sol_email",
+            "buyer_sol_name",
+            "buyer_sol_firm",
+            "buyer_sol_phone",
+            "buyer_sol_email",
+            "broker_name",
+            "broker_firm",
+            "broker_phone",
+            "broker_email",
+        )
+
+    def __init__(self, *args, **kwargs):
+        """
+        Add new labels
+        """
+
+        super().__init__(*args, **kwargs)
+        labels = {
+            "seller_name": "Name",
+            "seller_phone": "Phone",
+            "seller_email": "Email",
+            "buyer_name": "Name",
+            "buyer_phone": "Phone",
+            "buyer_email": "Email",
+            "seller_sol_name": "Name",
+            "seller_sol_firm": "Firm",
+            "seller_sol_phone": "Phone",
+            "seller_sol_email": "Email",
+            "buyer_sol_name": "Name",
+            "buyer_sol_firm": "Firm",
+            "buyer_sol_phone": "Phone",
+            "buyer_sol_email": "Email",
+            "broker_name": "Name",
+            "broker_firm": "Firm",
+            "broker_phone": "Phone",
+            "broker_email": "Email",
+        }
 
         for field in self.fields:
             label = f"{labels[field]}"

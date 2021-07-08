@@ -1,0 +1,107 @@
+{% load static i18n %}
+<div class="modal-content green-gradient">
+    <div class="modal-body">
+        <div class="text-center mt-2 mb-3">
+            <span><img src="{% static 'custom/images/logo.png' %}" alt="laurels" height="80"></span>
+        </div>
+        <div class="text-center text-white">
+            <h4 class="text-white">Client Information</h4>
+            <form method="post" action="{{ url }}" class="text-center text-white px-2 js-submit-form custom-form-margin">
+                {% csrf_token %}
+                <h5 class="text-white mb-0">Seller</h5>
+                <div class="row">
+                    <div class="col-12 col-md-6">
+                        {{ form.seller_name|as_crispy_field }}
+                    </div>
+                    <div class="col-12 col-md-6">
+                        {{ form.seller_phone|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-8 offset-md-2">
+                        {{ form.seller_email|as_crispy_field }}
+                    </div>
+                </div>
+                <hr class="border-light mx-auto w-75">
+
+                <h5 class="text-white mb-0">Seller Solicitors</h5>
+                <div class="row">
+                    <div class="col-12 col-md-6">
+                        {{ form.seller_sol_name|as_crispy_field }}
+                    </div>
+                    <div class="col-12 col-md-6">
+                        {{ form.seller_sol_firm|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-6">
+                        {{ form.seller_sol_phone|as_crispy_field }}
+                    </div>
+                    <div class="col-12 col-md-6">
+                        {{ form.seller_sol_email|as_crispy_field }}
+                    </div>
+                </div>
+                <hr class="border-light mx-auto w-75">
+
+                <h5 class="text-white mb-0">Buyer</h5>
+                <div class="row">
+                    <div class="col-12 col-md-6">
+                        {{ form.buyer_name|as_crispy_field }}
+                    </div>
+                    <div class="col-12 col-md-6">
+                        {{ form.buyer_phone|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-8 offset-md-2">
+                        {{ form.buyer_email|as_crispy_field }}
+                    </div>
+                </div>
+
+                <hr class="border-light mx-auto w-75">
+
+                <h5 class="text-white mb-0">Buyers Solicitors</h5>
+                <div class="row">
+                    <div class="col-12 col-md-6">
+                        {{ form.buyer_sol_name|as_crispy_field }}
+                    </div>
+                    <div class="col-12 col-md-6">
+                        {{ form.buyer_sol_firm|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-6">
+                        {{ form.buyer_sol_phone|as_crispy_field }}
+                    </div>
+                    <div class="col-12 col-md-6">
+                        {{ form.buyer_sol_email|as_crispy_field }}
+                    </div>
+                </div>
+
+                <hr class="border-light mx-auto w-75">
+
+                <h5 class="text-white mb-0">Broker</h5>
+                <div class="row">
+                    <div class="col-12 col-md-6">
+                        {{ form.broker_name|as_crispy_field }}
+                    </div>
+                    <div class="col-12 col-md-6">
+                        {{ form.broker_firm|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-6">
+                        {{ form.broker_phone|as_crispy_field }}
+                    </div>
+                    <div class="col-12 col-md-6">
+                        {{ form.broker_email|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="my-2 text-center">
+                    <button type="submit" class="btn btn-info" id="add-button">{% trans "Save Client Info" %}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- /.modal-content -->

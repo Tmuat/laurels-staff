@@ -1539,9 +1539,9 @@ for instance in saleprogression_model:
     ]["sellers_inital_solicitors_paperwork_complete_date"]
     del instance["fields"]["sellers_inital_solicitors_paperwork_complete_date"]
 
-    instance["fields"]["mortgage_offer_with_solicitors"] = instance[
-        "fields"
-    ]["mortgage_survey_completed"]
+    instance["fields"]["mortgage_offer_with_solicitors"] = instance["fields"][
+        "mortgage_survey_completed"
+    ]
     del instance["fields"]["mortgage_survey_completed"]
 
     instance["fields"]["mortgage_offer_with_solicitors_date"] = instance[

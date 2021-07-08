@@ -962,7 +962,9 @@ class SalesProgression(UpdatedAndCreated):
     mortgage_offer_with_solicitors = models.BooleanField(
         null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
     )
-    mortgage_offer_with_solicitors_date = models.DateField(null=True, blank=True)
+    mortgage_offer_with_solicitors_date = models.DateField(
+        null=True, blank=True
+    )
 
     all_search_results_recieved = models.BooleanField(
         null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
@@ -1407,26 +1409,24 @@ class PropertySellingInformation(UpdatedAndCreated):
         on_delete=models.CASCADE,
         related_name="selling_information",
     )
-    seller_name = models.CharField(max_length=100, null=True, blank=False)
-    seller_phone = models.IntegerField(null=True, blank=False)
-    seller_email = models.EmailField(max_length=100, null=True, blank=False)
-    buyer_name = models.CharField(max_length=100, null=True, blank=False)
-    buyer_phone = models.IntegerField(null=True, blank=False)
-    buyer_email = models.EmailField(max_length=100, null=True, blank=False)
-    seller_sol_name = models.CharField(max_length=100, null=True, blank=False)
-    seller_sol_firm = models.CharField(max_length=100, null=True, blank=False)
-    seller_sol_phone = models.IntegerField(null=True, blank=False)
-    seller_sol_email = models.EmailField(
-        max_length=100, null=True, blank=False
-    )
-    buyer_sol_name = models.CharField(max_length=100, null=True, blank=False)
-    buyer_sol_firm = models.CharField(max_length=100, null=True, blank=False)
-    buyer_sol_phone = models.IntegerField(null=True, blank=False)
-    buyer_sol_email = models.EmailField(max_length=100, null=True, blank=False)
-    broker_name = models.CharField(max_length=100, null=True, blank=False)
-    broker_firm = models.CharField(max_length=100, null=True, blank=False)
-    broker_phone = models.IntegerField(null=True, blank=False)
-    broker_email = models.EmailField(max_length=100, null=True, blank=False)
+    seller_name = models.CharField(max_length=100, null=True, blank=True)
+    seller_phone = models.IntegerField(null=True, blank=True)
+    seller_email = models.EmailField(max_length=100, null=True, blank=True)
+    buyer_name = models.CharField(max_length=100, null=True, blank=True)
+    buyer_phone = models.IntegerField(null=True, blank=True)
+    buyer_email = models.EmailField(max_length=100, null=True, blank=True)
+    seller_sol_name = models.CharField(max_length=100, null=True, blank=True)
+    seller_sol_firm = models.CharField(max_length=100, null=True, blank=True)
+    seller_sol_phone = models.IntegerField(null=True, blank=True)
+    seller_sol_email = models.EmailField(max_length=100, null=True, blank=True)
+    buyer_sol_name = models.CharField(max_length=100, null=True, blank=True)
+    buyer_sol_firm = models.CharField(max_length=100, null=True, blank=True)
+    buyer_sol_phone = models.IntegerField(null=True, blank=True)
+    buyer_sol_email = models.EmailField(max_length=100, null=True, blank=True)
+    broker_name = models.CharField(max_length=100, null=True, blank=True)
+    broker_firm = models.CharField(max_length=100, null=True, blank=True)
+    broker_phone = models.IntegerField(null=True, blank=True)
+    broker_email = models.EmailField(max_length=100, null=True, blank=True)
 
     def __str__(self):
         if (

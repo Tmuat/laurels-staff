@@ -39,6 +39,7 @@ from properties.forms import (
     SalesProgressionPhaseTwoForm,
     SalesProgressionPhaseThreeForm,
     SalesProgressionPhaseFourForm,
+    PropertySellingInformationForm,
 )
 from properties.models import (
     Property,
@@ -58,6 +59,7 @@ from properties.models import (
     SalesProgressionSettings,
     SalesProgressionPhase,
     Deal,
+    PropertySellingInformation,
 )
 from users.models import Profile
 
@@ -154,8 +156,8 @@ def property_detail(request, propertyprocess_id):
     history_page = 1
     offer_page = 1
 
-    history_paginator = Paginator(property_history, 5)
-    offers_paginator = Paginator(offers, 6)
+    history_paginator = Paginator(property_history, 4)
+    offers_paginator = Paginator(offers, 4)
 
     history_last_page = history_paginator.num_pages
     offers_last_page = offers_paginator.num_pages
@@ -200,7 +202,7 @@ def property_history_pagination(request, propertyprocess_id):
 
     history_page = request.GET.get("page", 1)
 
-    history_paginator = Paginator(property_history, 5)
+    history_paginator = Paginator(property_history, 4)
     history_last_page = history_paginator.num_pages
 
     try:
@@ -242,7 +244,7 @@ def offers_pagination(request, propertyprocess_id):
 
     offer_page = request.GET.get("page", 1)
 
-    offers_paginator = Paginator(offers, 6)
+    offers_paginator = Paginator(offers, 4)
 
     offers_last_page = offers_paginator.num_pages
 
@@ -2227,7 +2229,7 @@ def add_exchange(request, propertyprocess_id):
         form = ExchangeMoveForm(
             initial={
                 "exchange_date": datetime.date.today,
-                "completion_date": datetime.date.today
+                "completion_date": datetime.date.today,
             }
         )
 
@@ -2257,7 +2259,7 @@ def edit_sales_prog_settings(request, propertyprocess_id):
     if request.method == "POST":
         form = SalesProgressionSettingsForm(
             request.POST,
-            instance=property_process.sales_progression.sales_progression_settings
+            instance=property_process.sales_progression.sales_progression_settings,
         )
         if form.is_valid():
             instance = form.save(commit=False)
@@ -2301,18 +2303,14 @@ def phase_one(request, propertyprocess_id):
 
     sales_prog_phase = get_object_or_404(
         SalesProgressionPhase,
-        sales_progression=property_process.sales_progression.id
+        sales_progression=property_process.sales_progression.id,
     )
 
     progression = property_process.sales_progression
 
     old_aml = progression.buyers_aml_checks_and_sales_memo
-    old_initial_sol = (
-        progression.buyers_initial_solicitors_paperwork
-    )
-    old_sellers_initial_sol = (
-        progression.sellers_inital_solicitors_paperwork
-    )
+    old_initial_sol = progression.buyers_initial_solicitors_paperwork
+    old_sellers_initial_sol = progression.sellers_inital_solicitors_paperwork
     old_draft_contracts = (
         progression.draft_contracts_recieved_by_buyers_solicitors
     )
@@ -2320,10 +2318,7 @@ def phase_one(request, propertyprocess_id):
     old_searches_ordered = progression.searches_ordered
 
     if request.method == "POST":
-        form = SalesProgressionPhaseOneForm(
-            request.POST,
-            instance=progression
-        )
+        form = SalesProgressionPhaseOneForm(request.POST, instance=progression)
         if form.is_valid():
             instance = form.save(commit=False)
 
@@ -2337,52 +2332,50 @@ def phase_one(request, propertyprocess_id):
             notes_dict = []
 
             if old_aml != instance.buyers_aml_checks_and_sales_memo:
-                aml_notes = (
-                    "Buyers AML Checks & Sales Memo"
-                )
+                aml_notes = "Buyers AML Checks & Sales Memo"
                 notes_dict.append(aml_notes)
-                instance.buyers_aml_checks_and_sales_memo_date = datetime. \
-                    date.today()
+                instance.buyers_aml_checks_and_sales_memo_date = (
+                    datetime.date.today()
+                )
 
             if old_initial_sol != instance.buyers_initial_solicitors_paperwork:
-                sol_notes = (
-                    "Buyers Initial Paperwork"
-                )
+                sol_notes = "Buyers Initial Paperwork"
                 notes_dict.append(sol_notes)
-                instance.buyers_initial_solicitors_paperwork_date = datetime. \
-                    date.today()
-
-            if old_sellers_initial_sol != instance.sellers_inital_solicitors_paperwork:
-                seller_sol_notes = (
-                    "Sellers Initial Paperwork"
+                instance.buyers_initial_solicitors_paperwork_date = (
+                    datetime.date.today()
                 )
-                notes_dict.append(seller_sol_notes)
-                instance.sellers_inital_solicitors_paperwork_date = datetime. \
-                    date.today()
 
-            if old_draft_contracts != instance.draft_contracts_recieved_by_buyers_solicitors:
+            if (
+                old_sellers_initial_sol
+                != instance.sellers_inital_solicitors_paperwork
+            ):
+                seller_sol_notes = "Sellers Initial Paperwork"
+                notes_dict.append(seller_sol_notes)
+                instance.sellers_inital_solicitors_paperwork_date = (
+                    datetime.date.today()
+                )
+
+            if (
+                old_draft_contracts
+                != instance.draft_contracts_recieved_by_buyers_solicitors
+            ):
                 draft_contract_notes = (
                     "Draft Contracts Received By Buyers Solicitors"
                 )
                 notes_dict.append(draft_contract_notes)
-                instance.draft_contracts_recieved_by_buyers_solicitors_date = datetime. \
-                    date.today()
+                instance.draft_contracts_recieved_by_buyers_solicitors_date = (
+                    datetime.date.today()
+                )
 
             if old_searches_paid != instance.searches_paid_for:
-                searches_paid_notes = (
-                    "Searches Paid For"
-                )
+                searches_paid_notes = "Searches Paid For"
                 notes_dict.append(searches_paid_notes)
-                instance.searches_paid_for_date = datetime. \
-                    date.today()
+                instance.searches_paid_for_date = datetime.date.today()
 
             if old_searches_ordered != instance.searches_ordered:
-                searches_ordered_notes = (
-                    "Searches Ordered"
-                )
+                searches_ordered_notes = "Searches Ordered"
                 notes_dict.append(searches_ordered_notes)
-                instance.searches_ordered_date = datetime. \
-                    date.today()
+                instance.searches_ordered_date = datetime.date.today()
 
             instance.save()
 
@@ -2400,10 +2393,10 @@ def phase_one(request, propertyprocess_id):
                     notes += note
                     notes += "."
                 else:
-                    if i == len(notes_dict)-1:
+                    if i == len(notes_dict) - 1:
                         notes += note
                         notes += "."
-                    elif i == len(notes_dict)-2:
+                    elif i == len(notes_dict) - 2:
                         notes += note
                         notes += " and "
                     else:
@@ -2418,8 +2411,6 @@ def phase_one(request, propertyprocess_id):
                 created_by=request.user.get_full_name(),
                 updated_by=request.user.get_full_name(),
             )
-
-            data["form_is_valid"] = True
 
             context = {
                 "property_process": property_process,
@@ -2465,7 +2456,7 @@ def phase_two(request, propertyprocess_id):
 
     sales_prog_phase = get_object_or_404(
         SalesProgressionPhase,
-        sales_progression=property_process.sales_progression.id
+        sales_progression=property_process.sales_progression.id,
     )
 
     progression = property_process.sales_progression
@@ -2476,10 +2467,7 @@ def phase_two(request, propertyprocess_id):
     old_search = progression.all_search_results_recieved
 
     if request.method == "POST":
-        form = SalesProgressionPhaseTwoForm(
-            request.POST,
-            instance=progression
-        )
+        form = SalesProgressionPhaseTwoForm(request.POST, instance=progression)
         if form.is_valid():
             instance = form.save(commit=False)
 
@@ -2493,36 +2481,30 @@ def phase_two(request, propertyprocess_id):
             notes_dict = []
 
             if old_mor_submitted != instance.mortgage_application_submitted:
-                mor_notes = (
-                    "Mortgage Application Submitted"
-                )
+                mor_notes = "Mortgage Application Submitted"
                 notes_dict.append(mor_notes)
-                instance.mortgage_application_submitted_date = datetime. \
-                    date.today()
+                instance.mortgage_application_submitted_date = (
+                    datetime.date.today()
+                )
 
             if old_mor_survey != instance.mortgage_survey_arranged:
-                mor_sur_notes = (
-                    "Mortgage Survey Booked"
-                )
+                mor_sur_notes = "Mortgage Survey Booked"
                 notes_dict.append(mor_sur_notes)
-                instance.mortgage_survey_arranged_date = datetime. \
-                    date.today()
+                instance.mortgage_survey_arranged_date = datetime.date.today()
 
             if old_mor_offer != instance.mortgage_offer_with_solicitors:
-                mor_offer_notes = (
-                    "Mortgage Offer With Solicitors"
-                )
+                mor_offer_notes = "Mortgage Offer With Solicitors"
                 notes_dict.append(mor_offer_notes)
-                instance.mortgage_offer_with_solicitors_date = datetime. \
-                    date.today()
+                instance.mortgage_offer_with_solicitors_date = (
+                    datetime.date.today()
+                )
 
             if old_search != instance.all_search_results_recieved:
-                search_notes = (
-                    "All Search Results Received"
-                )
+                search_notes = "All Search Results Received"
                 notes_dict.append(search_notes)
-                instance.all_search_results_recieved_date = datetime. \
-                    date.today()
+                instance.all_search_results_recieved_date = (
+                    datetime.date.today()
+                )
 
             instance.save()
 
@@ -2540,10 +2522,10 @@ def phase_two(request, propertyprocess_id):
                     notes += note
                     notes += "."
                 else:
-                    if i == len(notes_dict)-1:
+                    if i == len(notes_dict) - 1:
                         notes += note
                         notes += "."
-                    elif i == len(notes_dict)-2:
+                    elif i == len(notes_dict) - 2:
                         notes += note
                         notes += " and "
                     else:
@@ -2558,8 +2540,6 @@ def phase_two(request, propertyprocess_id):
                 created_by=request.user.get_full_name(),
                 updated_by=request.user.get_full_name(),
             )
-
-            data["form_is_valid"] = True
 
             context = {
                 "property_process": property_process,
@@ -2606,7 +2586,7 @@ def phase_three(request, propertyprocess_id):
 
     sales_prog_phase = get_object_or_404(
         SalesProgressionPhase,
-        sales_progression=property_process.sales_progression.id
+        sales_progression=property_process.sales_progression.id,
     )
 
     progression = property_process.sales_progression
@@ -2618,8 +2598,7 @@ def phase_three(request, propertyprocess_id):
 
     if request.method == "POST":
         form = SalesProgressionPhaseThreeForm(
-            request.POST,
-            instance=progression
+            request.POST, instance=progression
         )
         if form.is_valid():
 
@@ -2635,36 +2614,26 @@ def phase_three(request, propertyprocess_id):
             notes_dict = []
 
             if old_enquries != instance.enquiries_raised:
-                enq_notes = (
-                    "Enquiries Raised"
-                )
+                enq_notes = "Enquiries Raised"
                 notes_dict.append(enq_notes)
-                instance.enquiries_raised_date = datetime. \
-                    date.today()
+                instance.enquiries_raised_date = datetime.date.today()
 
             if old_enquries_answered != instance.enquiries_answered:
-                enq_answered_notes = (
-                    "Enquiries Answered"
-                )
+                enq_answered_notes = "Enquiries Answered"
                 notes_dict.append(enq_answered_notes)
-                instance.enquiries_answered_date = datetime. \
-                    date.today()
+                instance.enquiries_answered_date = datetime.date.today()
 
             if old_survey != instance.structural_survey_booked:
-                survey_notes = (
-                    "Structural Survey Booked"
-                )
+                survey_notes = "Structural Survey Booked"
                 notes_dict.append(survey_notes)
-                instance.structural_survey_booked_date = datetime. \
-                    date.today()
+                instance.structural_survey_booked_date = datetime.date.today()
 
             if old_survey_comp != instance.structural_survey_completed:
-                survey_complete_notes = (
-                    "Structural Survey Complete"
-                )
+                survey_complete_notes = "Structural Survey Complete"
                 notes_dict.append(survey_complete_notes)
-                instance.structural_survey_completed_date = datetime. \
-                    date.today()
+                instance.structural_survey_completed_date = (
+                    datetime.date.today()
+                )
 
             instance.save()
 
@@ -2682,10 +2651,10 @@ def phase_three(request, propertyprocess_id):
                     notes += note
                     notes += "."
                 else:
-                    if i == len(notes_dict)-1:
+                    if i == len(notes_dict) - 1:
                         notes += note
                         notes += "."
-                    elif i == len(notes_dict)-2:
+                    elif i == len(notes_dict) - 2:
                         notes += note
                         notes += " and "
                     else:
@@ -2700,8 +2669,6 @@ def phase_three(request, propertyprocess_id):
                 created_by=request.user.get_full_name(),
                 updated_by=request.user.get_full_name(),
             )
-
-            data["form_is_valid"] = True
 
             context = {
                 "property_process": property_process,
@@ -2748,7 +2715,7 @@ def phase_four(request, propertyprocess_id):
 
     sales_prog_phase = get_object_or_404(
         SalesProgressionPhase,
-        sales_progression=property_process.sales_progression.id
+        sales_progression=property_process.sales_progression.id,
     )
 
     progression = property_process.sales_progression
@@ -2764,8 +2731,7 @@ def phase_four(request, propertyprocess_id):
 
     if request.method == "POST":
         form = SalesProgressionPhaseFourForm(
-            request.POST,
-            instance=progression
+            request.POST, instance=progression
         )
         if form.is_valid():
             instance = form.save(commit=False)
@@ -2780,68 +2746,53 @@ def phase_four(request, propertyprocess_id):
             notes_dict = []
 
             if old_add_enquiries != instance.additional_enquiries_raised:
-                additional_enquiries_notes = (
-                    "Additional Enquiries Raised"
-                )
+                additional_enquiries_notes = "Additional Enquiries Raised"
                 notes_dict.append(additional_enquiries_notes)
-                instance.additional_enquiries_raised_date = datetime. \
-                    date.today()
+                instance.additional_enquiries_raised_date = (
+                    datetime.date.today()
+                )
 
             if old_equiries_answered != instance.all_enquiries_answered:
-                enquiries_answered_notes = (
-                    "All Enquiries Answered"
-                )
+                enquiries_answered_notes = "All Enquiries Answered"
                 notes_dict.append(enquiries_answered_notes)
-                instance.all_enquiries_answered_date = datetime. \
-                    date.today()
+                instance.all_enquiries_answered_date = datetime.date.today()
 
             if old_contracts_sent != instance.final_contracts_sent_out:
-                contracts_sent_notes = (
-                    "Final Contracts Sent Out"
-                )
+                contracts_sent_notes = "Final Contracts Sent Out"
                 notes_dict.append(contracts_sent_notes)
-                instance.final_contracts_sent_out_date = datetime. \
-                    date.today()
+                instance.final_contracts_sent_out_date = datetime.date.today()
 
             if old_buyers_contracts != instance.buyers_final_contracts_signed:
-                buyers_contract_notes = (
-                    "Buyers Final Contracts Signed"
-                )
+                buyers_contract_notes = "Buyers Final Contracts Signed"
                 notes_dict.append(buyers_contract_notes)
-                instance.buyers_final_contracts_signed_date = datetime. \
-                    date.today()
-
-            if old_sellers_contracts != instance.sellers_final_contracts_signed:
-                seller_contract_notes = (
-                    "Sellers Final Contracts Signed"
+                instance.buyers_final_contracts_signed_date = (
+                    datetime.date.today()
                 )
+
+            if (
+                old_sellers_contracts
+                != instance.sellers_final_contracts_signed
+            ):
+                seller_contract_notes = "Sellers Final Contracts Signed"
                 notes_dict.appendseller_contract_notes()
-                instance.sellers_final_contracts_signed_date = datetime. \
-                    date.today()
+                instance.sellers_final_contracts_signed_date = (
+                    datetime.date.today()
+                )
 
             if old_deposit != instance.buyers_deposit_sent:
-                deposit_notes = (
-                    "Buyers Deposit Sent"
-                )
+                deposit_notes = "Buyers Deposit Sent"
                 notes_dict.append(deposit_notes)
-                instance.buyers_deposit_sent_date = datetime. \
-                    date.today()
+                instance.buyers_deposit_sent_date = datetime.date.today()
 
             if old_deposit_received != instance.buyers_deposit_recieved:
-                deposit_received_notes = (
-                    "Buyers Deposit Received"
-                )
+                deposit_received_notes = "Buyers Deposit Received"
                 notes_dict.append(deposit_received_notes)
-                instance.buyers_deposit_recieved_date = datetime. \
-                    date.today()
+                instance.buyers_deposit_recieved_date = datetime.date.today()
 
             if old_comp_date != instance.completion_date_agreed:
-                comp_notes = (
-                    "Completion Date Agreed"
-                )
+                comp_notes = "Completion Date Agreed"
                 notes_dict.append(comp_notes)
-                instance.completion_date_agreed_date = datetime. \
-                    date.today()
+                instance.completion_date_agreed_date = datetime.date.today()
 
             instance.save()
 
@@ -2859,10 +2810,10 @@ def phase_four(request, propertyprocess_id):
                     notes += note
                     notes += "."
                 else:
-                    if i == len(notes_dict)-1:
+                    if i == len(notes_dict) - 1:
                         notes += note
                         notes += "."
-                    elif i == len(notes_dict)-2:
+                    elif i == len(notes_dict) - 2:
                         notes += note
                         notes += " and "
                     else:
@@ -2877,8 +2828,6 @@ def phase_four(request, propertyprocess_id):
                 created_by=request.user.get_full_name(),
                 updated_by=request.user.get_full_name(),
             )
-
-            data["form_is_valid"] = True
 
             context = {
                 "property_process": property_process,
@@ -2905,6 +2854,106 @@ def phase_four(request, propertyprocess_id):
     }
     data["html_modal"] = render_to_string(
         "properties/sales_progression/phase_four_modal.html",
+        context,
+        request=request,
+    )
+
+    return JsonResponse(data)
+
+
+def add_client_info(request, propertyprocess_id):
+    """
+    Ajax URL for adding client info
+    """
+    data = dict()
+
+    property_process = get_object_or_404(
+        PropertyProcess, id=propertyprocess_id
+    )
+
+    url = reverse(
+        "properties:add_client_info",
+        kwargs={
+            "propertyprocess_id": propertyprocess_id,
+        },
+    )
+
+    if request.method == "POST":
+        form = PropertySellingInformationForm(
+            request.POST,
+        )
+        if form.is_valid():
+            instance = form.save(commit=False)
+
+            instance.propertyprocess = property_process
+            instance.created_by = request.user.get_full_name()
+            instance.updated_by = request.user.get_full_name()
+
+            instance.save()
+
+            data["form_is_valid"] = True
+
+        else:
+            data["form_is_valid"] = False
+    else:
+        form = PropertySellingInformationForm()
+
+    context = {
+        "form": form,
+        "url": url,
+    }
+    data["html_modal"] = render_to_string(
+        "properties/sales_progression/client_info_modal.html",
+        context,
+        request=request,
+    )
+
+    return JsonResponse(data)
+
+
+def edit_client_info(request, propertyprocess_id):
+    """
+    Ajax URL for editing client info
+    """
+    data = dict()
+
+    property_process = get_object_or_404(
+        PropertyProcess, id=propertyprocess_id
+    )
+
+    url = reverse(
+        "properties:edit_client_info",
+        kwargs={
+            "propertyprocess_id": propertyprocess_id,
+        },
+    )
+
+    if request.method == "POST":
+        form = PropertySellingInformationForm(
+            request.POST, instance=property_process.selling_information
+        )
+        if form.is_valid():
+            instance = form.save(commit=False)
+
+            instance.updated_by = request.user.get_full_name()
+
+            instance.save()
+
+            data["form_is_valid"] = True
+
+        else:
+            data["form_is_valid"] = False
+    else:
+        form = PropertySellingInformationForm(
+            instance=property_process.selling_information
+        )
+
+    context = {
+        "form": form,
+        "url": url,
+    }
+    data["html_modal"] = render_to_string(
+        "properties/sales_progression/client_info_modal.html",
         context,
         request=request,
     )

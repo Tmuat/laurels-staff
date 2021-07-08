@@ -515,6 +515,21 @@ $(document).ready(function () {
         return false;
     };
 
+    // Deals with rendering a form with AJAX to the large modal
+    var loadFormLargeModal = function () {
+        var instance = $(this);
+        $.ajax({
+            url: instance.attr("data-url"),
+            type: 'get',
+            dataType: 'json',
+            success: function (data) {
+                $("#base-large-modal").modal("show");
+                $("#base-large-modal .modal-dialog").html(data.html_modal);
+            }
+        });
+        return false;
+    };
+
     // Deals with rendering a form with AJAX to the base static modal
     var loadFormBaseStaticModal = function () {
         $('#modal-overlay').fadeToggle(100);
@@ -537,6 +552,11 @@ $(document).ready(function () {
         } else {
             $("#base-modal").find("#add-button").attr("disabled", true);
         }
+    });
+
+    // Add scrollable to modal
+    $(".js-large-scrollable-modal").on("click", function() {
+        $("#base-large-modal .modal-dialog").addClass("modal-dialog-scrollable");
     });
 
     // Binding functions
@@ -563,6 +583,7 @@ $(document).ready(function () {
     $(".js-edit-prog-settings").on("click", loadFormBaseModal);
 
     $(".js-load-form").on("click", loadFormBaseModal);
+    $(".js-load-large-form").on("click", loadFormLargeModal);
     
     $("#tbody-history").on("click", ".js-show-notes", loadFormBaseModal);
     $("#tbody-offers").on("click", ".js-show-offers", loadFormBaseModal);
@@ -586,4 +607,5 @@ $(document).ready(function () {
 
     $("#base-modal").on("submit", ".js-submit-form-success", submitFormAndLoadSuccess);
     $("#base-modal").on("submit", ".js-submit-form", submitForm);
+    $("#base-large-modal").on("submit", ".js-submit-form", submitForm);
 });

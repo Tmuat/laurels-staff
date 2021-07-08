@@ -6,18 +6,18 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('properties', '0071_delete_dealchange'),
+        ("properties", "0071_delete_dealchange"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='salesprogression',
-            old_name='mortgage_survey_completed',
-            new_name='mortgage_offer_with_solicitors',
+            model_name="salesprogression",
+            old_name="mortgage_survey_completed",
+            new_name="mortgage_offer_with_solicitors",
         ),
         migrations.RenameField(
-            model_name='salesprogression',
-            old_name='mortgage_survey_completed_date',
-            new_name='mortgage_offer_with_solicitors_date',
+            model_name="salesprogression",
+            old_name="mortgage_survey_completed_date",
+            new_name="mortgage_offer_with_solicitors_date",
         ),
     ]

@@ -38,6 +38,8 @@ from properties.views import (
     phase_two,
     phase_three,
     phase_four,
+    add_client_info,
+    edit_client_info,
 )
 
 
@@ -223,5 +225,15 @@ urlpatterns = [
         "properties/edit/sales-progression/phase-four/<propertyprocess_id>/",
         phase_four,
         name="phase_four",
+    ),
+    path(
+        "properties/add/sales-progression/client-info/<propertyprocess_id>/",
+        add_client_info,
+        name="add_client_info",
+    ),
+    path(
+        "properties/edit/sales-progression/client-info/<propertyprocess_id>/",
+        edit_client_info,
+        name="edit_client_info",
     ),
 ]
