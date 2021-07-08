@@ -3,22 +3,22 @@
     <div class="card-body">
         <div class="mb-2">
             <h4 class="header-title mt-0 mb-3 d-inline">Sols/Broker/Client Information</h4>
-        <span
-            {% if propertyprocess.selling_information %}
-                data-url="{% url 'properties:edit_client_info' propertyprocess.id %}"
-            {% else %}
-                data-url="{% url 'properties:add_client_info' propertyprocess.id %}"
-            {% endif %}
-            class="mb-3 float-right mdi mdi-sticker-plus 
-            {% if propertyprocess.macro_status < 4 %}
-            text-secondary" disabled
-            {% else %}
-            pointer text-success js-load-large-form js-large-scrollable-modal" 
-            {% endif %}
-            data-toggle="tooltip"
-            data-placement="top"
-            title="Add/Edit Info"
-        ></span>
+            <span
+                {% if propertyprocess.selling_information %}
+                    data-url="{% url 'properties:edit_client_info' propertyprocess.id %}"
+                {% else %}
+                    data-url="{% url 'properties:add_client_info' propertyprocess.id %}"
+                {% endif %}
+                class="mb-3 float-right mdi mdi-sticker-plus 
+                {% if propertyprocess.macro_status < 4 %}
+                text-secondary" disabled
+                {% else %}
+                pointer text-success js-load-large-form js-large-scrollable-modal" 
+                {% endif %}
+                data-toggle="tooltip"
+                data-placement="top"
+                title="Add/Edit Info"
+            ></span>
         </div>
 
         <ul class="nav nav-pills bg-nav-pills nav-justified mb-3 flex-wrap">

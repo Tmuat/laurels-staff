@@ -3,35 +3,35 @@
     data-url="{% url 'properties:add_valuation' instance.id %}" data-toggle="tooltip"
     data-placement="top"
     title="Valuation"
-    class="btn {% if instance.macro_status != 1 %}btn-secondary" disabled{% else %}btn-info js-add-valuation"{% endif %}>
+    class="btn mb-1 {% if instance.macro_status != 1 %}btn-secondary" disabled{% else %}btn-info js-add-valuation"{% endif %}>
         <i class="mdi mdi-clipboard-file-outline"></i>
 </button>
 <button 
     data-url="{% url 'properties:add_instruction' instance.id %}" data-toggle="tooltip"
     data-placement="top"
     title="Instruction"
-    class="btn {% if instance.macro_status != 2 %}btn-secondary" disabled{% else %}btn-info js-add-instruction"{% endif %}>
+    class="btn mb-1 {% if instance.macro_status != 2 %}btn-secondary" disabled{% else %}btn-info js-add-instruction"{% endif %}>
         <i class="mdi mdi-clipboard-text-outline"></i>
 </button>
 <button 
     data-url="{% url 'properties:add_reduction' instance.id %}" data-toggle="tooltip"
     data-placement="top"
     title="Reduction"
-    class="btn {% if instance.macro_status != 3 %}btn-secondary" disabled{% else %}btn-info js-add-reduction"{% endif %}>
+    class="btn mb-1 {% if instance.macro_status != 3 %}btn-secondary" disabled{% else %}btn-info js-add-reduction"{% endif %}>
         <i class="mdi mdi-cash-minus"></i>
 </button>
 <button 
     data-url="{% url 'properties:add_offerer' instance.id %}" data-toggle="tooltip"
     data-placement="top"
     title="Add Offer"
-    class="btn {% if instance.macro_status != 3 %}btn-secondary" disabled{% else %}btn-info js-add-offerer"{% endif %}>
+    class="btn mb-1 {% if instance.macro_status != 3 %}btn-secondary" disabled{% else %}btn-info js-add-offerer"{% endif %}>
         <i class="mdi mdi-offer"></i>
 </button>
 <button 
     data-url="{% url 'properties:add_another_offer' instance.id %}" data-toggle="tooltip"
     data-placement="top"
     title="Change Offer"
-    class="btn {% if instance.macro_status != 3 %}btn-secondary" disabled{% else %}btn-info js-add-another-offer"{% endif %}>
+    class="btn mb-1 {% if instance.macro_status != 3 %}btn-secondary" disabled{% else %}btn-info js-add-another-offer"{% endif %}>
         <i class="mdi mdi-piggy-bank"></i>
 </button>
 {% if instance.macro_status == 3 or instance.macro_status == 4 %}
@@ -39,7 +39,7 @@
         data-url="{% url 'properties:withdraw_property' instance.id %}" data-toggle="tooltip"
         data-placement="top"
         title="Withdraw"
-        class="btn {% if instance.macro_status == 3 or instance.macro_status == 4 %}btn-info js-withdraw"{% else %}btn-secondary" disabled{% endif %}>
+        class="btn mb-1 {% if instance.macro_status == 3 or instance.macro_status == 4 %}btn-info js-withdraw"{% else %}btn-secondary" disabled{% endif %}>
             <i class="mdi mdi-alert-octagon"></i>
     </button>
 {% elif instance.macro_status == 0 %}
@@ -47,7 +47,7 @@
         data-url="{% url 'properties:back_on_the_market' instance.id %}" data-toggle="tooltip"
         data-placement="top"
         title="Back On The Market"
-        class="btn btn-info js-back-on-market">
+        class="btn mb-1 btn-info js-back-on-market">
         <i class="mdi mdi-home-plus"></i>
     </button>
 {% endif %}
@@ -55,13 +55,13 @@
     data-url="{% url 'properties:add_deal' instance.id %}" data-toggle="tooltip"
     data-placement="top"
     title="Add Deal"
-    class="btn {% if instance.macro_status != 3 %}btn-secondary" disabled{% else %}btn-info js-add-deal"{% endif %}>
+    class="btn mb-1 {% if instance.macro_status != 3 %}btn-secondary" disabled{% else %}btn-info js-add-deal"{% endif %}>
         <i class="mdi mdi-handshake"></i>
 </button>
 <button 
     data-url="{% url 'properties:add_exchange' instance.id %}" data-toggle="tooltip"
     data-placement="top"
     title="Add Exchange"
-    class="btn {% if instance.macro_status != 4 %}btn-secondary" disabled{% else %}btn-info js-add-exchange"{% endif %}>
+    class="btn mb-1 {% if instance.macro_status != 4 %}btn-secondary" disabled{% else %}btn-info js-add-exchange"{% endif %}>
         <i class="mdi mdi-home-lock"></i>
 </button>

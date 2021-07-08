@@ -1,14 +1,24 @@
 <!-- Notes -->
 <div class="card">
     <div class="card-body">
-        <h4 class="header-title mt-0 mb-3">Progression Notes</h4>
+        <h4 class="header-title mt-0 mb-3 d-inline">
+            Progression Notes
+            <span
+                data-url="{% url 'properties:add_progression_notes' propertyprocess.id %}"
+                class="mb-3 float-right mdi mdi-sticker-plus 
+                pointer text-success js-load-form" 
+                data-toggle="tooltip"
+                data-placement="top"
+                title="Add Note"
+            ></span>
+        </h4>
         <div class="table-responsive">
             <table class="table table-sm table-centered mb-0 font-14">
                 <thead class="thead-light">
                     <tr>
                         <th style="width: 15%;">Date</th>
                         <th>Notes</th>
-                        <th class="text-center" style="width: 10%;">Edit</th>
+                        <th class="text-center" style="width: 10%;"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -16,7 +26,13 @@
                     <tr>
                         <td>{{ instance.created|date:"d M Y" }}</td>
                         <td>{{ instance.notes }}</td>
-                        <td class="text-center">Edit</td>
+                        <td class="text-center">
+                            <span
+                                data-url="{% url 'properties:edit_progression_notes' instance.id %}" 
+                                class="text-center text-info pointer js-load-form">
+                                Edit
+                            </span>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>

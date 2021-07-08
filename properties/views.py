@@ -40,6 +40,7 @@ from properties.forms import (
     SalesProgressionPhaseThreeForm,
     SalesProgressionPhaseFourForm,
     PropertySellingInformationForm,
+    ProgressionNotesForm,
 )
 from properties.models import (
     Property,
@@ -59,7 +60,7 @@ from properties.models import (
     SalesProgressionSettings,
     SalesProgressionPhase,
     Deal,
-    PropertySellingInformation,
+    ProgressionNotes
 )
 from users.models import Profile
 
@@ -2954,6 +2955,107 @@ def edit_client_info(request, propertyprocess_id):
     }
     data["html_modal"] = render_to_string(
         "properties/sales_progression/client_info_modal.html",
+        context,
+        request=request,
+    )
+
+    return JsonResponse(data)
+
+
+def edit_progression_notes(request, progression_notes_id):
+    """
+    Ajax URL for editing progression notes
+    """
+    data = dict()
+
+    progression = get_object_or_404(
+        ProgressionNotes, id=progression_notes_id
+    )
+
+    url = reverse(
+        "properties:edit_progression_notes",
+        kwargs={
+            "progression_notes_id": progression_notes_id,
+        },
+    )
+
+    if request.method == "POST":
+        form = ProgressionNotesForm(
+            request.POST, instance=progression
+        )
+        if form.is_valid():
+            instance = form.save(commit=False)
+
+            instance.updated_by = request.user.get_full_name()
+
+            instance.save()
+
+            data["form_is_valid"] = True
+
+        else:
+            data["form_is_valid"] = False
+    else:
+        form = ProgressionNotesForm(
+            instance=progression
+        )
+
+    context = {
+        "form": form,
+        "url": url,
+    }
+    data["html_modal"] = render_to_string(
+        "properties/sales_progression/progression_notes_modal.html",
+        context,
+        request=request,
+    )
+
+    return JsonResponse(data)
+
+
+def add_progression_notes(request, propertyprocess_id):
+    """
+    Ajax URL for adding progression notes
+    """
+    data = dict()
+
+    property_process = get_object_or_404(
+        PropertyProcess, id=propertyprocess_id
+    )
+
+    url = reverse(
+        "properties:add_progression_notes",
+        kwargs={
+            "propertyprocess_id": propertyprocess_id,
+        },
+    )
+
+    if request.method == "POST":
+        form = ProgressionNotesForm(
+            request.POST
+        )
+        if form.is_valid():
+            instance = form.save(commit=False)
+
+            instance.propertyprocess = property_process
+
+            instance.created_by = request.user.get_full_name()
+            instance.updated_by = request.user.get_full_name()
+
+            instance.save()
+
+            data["form_is_valid"] = True
+
+        else:
+            data["form_is_valid"] = False
+    else:
+        form = ProgressionNotesForm()
+
+    context = {
+        "form": form,
+        "url": url,
+    }
+    data["html_modal"] = render_to_string(
+        "properties/sales_progression/progression_notes_modal.html",
         context,
         request=request,
     )

@@ -183,7 +183,16 @@ body.authentication-bg {
 @media (max-width: 575.98px) { }
 
 /* Small devices (landscape phones, 576px and up) */
-@media (min-width: 576px) { }
+@media (min-width: 576px) {
+
+    /* Extending Bootstrap */
+    .border-sm-right-dark{
+        border-right: 1px solid #313a46!important;
+    }
+    .border-sm-left-dark{
+        border-left: 1px solid #313a46!important;
+    }
+}
 
 /* Medium devices (tablets, 768px and up) */
 @media (min-width: 768px) {

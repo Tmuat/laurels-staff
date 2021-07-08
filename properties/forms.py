@@ -18,6 +18,7 @@ from properties.models import (
     SalesProgressionSettings,
     SalesProgression,
     PropertySellingInformation,
+    ProgressionNotes,
 )
 from properties.widgets import DateInput
 from users.models import Profile
@@ -751,6 +752,28 @@ class PropertySellingInformationForm(forms.ModelForm):
             "broker_firm": "Firm",
             "broker_phone": "Phone",
             "broker_email": "Email",
+        }
+
+        for field in self.fields:
+            label = f"{labels[field]}"
+            self.fields[field].label = label
+
+
+class ProgressionNotesForm(forms.ModelForm):
+    class Meta:
+        model = ProgressionNotes
+        fields = (
+            "notes",
+        )
+
+    def __init__(self, *args, **kwargs):
+        """
+        Add new labels
+        """
+
+        super().__init__(*args, **kwargs)
+        labels = {
+            "notes": "",
         }
 
         for field in self.fields:
