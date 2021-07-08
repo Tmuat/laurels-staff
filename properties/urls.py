@@ -44,6 +44,9 @@ from properties.views import (
     edit_progression_notes,
     add_progression_notes,
     delete_progression_notes,
+    add_property_chain_detail,
+    edit_property_chain_detail,
+    delete_property_chain_detail,
 )
 
 
@@ -89,6 +92,21 @@ urlpatterns = [
         "properties/property-chain/new-order/<property_chain_id>/",
         property_chain_detail,
         name="property_chain_detail",
+    ),
+    path(
+        "properties/add/property-chain/<propertyprocess_id>/",
+        add_property_chain_detail,
+        name="add_property_chain_detail",
+    ),
+    path(
+        "properties/edit/property-chain/<property_chain_id>/",
+        edit_property_chain_detail,
+        name="edit_property_chain_detail",
+    ),
+    path(
+        "properties/delete/property-chain/<property_chain_id>/",
+        delete_property_chain_detail,
+        name="delete_property_chain_detail",
     ),
     path(
         "properties/render/property/",

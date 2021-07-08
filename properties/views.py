@@ -41,6 +41,7 @@ from properties.forms import (
     SalesProgressionPhaseFourForm,
     PropertySellingInformationForm,
     ProgressionNotesForm,
+    PropertyChainForm,
 )
 from properties.models import (
     Property,
@@ -404,6 +405,126 @@ def property_chain_detail(request, property_chain_id):
         context,
         request=request,
     )
+    return JsonResponse(data)
+
+
+def add_property_chain_detail(request, propertyprocess_id):
+    """
+    A view to add a property chain instance
+    """
+
+    data = dict()
+
+    property_process = get_object_or_404(
+        PropertyProcess, id=propertyprocess_id
+    )
+
+    url = reverse(
+        "properties:add_property_chain_detail",
+        kwargs={
+            "propertyprocess_id": propertyprocess_id,
+        },
+    )
+
+    if request.method == "POST":
+        form = PropertyChainForm(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+
+            instance.sales_progression = property_process.sales_progression
+
+            instance.created_by = request.user.get_full_name()
+            instance.updated_by = request.user.get_full_name()
+
+            instance.save()
+
+            data["form_is_valid"] = True
+
+        else:
+            data["form_is_valid"] = False
+    else:
+        form = PropertyChainForm()
+
+    context = {
+        "form": form,
+        "url": url,
+    }
+    data["html_modal"] = render_to_string(
+        "properties/sales_progression/property_chain_modal.html",
+        context,
+        request=request,
+    )
+
+    return JsonResponse(data)
+
+
+def edit_property_chain_detail(request, property_chain_id):
+    """
+    A view to add a property chain instance
+    """
+
+    data = dict()
+
+    chain_instance = get_object_or_404(
+        PropertyChain, id=property_chain_id
+    )
+
+    url = reverse(
+        "properties:edit_property_chain_detail",
+        kwargs={
+            "property_chain_id": property_chain_id,
+        },
+    )
+
+    if request.method == "POST":
+        form = PropertyChainForm(
+            request.POST,
+            instance=chain_instance
+        )
+        if form.is_valid():
+            instance = form.save(commit=False)
+
+            instance.updated_by = request.user.get_full_name()
+
+            instance.save()
+
+            data["form_is_valid"] = True
+
+        else:
+            data["form_is_valid"] = False
+    else:
+        form = PropertyChainForm(
+            instance=chain_instance
+        )
+
+    context = {
+        "form": form,
+        "url": url,
+    }
+    data["html_modal"] = render_to_string(
+        "properties/sales_progression/property_chain_modal.html",
+        context,
+        request=request,
+    )
+
+    return JsonResponse(data)
+
+
+def delete_property_chain_detail(request, property_chain_id):
+    """
+    A view to add a property chain instance
+    """
+
+    data = dict()
+
+    chain_instance = get_object_or_404(
+        PropertyChain, id=property_chain_id
+    )
+
+    if request.method == "POST":
+        chain_instance.delete()
+        data["form_is_valid"] = True
+
     return JsonResponse(data)
 
 

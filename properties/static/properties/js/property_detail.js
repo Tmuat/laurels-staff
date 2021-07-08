@@ -597,6 +597,7 @@ $(document).ready(function () {
     $(".js-add-exchange").on("click", loadFormBaseModal);
     $(".js-edit-prog-settings").on("click", loadFormBaseModal);
 
+    $("#base-modal").on("click", ".js-load-form", loadFormBaseModal);
     $(".js-load-form").on("click", loadFormBaseModal);
     $(".js-load-large-form").on("click", loadFormLargeModal);
     

@@ -1,10 +1,17 @@
 <div class="card">
     <div class="card-body">
-        <button id="save-property-order" class="float-right btn btn-sm btn-success">Save Order</button>
-        <h4 class="header-title mb-3">Property Chain 
+        <h4 class="header-title mb-3 d-inline">Property Chain 
             <span id="saved" class="text-success d-none"><small><span class="mdi mdi-check-circle-outline"></span> Saved</small></span>
             <span id="unsaved" class="text-danger d-none"><small><span class="mdi mdi-close-circle-outline"></span> Not Saved</small></span>
             <span id="error" class="text-danger d-none"><small><span class="mdi mdi-alert-circle-outline"></span> Error - Try Again</small></span>
+            <span
+                data-url="{% url 'properties:add_property_chain_detail' propertyprocess.id %}"
+                class="mb-3 float-right mdi mdi-sticker-plus 
+                pointer text-success js-load-form" 
+                data-toggle="tooltip"
+                data-placement="top"
+                title="Add Property"
+            ></span>
         </h4>
 
         <div class="row" id="simple-dragula" data-plugin="dragula" data-handleClass="dragula-handle">
@@ -15,7 +22,7 @@
                             <div class="row w-100 overflow-hidden">
                                 <div class="col-10 col-md-5 order-1">
                                     <h5 class="mb-1 mt-1">{{ instance.address_line_1 }}</h5>
-                                    <p class="mb-0"> {{ instance.address_line_2 }} </p>
+                                    <p class="mb-0"> {% if instance.address_line_2 is not None %}{{ instance.address_line_2 }}{% endif %} </p>
                                     <p class="mb-0"> {{ instance.town }} </p>
                                     <p class="mb-0"> {{ instance.postcode }} </p>
                                 </div>
@@ -41,6 +48,7 @@
 
         </div>
         <!-- end row-->
+        <button id="save-property-order" class="float-right btn btn-sm btn-success mt-2">Save Order</button>
     </div>
     <form id="property-chain-reorder" action="{% url 'properties:save_property_order' %}" method="POST">
         {% csrf_token %}

@@ -19,6 +19,7 @@ from properties.models import (
     SalesProgression,
     PropertySellingInformation,
     ProgressionNotes,
+    PropertyChain,
 )
 from properties.widgets import DateInput
 from users.models import Profile
@@ -774,6 +775,40 @@ class ProgressionNotesForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         labels = {
             "notes": "",
+        }
+
+        for field in self.fields:
+            label = f"{labels[field]}"
+            self.fields[field].label = label
+
+
+class PropertyChainForm(forms.ModelForm):
+    class Meta:
+        model = PropertyChain
+        fields = (
+            "company",
+            "branch",
+            "address_line_1",
+            "address_line_2",
+            "town",
+            "postcode",
+            "chain_notes",
+        )
+
+    def __init__(self, *args, **kwargs):
+        """
+        Add new labels
+        """
+
+        super().__init__(*args, **kwargs)
+        labels = {
+            "company": "Company",
+            "branch": "Branch",
+            "address_line_1": "Address Line 1",
+            "address_line_2": "Address Line 2",
+            "town": "Town",
+            "postcode": "Postcode",
+            "chain_notes": "Notes",
         }
 
         for field in self.fields:

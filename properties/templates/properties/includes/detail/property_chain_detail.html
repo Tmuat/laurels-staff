@@ -11,9 +11,11 @@
         <p class="text-white text-center mb-0">
             {{ instance.address_line_1 }}
         </p>
+        {% if instance.address_line_2 is not None %}
         <p class="text-white text-center mb-0">
             {{ instance.address_line_2 }}
         </p>
+        {% endif %}
         <p class="text-white text-center mb-0">
             {{ instance.town }}
         </p>
@@ -30,6 +32,14 @@
         <h5 class="text-white text-center">Notes</h5>
         <div class="text-white text-center mb-2 notes">
             {{ instance.chain_notes|linebreaks }}
+        </div>
+        <hr class="mx-auto border-light w-75">
+        <div class="text-center">
+            <button data-url="{% url 'properties:edit_property_chain_detail' instance.id %}" class="btn btn-warning mr-2 js-load-form">Edit</button>
+            <form method="post" action="{% url 'properties:delete_property_chain_detail' instance.id %}" class="js-submit-form d-inline">
+                {% csrf_token %}
+                <button type="submit" id="add-button" class="btn btn-danger ml-2">Delete</button>
+            </form>
         </div>
     </div>
 </div>

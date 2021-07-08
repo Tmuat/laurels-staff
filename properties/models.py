@@ -1175,7 +1175,7 @@ class PropertyChain(UpdatedAndCreated):
     address_line_2 = models.CharField(max_length=150, null=True, blank=True)
     town = models.CharField(max_length=100, null=False)
     postcode = models.CharField(max_length=8, null=True)
-    chain_notes = models.CharField(max_length=1000, null=True, blank=True)
+    chain_notes = models.TextField(null=True, blank=True)
     order = models.IntegerField(null=True)
 
     def __str__(self):
