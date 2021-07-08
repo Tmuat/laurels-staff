@@ -7,6 +7,7 @@ from properties.views import (
     property_history_detail,
     offer_history,
     offers_pagination,
+    notes_pagination,
     save_property_order,
     property_chain_detail,
     render_property,
@@ -42,6 +43,7 @@ from properties.views import (
     edit_client_info,
     edit_progression_notes,
     add_progression_notes,
+    delete_progression_notes,
 )
 
 
@@ -67,6 +69,11 @@ urlpatterns = [
         "properties/offers/<propertyprocess_id>/pagination/",
         offers_pagination,
         name="offers_pagination",
+    ),
+    path(
+        "properties/notes/<propertyprocess_id>/pagination/",
+        notes_pagination,
+        name="notes_pagination",
     ),
     path(
         "properties/offers/<offerer_id>/",
@@ -247,5 +254,10 @@ urlpatterns = [
         "properties/edit/sales-progression/notes/<progression_notes_id>/",
         edit_progression_notes,
         name="edit_progression_notes",
+    ),
+    path(
+        "properties/delete/sales-progression/notes/<progression_notes_id>/",
+        delete_progression_notes,
+        name="delete_progression_notes",
     ),
 ]

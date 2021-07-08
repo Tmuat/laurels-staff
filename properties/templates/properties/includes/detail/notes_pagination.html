@@ -1,0 +1,66 @@
+<ul class="pagination pagination-sm mb-0 justify-content-center">
+    {% if notes.has_previous %}
+        <li class="page-item">
+            <button class="page-link text-dark js-notes-pagination" data-url="{% url 'properties:notes_pagination' propertyprocess.id %}?page=1" aria-disabled="true"><span
+                    class="mdi mdi-page-first"></span></button>
+        </li>
+        {% if notes.number == notes_last_page %}
+            {% if notes.number != 2 %}
+                <li class="page-item">
+                    <button class="page-link text-dark js-notes-pagination"
+                        data-url="{% url 'properties:notes_pagination' propertyprocess.id %}?page={{ notes.previous_page_number|add:'-1' }}">{{ notes.previous_page_number|add:"-1" }}</button>
+                </li>
+            {% endif %}
+    {% endif %}
+        <li class="page-item">
+            <button class="page-link text-dark js-notes-pagination"
+                data-url="{% url 'properties:notes_pagination' propertyprocess.id %}?page={{ notes.previous_page_number }}">{{ notes.previous_page_number }}</button>
+        </li>
+    {% else %}
+        <li class="page-item disabled">
+            <button class="page-link text-light" data-url="?page=1" aria-disabled="true"><span class="mdi mdi-page-first"></span></button>
+        </li>
+    {% endif %}
+    <li class="page-item active" aria-current="page">
+        <button class="page-link text-white js-notes-pagination"
+            data-url="{% url 'properties:notes_pagination' propertyprocess.id %}?page={{ notes.number }}">{{ notes.number }} <span
+                class="sr-only">(current)</span></button>
+    </li>
+    {% if notes.has_next %}
+        <li class="page-item">
+            <button class="page-link text-dark js-notes-pagination"
+                data-url="{% url 'properties:notes_pagination' propertyprocess.id %}?page={{ notes.next_page_number }}">{{ notes.next_page_number }}</button>
+        </li>
+        {% if notes.number == 1 %}
+            {% if notes_last_page == 2 %}
+                <li class="page-item disabled">
+                    <button class="page-link text-light" data-url="?page=3">3</button>
+                </li>
+            {% else %}
+                <li class="page-item">
+                    <button class="page-link text-dark js-notes-pagination" data-url="{% url 'properties:notes_pagination' propertyprocess.id %}?page=3">3</button>
+                </li>
+            {% endif %}
+        {% endif %}
+        <li class="page-item">
+            <button class="page-link text-dark js-notes-pagination" data-url="{% url 'properties:notes_pagination' propertyprocess.id %}?page={{ notes_last_page }}"><span
+                    class="mdi mdi-page-last"></span></button>
+        </li>
+    {% else %}
+        {% if notes.number == 1 %}
+            <li class="page-item disabled">
+                <button class="page-link text-light" data-url="?page=2">2</button>
+            </li>
+            <li class="page-item disabled">
+                <button class="page-link text-light" data-url="?page=3">3</button>
+            </li>
+        {% elif notes_last_page == 2 %}
+            <li class="page-item disabled">
+                <button class="page-link text-light" data-url="?page=3">3</button>
+            </li>
+        {% endif %}
+            <li class="page-item disabled">
+                <button class="page-link text-light" data-url="?page={{ notes_last_page }}"><span class="mdi mdi-page-last"></span></button>
+            </li>
+    {% endif %}
+</ul>

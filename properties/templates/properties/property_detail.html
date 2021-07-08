@@ -61,8 +61,41 @@
                 {% include 'properties/includes/detail/property_solicitor_info.html' %}
             </div>
             <!-- end col -->
-            <div class="col-lg-8">
-                {% include 'properties/includes/detail/notes.html' %}
+            <div class="col-lg-8" id="notes">
+                <!-- Notes -->
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="header-title mt-0 mb-3 d-inline">
+                            Progression Notes
+                            <span
+                                data-url="{% url 'properties:add_progression_notes' propertyprocess.id %}"
+                                class="mb-3 float-right mdi mdi-sticker-plus 
+                                pointer text-success js-load-form" 
+                                data-toggle="tooltip"
+                                data-placement="top"
+                                title="Add Note"
+                            ></span>
+                        </h4>
+                        <div class="table-responsive">
+                            <table class="table table-sm table-centered mb-0 font-14">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th style="width: 15%;">Date</th>
+                                        <th>Notes</th>
+                                        <th class="text-center" style="width: 10%;"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbody-notes">
+                                    {% include 'properties/includes/detail/notes.html' %}
+                                </tbody>
+                            </table>
+                        </div> <!-- end table-responsive-->
+                        <div class="mt-1" id="notes-pagination">
+                            {% include 'properties/includes/detail/notes_pagination.html' %}
+                        </div>
+                    </div>
+                </div>
+                <!-- End Notes -->
             </div>
             <!-- end col -->
         </div>

@@ -151,6 +151,21 @@ $(document).ready(function () {
         return false;
     });
 
+    // Deals with the AJAX for property botes pagination
+    $("#notes").on("click", ".js-notes-pagination", function () {
+        var instance = $(this);
+        $.ajax({
+            url: instance.attr("data-url"),
+            type: 'get',
+            dataType: 'json',
+            success: function (data) {
+                $("#tbody-notes").html(data.html_table);
+                $("#notes-pagination").html(data.pagination);
+            }
+        });
+        return false;
+    });
+
     // Deals with the AJAX for showing add property/valuation form
     $(".js-add-property").click(function () {
         var instance = $(this);

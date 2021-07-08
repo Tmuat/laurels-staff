@@ -144,6 +144,7 @@ def property_detail(request, propertyprocess_id):
     propertyprocess = get_object_or_404(PropertyProcess, id=propertyprocess_id)
     property_history = propertyprocess.history.all()
     offers = propertyprocess.offerer_details.all()
+    notes = propertyprocess.progression_notes.all()
 
     if propertyprocess.macro_status > 3 and propertyprocess.sector == "sales":
         percentages = sales_progression_percentage(propertyprocess.id)
@@ -153,25 +154,32 @@ def property_detail(request, propertyprocess_id):
 
     property_history_list_length = len(property_history)
     offers_length = len(offers)
+    notes_length = len(notes)
 
     history_page = 1
     offer_page = 1
+    notes_page = 1
 
     history_paginator = Paginator(property_history, 4)
     offers_paginator = Paginator(offers, 4)
+    notes_paginator = Paginator(notes, 5)
 
     history_last_page = history_paginator.num_pages
     offers_last_page = offers_paginator.num_pages
+    notes_last_page = notes_paginator.num_pages
 
     try:
         property_history = history_paginator.page(history_page)
         offers = offers_paginator.page(offer_page)
+        notes = notes_paginator.page(notes_page)
     except PageNotAnInteger:
         property_history = history_paginator.page(1)
         offers = offers_paginator.page(1)
+        notes = notes_paginator.page(1)
     except EmptyPage:
         property_history = history_paginator.page(history_paginator.num_pages)
         offers = offers_paginator.page(offers_paginator.num_pages)
+        notes = notes_paginator.page(notes_paginator.num_pages)
 
     context = {
         "propertyprocess": propertyprocess,
@@ -181,6 +189,9 @@ def property_detail(request, propertyprocess_id):
         "offers": offers,
         "offers_length": offers_length,
         "offers_last_page": offers_last_page,
+        "notes": notes,
+        "notes_length": notes_length,
+        "notes_last_page": notes_last_page,
         "percentages": percentages,
         "property_chain": property_chain,
     }
@@ -270,6 +281,51 @@ def offers_pagination(request, propertyprocess_id):
     )
     data["html_table"] = render_to_string(
         "properties/includes/detail_tabs/offer_table.html",
+        context,
+        request=request,
+    )
+
+    return JsonResponse(data)
+
+
+def notes_pagination(request, propertyprocess_id):
+    """
+    A view to return an ajax response with notes instance
+    """
+    data = dict()
+
+    propertyprocess = get_object_or_404(PropertyProcess, id=propertyprocess_id)
+    notes = propertyprocess.progression_notes.all()
+
+    notes_length = len(notes)
+
+    notes_page = request.GET.get("page", 1)
+
+    notes_paginator = Paginator(notes, 5)
+
+    notes_last_page = notes_paginator.num_pages
+
+    try:
+        notes = notes_paginator.page(notes_page)
+    except PageNotAnInteger:
+        notes = notes_paginator.page(1)
+    except EmptyPage:
+        notes = notes_paginator.page(notes_paginator.num_pages)
+
+    context = {
+        "propertyprocess": propertyprocess,
+        "notes": notes,
+        "notes_length": notes_length,
+        "notes_last_page": notes_last_page,
+    }
+
+    data["pagination"] = render_to_string(
+        "properties/includes/detail/notes_pagination.html",
+        context,
+        request=request,
+    )
+    data["html_table"] = render_to_string(
+        "properties/includes/detail/notes.html",
         context,
         request=request,
     )
@@ -3059,5 +3115,32 @@ def add_progression_notes(request, propertyprocess_id):
         context,
         request=request,
     )
+
+    return JsonResponse(data)
+
+
+def delete_progression_notes(request, progression_notes_id):
+    """
+    Ajax URL for deleting progression notes
+    """
+    data = dict()
+
+    progression = get_object_or_404(
+        ProgressionNotes, id=progression_notes_id
+    )
+
+    if request.method == "POST":
+        progression.delete()
+        data["form_is_valid"] = True
+
+    else:
+        context = {
+            "progression": progression,
+        }
+        data["html_modal"] = render_to_string(
+            "properties/sales_progression/delete_progression_notes_modal.html",
+            context,
+            request=request,
+        )
 
     return JsonResponse(data)
