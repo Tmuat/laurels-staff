@@ -42,6 +42,7 @@ from properties.forms import (
     PropertySellingInformationForm,
     ProgressionNotesForm,
     PropertyChainForm,
+    SalesProgressionResetForm,
 )
 from properties.models import (
     Property,
@@ -61,7 +62,8 @@ from properties.models import (
     SalesProgressionSettings,
     SalesProgressionPhase,
     Deal,
-    ProgressionNotes
+    ProgressionNotes,
+    PropertySellingInformation,
 )
 from users.models import Profile
 
@@ -147,10 +149,13 @@ def property_detail(request, propertyprocess_id):
     offers = propertyprocess.offerer_details.all()
     notes = propertyprocess.progression_notes.all()
 
-    if propertyprocess.furthest_status > 3 and propertyprocess.sector == "sales":
+    if (
+        propertyprocess.furthest_status > 3
+        and propertyprocess.sector == "sales"
+    ):
         percentages = sales_progression_percentage(propertyprocess.id)
         property_chain = (
-            propertyprocess.sales_progression.sales_progression_chain.all()
+            propertyprocess.property_chain.all()
         )
 
     property_history_list_length = len(property_history)
@@ -431,7 +436,7 @@ def add_property_chain_detail(request, propertyprocess_id):
         if form.is_valid():
             instance = form.save(commit=False)
 
-            instance.sales_progression = property_process.sales_progression
+            instance.propertyprocess = property_process
 
             instance.created_by = request.user.get_full_name()
             instance.updated_by = request.user.get_full_name()
@@ -465,9 +470,7 @@ def edit_property_chain_detail(request, property_chain_id):
 
     data = dict()
 
-    chain_instance = get_object_or_404(
-        PropertyChain, id=property_chain_id
-    )
+    chain_instance = get_object_or_404(PropertyChain, id=property_chain_id)
 
     url = reverse(
         "properties:edit_property_chain_detail",
@@ -477,10 +480,7 @@ def edit_property_chain_detail(request, property_chain_id):
     )
 
     if request.method == "POST":
-        form = PropertyChainForm(
-            request.POST,
-            instance=chain_instance
-        )
+        form = PropertyChainForm(request.POST, instance=chain_instance)
         if form.is_valid():
             instance = form.save(commit=False)
 
@@ -493,9 +493,7 @@ def edit_property_chain_detail(request, property_chain_id):
         else:
             data["form_is_valid"] = False
     else:
-        form = PropertyChainForm(
-            instance=chain_instance
-        )
+        form = PropertyChainForm(instance=chain_instance)
 
     context = {
         "form": form,
@@ -517,9 +515,7 @@ def delete_property_chain_detail(request, property_chain_id):
 
     data = dict()
 
-    chain_instance = get_object_or_404(
-        PropertyChain, id=property_chain_id
-    )
+    chain_instance = get_object_or_404(PropertyChain, id=property_chain_id)
 
     if request.method == "POST":
         chain_instance.delete()
@@ -3145,9 +3141,7 @@ def edit_progression_notes(request, progression_notes_id):
     """
     data = dict()
 
-    progression = get_object_or_404(
-        ProgressionNotes, id=progression_notes_id
-    )
+    progression = get_object_or_404(ProgressionNotes, id=progression_notes_id)
 
     url = reverse(
         "properties:edit_progression_notes",
@@ -3157,9 +3151,7 @@ def edit_progression_notes(request, progression_notes_id):
     )
 
     if request.method == "POST":
-        form = ProgressionNotesForm(
-            request.POST, instance=progression
-        )
+        form = ProgressionNotesForm(request.POST, instance=progression)
         if form.is_valid():
             instance = form.save(commit=False)
 
@@ -3172,9 +3164,7 @@ def edit_progression_notes(request, progression_notes_id):
         else:
             data["form_is_valid"] = False
     else:
-        form = ProgressionNotesForm(
-            instance=progression
-        )
+        form = ProgressionNotesForm(instance=progression)
 
     context = {
         "form": form,
@@ -3207,9 +3197,7 @@ def add_progression_notes(request, propertyprocess_id):
     )
 
     if request.method == "POST":
-        form = ProgressionNotesForm(
-            request.POST
-        )
+        form = ProgressionNotesForm(request.POST)
         if form.is_valid():
             instance = form.save(commit=False)
 
@@ -3246,9 +3234,7 @@ def delete_progression_notes(request, progression_notes_id):
     """
     data = dict()
 
-    progression = get_object_or_404(
-        ProgressionNotes, id=progression_notes_id
-    )
+    progression = get_object_or_404(ProgressionNotes, id=progression_notes_id)
 
     if request.method == "POST":
         progression.delete()
@@ -3283,9 +3269,22 @@ def fall_through(request, propertyprocess_id):
         property_process.updated_by = request.user.get_full_name()
         property_process.save()
 
-        Deal.objects.get(
+        deal_instance = Deal.objects.get(
             propertyprocess=property_process.id
-        ).delete()
+        )
+
+        offerer = deal_instance.offer_accepted. \
+            offerer_details.full_name
+
+        offer_amount = deal_instance.offer_accepted.offer
+
+        notes = (
+            "The deal fallen through was with "
+            f"{offerer} for £"
+            f"{humanize.intcomma(offer_amount)}."
+        )
+
+        deal_instance.delete()
 
         property_fee_instance = PropertyFees.objects.filter(
             propertyprocess=property_process.id
@@ -3311,6 +3310,7 @@ def fall_through(request, propertyprocess_id):
             propertyprocess=property_process,
             type=PropertyHistory.PROPERTY_EVENT,
             description=history_description,
+            notes=notes,
             created_by=request.user.get_full_name(),
             updated_by=request.user.get_full_name(),
         )
@@ -3345,5 +3345,188 @@ def fall_through(request, propertyprocess_id):
             context,
             request=request,
         )
+
+    return JsonResponse(data)
+
+
+def manage_sales_progression(request, propertyprocess_id):
+    """
+    Ajax URL for editing sales progression after a fall through
+    """
+
+    data = dict()
+
+    property_process = get_object_or_404(
+        PropertyProcess, id=propertyprocess_id
+    )
+
+    if request.method == "POST":
+        form = SalesProgressionResetForm(request.POST)
+        if form.is_valid():
+            client_info = form.cleaned_data["client_info"]
+            sales_progression = form.cleaned_data["sales_progression"]
+            property_chain = form.cleaned_data["property_chain"]
+            property_notes = form.cleaned_data["property_notes"]
+
+            notes_dict = []
+
+            if client_info:
+                try:
+                    client_info_instance = (
+                        PropertySellingInformation.objects.get(
+                            propertyprocess=property_process
+                        )
+                    )
+                except PropertySellingInformation.DoesNotExist:
+                    client_info_instance = None
+
+                if client_info_instance:
+                    client_info_instance.delete()
+
+                client_info_notes = "Solicitor/Broker/Client Information"
+                notes_dict.append(client_info_notes)
+
+            if property_chain:
+                property_chain_qs = PropertyChain.objects.filter(
+                    propertyprocess=property_process
+                )
+
+                for property_chain_instance in property_chain_qs:
+                    property_chain_instance.delete()
+
+                property_chain_notes = "Property Chain"
+                notes_dict.append(property_chain_notes)
+
+            if property_notes:
+                try:
+                    progression_notes_instance = ProgressionNotes.objects.get(
+                        propertyprocess=property_process
+                    )
+                except ProgressionNotes.DoesNotExist:
+                    progression_notes_instance = None
+
+                if progression_notes_instance:
+                    progression_notes_instance.delete()
+
+                progression_notes_notes = "Progression Notes"
+                notes_dict.append(progression_notes_notes)
+
+            if sales_progression:
+                try:
+                    sales_progression_instance = SalesProgression.objects.get(
+                        propertyprocess=property_process
+                    )
+                except SalesProgression.DoesNotExist:
+                    sales_progression_instance = None
+
+                sales_progression_notes = "Sales Progression"
+                notes_dict.append(sales_progression_notes)
+
+                try:
+                    sales_progression_settings_instance = (
+                        SalesProgressionSettings.objects.get(
+                            sales_progression=sales_progression_instance
+                        )
+                    )
+                except SalesProgression.DoesNotExist:
+                    sales_progression_settings_instance = None
+
+                try:
+                    sales_progression_phase_instance = (
+                        SalesProgressionPhase.objects.get(
+                            sales_progression=sales_progression_instance
+                        )
+                    )
+                except SalesProgression.DoesNotExist:
+                    sales_progression_phase_instance = None
+
+                if sales_progression_settings_instance:
+                    sales_progression_settings_instance.delete()
+                if sales_progression_phase_instance:
+                    sales_progression_phase_instance.delete()
+                if sales_progression_instance:
+                    sales_progression_instance.delete()
+
+                if not SalesProgression.objects.filter(
+                    propertyprocess=property_process
+                ).exists():
+                    sales_prog = SalesProgression.objects.create(
+                        propertyprocess=property_process,
+                        created_by=request.user.get_full_name(),
+                        updated_by=request.user.get_full_name(),
+                    )
+                    SalesProgressionSettings.objects.create(
+                        sales_progression=sales_prog,
+                        created_by=request.user.get_full_name(),
+                        updated_by=request.user.get_full_name(),
+                    )
+                    SalesProgressionPhase.objects.create(
+                        sales_progression=sales_prog,
+                        created_by=request.user.get_full_name(),
+                        updated_by=request.user.get_full_name(),
+                    )
+
+                notes = "The following has been cleared, "
+
+            history_description = (
+                f"{request.user.get_full_name()} has cleared some data."
+            )
+
+            notes = "The following data has been cleared "
+
+            if (
+                client_info is False
+                and sales_progression is False
+                and property_chain is False
+                and property_notes is False
+            ):
+                data["form_is_valid"] = False
+            else:
+                for i, note in enumerate(notes_dict):
+                    if len(notes_dict) == 1:
+                        notes += note
+                        notes += "."
+                    else:
+                        if i == len(notes_dict) - 1:
+                            notes += note
+                            notes += "."
+                        elif i == len(notes_dict) - 2:
+                            notes += note
+                            notes += " and "
+                        else:
+                            notes += note
+                            notes += ", "
+
+                history = PropertyHistory.objects.create(
+                    propertyprocess=property_process,
+                    type=PropertyHistory.PROGRESSION,
+                    description=history_description,
+                    notes=notes,
+                    created_by=request.user.get_full_name(),
+                    updated_by=request.user.get_full_name(),
+                )
+
+                context = {
+                    "property_process": property_process,
+                    "history": history,
+                }
+                data["html_success"] = render_to_string(
+                    "properties/stages/includes/form_success.html",
+                    context,
+                    request=request,
+                )
+                data["form_is_valid"] = True
+    else:
+        form = SalesProgressionResetForm()
+
+    context = {
+        "form": form,
+        "property_process": property_process,
+    }
+    data["html_modal"] = render_to_string(
+        "properties/sales_progression/manage_sales_progression_modal.html",
+        context,
+        request=request,
+    )
 
     return JsonResponse(data)

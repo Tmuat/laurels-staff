@@ -72,3 +72,12 @@
     class="mb-1 btn px-2 py-1 {% if propertyprocess.macro_status != 4 %}btn-secondary" disabled{% else %}btn-info js-load-form"{% endif %}>
         <i class="mdi mdi-trash-can-outline icon-lg-size"></i>
 </button>
+{% if propertyprocess.previously_fallen_through is True %}
+<button 
+    data-url="{% url 'properties:manage_sales_progression' propertyprocess.id %}" data-toggle="tooltip"
+    data-placement="top"
+    title="Manage Sales Progression"
+    class="mb-1 btn px-2 py-1 btn-info js-load-form">
+        <i class="mdi mdi-cog-counterclockwise icon-lg-size"></i>
+</button>
+{% endif %}

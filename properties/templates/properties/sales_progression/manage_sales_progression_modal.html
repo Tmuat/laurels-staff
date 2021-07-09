@@ -1,0 +1,27 @@
+{% load static i18n %}
+<div class="modal-content green-gradient">
+    <div class="modal-body">
+        <div class="text-center mt-2 mb-3">
+            <span><img src="{% static 'custom/images/logo.png' %}" alt="laurels" height="80"></span>
+        </div>
+        <div class="text-center text-white">
+            <h4 class="text-white">Manage Sales Progression</h4>
+            <form method="post" action="{% url 'properties:manage_sales_progression' property_process.id %}" class="text-center text-white px-2 js-submit-form-success custom-form-margin">
+                {% csrf_token %}
+                <h5 class="text-white">Please click the sections you wish to reset. Note. this cannot be undone.</h5>
+                <div class="row">
+                    <div class="col-12">
+                        {{ form.client_info|as_crispy_field }}
+                        {{ form.sales_progression|as_crispy_field }}
+                        {{ form.property_chain|as_crispy_field }}
+                        {{ form.property_notes|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="my-2 text-center">
+                    <button type="submit" class="btn btn-info" id="add-button">{% trans "Reset Fields" %}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- /.modal-content -->

@@ -763,9 +763,7 @@ class PropertySellingInformationForm(forms.ModelForm):
 class ProgressionNotesForm(forms.ModelForm):
     class Meta:
         model = ProgressionNotes
-        fields = (
-            "notes",
-        )
+        fields = ("notes",)
 
     def __init__(self, *args, **kwargs):
         """
@@ -814,3 +812,23 @@ class PropertyChainForm(forms.ModelForm):
         for field in self.fields:
             label = f"{labels[field]}"
             self.fields[field].label = label
+
+
+class SalesProgressionResetForm(forms.Form):
+
+    client_info = forms.BooleanField(
+        required=False,
+        label=("Reset Client Info"),
+    )
+    sales_progression = forms.BooleanField(
+        required=False,
+        label=("Reset Sales Progression"),
+    )
+    property_chain = forms.BooleanField(
+        required=False,
+        label=("Reset Property Chain"),
+    )
+    property_notes = forms.BooleanField(
+        required=False,
+        label=("Reset Progression Notes"),
+    )
