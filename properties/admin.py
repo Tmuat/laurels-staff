@@ -206,6 +206,16 @@ class PropertySellingInformationAdminInline(admin.StackedInline):
     ]
 
 
+class PropertyChainAdminInline(admin.TabularInline):
+    model = PropertyChain
+    readonly_fields = [
+        "created",
+        "created_by",
+        "updated",
+        "updated_by",
+    ]
+
+
 class PropertyProcessAdmin(admin.ModelAdmin):
     inlines = [
         PropertyFeeAdminInline,
@@ -222,6 +232,7 @@ class PropertyProcessAdmin(admin.ModelAdmin):
         ProgressionNotesAdminInline,
         PropertySellingInformationAdminInline,
         MarketingAdminInline,
+        PropertyChainAdminInline,
     ]
 
     list_display = [
@@ -367,21 +378,10 @@ class SalesProgressionSettingsAdminInline(admin.TabularInline):
     ]
 
 
-class PropertyChainAdminInline(admin.TabularInline):
-    model = PropertyChain
-    readonly_fields = [
-        "created",
-        "created_by",
-        "updated",
-        "updated_by",
-    ]
-
-
 class SalesProgressionAdmin(admin.ModelAdmin):
     inlines = [
         SalesProgressionPhaseAdminInline,
         SalesProgressionSettingsAdminInline,
-        PropertyChainAdminInline,
     ]
 
     list_display = [

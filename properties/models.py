@@ -1158,17 +1158,17 @@ class SalesProgressionPhase(UpdatedAndCreated):
 class PropertyChain(UpdatedAndCreated):
     class Meta:
         ordering = [
-            "sales_progression__propertyprocess__property__postcode",
-            "sales_progression__propertyprocess__property__address_line_1",
+            "propertyprocess__property__postcode",
+            "propertyprocess__property__address_line_1",
             "order",
         ]
         verbose_name = "Sales Progression Chain"
         verbose_name_plural = "Sales Progressions Chain"
 
-    sales_progression = models.ForeignKey(
-        SalesProgression,
+    propertyprocess = models.ForeignKey(
+        PropertyProcess,
         on_delete=models.CASCADE,
-        related_name="sales_progression_chain",
+        related_name="property_chain",
     )
     company = models.CharField(max_length=150, null=False)
     branch = models.CharField(max_length=150, null=True)
@@ -1357,9 +1357,7 @@ def save_field(sender, instance, **kwargs):
             new_business = round(instance.price * (instance.fee / 100), 2)
             instance.new_business = new_business
         elif instance.propertyprocess.sector == "lettings":
-            new_business = round(
-                (instance.price * (instance.fee / 100)) * 12
-            )
+            new_business = round((instance.price * (instance.fee / 100)) * 12)
             instance.new_business = new_business
 
 

@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('properties', '0074_alter_propertychain_chain_notes'),
+        ("properties", "0074_alter_propertychain_chain_notes"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='propertyprocess',
-            name='previously_fallen_through',
+            model_name="propertyprocess",
+            name="previously_fallen_through",
             field=models.BooleanField(default=False),
         ),
     ]
