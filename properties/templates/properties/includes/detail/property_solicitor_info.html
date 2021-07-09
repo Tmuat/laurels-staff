@@ -10,7 +10,7 @@
                     data-url="{% url 'properties:add_client_info' propertyprocess.id %}"
                 {% endif %}
                 class="mb-3 float-right mdi mdi-sticker-plus 
-                {% if propertyprocess.macro_status < 4 %}
+                {% if propertyprocess.furthest_status < 4 %}
                 text-secondary" disabled
                 {% else %}
                 pointer text-success js-load-large-form js-large-scrollable-modal" 

@@ -47,6 +47,7 @@ from properties.views import (
     add_property_chain_detail,
     edit_property_chain_detail,
     delete_property_chain_detail,
+    fall_through,
 )
 
 
@@ -277,5 +278,10 @@ urlpatterns = [
         "properties/delete/sales-progression/notes/<progression_notes_id>/",
         delete_progression_notes,
         name="delete_progression_notes",
+    ),
+    path(
+        "properties/add/sales-progression/fall-through/<propertyprocess_id>/",
+        fall_through,
+        name="fall_through",
     ),
 ]

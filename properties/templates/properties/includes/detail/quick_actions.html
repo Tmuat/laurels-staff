@@ -65,3 +65,10 @@
     class="mb-1 btn px-2 py-1 {% if propertyprocess.macro_status != 4 %}btn-secondary" disabled{% else %}btn-info js-add-exchange"{% endif %}>
         <i class="mdi mdi-home-lock icon-lg-size"></i>
 </button>
+<button 
+    data-url="{% url 'properties:fall_through' propertyprocess.id %}" data-toggle="tooltip"
+    data-placement="top"
+    title="Fall Though Property"
+    class="mb-1 btn px-2 py-1 {% if propertyprocess.macro_status != 4 %}btn-secondary" disabled{% else %}btn-info js-load-form"{% endif %}>
+        <i class="mdi mdi-trash-can-outline icon-lg-size"></i>
+</button>

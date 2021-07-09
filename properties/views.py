@@ -147,7 +147,7 @@ def property_detail(request, propertyprocess_id):
     offers = propertyprocess.offerer_details.all()
     notes = propertyprocess.progression_notes.all()
 
-    if propertyprocess.macro_status > 3 and propertyprocess.sector == "sales":
+    if propertyprocess.furthest_status > 3 and propertyprocess.sector == "sales":
         percentages = sales_progression_percentage(propertyprocess.id)
         property_chain = (
             propertyprocess.sales_progression.sales_progression_chain.all()
@@ -3260,6 +3260,88 @@ def delete_progression_notes(request, progression_notes_id):
         }
         data["html_modal"] = render_to_string(
             "properties/sales_progression/delete_progression_notes_modal.html",
+            context,
+            request=request,
+        )
+
+    return JsonResponse(data)
+
+
+def fall_through(request, propertyprocess_id):
+    """
+    Ajax URL for editing a deal.
+    """
+    data = dict()
+
+    property_process = get_object_or_404(
+        PropertyProcess, id=propertyprocess_id
+    )
+
+    if request.method == "POST":
+        property_process.previously_fallen_through = True
+        property_process.macro_status = PropertyProcess.INSTRUCTION
+        property_process.updated_by = request.user.get_full_name()
+        property_process.save()
+
+        Deal.objects.get(
+            propertyprocess=property_process.id
+        ).delete()
+
+        property_fee_instance = PropertyFees.objects.filter(
+            propertyprocess=property_process.id
+        ).first()
+
+        minus_fee = property_fee_instance.fee * -1
+
+        PropertyFees.objects.create(
+            propertyprocess=property_process,
+            fee=minus_fee,
+            price=property_fee_instance.price,
+            date=datetime.date.today(),
+            active=True,
+            created_by=request.user.get_full_name(),
+            updated_by=request.user.get_full_name(),
+        )
+
+        history_description = (
+            f"{request.user.get_full_name()} has fallen through the property."
+        )
+
+        history = PropertyHistory.objects.create(
+            propertyprocess=property_process,
+            type=PropertyHistory.PROPERTY_EVENT,
+            description=history_description,
+            created_by=request.user.get_full_name(),
+            updated_by=request.user.get_full_name(),
+        )
+
+        for offer_instance in property_process.offer.all():
+            if (
+                offer_instance.status == Offer.GETTINGVERIFIED
+                or offer_instance.status == Offer.NEGOTIATING
+                or offer_instance.status == Offer.ACCEPTED
+            ):
+                offer_instance.status = Offer.REJECTED
+                offer_instance.save()
+
+        data["form_is_valid"] = True
+
+        context = {
+            "property_process": property_process,
+            "history": history,
+        }
+        data["html_success"] = render_to_string(
+            "properties/stages/includes/form_success.html",
+            context,
+            request=request,
+        )
+
+    else:
+        context = {
+            "property_process": property_process,
+        }
+        data["html_modal"] = render_to_string(
+            "properties/sales_progression/fall_through_modal.html",
             context,
             request=request,
         )

@@ -180,6 +180,7 @@ class PropertyProcess(UpdatedAndCreated):
         Hub, on_delete=models.CASCADE, null=False, blank=False
     )
     legacy_property = models.BooleanField(default=False, choices=LEGACY)
+    previously_fallen_through = models.BooleanField(default=False)
 
     def send_withdrawn_mail(self, request, reason, **kwargs):
         no_reply_email = settings.NO_REPLY_EMAIL
@@ -1353,11 +1354,13 @@ class PropertyFees(UpdatedAndCreated):
 def save_field(sender, instance, **kwargs):
     if True:
         if instance.propertyprocess.sector == "sales":
-            instance.new_business = instance.price * (instance.fee / 100)
+            new_business = round(instance.price * (instance.fee / 100), 2)
+            instance.new_business = new_business
         elif instance.propertyprocess.sector == "lettings":
-            instance.new_business = (
-                instance.price * (instance.fee / 100)
-            ) * 12
+            new_business = round(
+                (instance.price * (instance.fee / 100)) * 12
+            )
+            instance.new_business = new_business
 
 
 class ProgressionNotes(UpdatedAndCreated):
