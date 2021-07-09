@@ -65,3 +65,10 @@
     class="btn mb-1 {% if instance.macro_status != 4 %}btn-secondary" disabled{% else %}btn-info js-add-exchange"{% endif %}>
         <i class="mdi mdi-home-lock"></i>
 </button>
+<button 
+    data-url="{% url 'properties:fall_through' instance.id %}" data-toggle="tooltip"
+    data-placement="top"
+    title="Fall Though Property"
+    class="btn mb-1 {% if instance.macro_status != 4 %}btn-secondary" disabled{% else %}btn-info js-load-form"{% endif %}>
+        <i class="mdi mdi-trash-can-outline"></i>
+</button>
