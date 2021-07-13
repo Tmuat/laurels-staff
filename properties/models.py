@@ -786,6 +786,7 @@ class Deal(UpdatedAndCreated):
     def send_deal_mail(self, request, marketing_board, **kwargs):
         no_reply_email = settings.NO_REPLY_EMAIL
         admin_email = settings.ADMIN_EMAIL
+        humanized_offer = humanize.intcomma(self.offer_accepted.offer)
         context = kwargs
         context.update(
             {
@@ -793,6 +794,8 @@ class Deal(UpdatedAndCreated):
                 "address": self.__str__,
                 "hub": self.propertyprocess.hub,
                 "employee": self.propertyprocess.employee,
+                "offer": self.offer_accepted,
+                "humanized_offer": humanized_offer,
             }
         )
         subject = f"Sales Deal: {self.__str__}"

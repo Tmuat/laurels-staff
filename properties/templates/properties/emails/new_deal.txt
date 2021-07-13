@@ -5,6 +5,16 @@ There has been a deal put through for:
 
 {{ address }}
 
+The offer details are:
+
+Name - {{ offer.offerer_details }}
+Offer - £{{ humanized_offer }}
+Funding - {{ offer.offerer_details.get_funding_display }}{% if offer.offerer_details.funding == "cash" %}
+Cash - {{ offer.offerer_details.offerer_cash_details.get_cash_display }}{% elif offer.offerer_details.funding == "mortgage" %}
+Mortgage Verified Status - {{ offer.offerer_details.offerer_mortgage_details.get_verified_status_display }}
+Mortgage Deposit - {{ offer.offerer_details.offerer_mortgage_details.deposit_percentage }}%
+{% endif %}
+
 The property consultant and hub are: 
 
 Hub - {{ hub }}
