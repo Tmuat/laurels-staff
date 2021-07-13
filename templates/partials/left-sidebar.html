@@ -53,6 +53,9 @@
                     <li class="{% if request.resolver_match.url_name == 'property_list' %}active{% endif %}">
                         <a href="{% url 'properties:property_list' %}">{% trans "Property List" %}</a>
                     </li>
+                    <li class="{% if request.resolver_match.url_name == 'offer_board' %}active{% endif %}">
+                        <a href="{% url 'home:offer_board' %}?hub={{ request.user.profile.hub.first.slug }}">{% trans "Offer Board" %}</a>
+                    </li>
                 </ul>
             </li>
             {% if request.user.is_staff %}

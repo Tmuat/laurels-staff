@@ -1,0 +1,363 @@
+{% extends "vertical_base.html" %}
+{% load static i18n %}
+{% load humanize %}
+
+{% block head_title %}{% trans "Offer Board" %}{% endblock head_title %}
+
+{% block content %}
+    <!-- Start Content-->
+    <div class="container-fluid">
+        
+        <!-- start page title -->
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box">
+                    <div class="page-title-right">
+                        <ol class="breadcrumb m-0 p-0">
+                            <li class="breadcrumb-item"><a href="{% url 'home:home' %}"><i class="uil-home-alt"></i> Home</a></li>
+                            <li class="breadcrumb-item"><a href="{% url 'home:offer_board' %}"><i class="mdi mdi-bulletin-board"></i> Offer Board</a></li>
+                        </ol>
+                    </div>
+                    <h4 class="page-title">Offer Board</h4>
+                </div>
+            </div>
+        </div>     
+        <!-- end page title -->
+
+        <!-- filters -->
+        <div class="row">
+            <div class="col-12">
+                <form class="form-inline">
+                    <div class="form-group mb-2">
+                        <select class="custom-select mr-2" id="hub-select">
+                            <option value="reset">Hub...</option>
+                            {% for hub in hubs %}
+                                {% if hub.hub_name != "All Hubs" %}
+                                    <option value="{{ hub.slug }}" {% if selected_hub == hub %}selected{% endif %}>{{ hub.hub_name }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                        <select class="custom-select" id="employee-select">
+                            <option value="reset">Employee...</option>
+                            {% for employee in employees %}
+                                <option value="{{ employee.id }}" {% if selected_user == employee %}selected{% endif %}>{{ employee.user.get_full_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </form>                            
+            </div>
+        </div>
+        <!-- end filters -->
+
+        <div class="row">
+            <div class="col-12">
+                <div class="row">
+                    <div class="col-12 col-lg-6 col-xl-3 order-2 order-xl-1">
+                        <div class="custom-tasks" >
+                            <h5 class="mt-0 task-header text-uppercase">Getting Verified</h5>
+                            
+                            <div id="getting-verified-list" class="custom-task-list-items row">
+
+                                {% for instance in offers %}
+                                    {% if instance.status == "getting_verified" %}
+                                        <div class="col-6">
+                                            <!-- Offer Item -->
+                                            <div class="card mb-0">
+                                                <div class="card-body p-3">
+                                                    <small class="float-right text-muted">{{ instance.date }}</small>
+                                                    <span class="badge 
+                                                        {% if instance.calculate_date.days > 10 %}
+                                                            badge-danger">10 Days +
+                                                        {% elif instance.calculate_date.days > 3 %}
+                                                            badge-warning">3 Days +
+                                                        {% else %}
+                                                            badge-success">0-3 Days
+                                                        {% endif %}
+                                                    </span>
+
+                                                    <h5 class="mt-2 mb-2">{{ instance.propertyprocess.property }}</h5>
+
+                                                    <p class="mb-0">
+                                                        <span class="pr-2 text-nowrap mb-2 d-inline-block text-muted">
+                                                            {{ instance.propertyprocess.get_sector_display }} - {{ instance.propertyprocess.employee }}
+                                                            {% if instance.propertyprocess.legacy_property %} - {{ instance.propertyprocess.get_legacy_property_display }}{% endif %}
+                                                        </span>
+                                                    </p>
+
+                                                    <div class="dropdown float-right">
+                                                        <a href="#" class="dropdown-toggle text-muted arrow-none" data-toggle="dropdown" aria-expanded="false">
+                                                            <i class="mdi mdi-dots-vertical font-18"></i>
+                                                        </a>
+                                                        <div class="dropdown-menu dropdown-menu-right">
+                                                            <!-- item-->
+                                                            <a href="javascript:void(0);" class="dropdown-item"><i class="mdi mdi-pencil mr-1"></i>Edit</a>
+                                                            <!-- item-->
+                                                            <a href="javascript:void(0);" class="dropdown-item"><i class="mdi mdi-delete mr-1"></i>Delete</a>
+                                                            <!-- item-->
+                                                            <a href="javascript:void(0);" class="dropdown-item"><i class="mdi mdi-plus-circle-outline mr-1"></i>Add People</a>
+                                                            <!-- item-->
+                                                            <a href="javascript:void(0);" class="dropdown-item"><i class="mdi mdi-exit-to-app mr-1"></i>Leave</a>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                                <!-- end card-body -->
+                                            </div>
+                                            <!-- Offer Item End -->
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                                
+                            </div> <!-- end getting_verified -->
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-xl-6 order-1 order-xl-2">
+                        <div class="custom-tasks" >
+                            <h5 class="mt-0 task-header text-uppercase">Negotiating</h5>
+                            
+                            <div id="getting-verified-list" class="custom-task-list-items row">
+
+                                {% for instance in offers %}
+                                    {% if instance.status == "negotiating" %}
+                                        {% if forloop.counter|divisibleby:2 %}
+                                        <div class="col-12 col-md-6 mt-2">
+                                            <!-- Offer Item -->
+                                            <div class="card mb-0 h-100">
+                                                <div class="card-body p-2">
+                                                    <small class="float-right text-muted">{{ instance.date }}</small>
+                                                    <span class="badge 
+                                                        {% if instance.calculate_date.days > 10 %}
+                                                            badge-danger">10 Days +
+                                                        {% elif instance.calculate_date.days > 3 %}
+                                                            badge-warning">3 Days +
+                                                        {% else %}
+                                                            badge-success">0-3 Days
+                                                        {% endif %}
+                                                    </span>
+                                                    <span class="badge 
+                                                        {% if instance.propertyprocess.sector == "sales" %}
+                                                            badge-primary">Sales
+                                                        {% elif instance.propertyprocess.sector == "lettings" %}
+                                                            badge-info">Lettings
+                                                        {% endif %}
+                                                    </span>
+
+                                                    <h5 class="mt-2 mb-0">
+                                                        {% if instance.propertyprocess.property.calculate_str_length > 25 %}
+                                                            <span 
+                                                                class="pointer"
+                                                                data-toggle="tooltip"
+                                                                data-placement="top"
+                                                                title="{{ instance.propertyprocess.property.address_lines }}">
+                                                                    {{ instance.propertyprocess.property.address_lines|truncatechars:25 }}
+                                                            </span>
+                                                        {% else %}
+                                                            {{ instance.propertyprocess.property.address_lines }}
+                                                        {% endif %}
+                                                    </h5>
+
+                                                    <p class="mb-1">
+                                                        <span class="pr-2 d-inline-block text-muted">
+                                                            <small>{{ instance.propertyprocess.employee }}</small>
+                                                        </span>
+                                                    </p>
+
+                                                    <p class="mb-0">
+                                                        <span class="pr-2 mb-1 d-inline-block text-muted">
+                                                            £{{ instance.offer|intcomma }}
+                                                        </span>
+                                                    </p>
+
+                                                    <div class="dropdown float-right">
+                                                        <a href="#" class="dropdown-toggle text-muted arrow-none" data-toggle="dropdown" aria-expanded="false">
+                                                            <i class="mdi mdi-dots-vertical font-18"></i>
+                                                        </a>
+                                                        <div class="dropdown-menu dropdown-menu-right">
+                                                            <!-- item-->
+                                                            <a href="{% url 'properties:property_detail' instance.propertyprocess.id %}" class="dropdown-item"><i class="mdi mdi-arrow-expand-all mr-1"></i>Go To Property</a>
+                                                            <!-- item-->
+                                                            <a href="javascript:void(0);" class="dropdown-item"><i class="mdi mdi-delete mr-1"></i>Delete</a>
+                                                            <!-- item-->
+                                                            <a href="javascript:void(0);" class="dropdown-item"><i class="mdi mdi-plus-circle-outline mr-1"></i>Add People</a>
+                                                            <!-- item-->
+                                                            <a href="javascript:void(0);" class="dropdown-item"><i class="mdi mdi-exit-to-app mr-1"></i>Leave</a>
+                                                        </div>
+                                                    </div>
+
+                                                    <p class="mb-0 text-muted">
+                                                        {% if instance.offerer_details.calculate_str_length > 15 %}
+                                                            <span 
+                                                                class="pointer"
+                                                                data-toggle="tooltip"
+                                                                data-placement="top"
+                                                                title="{{ instance.offerer_details }}">
+                                                                    {{ instance.offerer_details|truncatechars:15 }}
+                                                            </span>
+                                                        {% else %}
+                                                            {{ instance.offerer_details }}
+                                                        {% endif %}
+                                                    </p>
+
+                                                </div>
+                                                <!-- end card-body -->
+                                            </div>
+                                            <!-- Offer Item End -->
+                                        </div>
+                                        {% else %}
+                                            <div class="col-12 col-md-6 mt-2">
+                                                <!-- Offer Item -->
+                                                <div class="card mb-0 h-100">
+                                                    <div class="card-body p-2">
+                                                        <small class="float-right text-muted">{{ instance.date }}</small>
+                                                        <span class="badge 
+                                                            {% if instance.calculate_date.days > 10 %}
+                                                                badge-danger">10 Days +
+                                                            {% elif instance.calculate_date.days > 3 %}
+                                                                badge-warning">3 Days +
+                                                            {% else %}
+                                                                badge-success">0-3 Days
+                                                            {% endif %}
+                                                        </span>
+                                                        <span class="badge 
+                                                            {% if instance.propertyprocess.sector == "sales" %}
+                                                                badge-primary">Sales
+                                                            {% elif instance.propertyprocess.sector == "lettings" %}
+                                                                badge-info">Lettings
+                                                            {% endif %}
+                                                        </span>
+
+                                                        <h5 class="mt-2 mb-0">
+                                                            {% if instance.propertyprocess.property.calculate_str_length > 25 %}
+                                                                <span 
+                                                                    class="pointer"
+                                                                    data-toggle="tooltip"
+                                                                    data-placement="top"
+                                                                    title="{{ instance.propertyprocess.property.address_lines }}">
+                                                                        {{ instance.propertyprocess.property.address_lines|truncatechars:25 }}
+                                                                </span>
+                                                            {% else %}
+                                                                {{ instance.propertyprocess.property.address_lines }}
+                                                            {% endif %}
+                                                        </h5>
+
+                                                        <p class="mb-1">
+                                                            <span class="pr-2 d-inline-block text-muted">
+                                                                <small>{{ instance.propertyprocess.employee }}</small>
+                                                            </span>
+                                                        </p>
+
+                                                        <p class="mb-0">
+                                                            <span class="pr-2 mb-1 d-inline-block text-muted">
+                                                                £{{ instance.offer|intcomma }}
+                                                            </span>
+                                                        </p>
+
+                                                        <div class="dropdown float-right">
+                                                            <a href="#" class="dropdown-toggle text-muted arrow-none" data-toggle="dropdown" aria-expanded="false">
+                                                                <i class="mdi mdi-dots-vertical font-18"></i>
+                                                            </a>
+                                                            <div class="dropdown-menu dropdown-menu-right">
+                                                                <!-- item-->
+                                                                <a href="{% url 'properties:property_detail' instance.propertyprocess.id %}" class="dropdown-item"><i class="mdi mdi-arrow-expand-all mr-1"></i>Go To Property</a>
+                                                                <!-- item-->
+                                                                <a href="javascript:void(0);" class="dropdown-item"><i class="mdi mdi-delete mr-1"></i>Delete</a>
+                                                                <!-- item-->
+                                                                <a href="javascript:void(0);" class="dropdown-item"><i class="mdi mdi-plus-circle-outline mr-1"></i>Add People</a>
+                                                                <!-- item-->
+                                                                <a href="javascript:void(0);" class="dropdown-item"><i class="mdi mdi-exit-to-app mr-1"></i>Leave</a>
+                                                            </div>
+                                                        </div>
+
+                                                        <p class="mb-0 text-muted">
+                                                            {% if instance.offerer_details.calculate_str_length > 15 %}
+                                                                <span 
+                                                                    class="pointer"
+                                                                    data-toggle="tooltip"
+                                                                    data-placement="top"
+                                                                    title="{{ instance.offerer_details }}">
+                                                                        {{ instance.offerer_details|truncatechars:15 }}
+                                                                </span>
+                                                            {% else %}
+                                                                {{ instance.offerer_details }}
+                                                            {% endif %}
+                                                        </p>
+
+                                                    </div>
+                                                    <!-- end card-body -->
+                                                </div>
+                                                <!-- Offer Item End -->
+                                            </div>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                                
+                            </div> <!-- end getting_verified -->
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-lg-6 col-xl-3 order-3">
+                        <div class="custom-tasks" >
+                            <h5 class="mt-0 task-header text-uppercase">Accepted</h5>
+                            
+                            <div id="getting-verified-list" class="custom-task-list-items">
+
+                                {% for instance in offers %}
+                                    {% if instance.status == "accepted" %}
+                                        <!-- Offer Item -->
+                                        <div class="card mb-0">
+                                            <div class="card-body p-3">
+                                                <small class="float-right text-muted">{{ instance.date }}</small>
+                                                <span class="badge badge-danger">High</span>
+
+                                                <h5 class="mt-2 mb-2">{{ instance.propertyprocess.property }}</h5>
+
+                                                <p class="mb-0">
+                                                    <span class="pr-2 text-nowrap mb-2 d-inline-block text-muted">
+                                                        {{ instance.propertyprocess.get_sector_display }} - {{ instance.propertyprocess.employee }}
+                                                        {% if instance.propertyprocess.legacy_property %} - {{ instance.propertyprocess.get_legacy_property_display }}{% endif %}
+                                                    </span>
+                                                </p>
+                                                <p class="mb-0">
+                                                    <span class="pr-2 text-nowrap mb-2 d-inline-block text-muted">
+                                                        {{ instance }}
+                                                    </span>
+                                                </p>
+
+                                                <div class="dropdown float-right">
+                                                    <a href="#" class="dropdown-toggle text-muted arrow-none" data-toggle="dropdown" aria-expanded="false">
+                                                        <i class="mdi mdi-dots-vertical font-18"></i>
+                                                    </a>
+                                                    <div class="dropdown-menu dropdown-menu-right">
+                                                        <!-- item-->
+                                                        <a href="javascript:void(0);" class="dropdown-item"><i class="mdi mdi-pencil mr-1"></i>Edit</a>
+                                                        <!-- item-->
+                                                        <a href="javascript:void(0);" class="dropdown-item"><i class="mdi mdi-delete mr-1"></i>Delete</a>
+                                                        <!-- item-->
+                                                        <a href="javascript:void(0);" class="dropdown-item"><i class="mdi mdi-plus-circle-outline mr-1"></i>Add People</a>
+                                                        <!-- item-->
+                                                        <a href="javascript:void(0);" class="dropdown-item"><i class="mdi mdi-exit-to-app mr-1"></i>Leave</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- end card-body -->
+                                        </div>
+                                        <!-- Offer Item End -->
+                                    {% endif %}
+                                {% endfor %}
+                                
+                            </div> <!-- end getting_verified -->
+                        </div>
+                    </div>
+
+                </div> <!-- end .board-->
+            </div> <!-- end col -->
+        </div>
+        <!-- end row-->
+
+    </div> <!-- container --> 
+{% endblock %}
+
+{% block extra_javascript %}
+    <script src="{% static 'home/js/home.js' %}"></script>
+{% endblock %}

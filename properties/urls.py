@@ -58,7 +58,7 @@ urlpatterns = [
     path(
         "properties/<propertyprocess_id>/",
         property_detail,
-        name="property_list",
+        name="property_detail",
     ),
     path(
         "properties/history/<propertyprocess_id>/pagination/",

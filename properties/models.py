@@ -136,6 +136,28 @@ class Property(UpdatedAndCreated):
             )
         return property_address
 
+    @property
+    def calculate_str_length(self, **kwargs):
+        if self.address_line_2 == "" or self.address_line_2 is None:
+            property_address = "%s" % (self.address_line_1)
+        else:
+            property_address = "%s, %s" % (
+                self.address_line_1,
+                self.address_line_2,
+            )
+        return len(property_address)
+
+    @property
+    def address_lines(self):
+        if self.address_line_2 == "" or self.address_line_2 is None:
+            property_address = "%s" % (self.address_line_1)
+        else:
+            property_address = "%s, %s" % (
+                self.address_line_1,
+                self.address_line_2,
+            )
+        return property_address
+
 
 class PropertyProcess(UpdatedAndCreated):
     class Meta:
@@ -601,6 +623,10 @@ class OffererDetails(UpdatedAndCreated):
         max_length=20, null=True, blank=False, choices=STATUS
     )
 
+    @property
+    def calculate_str_length(self, **kwargs):
+        return len(self.full_name)
+
     def __str__(self):
         return self.full_name
 
@@ -754,6 +780,11 @@ class Offer(UpdatedAndCreated):
     status = models.CharField(
         max_length=50, null=False, blank=False, choices=STATUS
     )
+
+    @property
+    def calculate_date(self, **kwargs):
+        time_between_insertion = date.today() - self.date
+        return time_between_insertion
 
     def __str__(self):
         return "%s (£%s)" % (

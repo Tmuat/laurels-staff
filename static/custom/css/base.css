@@ -177,6 +177,33 @@ body.authentication-bg {
     margin-bottom: 3px !important;
 }
 
+/* Offer Board */
+
+.custom-tasks {
+    display: inline-block;
+    width: 100%;
+    padding: 0 1rem 1rem 1rem;
+    border: 1px solid #eef2f7;
+    vertical-align: top;
+    margin-bottom: 24px;
+    border-radius: .25rem;
+}
+
+.custom-tasks .task-header {
+    background-color: #f1f3fa;
+    padding: 1rem;
+    margin: 0 -1rem;
+}
+
+.custom-tasks .card {
+    white-space: normal;
+}
+
+.custom-task-list-items {
+    min-height: 200px;
+    position: relative;
+}
+
 /* Media Queries */
 
 /* Extra small devices (portrait phones, less than 576px) */
