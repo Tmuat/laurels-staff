@@ -374,7 +374,7 @@ $(document).ready(function () {
     };
 
     // Deals with the form submission for adding history notes
-    $("#base-static-modal").on("submit", ".js-add-notes", function () {
+    var submitStaticForm = function () {
         $('#modal-overlay').fadeToggle(100);
         var form = $(this);
         $.ajax({
@@ -384,17 +384,17 @@ $(document).ready(function () {
             dataType: 'json',
             success: function (data) {
                 if (data.form_is_valid) {
-                    $("#base-modal").modal("hide");
+                    $("#base-static-modal").modal("hide");
                     $('#modal-overlay').fadeToggle(100);
                     location.reload();
                 } else {
                     $('#modal-overlay').fadeToggle(100);
-                    $("#base-modal .modal-dialog").html(data.html_modal);
+                    $("#base-static-modal .modal-dialog").html(data.html_modal);
                 }
             }
         });
         return false;
-    });
+    };
 
     // Deals with the form submission for adding offerer
     $("#base-modal").on("submit", ".js-add-offerer-form", function () {
@@ -440,7 +440,6 @@ $(document).ready(function () {
             success: function (data) {
                 if (data.form_is_valid) {
                     $("#base-static-modal").modal("hide");
-
                     $.ajax({
                         url: data.url,
                         type: 'get',
@@ -497,26 +496,8 @@ $(document).ready(function () {
         location.reload();
     });
 
-    // Deals with the form submission before loading success modal
-    var GetAndLoadSuccess = function () {
-        $('#modal-overlay').fadeToggle(100);
-        var instance = $(this);
-        $.ajax({
-            url: instance.attr("data-url"),
-            type: 'get',
-            dataType: 'json',
-            success: function (data) {
-                $("#base-modal").modal("hide");
-                $("#base-static-modal").modal("show");
-                $("#base-static-modal .modal-dialog").html(data.html_success);
-                $('#modal-overlay').fadeToggle(100);
-            }
-        });
-        return false;
-    };
-
-    // Deals with rendering a form with AJAX to the base modal
-    var loadFormBaseModal = function () {
+    // Deals with rendering the base modal
+    var loadBaseModal = function () {
         var instance = $(this);
         $.ajax({
             url: instance.attr("data-url"),
@@ -576,52 +557,23 @@ $(document).ready(function () {
 
     // Binding functions
     // Links
-    $("#quick-actions").on("click", ".js-add-valuation", loadFormBaseModal);
-    $(".js-add-valuation").on("click", loadFormBaseModal);
-    $("#quick-actions").on("click", ".js-add-instruction", loadFormBaseModal);
-    $(".js-add-instruction").on("click", loadFormBaseModal);
-    $("#quick-actions").on("click", ".js-add-reduction", loadFormBaseModal);
-    $(".js-add-reduction").on("click", loadFormBaseModal);
-    $("#quick-actions").on("click", ".js-add-offerer", loadFormBaseModal);
-    $(".js-add-offerer").on("click", loadFormBaseModal);
-    $(".js-add-another-offer").on("click", loadFormBaseModal);
-    $(".js-edit-offerer-cash").on("click", loadFormBaseModal);
-    $(".js-edit-offerer-mortgage").on("click", loadFormBaseModal);
-    $(".js-edit-offer-status").on("click", loadFormBaseModal);
-    $("#base-modal").on("click", ".js-edit-offer-status", loadFormBaseModal);
-    $(".js-change-instruction").on("click", loadFormBaseModal);
-    $(".js-withdraw").on("click", loadFormBaseModal);
-    $(".js-back-on-market").on("click", loadFormBaseModal);
-    $(".js-add-deal").on("click", loadFormBaseModal);
-    $(".js-edit-deal").on("click", loadFormBaseModal);
-    $(".js-add-exchange").on("click", loadFormBaseModal);
-    $(".js-edit-prog-settings").on("click", loadFormBaseModal);
+    $("#quick-actions").on("click", ".js-add-valuation", loadBaseModal);
+    $("#quick-actions").on("click", ".js-add-instruction", loadBaseModal);
+    $("#quick-actions").on("click", ".js-add-reduction", loadBaseModal);
+    $("#quick-actions").on("click", ".js-add-offerer", loadBaseModal);
 
-    $("#base-modal").on("click", ".js-load-form", loadFormBaseModal);
-    $(".js-load-form").on("click", loadFormBaseModal);
+    $(".js-add-offerer").on("click", loadBaseModal);
+    $("#base-modal").on("click", ".js-edit-offer-status", loadBaseModal);
+
+    $("#base-modal").on("click", ".js-load-form", loadBaseModal);
+    $(".js-load-form").on("click", loadBaseModal);
     $(".js-load-large-form").on("click", loadFormLargeModal);
-    
-    $("#tbody-history").on("click", ".js-show-notes", loadFormBaseModal);
-    $("#tbody-offers").on("click", ".js-show-offers", loadFormBaseModal);
-    $("#simple-dragula").on("click", ".js-property-chain-expand", loadFormBaseModal);
-    $("#base-static-modal").on("click", ".js-notes", loadFormBaseStaticModal);
-
-    $("#base-modal").on("submit", ".js-add-valuation-form", submitFormAndLoadSuccess);
-    $("#base-modal").on("submit", ".js-add-instruction-form", submitFormAndLoadSuccess);
-    $("#base-modal").on("submit", ".js-add-reduction-form", submitFormAndLoadSuccess);
-    $("#base-static-modal").on("submit", ".js-add-offer-form", submitFormAndLoadSuccess);
-    $("#base-modal").on("submit", ".js-add-another-offer-form", submitFormAndLoadSuccess);
-    $("#base-modal").on("submit", ".js-edit-offerer-cash-form", submitFormAndLoadSuccess);
-    $("#base-modal").on("submit", ".js-edit-offerer-mortgage-form", submitFormAndLoadSuccess);
-    $("#base-modal").on("submit", ".js-edit-offer-status-form", submitFormAndLoadSuccess);
-    $("#base-modal").on("submit", ".js-edit-instruction-form", submitFormAndLoadSuccess);
-    $("#base-modal").on("submit", ".js-withdraw-form", submitFormAndLoadSuccess);
-    $("#base-modal").on("submit", ".js-back-on-the-market-form", submitFormAndLoadSuccess);
-    $("#base-modal").on("submit", ".js-add-deal-form", submitFormAndLoadSuccess);
-    $("#base-modal").on("submit", ".js-edit-deal-form", submitFormAndLoadSuccess);
-    $("#base-modal").on("submit", ".js-add-exchange-form", submitFormAndLoadSuccess);
+    $("#base-static-modal").on("click", ".js-load-static-form", loadFormBaseStaticModal);
 
     $("#base-modal").on("submit", ".js-submit-form-success", submitFormAndLoadSuccess);
+    $("#base-static-modal").on("submit", ".js-submit-form-success", submitFormAndLoadSuccess);
+
     $("#base-modal").on("submit", ".js-submit-form", submitForm);
     $("#base-large-modal").on("submit", ".js-submit-form", submitForm);
+    $("#base-static-modal").on("submit", ".js-submit-form", submitStaticForm);
 });

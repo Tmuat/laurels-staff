@@ -9,7 +9,7 @@
             <p class="text-white mb-2">
                 {% trans "Are you sure you wish to withdraw this property?" %}
             </p>
-            <form method="post" action="{% url 'properties:withdraw_property' property_process.id %}" class="text-center text-white px-2 custom-form-margin js-withdraw-form">
+            <form method="post" action="{% url 'properties:withdraw_property' property_process.id %}" class="text-center text-white px-2 custom-form-margin js-submit-form-success">
                 {% csrf_token %}
                 <div class="row">
                     <div class="col-12">

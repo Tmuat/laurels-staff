@@ -7,7 +7,7 @@
         <div class="text-center text-white">
             <h4 class="text-white">Add New Offer</h4>
             <p class="text-white text-center">Please add the offer made by {{ offerer.full_name }}.</p>
-            <form method="post" action="{% url 'properties:add_offer' propertyprocess_id offerer.id %}" class="text-center text-white px-2 js-add-offer-form custom-form-margin">
+            <form method="post" action="{% url 'properties:add_offer' propertyprocess_id offerer.id %}" class="text-center text-white px-2 js-submit-form-success custom-form-margin">
                 {% csrf_token %}
                 <div class="row">
                     <div class="col-12">

@@ -6,7 +6,7 @@
         </div>
         <div class="text-center text-white">
             <h4 class="text-white">Edit Cash Details</h4>
-            <form method="post" action="{% url 'properties:edit_offerer_cash' offerer.id %}" class="text-center text-white px-2 js-edit-offerer-cash-form custom-form-margin">
+            <form method="post" action="{% url 'properties:edit_offerer_cash' offerer.id %}" class="text-center text-white px-2 js-submit-form-success custom-form-margin">
                 {% csrf_token %}
                 <div class="row">
                     <div class="col-12">

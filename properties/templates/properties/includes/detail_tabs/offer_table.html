@@ -6,7 +6,7 @@
         {% if instance.funding is not none %}
             {% if instance.funding == "cash" %}
                 <span 
-                    class="pointer text-primary js-edit-offerer-cash"
+                    class="pointer text-primary js-load-form"
                     data-url="{% url 'properties:edit_offerer_cash' instance.id %}"
                     data-toggle="tooltip"
                     data-placement="top"
@@ -16,7 +16,7 @@
                 </span>
             {% elif instance.funding == "mortgage" %}
             <span 
-                class="pointer text-primary js-edit-offerer-mortgage"
+                class="pointer text-primary js-load-form"
                 data-url="{% url 'properties:edit_offerer_mortgage' instance.id %}"
                 data-toggle="tooltip"
                 data-placement="top"
@@ -30,14 +30,14 @@
     <td class="text-center">
         £{{ instance.offerdetails.first.offer|intcomma }}
         <span
-            class="mdi mdi-plus-box {% if propertyprocess.macro_status != 3 %}text-secondary" disabled{% else %}pointer text-success js-add-another-offer"{% endif %}
+            class="mdi mdi-plus-box {% if propertyprocess.macro_status != 3 %}text-secondary" disabled{% else %}pointer text-success js-load-form"{% endif %}
             data-url="{% url 'properties:add_another_offer' propertyprocess.id %}?id={{ instance.id }}" 
         ></span>
     </td>
     <td class="text-center">
         {% if instance.offerdetails.first.status == "getting_verified" %}
             <span 
-                class="pointer badge badge-warning-lighten js-edit-offer-status"
+                class="pointer badge badge-warning-lighten js-load-form"
                 data-url="{% url 'properties:edit_offer_status' instance.offerdetails.first.id %}"
                 data-toggle="tooltip"
                 data-placement="top"
@@ -45,7 +45,7 @@
             >
         {% elif instance.offerdetails.first.status == "negotiating" %}
             <span 
-                class="pointer badge badge-info-lighten js-edit-offer-status"
+                class="pointer badge badge-info-lighten js-load-form"
                 data-url="{% url 'properties:edit_offer_status' instance.offerdetails.first.id %}"
                 data-toggle="tooltip"
                 data-placement="top"
@@ -54,7 +54,7 @@
             >
         {% elif instance.offerdetails.first.status == "rejected" %}
             <span 
-                class="pointer badge badge-danger-lighten js-edit-offer-status"
+                class="pointer badge badge-danger-lighten js-load-form"
                 data-url="{% url 'properties:edit_offer_status' instance.offerdetails.first.id %}"
                 data-toggle="tooltip"
                 data-placement="top"
@@ -63,7 +63,7 @@
             >
         {% elif instance.offerdetails.first.status == "accepted" %}
             <span 
-                class="pointer badge badge-success-lighten js-edit-offer-status"
+                class="pointer badge badge-success-lighten js-load-form"
                 data-url="{% url 'properties:edit_offer_status' instance.offerdetails.first.id %}"
                 data-toggle="tooltip"
                 data-placement="top"
@@ -72,7 +72,7 @@
             >
         {% elif instance.offerdetails.first.status == "withdrawn" %}
             <span 
-                class="pointer badge badge-secondary-lighten js-edit-offer-status"
+                class="pointer badge badge-secondary-lighten js-load-form"
                 data-url="{% url 'properties:edit_offer_status' instance.offerdetails.first.id %}"
                 data-toggle="tooltip"
                 data-placement="top"
@@ -82,6 +82,6 @@
         {% endif %}
             {{ instance.offerdetails.first.get_status_display }}</span>
     </td>
-    <td class="text-center"><span class="mdi mdi-view-list pointer js-show-offers" data-url="{% url 'properties:offerer_offers' instance.pk %}"></span></td>
+    <td class="text-center"><span class="mdi mdi-view-list pointer js-load-form" data-url="{% url 'properties:offerer_offers' instance.pk %}"></span></td>
 </tr>
 {% endfor %}

@@ -11,7 +11,7 @@
             <h4 class="text-white">Congrats</h4>
             <p class="text-white text-center">{% blocktrans trimmed %}Click below to add some extra notes or close the popup.{% endblocktrans %}</p>
 
-            <button class="btn btn-warning mb-2 mt-2 mx-auto d-block w-50 js-notes" data-url="{% url 'properties:render_history_notes' history.id %}"><i class="mdi mdi-note-plus-outline mr-1"></i> Click To Add A Note.</button>
+            <button class="btn btn-warning mb-2 mt-2 mx-auto d-block w-50 js-load-static-form" data-url="{% url 'properties:render_history_notes' history.id %}"><i class="mdi mdi-note-plus-outline mr-1"></i> Click To Add A Note.</button>
 
             <button type="button" class="btn btn-secondary mb-2 mx-auto d-block w-50 js-reload" data-bs-dismiss="modal">
                 <i class="mdi mdi-close"></i> Close

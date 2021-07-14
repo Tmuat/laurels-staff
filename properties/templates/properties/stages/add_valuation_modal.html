@@ -6,7 +6,7 @@
         </div>
         <div class="text-center text-white">
             <h4 class="text-white">Add Valuation</h4>
-            <form method="post" action="{% url 'properties:add_valuation' propertyprocess_id %}" class="text-center text-white px-2 js-add-valuation-form custom-form-margin">
+            <form method="post" action="{% url 'properties:add_valuation' propertyprocess_id %}" class="text-center text-white px-2 js-submit-form-success custom-form-margin">
                 {% csrf_token %}
                 <div class="row">
                     <div class="col-12 col-sm-6">

@@ -11,7 +11,7 @@
     {% endif %}
     {% if instance.notes is not None %}
         {% if instance.notes != "" %}
-            <td class="text-center"><span class="mdi mdi-playlist-check text-success pointer js-show-notes" data-url="{% url 'properties:property_history_instance' instance.id %}"></span></td>
+            <td class="text-center"><span class="mdi mdi-playlist-check text-success pointer js-load-form" data-url="{% url 'properties:property_history_instance' instance.id %}"></span></td>
         {% else %}
             <td class="text-center"><span class="mdi mdi-playlist-remove"></span></td>
         {% endif %}

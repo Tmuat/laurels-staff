@@ -7,7 +7,7 @@
         <div class="text-center text-white">
             <h4 class="text-white">Edit Offer</h4>
             <p class="text-white text-center">Please update the offer status.</p>
-            <form method="post" action="{% url 'properties:edit_offer_status' offer.id %}" class="text-center text-white px-2 js-edit-offer-status-form custom-form-margin">
+            <form method="post" action="{% url 'properties:edit_offer_status' offer.id %}" class="text-center text-white px-2 js-submit-form-success custom-form-margin">
                 {% csrf_token %}
                 <div class="row">
                     <div class="col-12">

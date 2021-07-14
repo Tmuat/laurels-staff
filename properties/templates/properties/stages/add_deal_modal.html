@@ -7,7 +7,7 @@
         <div class="text-center text-white">
             <h4 class="text-white">Add Deal</h4>
             <p class="text-white text-center">Please select the offer that is being accepted and proceed with the deal. Please note, adding a deal can take a number of seconds to process, please be patient.</p>
-            <form method="post" action="{% url 'properties:add_deal' propertyprocess_id %}" class="text-center text-white px-2 js-add-deal-form custom-form-margin">
+            <form method="post" action="{% url 'properties:add_deal' propertyprocess_id %}" class="text-center text-white px-2 js-submit-form-success custom-form-margin">
                 {% csrf_token %}
                 <div class="row">
                     <div class="col-12">
