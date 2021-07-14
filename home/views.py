@@ -32,7 +32,6 @@ def offer_board(request):
             "propertyprocess",
             "propertyprocess__property"
         )
-    print(len(offers))
 
     hub = None
     if "hub" in request.GET:
@@ -40,15 +39,11 @@ def offer_board(request):
         hub = Hub.objects.get(slug=selected_hub)
         offers = offers.filter(propertyprocess__hub=hub)
 
-    print(len(offers))
-
     user = None
     if "user" in request.GET:
         selected_user = request.GET.get("user")
         user = Profile.objects.get(id=selected_user)
         offers = offers.filter(propertyprocess__employee=user)
-
-    print(len(offers))
 
     offers = offers.order_by("date")
 
