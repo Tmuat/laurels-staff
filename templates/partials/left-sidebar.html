@@ -44,17 +44,20 @@
                 </ul>
             </li>
             <li class="side-nav-item">
-                <a href="javascript: void(0);" class="side-nav-link">
+                <a href="" class="side-nav-link">
                     <i class="mdi mdi-warehouse"></i>
                     <span> {% trans "Properties" %} </span>
                     <span class="menu-arrow"></span>
                 </a>
                 <ul class="side-nav-second-level" aria-expanded="false">
-                    <li class="{% if request.resolver_match.url_name == 'property_list' %}active{% endif %}">
+                    <li {% if request.resolver_match.url_name == 'property_list' %}class="active"{% endif %}>
                         <a href="{% url 'properties:property_list' %}">{% trans "Property List" %}</a>
                     </li>
-                    <li class="{% if request.resolver_match.url_name == 'offer_board' %}active{% endif %}">
-                        <a href="{% url 'home:offer_board' %}?hub={{ request.user.profile.hub.first.slug }}">{% trans "Offer Board" %}</a>
+                    <li {% if request.resolver_match.url_name == 'offer_board' %}class="active mm-active"{% endif %}>
+                        <a 
+                            href="{% url 'home:offer_board' %}?hub={{ request.user.profile.hub.first.slug }}"
+                            {% if request.resolver_match.url_name == 'offer_board' %}class="active"{% endif %}
+                        >{% trans "Offer Board" %}</a>
                     </li>
                 </ul>
             </li>
