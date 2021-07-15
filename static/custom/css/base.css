@@ -116,6 +116,10 @@ body.authentication-bg {
     font-size: 1.4rem;
 }
 
+.icon-xl-size {
+    font-size: 2rem;
+}
+
 /* Multi Select Field */
 
 .multi-select {
@@ -200,7 +204,7 @@ body.authentication-bg {
 }
 
 .custom-task-list-items {
-    min-height: 200px;
+    min-height: 150px;
     position: relative;
 }
 
@@ -225,6 +229,9 @@ body.authentication-bg {
 @media (min-width: 768px) {
     .w-md-75 {
         width: 75%!important;
+    }
+    .border-md-left {
+        border-left: 1px solid #dee2e6!important;
     }
 }
 

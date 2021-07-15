@@ -16,53 +16,219 @@
                             <li class="breadcrumb-item active"><a href="{% url 'home:home' %}"><i class="uil-home-alt"></i> Home</a></li>
                         </ol>
                     </div>
-                    <h4 class="page-title">Projects</h4>
+                    <h4 class="page-title">Laurels Home</h4>
                 </div>
             </div>
         </div>     
-        <!-- end page title --> 
+        <!-- end page title -->
+
+        <div class="row">
+            <div class="col-xl-4 col-lg-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="header-title mt-1">Instructions</h4>
+
+                        <div class="table-responsive">
+                            <table class="table table-sm table-centered mb-0 font-14">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>No.</th>
+                                        <th style="width: 40%;">Perc.</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for instance in instructions %}
+                                    <tr>
+                                        <td>
+                                            {% for employee in employees %}
+                                                {% if instance.employee_id == employee.id %}
+                                                    {{ employee }}
+                                                {% endif %}
+                                            {% endfor %}
+                                        </td>
+                                        <td>{{ instance.instruction_count }}</td>
+                                        <td>
+                                            <div class="progress" style="height: 3px;">
+                                                <div class="progress-bar bg-success" role="progressbar"
+                                                    style="width: {{ instance.instruction_target }}%; height: 20px;" aria-valuenow="{{ instance.instruction_target }}"
+                                                    aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                    {% for employee in no_instruction_employees %}
+                                    <tr>
+                                        <td>
+                                            {{ employee }}
+                                        </td>
+                                        <td>0</td>
+                                        <td>
+                                            <div class="progress" style="height: 3px;">
+                                                <div class="progress-bar" role="progressbar"
+                                                    style="width: 0%; height: 20px;" aria-valuenow="0"
+                                                    aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div> <!-- end table-responsive-->
+                    </div> <!-- end card-body-->
+                </div> <!-- end card-->
+            </div> <!-- end col-->
+
+            <div class="col-xl-4 col-lg-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="header-title mt-1">Reductions</h4>
+
+                        <div class="table-responsive">
+                            <table class="table table-sm table-centered mb-0 font-14">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>No.</th>
+                                        <th style="width: 40%;">Perc.</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for instance in instructions %}
+                                    <tr>
+                                        <td>
+                                            {% for employee in employees %}
+                                                {% if instance.employee_id == employee.id %}
+                                                    {{ employee }}
+                                                {% endif %}
+                                            {% endfor %}
+                                        </td>
+                                        <td>{{ instance.instruction_count }}</td>
+                                        <td>
+                                            <div class="progress" style="height: 3px;">
+                                                <div class="progress-bar bg-success" role="progressbar"
+                                                    style="width: {{ instance.instruction_target }}%; height: 20px;" aria-valuenow="{{ instance.instruction_target }}"
+                                                    aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                    {% for employee in no_instruction_employees %}
+                                    <tr>
+                                        <td>
+                                            {{ employee }}
+                                        </td>
+                                        <td>0</td>
+                                        <td>
+                                            <div class="progress" style="height: 3px;">
+                                                <div class="progress-bar" role="progressbar"
+                                                    style="width: 0%; height: 20px;" aria-valuenow="0"
+                                                    aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div> <!-- end table-responsive-->
+                    </div> <!-- end card-body-->
+                </div> <!-- end card-->
+            </div> <!-- end col-->
+
+            <div class="col-xl-4 col-lg-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="header-title mt-1">Instructions</h4>
+
+                        <div class="table-responsive">
+                            <table class="table table-sm table-centered mb-0 font-14">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>No.</th>
+                                        <th style="width: 40%;">Perc.</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for instance in instructions %}
+                                    <tr>
+                                        <td>
+                                            {% for employee in employees %}
+                                                {% if instance.employee_id == employee.id %}
+                                                    {{ employee }}
+                                                {% endif %}
+                                            {% endfor %}
+                                        </td>
+                                        <td>{{ instance.instruction_count }}</td>
+                                        <td>
+                                            <div class="progress" style="height: 3px;">
+                                                <div class="progress-bar bg-success" role="progressbar"
+                                                    style="width: {{ instance.instruction_target }}%; height: 20px;" aria-valuenow="{{ instance.instruction_target }}"
+                                                    aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                    {% for employee in no_instruction_employees %}
+                                    <tr>
+                                        <td>
+                                            {{ employee }}
+                                        </td>
+                                        <td>0</td>
+                                        <td>
+                                            <div class="progress" style="height: 3px;">
+                                                <div class="progress-bar" role="progressbar"
+                                                    style="width: 0%; height: 20px;" aria-valuenow="0"
+                                                    aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div> <!-- end table-responsive-->
+                    </div> <!-- end card-body-->
+                </div> <!-- end card-->
+            </div> <!-- end col-->
+        </div> <!-- end row-->
 
         <div class="row">
             <div class="col-12">
                 <div class="card widget-inline">
                     <div class="card-body p-0">
                         <div class="row no-gutters">
-                            <div class="col-sm-6 col-xl-3">
+                            <div class="col-sm-6 col-md-4">
                                 <div class="card shadow-none m-0">
                                     <div class="card-body text-center">
-                                        <i class="dripicons-briefcase text-muted" style="font-size: 24px;"></i>
-                                        <h3><span>29</span></h3>
-                                        <p class="text-muted font-15 mb-0">Total Projects</p>
+                                        <i class="mdi mdi-briefcase-check-outline text-muted icon-xl-size"></i>
+                                        <h3><span>
+                                            {% for instance in instructions %}
+                                                {% if instance.employee_id == request.user.id %}
+                                                    {{ instance.instruction_count }}
+                                                {% endif %}
+                                            {% endfor %}
+                                        </span></h3>
+                                        <p class="text-muted font-15 mb-0">Quarterly Instructions</p>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="col-sm-6 col-xl-3">
-                                <div class="card shadow-none m-0 border-left">
+                            <div class="col-sm-6 col-md-4">
+                                <div class="card shadow-none m-0 border-md-left">
                                     <div class="card-body text-center">
-                                        <i class="dripicons-checklist text-muted" style="font-size: 24px;"></i>
+                                        <i class="mdi mdi-cash-minus icon-xl-size text-muted" ></i>
                                         <h3><span>715</span></h3>
-                                        <p class="text-muted font-15 mb-0">Total Tasks</p>
+                                        <p class="text-muted font-15 mb-0">Quarterly Reductions</p>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="col-sm-6 col-xl-3">
-                                <div class="card shadow-none m-0 border-left">
+                            <div class="col-sm-6 col-md-4 offset-sm-3 offset-md-0">
+                                <div class="card shadow-none m-0 border-md-left">
                                     <div class="card-body text-center">
-                                        <i class="dripicons-user-group text-muted" style="font-size: 24px;"></i>
+                                        <i class="mdi mdi-currency-gbp text-muted icon-xl-size"></i>
                                         <h3><span>31</span></h3>
-                                        <p class="text-muted font-15 mb-0">Members</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-sm-6 col-xl-3">
-                                <div class="card shadow-none m-0 border-left">
-                                    <div class="card-body text-center">
-                                        <i class="dripicons-graph-line text-muted" style="font-size: 24px;"></i>
-                                        <h3><span>93%</span> <i class="mdi mdi-arrow-up text-success"></i></h3>
-                                        <p class="text-muted font-15 mb-0">Productivity</p>
+                                        <p class="text-muted font-15 mb-0">Quarterly New Business</p>
                                     </div>
                                 </div>
                             </div>
@@ -531,13 +697,5 @@
 
 {% block extra_javascript %}
 {{ block.super }}
-
-    <!-- third party js -->
-    <script src="{% static 'core/js/vendor/Chart.bundle.min.js' %}"></script>
-    <!-- third party js ends -->
-
-    <!-- demo app -->
-            <script src="{% static 'core/js/pages/demo.dashboard-projects.js' %}"></script>
-    <!-- end demo js-->
 
 {% endblock %}

@@ -1,11 +1,13 @@
 from django_otp.decorators import otp_required
 
 from django.contrib.auth.decorators import login_required
+from django.db.models import Count, Sum, F, Q
 from django.shortcuts import render
 
-from properties.models import Offer
+from common.functions import quarter_and_year_calc
+from properties.models import Offer, PropertyFees, Instruction
 from regionandhub.models import Hub
-from users.models import Profile
+from users.models import Profile, UserTargets
 
 
 @otp_required
@@ -13,7 +15,65 @@ from users.models import Profile
 def index(request):
     """A view to return the index page"""
 
-    return render(request, "home/index.html")
+    employees = Profile.objects.filter(
+        employee_targets=True, user__is_active=True
+    )
+
+    quarter_and_year = quarter_and_year_calc()
+
+    year = quarter_and_year["start_year"]
+    start_month = quarter_and_year["start_month"]
+    end_month = quarter_and_year["end_month"]
+    quarter = quarter_and_year["quarter"]
+
+    employee = "propertyprocess__employee__id"
+    name = "propertyprocess__employee__user__first_name"
+    instructions = 'propertyprocess__employee'
+
+    instructions = Instruction.objects.values(employee, name) \
+        .annotate(instruction_count=Count(instructions)) \
+        .filter(date__iso_year=year,
+                date__month__gte=start_month,
+                date__month__lte=end_month,
+                propertyprocess__employee__employee_targets=True,
+                propertyprocess__employee__user__is_active=True) \
+        .order_by('-instruction_count')
+
+    targets = UserTargets.objects.filter(
+        year=year,
+        quarter=quarter
+    )
+
+    for instance in instructions:
+        instance["employee_id"] = instance[
+            "propertyprocess__employee__id"
+        ]
+        del instance["propertyprocess__employee__id"]
+
+        for target in targets:
+            if instance["employee_id"] == target.profile_targets.id:
+                instruction_target = round(instance[
+                    "instruction_count"
+                ] / target.instructions, 2) * 100
+                instance["instruction_target"] = instruction_target
+
+    no_instruction_employees = []
+
+    for employee in employees:
+        do_exist = False
+        for instance in instructions:
+            if instance["employee_id"] == employee.id:
+                do_exist = True
+        if not do_exist:
+            no_instruction_employees.append(employee)
+
+    context = {
+        "employees": employees,
+        "instructions": instructions,
+        "no_instruction_employees": no_instruction_employees,
+    }
+
+    return render(request, "home/index.html", context)
 
 
 def offer_board(request):
