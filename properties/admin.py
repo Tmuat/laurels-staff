@@ -22,6 +22,7 @@ from properties.models import (
     PropertyFees,
     ProgressionNotes,
     PropertySellingInformation,
+    Reduction,
 )
 
 
@@ -155,6 +156,16 @@ class ExchangeAdminInline(admin.TabularInline):
     ]
 
 
+class ReductionAdminInline(admin.TabularInline):
+    model = Reduction
+    readonly_fields = [
+        "created",
+        "created_by",
+        "updated",
+        "updated_by",
+    ]
+
+
 class SalesProgressionAdminInline(admin.StackedInline):
     model = SalesProgression
     readonly_fields = [
@@ -233,6 +244,7 @@ class PropertyProcessAdmin(admin.ModelAdmin):
         PropertySellingInformationAdminInline,
         MarketingAdminInline,
         PropertyChainAdminInline,
+        ReductionAdminInline,
     ]
 
     list_display = [

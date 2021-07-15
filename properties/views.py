@@ -989,6 +989,9 @@ def add_reduction(request, propertyprocess_id):
 
             instance.save()
 
+            property_process.reduction_count =+ 1
+            property_process.save()
+
             history_description = (
                 f"{request.user.get_full_name()} has added a reduction."
             )

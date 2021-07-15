@@ -5,7 +5,9 @@ from django.db.models import Count, Sum, F, Q
 from django.shortcuts import render
 
 from common.functions import quarter_and_year_calc
-from properties.models import Offer, PropertyFees, Instruction
+from properties.models import (
+    Offer, PropertyFees, Instruction, Reduction
+)
 from regionandhub.models import Hub
 from users.models import Profile, UserTargets
 
@@ -29,6 +31,7 @@ def index(request):
     employee = "propertyprocess__employee__id"
     name = "propertyprocess__employee__user__first_name"
     instructions = 'propertyprocess__employee'
+    reductions = 'propertyprocess__employee'
 
     instructions = Instruction.objects.values(employee, name) \
         .annotate(instruction_count=Count(instructions)) \
@@ -39,11 +42,21 @@ def index(request):
                 propertyprocess__employee__user__is_active=True) \
         .order_by('-instruction_count')
 
+    reductions = Reduction.objects.values(employee, name) \
+        .annotate(reduction_count=Count(reductions)) \
+        .filter(date__iso_year=year,
+                date__month__gte=start_month,
+                date__month__lte=end_month,
+                propertyprocess__employee__employee_targets=True,
+                propertyprocess__employee__user__is_active=True) \
+        .order_by('-reduction_count')
+
     targets = UserTargets.objects.filter(
         year=year,
         quarter=quarter
     )
 
+    # Renaming fields in querysets
     for instance in instructions:
         instance["employee_id"] = instance[
             "propertyprocess__employee__id"
@@ -57,20 +70,43 @@ def index(request):
                 ] / target.instructions, 2) * 100
                 instance["instruction_target"] = instruction_target
 
+    for instance in reductions:
+        instance["employee_id"] = instance[
+            "propertyprocess__employee__id"
+        ]
+        del instance["propertyprocess__employee__id"]
+
+        for target in targets:
+            if instance["employee_id"] == target.profile_targets.id:
+                reduction_target = round(instance[
+                    "reduction_count"
+                ] / target.reductions, 2) * 100
+                instance["reduction_target"] = reduction_target
+
+    # Creating lists of employees who haven't aren't on the lists
     no_instruction_employees = []
+    no_reduction_employees = []
 
     for employee in employees:
-        do_exist = False
+        inst_exist = False
+        red_exist = False
         for instance in instructions:
             if instance["employee_id"] == employee.id:
-                do_exist = True
-        if not do_exist:
+                inst_exist = True
+        for instance in reductions:
+            if instance["employee_id"] == employee.id:
+                red_exist = True
+        if not inst_exist:
             no_instruction_employees.append(employee)
+        if not red_exist:
+            no_reduction_employees.append(employee)
 
     context = {
         "employees": employees,
         "instructions": instructions,
+        "reductions": reductions,
         "no_instruction_employees": no_instruction_employees,
+        "no_reduction_employees": no_reduction_employees,
     }
 
     return render(request, "home/index.html", context)

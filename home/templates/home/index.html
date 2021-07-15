@@ -43,7 +43,7 @@
                                         <td>
                                             {% for employee in employees %}
                                                 {% if instance.employee_id == employee.id %}
-                                                    {{ employee }}
+                                                    {{ employee.user.abbreviated_name }}
                                                 {% endif %}
                                             {% endfor %}
                                         </td>
@@ -60,7 +60,7 @@
                                     {% for employee in no_instruction_employees %}
                                     <tr>
                                         <td>
-                                            {{ employee }}
+                                            {{ employee.user.abbreviated_name }}
                                         </td>
                                         <td>0</td>
                                         <td>
@@ -94,29 +94,29 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for instance in instructions %}
+                                    {% for instance in reductions %}
                                     <tr>
                                         <td>
                                             {% for employee in employees %}
                                                 {% if instance.employee_id == employee.id %}
-                                                    {{ employee }}
+                                                    {{ employee.user.abbreviated_name }}
                                                 {% endif %}
                                             {% endfor %}
                                         </td>
-                                        <td>{{ instance.instruction_count }}</td>
+                                        <td>{{ instance.reduction_count }}</td>
                                         <td>
                                             <div class="progress" style="height: 3px;">
                                                 <div class="progress-bar bg-success" role="progressbar"
-                                                    style="width: {{ instance.instruction_target }}%; height: 20px;" aria-valuenow="{{ instance.instruction_target }}"
+                                                    style="width: {{ instance.reduction_target }}%; height: 20px;" aria-valuenow="{{ instance.reduction_target }}"
                                                     aria-valuemin="0" aria-valuemax="100"></div>
                                             </div>
                                         </td>
                                     </tr>
                                     {% endfor %}
-                                    {% for employee in no_instruction_employees %}
+                                    {% for employee in no_reduction_employees %}
                                     <tr>
                                         <td>
-                                            {{ employee }}
+                                            {{ employee.user.abbreviated_name }}
                                         </td>
                                         <td>0</td>
                                         <td>
@@ -155,7 +155,7 @@
                                         <td>
                                             {% for employee in employees %}
                                                 {% if instance.employee_id == employee.id %}
-                                                    {{ employee }}
+                                                    {{ employee.user.abbreviated_name }}
                                                 {% endif %}
                                             {% endfor %}
                                         </td>
@@ -172,7 +172,7 @@
                                     {% for employee in no_instruction_employees %}
                                     <tr>
                                         <td>
-                                            {{ employee }}
+                                            {{ employee.user.abbreviated_name }}
                                         </td>
                                         <td>0</td>
                                         <td>

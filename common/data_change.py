@@ -88,6 +88,7 @@ user_dict = None
 user_targets_dict = None
 totp_dict = None
 profile_dict = None
+reduction_dict = None
 master_dict = None
 
 # ------------------------------------------------------------------------------
@@ -2577,14 +2578,22 @@ with open(
 
 property_history_reduction_dict = []
 
+reduction_dict = []
+
 for instance in reduction_model:
 
     if instance["fields"]["date"] is None:
         pass
     else:
+
+        reduction = {}
+        reduction_fields = {}
+
         # Changing the model to new value
 
         instance["model"] = "properties.propertyhistory"
+
+        reduction["model"] = "properties.reduction"
 
         # End changing the model to new value
 
@@ -2600,6 +2609,10 @@ for instance in reduction_model:
                 ] = instruction_change_instance["new_pp_pk"]
 
         del instance["fields"]["instruction_change"]
+
+        reduction_fields["propertyprocess"] = instance[
+            "fields"
+        ]["propertyprocess"]
 
         # End loop
 
@@ -2620,6 +2633,8 @@ for instance in reduction_model:
         instance["fields"]["description"] = "There has been a price reduction."
 
         new_price = instance["fields"]["price_change"]
+
+        reduction_fields["price_change"] = instance["fields"]["price_change"]
 
         if len(pp_reduction_history_dict) == 0:
             notes = (
@@ -2645,6 +2660,12 @@ for instance in reduction_model:
 
         # Add new fields
 
+        reduction_fields["created_by"] = "Admin"
+        reduction_fields["created"] = instance["fields"]["date"]
+        reduction_fields["date"] = instance["fields"]["date"]
+        reduction_fields["updated_by"] = "Admin"
+        reduction_fields["updated"] = "2000-01-13T13:13:13.000Z"
+
         instance["fields"]["created_by"] = "Admin"
         instance["fields"]["created"] = instance["fields"]["date"]
         del instance["fields"]["date"]
@@ -2662,6 +2683,11 @@ for instance in reduction_model:
         # Create new UUID field
 
         instance["pk"] = str(uuid.uuid4())
+        reduction["pk"] = str(uuid.uuid4())
+
+        reduction["fields"] = reduction_fields
+
+        reduction_dict.append(reduction)
 
         # Create a new property fee for reduction only if
         # they aren't passed instruction
@@ -3025,6 +3051,13 @@ with open(
 ) as json_data:
     json.dump(user_targets_dict, json_data)
 
+with open(
+    "/workspace/laurels-staff/common/data_dump/new/reduction.json",
+    "w",
+) as json_data:
+    json.dump(reduction_dict, json_data)
+
+
 # ----------------------------------------
 # CREATE MASTER JSON
 # ----------------------------------------
@@ -3113,6 +3146,9 @@ for object in instruction_change_new_dict:
     master_dict.append(object)
 
 for object in user_targets_dict:
+    master_dict.append(object)
+
+for object in reduction_dict:
     master_dict.append(object)
 
 with open(

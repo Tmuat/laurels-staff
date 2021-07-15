@@ -1215,20 +1215,20 @@ class PropertyChain(UpdatedAndCreated):
 
     def __str__(self):
         if (
-            self.sales_progression.propertyprocess.property.address_line_2
+            self.propertyprocess.property.address_line_2
             == ""
-            or self.sales_progression.propertyprocess.property.address_line_2
-            == None
+            or self.propertyprocess.property.address_line_2
+            is None
         ):
             property_address = "%s, %s" % (
-                self.sales_progression.propertyprocess.property.postcode,
-                self.sales_progression.propertyprocess.property.address_line_1,
+                self.propertyprocess.property.postcode,
+                self.propertyprocess.property.address_line_1,
             )
         else:
             property_address = "%s, %s, %s" % (
-                self.sales_progression.propertyprocess.property.postcode,
-                self.sales_progression.propertyprocess.property.address_line_1,
-                self.sales_progression.propertyprocess.property.address_line_2,
+                self.propertyprocess.property.postcode,
+                self.propertyprocess.property.address_line_1,
+                self.propertyprocess.property.address_line_2,
             )
         return property_address
 
@@ -1462,6 +1462,44 @@ class PropertySellingInformation(UpdatedAndCreated):
     broker_firm = models.CharField(max_length=100, null=True, blank=True)
     broker_phone = models.IntegerField(null=True, blank=True)
     broker_email = models.EmailField(max_length=100, null=True, blank=True)
+
+    def __str__(self):
+        if (
+            self.propertyprocess.property.address_line_2 == ""
+            or self.propertyprocess.property.address_line_2 == None
+        ):
+            property_address = "%s, %s" % (
+                self.propertyprocess.property.postcode,
+                self.propertyprocess.property.address_line_1,
+            )
+        else:
+            property_address = "%s, %s, %s" % (
+                self.propertyprocess.property.postcode,
+                self.propertyprocess.property.address_line_1,
+                self.propertyprocess.property.address_line_2,
+            )
+        return property_address
+
+
+class Reduction(UpdatedAndCreated):
+    class Meta:
+        ordering = [
+            "propertyprocess__property__postcode",
+            "propertyprocess__property__address_line_1",
+            "-created",
+        ]
+        verbose_name = "Reduction"
+        verbose_name_plural = "Reductions"
+
+    propertyprocess = models.ForeignKey(
+        PropertyProcess,
+        on_delete=models.CASCADE,
+        related_name="reduction",
+    )
+    date = models.DateField(null=False,
+                            blank=False)
+    price_change = models.PositiveIntegerField(null=False,
+                                               blank=False)
 
     def __str__(self):
         if (
