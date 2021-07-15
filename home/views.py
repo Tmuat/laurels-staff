@@ -83,6 +83,20 @@ def index(request):
                 ] / target.reductions, 2) * 100
                 instance["reduction_target"] = reduction_target
 
+    instructions = sorted(
+        instructions,
+        key=lambda k: k['instruction_target'],
+        reverse=True
+    )
+
+    reductions = sorted(
+        reductions,
+        key=lambda k: k['reduction_target'],
+        reverse=True
+    )
+
+    print(instructions)
+
     # Creating lists of employees who haven't aren't on the lists
     no_instruction_employees = []
     no_reduction_employees = []
