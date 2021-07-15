@@ -4,6 +4,8 @@ import uuid
 
 from django.template.defaultfilters import slugify
 
+from users.models import UserTargets, UserTargetsByYear
+
 # ------------------------------------------------------------------------------
 # COMMANDS
 # ------------------------------------------------------------------------------
@@ -18,6 +20,8 @@ from django.template.defaultfilters import slugify
 # python3 manage.py dumpdata accounts.profile > data/profile.json --settings=laurels_staff_portal.settings.production
 # python3 manage.py dumpdata accounts.customuser > data/users.json --settings=laurels_staff_portal.settings.production
 # python3 manage.py dumpdata otp_totp.totpdevice > data/totp.json --settings=laurels_staff_portal.settings.production
+# python3 manage.py dumpdata accounts.targetsdynamic > data/usertargetsdynamic.json --settings=laurels_staff_portal.settings.production
+# python3 manage.py dumpdata accounts.targetsstatic > data/usertargetsstatic.json --settings=laurels_staff_portal.settings.production
 
 # python3 manage.py dumpdata home.property > data/property.json --settings=laurels_staff_portal.settings.production
 # python3 manage.py dumpdata home.propertyprocess > data/property_process.json --settings=laurels_staff_portal.settings.production
@@ -81,6 +85,7 @@ progress_notes_dict = None
 hub_dict = None
 hub_targets_dict = None
 user_dict = None
+user_targets_dict = None
 totp_dict = None
 profile_dict = None
 master_dict = None
@@ -600,6 +605,8 @@ for instance in profile_model:
         "target_employee"
     ]
 
+    instance["old_target_link"] = instance["fields"]["target_link"]
+
     instance["fields"]["personal_comm"] = instance["fields"]["p_comm"]
 
     instance["fields"]["office_comm"] = instance["fields"]["o_comm"]
@@ -653,6 +660,161 @@ for instance in totp_model:
     # End loop
 
 totp_dict = totp_model
+
+# ----------------------------------------
+# TARGETS MODEL
+# ----------------------------------------
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/originals/usertargetsdynamic.json",
+    "r",
+) as json_data:
+    user_targets_model = json.load(json_data)
+
+user_targets_dict = []
+
+for instance in user_targets_model:
+
+    q1 = {}
+    q1_fields = {}
+
+    q2 = {}
+    q2_fields = {}
+
+    q3 = {}
+    q3_fields = {}
+
+    q4 = {}
+    q4_fields = {}
+
+    year = {}
+    year_fields = {}
+
+    # Changing the model to new value
+
+    q1["model"] = "users.usertargets"
+    q2["model"] = "users.usertargets"
+    q3["model"] = "users.usertargets"
+    q4["model"] = "users.usertargets"
+    year["model"] = "users.usertargetsbyyear"
+
+    q1["pk"] = str(uuid.uuid4())
+    q2["pk"] = str(uuid.uuid4())
+    q3["pk"] = str(uuid.uuid4())
+    q4["pk"] = str(uuid.uuid4())
+    year["pk"] = str(uuid.uuid4())
+
+    q1_fields["year"] = UserTargets.Y_2021
+    q2_fields["year"] = UserTargets.Y_2021
+    q3_fields["year"] = UserTargets.Y_2021
+    q4_fields["year"] = UserTargets.Y_2021
+    year_fields["year"] = UserTargetsByYear.Y_2021
+
+    q1_fields["quarter"] = UserTargets.Q1
+    q2_fields["quarter"] = UserTargets.Q2
+    q3_fields["quarter"] = UserTargets.Q3
+    q4_fields["quarter"] = UserTargets.Q4
+
+    q1_fields["conveyancing"] = 6
+    q2_fields["conveyancing"] = 6
+    q3_fields["conveyancing"] = 6
+    q4_fields["conveyancing"] = 6
+
+    q1_fields["mortgages"] = 3
+    q2_fields["mortgages"] = 3
+    q3_fields["mortgages"] = 3
+    q4_fields["mortgages"] = 3
+
+    q1_fields["instructions"] = 18
+    q2_fields["instructions"] = 18
+    q3_fields["instructions"] = 18
+    q4_fields["instructions"] = 18
+
+    q1_fields["reductions"] = 12
+    q2_fields["reductions"] = 12
+    q3_fields["reductions"] = 12
+    q4_fields["reductions"] = 12
+
+    q1_fields["created_by"] = "Admin"
+    q1_fields["created"] = "2000-01-13T13:13:13.000Z"
+    q1_fields["updated_by"] = "Admin"
+    q1_fields["updated"] = "2000-01-13T13:13:13.000Z"
+
+    q2_fields["created_by"] = "Admin"
+    q2_fields["created"] = "2000-01-13T13:13:13.000Z"
+    q2_fields["updated_by"] = "Admin"
+    q2_fields["updated"] = "2000-01-13T13:13:13.000Z"
+
+    q3_fields["created_by"] = "Admin"
+    q3_fields["created"] = "2000-01-13T13:13:13.000Z"
+    q3_fields["updated_by"] = "Admin"
+    q3_fields["updated"] = "2000-01-13T13:13:13.000Z"
+
+    q4_fields["created_by"] = "Admin"
+    q4_fields["created"] = "2000-01-13T13:13:13.000Z"
+    q4_fields["updated_by"] = "Admin"
+    q4_fields["updated"] = "2000-01-13T13:13:13.000Z"
+
+    year_fields["created_by"] = "Admin"
+    year_fields["created"] = "2000-01-13T13:13:13.000Z"
+    year_fields["updated_by"] = "Admin"
+    year_fields["updated"] = "2000-01-13T13:13:13.000Z"
+
+    for profile_instance in profile_dict:
+        if profile_instance["old_target_link"] == instance["pk"]:
+            q1_fields["new_business"] = instance["fields"][
+                "q1_2021_new_business"
+            ]
+            q2_fields["new_business"] = instance["fields"][
+                "q2_2021_new_business"
+            ]
+            q3_fields["new_business"] = instance["fields"][
+                "q3_2021_new_business"
+            ]
+            q4_fields["new_business"] = instance["fields"][
+                "q4_2021_new_business"
+            ]
+
+            q1_fields["exchange_and_move"] = instance["fields"][
+                "q1_2021_exchange_and_move"
+            ]
+            q2_fields["exchange_and_move"] = instance["fields"][
+                "q2_2021_exchange_and_move"
+            ]
+            q3_fields["exchange_and_move"] = instance["fields"][
+                "q3_2021_exchange_and_move"
+            ]
+            q4_fields["exchange_and_move"] = instance["fields"][
+                "q4_2021_exchange_and_move"
+            ]
+
+            year_fields["targets_set"] = True
+
+            q1_fields["profile_targets"] = profile_instance["pk"]
+            q2_fields["profile_targets"] = profile_instance["pk"]
+            q3_fields["profile_targets"] = profile_instance["pk"]
+            q4_fields["profile_targets"] = profile_instance["pk"]
+
+            q1_fields["user_targets"] = profile_instance["fields"]["user"]
+            q2_fields["user_targets"] = profile_instance["fields"]["user"]
+            q3_fields["user_targets"] = profile_instance["fields"]["user"]
+            q4_fields["user_targets"] = profile_instance["fields"]["user"]
+
+            year_fields["profile"] = profile_instance["pk"]
+            year_fields["user"] = profile_instance["fields"]["user"]
+
+            q1["fields"] = q1_fields
+            q2["fields"] = q2_fields
+            q3["fields"] = q3_fields
+            q4["fields"] = q4_fields
+            year["fields"] = year_fields
+
+            if profile_instance["fields"]["employee_targets"] is True:
+                user_targets_dict.append(q1)
+                user_targets_dict.append(q2)
+                user_targets_dict.append(q3)
+                user_targets_dict.append(q4)
+                user_targets_dict.append(year)
 
 # ----------------------------------------
 # PROPERTY PROCESS MODEL
@@ -2857,6 +3019,12 @@ with open(
 ) as json_data:
     json.dump(instruction_change_new_dict, json_data)
 
+with open(
+    "/workspace/laurels-staff/common/data_dump/new/usertargets.json",
+    "w",
+) as json_data:
+    json.dump(user_targets_dict, json_data)
+
 # ----------------------------------------
 # CREATE MASTER JSON
 # ----------------------------------------
@@ -2942,6 +3110,9 @@ for object in progress_notes_dict:
     master_dict.append(object)
 
 for object in instruction_change_new_dict:
+    master_dict.append(object)
+
+for object in user_targets_dict:
     master_dict.append(object)
 
 with open(

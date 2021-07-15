@@ -97,6 +97,13 @@ class UserTargetsByYear(UpdatedAndCreated):
         null=True,
         blank=True,
     )
+    profile = models.ForeignKey(
+        Profile,
+        related_name="profile_targets_year_set",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )
     user_invitation = models.ForeignKey(
         UserInvitations,
         related_name="user_invitation_targets_year",
@@ -107,9 +114,8 @@ class UserTargetsByYear(UpdatedAndCreated):
 
     def __str__(self):
         user_targets_name = str(self.user)
-        user_invitation_name = str(self.user_invitation.email)
         if user_targets_name == "None":
-            model_str = user_invitation_name
+            model_str = str(self.user_invitation.email)
         else:
             model_str = user_targets_name
         return model_str
@@ -169,6 +175,13 @@ class UserTargets(UpdatedAndCreated):
         null=True,
         blank=True,
     )
+    profile_targets = models.ForeignKey(
+        Profile,
+        related_name="profile_targets",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )
     user_invitation = models.ForeignKey(
         UserInvitations,
         related_name="user_invitation_targets",
@@ -179,9 +192,8 @@ class UserTargets(UpdatedAndCreated):
 
     def __str__(self):
         user_targets_name = str(self.user_targets)
-        user_invitation_name = str(self.user_invitation.email)
         if user_targets_name == "None":
-            model_str = user_invitation_name
+            model_str = str(self.user_invitation.email)
         else:
             model_str = user_targets_name
         return model_str

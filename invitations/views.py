@@ -226,10 +226,12 @@ def accept_invite(request, invitation_key):
 
             for target_year in user_targets_year_qs:
                 target_year.user = instance_form
+                target_year.profile = instance_profile
                 target_year.save()
 
             for target in user_targets_qs:
                 target.user_targets = instance_form
+                target.profile_targets = instance_profile
                 target.save()
 
             invitation_instance.accepted = True

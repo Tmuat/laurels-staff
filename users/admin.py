@@ -18,6 +18,7 @@ class ProfileAdminInline(admin.TabularInline):
 class UserTargetsYearAdminInline(admin.TabularInline):
     model = UserTargetsByYear
     readonly_fields = [
+        "profile",
         "created",
         "created_by",
         "updated",
@@ -28,6 +29,7 @@ class UserTargetsYearAdminInline(admin.TabularInline):
 class UserTargetsAdminInline(admin.TabularInline):
     model = UserTargets
     readonly_fields = [
+        "profile_targets",
         "created",
         "created_by",
         "updated",
