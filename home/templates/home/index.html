@@ -20,11 +20,11 @@
                     <h4 class="page-title">Laurels Home</h4>
                 </div>
             </div>
-        </div>     
+        </div>
         <!-- end page title -->
 
         <div class="row">
-            <div class="col-xl-4 col-lg-6">
+            <div class="col-xl-3 col-lg-6">
                 <div class="card">
                     <div class="card-body">
                         <h4 class="header-title mt-1">Instructions</h4>
@@ -80,7 +80,7 @@
                 </div> <!-- end card-->
             </div> <!-- end col-->
 
-            <div class="col-xl-4 col-lg-6">
+            <div class="col-xl-3 col-lg-6">
                 <div class="card">
                     <div class="card-body">
                         <h4 class="header-title mt-1">Reductions</h4>
@@ -136,7 +136,7 @@
                 </div> <!-- end card-->
             </div> <!-- end col-->
 
-            <div class="col-xl-4 col-lg-6">
+            <div class="col-xl-3 col-lg-6">
                 <div class="card">
                     <div class="card-body">
                         <h4 class="header-title mt-1">New Business</h4>
@@ -176,6 +176,62 @@
                                             {{ employee.user.abbreviated_name }}
                                         </td>
                                         <td>£0.00</td>
+                                        <td>
+                                            <div class="progress" style="height: 3px;">
+                                                <div class="progress-bar" role="progressbar"
+                                                    style="width: 0%; height: 20px;" aria-valuenow="0"
+                                                    aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div> <!-- end table-responsive-->
+                    </div> <!-- end card-body-->
+                </div> <!-- end card-->
+            </div> <!-- end col-->
+
+            <div class="col-xl-3 col-lg-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="header-title mt-1">Valuations</h4>
+
+                        <div class="table-responsive">
+                            <table class="table table-sm table-centered mb-0 font-14">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>No.</th>
+                                        <th style="width: 40%;">Perc.</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for instance in valuations %}
+                                    <tr>
+                                        <td>
+                                            {% for employee in employees %}
+                                                {% if instance.employee_id == employee.id %}
+                                                    {{ employee.user.abbreviated_name }}
+                                                {% endif %}
+                                            {% endfor %}
+                                        </td>
+                                        <td>{{ instance.valuation_count }}</td>
+                                        <td>
+                                            <div class="progress" style="height: 3px;">
+                                                <div class="progress-bar bg-success" role="progressbar"
+                                                    style="width: {{ instance.valuation_target }}%; height: 20px;" aria-valuenow="{{ instance.valuation_target }}"
+                                                    aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                    {% for employee in no_valuation_employees %}
+                                    <tr>
+                                        <td>
+                                            {{ employee.user.abbreviated_name }}
+                                        </td>
+                                        <td>0</td>
                                         <td>
                                             <div class="progress" style="height: 3px;">
                                                 <div class="progress-bar" role="progressbar"

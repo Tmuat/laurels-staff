@@ -9,7 +9,7 @@ from django.utils import timezone
 
 from common.functions import quarter_and_year_calc
 from properties.models import (
-    Offer, PropertyFees, Instruction, Reduction
+    Offer, PropertyFees, Instruction, Reduction, Valuation
 )
 from regionandhub.models import Hub
 from users.models import Profile, UserTargets
@@ -33,11 +33,20 @@ def index(request):
     company_year = quarter_and_year["company_year"]
 
     employee = "propertyprocess__employee__id"
-    instructions = 'propertyprocess__employee'
+    link_to_employee = 'propertyprocess__employee'
     reductions = 'propertyprocess__employee'
 
+    valuations = Valuation.objects.values(employee) \
+        .annotate(valuation_count=Count(link_to_employee)) \
+        .filter(date__iso_year=year,
+                date__month__gte=start_month,
+                date__month__lte=end_month,
+                propertyprocess__employee__employee_targets=True,
+                propertyprocess__employee__user__is_active=True) \
+        .order_by('-valuation_count')
+
     instructions = Instruction.objects.values(employee) \
-        .annotate(instruction_count=Count(instructions)) \
+        .annotate(instruction_count=Count(link_to_employee)) \
         .filter(date__iso_year=year,
                 date__month__gte=start_month,
                 date__month__lte=end_month,
@@ -46,7 +55,7 @@ def index(request):
         .order_by('-instruction_count')
 
     reductions = Reduction.objects.values(employee) \
-        .annotate(reduction_count=Count(reductions)) \
+        .annotate(reduction_count=Count(link_to_employee)) \
         .filter(date__iso_year=year,
                 date__month__gte=start_month,
                 date__month__lte=end_month,
@@ -71,6 +80,21 @@ def index(request):
     )
 
     # Renaming fields in querysets
+    for instance in valuations:
+        instance["employee_id"] = instance[
+            "propertyprocess__employee__id"
+        ]
+        del instance["propertyprocess__employee__id"]
+
+        instance["valuation_target"] = 0
+
+        for target in targets:
+            if instance["employee_id"] == target.profile_targets.id:
+                valuation_target = round(instance[
+                    "valuation_count"
+                ] / target.valuations, 2) * 100
+                instance["valuation_target"] = valuation_target
+
     for instance in instructions:
         instance["employee_id"] = instance[
             "propertyprocess__employee__id"
@@ -116,6 +140,12 @@ def index(request):
                 ] / target.new_business, 2) * 100
                 instance["new_business_target"] = new_business_target
 
+    valuations = sorted(
+        valuations,
+        key=lambda k: k['valuation_target'],
+        reverse=True
+    )
+
     instructions = sorted(
         instructions,
         key=lambda k: k['instruction_target'],
@@ -135,14 +165,19 @@ def index(request):
     )
 
     # Creating lists of employees who haven't aren't on the lists
+    no_valuation_employees = []
     no_instruction_employees = []
     no_reduction_employees = []
     no_new_business_employees = []
 
     for employee in employees:
+        val_exist = False
         inst_exist = False
         red_exist = False
         new_exist = False
+        for instance in valuations:
+            if instance["employee_id"] == employee.id:
+                val_exist = True
         for instance in instructions:
             if instance["employee_id"] == employee.id:
                 inst_exist = True
@@ -152,6 +187,8 @@ def index(request):
         for instance in new_business:
             if instance["employee_id"] == employee.id:
                 new_exist = True
+        if not val_exist:
+            no_valuation_employees.append(employee)
         if not inst_exist:
             no_instruction_employees.append(employee)
         if not red_exist:
@@ -161,9 +198,11 @@ def index(request):
 
     context = {
         "employees": employees,
+        "valuations": valuations,
         "instructions": instructions,
         "reductions": reductions,
         "new_business": new_business,
+        "no_valuation_employees": no_valuation_employees,
         "no_instruction_employees": no_instruction_employees,
         "no_reduction_employees": no_reduction_employees,
         "no_new_business_employees": no_new_business_employees,
