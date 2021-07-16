@@ -30,8 +30,26 @@ def hub_and_region(request):
 
     next_year = str(int(current_year) + 1)
 
+    targets_set = []
+
+    for region in regions:
+        for hub in region.region.all():
+            hub_target = {}
+            hub_target["hub_pk"] = hub.pk
+            hub_target["hub_name"] = hub.hub_name
+            hub_target["current_year"] = False
+            hub_target["next_year"] = False
+            for hub_targets_year in hub.hub_targets_year_set.all():
+                if hub_targets_year.year == current_year:
+                    hub_target["current_year"] = True
+                if hub_targets_year.year == next_year:
+                    hub_target["next_year"] = True
+
+            targets_set.append(hub_target)
+
     context = {
         "regions": regions,
+        "targets_set": targets_set,
         "current_year": current_year,
         "next_year": next_year,
     }

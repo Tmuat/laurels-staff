@@ -19,12 +19,12 @@ def quarter_year_calc():
     start_year = int(calculate_start_year(todays_date))
 
     if start_month == 10:
-        start_year + 1
+        start_year += 1
 
     return str(start_year)
 
 
-def quarter_and_year_calc():
+def quarter_and_year_calc(date):
 
     data = dict()
 
@@ -36,13 +36,11 @@ def quarter_and_year_calc():
         start_year = date.year
         return start_year
 
-    todays_date = timezone.now()
-
-    start_month = int(calculate_start_month(todays_date))
-    start_year = int(calculate_start_year(todays_date))
+    start_month = int(calculate_start_month(date))
+    start_year = int(calculate_start_year(date))
 
     if start_month == 10:
-        start_year + 1
+        start_year += 1
 
     if start_month == 10:
         quarter = "q1"
