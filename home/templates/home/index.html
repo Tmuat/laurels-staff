@@ -1,5 +1,6 @@
 {% extends "vertical_base.html" %}
 {% load static i18n %}
+{% load humanize %}
 
 {% block head_title %}{% trans "Home" %}{% endblock head_title %}
 
@@ -138,7 +139,7 @@
             <div class="col-xl-4 col-lg-6">
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="header-title mt-1">Instructions</h4>
+                        <h4 class="header-title mt-1">New Business</h4>
 
                         <div class="table-responsive">
                             <table class="table table-sm table-centered mb-0 font-14">
@@ -150,7 +151,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for instance in instructions %}
+                                    {% for instance in new_business %}
                                     <tr>
                                         <td>
                                             {% for employee in employees %}
@@ -159,22 +160,22 @@
                                                 {% endif %}
                                             {% endfor %}
                                         </td>
-                                        <td>{{ instance.instruction_count }}</td>
+                                        <td>£{{ instance.new_business_sum|floatformat:2|intcomma }}</td>
                                         <td>
                                             <div class="progress" style="height: 3px;">
                                                 <div class="progress-bar bg-success" role="progressbar"
-                                                    style="width: {{ instance.instruction_target }}%; height: 20px;" aria-valuenow="{{ instance.instruction_target }}"
+                                                    style="width: {{ instance.new_business_target }}%; height: 20px;" aria-valuenow="{{ instance.new_business_target }}"
                                                     aria-valuemin="0" aria-valuemax="100"></div>
                                             </div>
                                         </td>
                                     </tr>
                                     {% endfor %}
-                                    {% for employee in no_instruction_employees %}
+                                    {% for employee in no_new_business_employees %}
                                     <tr>
                                         <td>
                                             {{ employee.user.abbreviated_name }}
                                         </td>
-                                        <td>0</td>
+                                        <td>£0.00</td>
                                         <td>
                                             <div class="progress" style="height: 3px;">
                                                 <div class="progress-bar" role="progressbar"

@@ -38,9 +38,10 @@ def quarter_and_year_calc(date):
 
     start_month = int(calculate_start_month(date))
     start_year = int(calculate_start_year(date))
+    company_year= start_year
 
     if start_month == 10:
-        start_year += 1
+        company_year += 1
 
     if start_month == 10:
         quarter = "q1"
@@ -54,6 +55,7 @@ def quarter_and_year_calc(date):
     end_month = start_month + 2
 
     data["start_year"] = start_year
+    data["company_year"] = company_year
     data["start_month"] = start_month
     data["end_month"] = end_month
     data["quarter"] = quarter

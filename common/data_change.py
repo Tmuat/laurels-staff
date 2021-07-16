@@ -96,24 +96,6 @@ master_dict = None
 # ------------------------------------------------------------------------------
 
 # ----------------------------------------
-# SETUP
-# ----------------------------------------
-
-with open(
-    "/workspace/laurels-staff/common/data_dump/originals/setup.json", "r"
-) as json_data:
-    setup = json.load(json_data)
-
-setup_dict = setup
-
-with open(
-    "/workspace/laurels-staff/common/data_dump/originals/superuser.json", "r"
-) as json_data:
-    super = json.load(json_data)
-
-super_dict = super
-
-# ----------------------------------------
 # PROPERTY MODEL
 # ----------------------------------------
 
@@ -2911,6 +2893,40 @@ for instance in deal_change_model:
             property_history_extra_dict.append(history_fee_agreed_change)
 
 # ----------------------------------------
+# SETUP
+# ----------------------------------------
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/originals/setup.json", "r"
+) as json_data:
+    setup = json.load(json_data)
+
+for instance in setup:
+    if instance["pk"] == "eac112a8-c670-4d20-bb66-c4ed0329362b":
+        for property_instance in property_dict:
+            if property_instance["fields"]["address_line_1"] == "7 Ruston Avenue":
+                property_pk = property_instance["pk"]
+        for property_process_instance in propertyprocess_dict:
+            if property_process_instance["fields"]["property"] == property_pk:
+                instance["fields"]["propertyprocess"] = property_process_instance["pk"]
+
+setup_dict = setup
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/originals/superuser.json", "r"
+) as json_data:
+    super = json.load(json_data)
+
+for instance in super:
+    if instance["model"] == "users.profile":
+        for hub_instance in hub_dict:
+            if hub_instance["fields"]["hub_name"] == "Surrey Hub":
+                dict = instance["fields"]["hub"] = []
+                dict.append(hub_instance["pk"])
+
+super_dict = super
+
+# ----------------------------------------
 # WRITE JSON
 # ----------------------------------------
 
@@ -3030,7 +3046,7 @@ with open(
     json.dump(property_history_extra_dict, json_data)
 
 with open(
-    "/workspace/laurels-staff/common/data_dump/new/reduction.json", "w"
+    "/workspace/laurels-staff/common/data_dump/new/prop_history_reduction.json", "w"
 ) as json_data:
     json.dump(property_history_reduction_dict, json_data)
 
