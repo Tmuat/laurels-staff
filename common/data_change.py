@@ -14,7 +14,6 @@ from users.models import UserTargets, UserTargetsByYear
 
 # exec(open('common/data_change.py').read())
 
-
 # python3 manage.py dumpdata home.hub > data/hub.json --settings=laurels_staff_portal.settings.production
 # python3 manage.py dumpdata home.targetshub > data/hubtargets.json --settings=laurels_staff_portal.settings.production
 # python3 manage.py dumpdata accounts.profile > data/profile.json --settings=laurels_staff_portal.settings.production
@@ -365,6 +364,11 @@ for instance in hub_targets_model:
             "q4_2021_instructions_hub"
         ]
 
+        q1_2021_fields["valuations"] = 20
+        q2_2021_fields["valuations"] = 20
+        q3_2021_fields["valuations"] = 20
+        q4_2021_fields["valuations"] = 20
+
         q1_2021_fields["reductions"] = instance["fields"][
             "q1_2021_reductions_hub"
         ]
@@ -712,6 +716,11 @@ for instance in user_targets_model:
     q2_fields["instructions"] = 18
     q3_fields["instructions"] = 18
     q4_fields["instructions"] = 18
+
+    q1_fields["valuations"] = 24
+    q2_fields["valuations"] = 24
+    q3_fields["valuations"] = 24
+    q4_fields["valuations"] = 24
 
     q1_fields["reductions"] = 12
     q2_fields["reductions"] = 12

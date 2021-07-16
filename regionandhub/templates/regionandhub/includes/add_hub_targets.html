@@ -33,16 +33,19 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-3 d-none d-md-inline">
+                    <div class="col d-none d-md-inline">
+                        Valuations
+                    </div>
+                    <div class="col d-none d-md-inline">
                         Instructions
                     </div>
-                    <div class="col-3 d-none d-md-inline">
+                    <div class="col d-none d-md-inline">
                         Reductions
                     </div>
-                    <div class="col-3 d-none d-md-inline">
+                    <div class="col d-none d-md-inline">
                         New Business
                     </div>
-                    <div class="col-3 d-none d-md-inline">
+                    <div class="col d-none d-md-inline">
                         Exchange/Move
                     </div>
                 </div>
@@ -51,25 +54,31 @@
                     <div class="col-12">
                         <h6 {% if forloop.counter == 1 %}class="mt-0"{% endif %}><small> Quarter{{ forloop.counter }}</small></h6>
                     </div>
-                    <div class="col-6 col-md-3">
+                    <div class="col-6 col-md">
+                        <div class="d-md-none">
+                            Valuations
+                        </div>
+                        {{ form.valuations|as_crispy_field }}
+                    </div>
+                    <div class="col-6 col-md">
                         <div class="d-md-none">
                             Instructions
                         </div>
                         {{ form.instructions|as_crispy_field }}
                     </div>
-                    <div class="col-6 col-md-3">
+                    <div class="col-6 col-md">
                         <div class="d-md-none">
                             Reductions
                         </div>
                         {{ form.reductions|as_crispy_field }}
                     </div>
-                    <div class="col-6 col-md-3">
+                    <div class="col-6 col-md">
                         <div class="d-md-none">
                             New Business
                         </div>
                         {{ form.new_business|as_crispy_field }}
                     </div>
-                    <div class="col-6 col-md-3">
+                    <div class="col-6 col-md offset-3 offset-md-0">
                         <div class="d-md-none">
                             Exchange/Move
                         </div>

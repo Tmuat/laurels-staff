@@ -62,6 +62,7 @@ class HubTargetsForm(forms.ModelForm):
     class Meta:
         model = HubTargets
         fields = (
+            "valuations",
             "instructions",
             "reductions",
             "new_business",

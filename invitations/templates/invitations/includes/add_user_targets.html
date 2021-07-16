@@ -34,6 +34,9 @@
                 </div>
                 <div class="row">
                     <div class="col-2 d-none d-md-inline">
+                        Valuations
+                    </div>
+                    <div class="col-2 d-none d-md-inline">
                         Instructions
                     </div>
                     <div class="col-2 d-none d-md-inline">
@@ -56,6 +59,12 @@
                 <div class="row mt-1 mb-1">
                     <div class="col-12">
                         <h6 {% if forloop.counter == 1 %}class="mt-0"{% endif %}><small> Quarter{{ forloop.counter }}</small></h6>
+                    </div>
+                    <div class="col-6 col-md-2">
+                        <div class="d-md-none">
+                            Valuations
+                        </div>
+                        {{ form.valuations|as_crispy_field }}
                     </div>
                     <div class="col-6 col-md-2">
                         <div class="d-md-none">

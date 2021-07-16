@@ -177,6 +177,7 @@ class UserTargets(UpdatedAndCreated):
     reductions = models.PositiveIntegerField(blank=False, null=False)
     new_business = models.PositiveIntegerField(blank=False, null=False)
     exchange_and_move = models.PositiveIntegerField(blank=False, null=False)
+    valuations = models.PositiveIntegerField(blank=False, null=False)
     user_targets = models.ForeignKey(
         CustomUser,
         related_name="user_targets",

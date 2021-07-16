@@ -129,6 +129,7 @@ class HubTargets(UpdatedAndCreated):
     reductions = models.PositiveIntegerField(blank=False, null=False)
     new_business = models.PositiveIntegerField(blank=False, null=False)
     exchange_and_move = models.PositiveIntegerField(blank=False, null=False)
+    valuations = models.PositiveIntegerField(blank=False, null=False)
     hub_targets = models.ForeignKey(
         Hub, related_name="hub_targets", on_delete=models.CASCADE
     )

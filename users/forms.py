@@ -75,6 +75,7 @@ class UserTargetsForm(forms.ModelForm):
             "reductions",
             "new_business",
             "exchange_and_move",
+            "valuations",
         )
 
     def __init__(self, *args, **kwargs):
