@@ -208,6 +208,20 @@ body.authentication-bg {
     position: relative;
 }
 
+/* Glide JS */
+
+.glide__bullets {
+    bottom: 1em;
+}
+
+.glide__bullet--active {
+    background-color: #0acf97 !important;
+}
+
+.glide__bullet {
+    background-color: rgba(10, 207, 151, 0.2);
+}
+
 /* Media Queries */
 
 /* Extra small devices (portrait phones, less than 576px) */

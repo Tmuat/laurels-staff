@@ -17,6 +17,9 @@
 
         <link rel="icon" href="{% static 'custom/images/favicon.ico' %}">
         
+        {% block extra_css %}
+        {% endblock %}
+
         {% block css %}
                 
             <!-- Your stuff: Third-party CSS libraries go here -->
@@ -28,9 +31,6 @@
             <!-- This file stores project-specific CSS -->
             <link href="{% static 'custom/css/base.css' %}" rel="stylesheet" type="text/css" />
 
-        {% endblock %}
-
-        {% block extra_css %}
         {% endblock %}
 
     </head>
