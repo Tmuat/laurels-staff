@@ -36,7 +36,7 @@ def index(request):
     link_to_employee = 'propertyprocess__employee'
     reductions = 'propertyprocess__employee'
 
-    valuations = Valuation.objects.values(employee) \
+    valuations = Valuation.objects.values("valuer") \
         .annotate(valuation_count=Count(link_to_employee)) \
         .filter(date__iso_year=year,
                 date__month__gte=start_month,
@@ -82,9 +82,9 @@ def index(request):
     # Renaming fields in querysets
     for instance in valuations:
         instance["employee_id"] = instance[
-            "propertyprocess__employee__id"
+            "valuer"
         ]
-        del instance["propertyprocess__employee__id"]
+        del instance["valuer"]
 
         instance["valuation_target"] = 0
 
