@@ -24,7 +24,7 @@
                             <li class="breadcrumb-item active"><a href="{% url 'home:home' %}"><i class="uil-home-alt"></i> Home</a></li>
                         </ol>
                     </div>
-                    <h4 class="page-title">Laurels Home</h4>
+                    <h4 class="page-title">Leaderboards</h4>
                 </div>
             </div>
         </div>
@@ -35,6 +35,44 @@
                 <div class="glide__track" data-glide-el="track">
                   <ul class="glide__slides">
                     <li class="glide__slide px-2">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="header-title mt-1">Last Quarter Top Performers</h4>
+        
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-centered mb-0 font-14">
+                                        <thead class="thead-light">
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>No.</th>
+                                                <th style="width: 40%;">Perc.</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for instance in last_instructions %}
+                                            <tr>
+                                                <td>
+                                                    {% for employee in employees %}
+                                                        {% if instance.employee_id == employee.id %}
+                                                            {{ employee.user.abbreviated_name }}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </td>
+                                                <td class="pointer">{{ instance.instruction_count }}</td>
+                                                <td>
+                                                    <div class="progress" style="height: 3px;">
+                                                        <div class="progress-bar bg-success" role="progressbar"
+                                                            style="width: {{ instance.instruction_target }}%; height: 20px;" aria-valuenow="{{ instance.instruction_target }}"
+                                                            aria-valuemin="0" aria-valuemax="100"></div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div> <!-- end table-responsive-->
+                            </div> <!-- end card-body-->
+                        </div> <!-- end card-->
                         <div class="card">
                             <div class="card-body">
                                 <h4 class="header-title mt-1">Instructions</h4>
@@ -92,6 +130,44 @@
                     <li class="glide__slide px-2">
                         <div class="card">
                             <div class="card-body">
+                                <h4 class="header-title mt-1">Last Quarter Top Performers</h4>
+        
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-centered mb-0 font-14">
+                                        <thead class="thead-light">
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>No.</th>
+                                                <th style="width: 40%;">Perc.</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for instance in last_reductions %}
+                                            <tr>
+                                                <td>
+                                                    {% for employee in employees %}
+                                                        {% if instance.employee_id == employee.id %}
+                                                            {{ employee.user.abbreviated_name }}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </td>
+                                                <td>{{ instance.reduction_count }}</td>
+                                                <td>
+                                                    <div class="progress" style="height: 3px;">
+                                                        <div class="progress-bar bg-success" role="progressbar"
+                                                            style="width: {{ instance.reduction_target }}%; height: 20px;" aria-valuenow="{{ instance.reduction_target }}"
+                                                            aria-valuemin="0" aria-valuemax="100"></div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div> <!-- end table-responsive-->
+                            </div> <!-- end card-body-->
+                        </div> <!-- end card-->
+                        <div class="card">
+                            <div class="card-body">
                                 <h4 class="header-title mt-1">Reductions</h4>
         
                                 <div class="table-responsive">
@@ -147,6 +223,44 @@
                     <li class="glide__slide px-2">
                         <div class="card">
                             <div class="card-body">
+                                <h4 class="header-title mt-1">Last Quarter Top Performers</h4>
+        
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-centered mb-0 font-14">
+                                        <thead class="thead-light">
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>No.</th>
+                                                <th style="width: 40%;">Perc.</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for instance in last_new_business %}
+                                            <tr>
+                                                <td>
+                                                    {% for employee in employees %}
+                                                        {% if instance.employee_id == employee.id %}
+                                                            {{ employee.user.abbreviated_name }}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </td>
+                                                <td>£{{ instance.new_business_sum|floatformat:2|intcomma }}</td>
+                                                <td>
+                                                    <div class="progress" style="height: 3px;">
+                                                        <div class="progress-bar bg-success" role="progressbar"
+                                                            style="width: {{ instance.new_business_target }}%; height: 20px;" aria-valuenow="{{ instance.new_business_target }}"
+                                                            aria-valuemin="0" aria-valuemax="100"></div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div> <!-- end table-responsive-->
+                            </div> <!-- end card-body-->
+                        </div> <!-- end card-->
+                        <div class="card">
+                            <div class="card-body">
                                 <h4 class="header-title mt-1">New Business</h4>
         
                                 <div class="table-responsive">
@@ -200,6 +314,44 @@
                         </div> <!-- end card-->
                     </li>
                     <li class="glide__slide px-2">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="header-title mt-1">Last Quarter Top Performers</h4>
+        
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-centered mb-0 font-14">
+                                        <thead class="thead-light">
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>No.</th>
+                                                <th style="width: 40%;">Perc.</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for instance in last_valuations %}
+                                            <tr>
+                                                <td>
+                                                    {% for employee in employees %}
+                                                        {% if instance.employee_id == employee.id %}
+                                                            {{ employee.user.abbreviated_name }}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </td>
+                                                <td>{{ instance.valuation_count }}</td>
+                                                <td>
+                                                    <div class="progress" style="height: 3px;">
+                                                        <div class="progress-bar bg-success" role="progressbar"
+                                                            style="width: {{ instance.valuation_target }}%; height: 20px;" aria-valuenow="{{ instance.valuation_target }}"
+                                                            aria-valuemin="0" aria-valuemax="100"></div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div> <!-- end table-responsive-->
+                            </div> <!-- end card-body-->
+                        </div> <!-- end card-->
                         <div class="card">
                             <div class="card-body">
                                 <h4 class="header-title mt-1">Valuations</h4>

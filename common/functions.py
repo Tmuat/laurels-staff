@@ -38,9 +38,54 @@ def quarter_and_year_calc(date):
 
     start_month = int(calculate_start_month(date))
     start_year = int(calculate_start_year(date))
-    company_year= start_year
+    company_year = start_year
 
     if start_month == 10:
+        company_year += 1
+
+    if start_month == 10:
+        quarter = "q1"
+    elif start_month == 1:
+        quarter = "q2"
+    elif start_month == 4:
+        quarter = "q3"
+    elif start_month == 7:
+        quarter = "q4"
+
+    end_month = start_month + 2
+
+    data["start_year"] = start_year
+    data["company_year"] = company_year
+    data["start_month"] = start_month
+    data["end_month"] = end_month
+    data["quarter"] = quarter
+
+    return data
+
+
+def last_quarter_and_year_calc(date):
+
+    data = dict()
+
+    def calculate_start_month(date):
+        start_month = (((date.month - 1) // 3) * 3) + 1
+        return start_month
+
+    def calculate_start_year(date):
+        start_year = date.year
+        return start_year
+
+    actual_month = int(calculate_start_month(date))
+    start_year = int(calculate_start_year(date))
+    company_year = start_year
+
+    if actual_month == 1:
+        start_month = 10
+        start_year = start_year - 1
+    else:
+        start_month = actual_month - 3
+
+    if actual_month == 10:
         company_year += 1
 
     if start_month == 10:

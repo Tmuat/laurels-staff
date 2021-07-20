@@ -212,6 +212,7 @@
                                                             <a href="{% url 'properties:property_detail' instance.propertyprocess.id %}" class="dropdown-item"><i class="mdi mdi-arrow-expand-all mr-1"></i>Go To Property</a>
                                                             <!-- item-->
                                                             <span data-url="{% url 'properties:edit_offer_status' instance.id %}" class="dropdown-item js-load-form pointer"><i class="mdi mdi-file-edit-outline mr-1"></i>Change Offer Status</span>
+                                                            <span data-url="{% url 'properties:add_another_offer' instance.propertyprocess.id %}?id={{ instance.offerer_details.id }}" class="dropdown-item js-load-form pointer"><i class="mdi mdi-piggy-bank mr-1"></i>Change Offer</span>
                                                         </div>
                                                     </div>
 
