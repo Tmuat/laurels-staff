@@ -44,6 +44,24 @@
                     </li>
                 </ul>
             </li>
+            <li class="side-nav-item">
+                <a href="javascript: void(0);" class="side-nav-link">
+                    <i class="mdi mdi-graph-outline"></i>
+                    <span> {% trans "Statistics" %} </span>
+                    <span class="menu-arrow"></span>
+                </a>
+                <ul class="side-nav-second-level" aria-expanded="false">
+                    <li {% if request.resolver_match.url_name == 'property_list' %}class="active"{% endif %}>
+                        <a href="{% url 'properties:property_list' %}">{% trans "Property List" %}</a>
+                    </li>
+                    <li {% if request.resolver_match.url_name == 'offer_board' %}class="active mm-active"{% endif %}>
+                        <a 
+                            href="{% url 'home:offer_board' %}?hub={{ request.user.profile.hub.first.slug }}"
+                            {% if request.resolver_match.url_name == 'offer_board' %}class="active"{% endif %}
+                        >{% trans "Offer Board" %}</a>
+                    </li>
+                </ul>
+            </li>
             {% if request.user.is_staff %}
             <li class="side-nav-item">
                 <a href="javascript: void(0);" class="side-nav-link">
