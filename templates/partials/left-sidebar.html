@@ -13,16 +13,6 @@
             <img src="{% static 'custom/images/logo_sm.png' %}" alt="laurels logo" height="50">
         </span>
     </a>
-
-    <!-- LOGO -->
-    <a href="" class="logo text-center logo-dark">
-        <span class="logo-lg">
-            <img src="{% static 'custom/images/logo.png' %}" alt="" height="16">
-        </span>
-        <span class="logo-sm">
-            <img src="{% static 'custom/images/logo_sm.png' %}" alt="" height="16">
-        </span>
-    </a>
     
     <div class="h-100" id="left-side-menu-container" data-simplebar>
 
@@ -30,18 +20,11 @@
         <ul class="metismenu side-nav">
 
             <li class="side-nav-title side-nav-item">{% trans "Navigation" %}</li>
-
             <li class="side-nav-item">
-                <a href="javascript: void(0);" class="side-nav-link">
+                <a href="{% url 'home:home' %}" class="side-nav-link">
                     <i class="uil-home-alt"></i>
                     <span> {% trans "Home" %} </span>
-                    <span class="menu-arrow"></span>
                 </a>
-                <ul class="side-nav-second-level" aria-expanded="false">
-                    <li class="{% if request.resolver_match.url_name == 'analytics' %}active{% endif %}">
-                        <a href="sefsF">{% trans "Analytics" %}</a>
-                    </li>
-                </ul>
             </li>
             <li class="side-nav-item">
                 <a href="javascript: void(0);" class="side-nav-link">
