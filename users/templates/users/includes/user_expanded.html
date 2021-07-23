@@ -1,0 +1,119 @@
+{% load static i18n %}
+<div class="modal-content green-gradient">
+    <div class="modal-body">
+        <div class="text-center mt-2 mb-3">
+            <span><img src="{% static 'custom/images/logo.png' %}" alt="laurels" height="80"></span>
+        </div>
+        <div class="text-center">
+            <h4 class="text-white">{{ user.get_full_name }}</h4>
+        </div>
+        <div class="row text-center text-white">
+            <div class="col-6 col-md-4">
+                <h4>First Name</h4>
+            </div>
+            <div class="col-6 col-md-4">
+                <h4>Last Name</h4>
+            </div>
+            <div class="d-none d-md-inline col-md-4">
+                <h4>Email</h4>
+            </div>
+            <div class="col-6 col-md-4">
+                <p class="mb-1">{{ user.first_name }}</p>
+            </div>
+            <div class="col-6 col-md-4">
+                <p class="mb-1">{{ user.last_name }}</p>
+            </div>
+            <div class="col-12 d-inline d-md-none">
+                <h4>Email</h4>
+            </div>
+            <div class="col-12 col-md-4">
+                <p class="mb-1">{{ user.email }}</p>
+            </div>
+            <div class="col-6">
+                <h4>Personal Commision</h4>
+            </div>
+            <div class="col-6">
+                <h4>Targetted Employee</h4>
+            </div>
+            <div class="col-6">
+                <p class="mb-1">{{ user.profile.personal_comm }}%</p>
+            </div>
+            <div class="col-6">
+                <p class="mb-1">{{ user.profile.employee_targets }}</p>
+            </div>
+            <div class="col-6">
+                <h4>Director</h4>
+            </div>
+            <div class="col-6">
+                <h4>Admin</h4>
+            </div>
+            <div class="col-6">
+                <p class="mb-1">{{ user.profile.director }}</p>
+            </div>
+            <div class="col-6">
+                <p class="mb-1">{{ user.is_staff }}</p>
+            </div>
+            <div class="col-12">
+                <h4>Hub</h4>
+            </div>
+            <div class="col-12">
+                <p class="mb-1">
+                    {% for hub_instance in user.profile.hub.all %}
+                        {% if forloop.last %}
+                            {{ hub_instance }}
+                        {% else %}
+                            {{ hub_instance }},
+                        {% endif %}
+                    {% endfor %}
+                </p>
+            </div>
+            <div class="col-12 text-center mt-2 mb-2">
+                <a href="" class="btn btn-info text-center">Edit</a>
+            </div>
+            {% if user.profile.employee_targets %}
+                <span class="hr"></span>
+                <div class="col-12">
+                    <h4>Employee Targets</h4>
+                </div>
+                {% if user.is_active %}
+                    {% for user_target_instance in targets_set %}
+                        {% if user_target_instance.current_year %}
+                            <div class="col-6">
+                                <p class="mb-0 text-white pointer text-hover-underline js-hide-modal js-load-large-form" data-url="{% url 'users:edit_user_targets' user.pk current_year %}">
+                                    {{ current_year }} Targets <span class="mdi mdi-check-circle-outline"></span>
+                                </p>
+                            </div>
+                        {% else %}
+                            <div class="col-6">
+                                <p class="mb-0 text-danger pointer text-hover-underline js-hide-modal js-load-large-form" data-url="{% url 'users:add_user_targets' user.pk current_year %}">
+                                    {{ current_year }} Targets <span class="mdi mdi-close-circle-outline"></span>
+                                </p>
+                            </div>
+                        {% endif %}
+                        {% if user_target_instance.next_year %}
+                            <div class="col-6">
+                                <p class="mb-0 text-white pointer text-hover-underline js-hide-modal js-load-large-form" data-url="{% url 'users:edit_user_targets' user.pk next_year %}">
+                                    {{ next_year }} Targets <span class="mdi mdi-check-circle-outline"></span>
+                                </p>
+                            </div>
+                        {% else %}
+                            <div class="col-6">
+                                <p class="mb-0 text-danger pointer text-hover-underline js-hide-modal js-load-large-form" data-url="{% url 'users:add_user_targets' user.pk next_year %}">
+                                    {{ next_year }} Targets <span class="mdi mdi-close-circle-outline"></span>
+                                </p>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <div class="col-6">
+                        <p class="mb-0">-</p>
+                    </div>
+                    <div class="col-6">
+                        <p class="mb-0">-</p>
+                    </div>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+<!-- /.modal-content -->

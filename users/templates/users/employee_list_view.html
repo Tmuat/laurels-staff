@@ -24,7 +24,124 @@
         </div>     
         <!-- end page title -->
 
-        {{ object_list }}
+        <!-- start region list -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12 text-center">
+                                <div class="float-none float-sm-left">
+                                    <div class="btn-group mb-2">
+                                        <a href="?active=True" class="btn btn-sm {% if active == False %}btn-light text-dark{% else %}btn-success text-white{% endif %}">Active</a>
+                                        <a href="?active=False" class="btn btn-sm {% if active == False %}btn-success text-white{% else %}btn-light text-dark{% endif %}">All</a>
+                                    </div>
+                                </div>
+                                <div class="float-none float-sm-right">
+                                    <a href="{% url 'invitations:invitations' %}" class="btn btn-success btn-sm">Invite User</a>
+                                </div>
+                            </div>
+                            <div id="panel-div" class="w-100">
+                                <div class="col-12 mt-2">                                
+                                    <!-- start card -->
+                                    <div class="card mb-0">
+                                        <!-- start card-body-->
+                                        <div class="card-body">
+                                            {% include 'users/includes/panel.html' %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end card-body-->
+                        <div class="mt-2">
+                            <ul class="pagination pagination-sm mb-0 mb-md-2 justify-content-center">
+                                {% if users.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link text-dark" href="?active={{ active }}&page=1" aria-disabled="true"><span class="mdi mdi-page-first"></span></a>
+                                </li>
+                                    {% if users.number == last_page %}
+                                        {% if users.number != 2 %}
+                                            <li class="page-item">
+                                                <a class="page-link text-dark"
+                                                    href="?active={{ active }}&page={{ users.previous_page_number|add:'-1' }}">{{ users.previous_page_number|add:"-1" }}</a>
+                                            </li>
+                                        {% endif %}
+                                    {% endif %}
+                                <li class="page-item">
+                                    <a class="page-link text-dark"
+                                        href="?active={{ active }}&page={{ users.previous_page_number }}">{{ users.previous_page_number }}</a>
+                                </li>
+                                {% else %}
+                                <li class="page-item disabled">
+                                    <a class="page-link text-light" href="?active={{ active }}&page=1" aria-disabled="true"><span class="mdi mdi-page-first"></span></a>
+                                </li>
+                                {% endif %}
+                                <li class="page-item active" aria-current="page">
+                                    <a class="page-link text-white" href="?active={{ active }}&page={{ users.number }}">{{ users.number }} <span
+                                            class="sr-only">(current)</span></a>
+                                </li>
+                                {% if users.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link text-dark"
+                                        href="?active={{ active }}&page={{ users.next_page_number }}">{{ users.next_page_number }}</a>
+                                </li>
+                                    {% if users.number == 1 %}
+                                        {% if last_page == 2 %}
+                                            <li class="page-item disabled">
+                                                <a class="page-link text-light"
+                                                    href="?active={{ active }}&page=3">3</a>
+                                            </li>
+                                        {% else %}
+                                            <li class="page-item">
+                                                <a class="page-link text-dark"
+                                                    href="?active={{ active }}&page=3">3</a>
+                                            </li>
+                                        {% endif %}
+                                    {% endif %}
+                                <li class="page-item">
+                                    <a class="page-link text-dark" href="?active={{ active }}&page={{ last_page }}"><span class="mdi mdi-page-last"></span></a>
+                                </li>
+                                {% else %}
+                                    {% if users.number == 1 %}
+                                        <li class="page-item disabled">
+                                            <a class="page-link text-light"
+                                                href="?active={{ active }}&page=2">2</a>
+                                        </li>
+                                        <li class="page-item disabled">
+                                            <a class="page-link text-light"
+                                                href="?active={{ active }}&page=3">3</a>
+                                        </li>
+                                    {% elif last_page == 2 %}
+                                        <li class="page-item disabled">
+                                            <a class="page-link text-light"
+                                                href="?active={{ active }}&page=3">3</a>
+                                        </li>
+                                    {% endif %}
+                                <li class="page-item disabled">
+                                    <a class="page-link text-light" href="?active={{ active }}&page={{ last_page }}"><span class="mdi mdi-page-last"></span></a>
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </div>
+
+                    </div>
+                    <!-- end card-body-->
+
+                </div>
+                <!-- end card-->
+
+            </div>
+            <!-- end col-->
+
+        </div>
+        <!-- End row -->
 
     </div> <!-- container -->
+{% include 'partials/base-large-modal.html' %}
+{% endblock %}
+
+{% block extra_javascript %}
+{{ block.super }}
+    <script src="{% static 'users/js/users.js' %}"></script>
 {% endblock %}
