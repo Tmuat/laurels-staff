@@ -596,8 +596,6 @@ for instance in profile_model:
 
     instance["fields"]["personal_comm"] = instance["fields"]["p_comm"]
 
-    instance["fields"]["office_comm"] = instance["fields"]["o_comm"]
-
     del instance["fields"]["target_employee"]
     del instance["fields"]["target_link"]
     del instance["fields"]["p_comm"]
