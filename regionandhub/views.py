@@ -7,6 +7,7 @@ from django.shortcuts import render, get_object_or_404
 from django.template.loader import render_to_string
 from django.utils.text import slugify
 
+from common.decorators import director_required
 from common.functions import quarter_year_calc
 from regionandhub.forms import (
     RegionForm,
@@ -18,6 +19,7 @@ from regionandhub.forms import (
 from regionandhub.models import Region, Hub, HubTargets, HubTargetsYear
 
 
+@director_required
 @staff_member_required
 @otp_required
 @login_required
@@ -59,6 +61,7 @@ def hub_and_region(request):
     return render(request, template, context)
 
 
+@director_required
 @staff_member_required
 @otp_required
 @login_required
@@ -115,6 +118,7 @@ def region_add(request):
     return JsonResponse(data)
 
 
+@director_required
 @staff_member_required
 @otp_required
 @login_required
@@ -130,6 +134,7 @@ def validate_region_name(request):
     return JsonResponse(data)
 
 
+@director_required
 @staff_member_required
 @otp_required
 @login_required
@@ -167,6 +172,7 @@ def region_edit(request, region_slug):
     return JsonResponse(data)
 
 
+@director_required
 @staff_member_required
 @otp_required
 @login_required
@@ -191,6 +197,7 @@ def validate_region_name_edit(request, region_slug):
     return JsonResponse(data)
 
 
+@director_required
 @staff_member_required
 @otp_required
 @login_required
@@ -209,6 +216,7 @@ def check_region_hubs(request, region_slug):
     return JsonResponse(data)
 
 
+@director_required
 @staff_member_required
 @otp_required
 @login_required
@@ -266,6 +274,7 @@ def hub_add(request):
     return JsonResponse(data)
 
 
+@director_required
 @staff_member_required
 @otp_required
 @login_required
@@ -279,6 +288,7 @@ def validate_hub_name(request):
     return JsonResponse(data)
 
 
+@director_required
 @staff_member_required
 @otp_required
 @login_required
@@ -316,6 +326,7 @@ def hub_edit(request, hub_slug):
     return JsonResponse(data)
 
 
+@director_required
 @staff_member_required
 @otp_required
 @login_required
@@ -338,6 +349,7 @@ def validate_hub_name_edit(request, hub_slug):
     return JsonResponse(data)
 
 
+@director_required
 @staff_member_required
 @otp_required
 @login_required
@@ -356,6 +368,7 @@ def check_hub_employees(request, hub_slug):
     return JsonResponse(data)
 
 
+@director_required
 @staff_member_required
 @otp_required
 @login_required
@@ -409,6 +422,7 @@ def hub_add_targets(request, hub):
     return JsonResponse(data)
 
 
+@director_required
 @staff_member_required
 @otp_required
 @login_required
@@ -446,6 +460,7 @@ def hub_edit_targets(request, hub_slug, year):
     return JsonResponse(data)
 
 
+@director_required
 @staff_member_required
 @otp_required
 @login_required
@@ -494,6 +509,10 @@ def hub_add_specific_targets(request, hub_slug, year):
     return JsonResponse(data)
 
 
+@director_required
+@staff_member_required
+@otp_required
+@login_required
 def show_hub_employees(request, hub_slug):
     """
     A view to return an ajax response with hub employees

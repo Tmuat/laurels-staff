@@ -1,7 +1,10 @@
 import datetime
 import humanize
 
+from django_otp.decorators import otp_required
+
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from django.http import JsonResponse
@@ -68,6 +71,8 @@ from properties.models import (
 from users.models import Profile
 
 
+@otp_required
+@login_required
 def property_list(request):
     """
     A view to show paginated lists of the properties in the system; including
@@ -136,6 +141,8 @@ def property_list(request):
     return render(request, template, context)
 
 
+@otp_required
+@login_required
 def property_detail(request, propertyprocess_id):
     """
     A view to show individual property details
@@ -207,6 +214,8 @@ def property_detail(request, propertyprocess_id):
     return render(request, template, context)
 
 
+@otp_required
+@login_required
 def property_history_pagination(request, propertyprocess_id):
     """
     A view to return an ajax response with property history instance
@@ -249,6 +258,8 @@ def property_history_pagination(request, propertyprocess_id):
     return JsonResponse(data)
 
 
+@otp_required
+@login_required
 def offers_pagination(request, propertyprocess_id):
     """
     A view to return an ajax response with offers instance
@@ -294,6 +305,8 @@ def offers_pagination(request, propertyprocess_id):
     return JsonResponse(data)
 
 
+@otp_required
+@login_required
 def notes_pagination(request, propertyprocess_id):
     """
     A view to return an ajax response with notes instance
@@ -339,6 +352,8 @@ def notes_pagination(request, propertyprocess_id):
     return JsonResponse(data)
 
 
+@otp_required
+@login_required
 def property_history_detail(request, property_history_id):
     """
     A view to return an ajax response with property history instance
@@ -358,6 +373,8 @@ def property_history_detail(request, property_history_id):
     return JsonResponse(data)
 
 
+@otp_required
+@login_required
 def offer_history(request, offerer_id):
     """
     A view to return an ajax response with offerer offer history
@@ -379,6 +396,8 @@ def offer_history(request, offerer_id):
     return JsonResponse(data)
 
 
+@otp_required
+@login_required
 def save_property_order(request):
     data = dict()
 
@@ -396,6 +415,8 @@ def save_property_order(request):
     return JsonResponse(data)
 
 
+@otp_required
+@login_required
 def property_chain_detail(request, property_chain_id):
     """
     A view to return an ajax response with property chain instance
@@ -413,6 +434,8 @@ def property_chain_detail(request, property_chain_id):
     return JsonResponse(data)
 
 
+@otp_required
+@login_required
 def add_property_chain_detail(request, propertyprocess_id):
     """
     A view to add a property chain instance
@@ -463,6 +486,8 @@ def add_property_chain_detail(request, propertyprocess_id):
     return JsonResponse(data)
 
 
+@otp_required
+@login_required
 def edit_property_chain_detail(request, property_chain_id):
     """
     A view to add a property chain instance
@@ -508,6 +533,8 @@ def edit_property_chain_detail(request, property_chain_id):
     return JsonResponse(data)
 
 
+@otp_required
+@login_required
 def delete_property_chain_detail(request, property_chain_id):
     """
     A view to add a property chain instance
@@ -524,6 +551,8 @@ def delete_property_chain_detail(request, property_chain_id):
     return JsonResponse(data)
 
 
+@otp_required
+@login_required
 def render_property(request):
     """
     A view to return an ajax response with add property form
@@ -552,6 +581,8 @@ def render_property(request):
     return JsonResponse(data)
 
 
+@otp_required
+@login_required
 def validate_property_address(request):
     """
     Check that the property is not already in the database
@@ -589,6 +620,8 @@ def validate_property_address(request):
     return JsonResponse(data)
 
 
+@otp_required
+@login_required
 def add_property(request):
     """
     Ajax URL for adding a property.
@@ -653,6 +686,8 @@ def add_property(request):
     return JsonResponse(data)
 
 
+@otp_required
+@login_required
 def add_propertyprocess(request, property_id):
     """
     Ajax URL for adding a propertyprocess when property is already
@@ -710,6 +745,8 @@ def add_propertyprocess(request, property_id):
     return JsonResponse(data)
 
 
+@otp_required
+@login_required
 def add_valuation(request, propertyprocess_id):
     """
     Ajax URL for adding a valuation.
@@ -803,6 +840,8 @@ def add_valuation(request, propertyprocess_id):
     return JsonResponse(data)
 
 
+@otp_required
+@login_required
 def render_history_notes(request, history_id):
     """
     A view to return an ajax response with edit history notes form
@@ -826,6 +865,8 @@ def render_history_notes(request, history_id):
     return JsonResponse(data)
 
 
+@otp_required
+@login_required
 def add_history_notes(request, history_id):
     """
     A view to deal with form submission for history notes
@@ -865,6 +906,8 @@ def add_history_notes(request, history_id):
     return JsonResponse(data)
 
 
+@otp_required
+@login_required
 def add_instruction(request, propertyprocess_id):
     """
     Ajax URL for adding a instruction.
@@ -962,6 +1005,8 @@ def add_instruction(request, propertyprocess_id):
     return JsonResponse(data)
 
 
+@otp_required
+@login_required
 def add_reduction(request, propertyprocess_id):
     """
     Ajax URL for adding a reduction.
@@ -1043,6 +1088,8 @@ def add_reduction(request, propertyprocess_id):
     return JsonResponse(data)
 
 
+@otp_required
+@login_required
 def add_offerer(request, propertyprocess_id):
     """
     Ajax URL for adding a offerer.
@@ -1100,6 +1147,8 @@ def add_offerer(request, propertyprocess_id):
     return JsonResponse(data)
 
 
+@otp_required
+@login_required
 def add_offerer_mortgage(request, propertyprocess_id, offerer_id):
     """
     Ajax URL for adding a offerer mortgage options.
@@ -1153,6 +1202,8 @@ def add_offerer_mortgage(request, propertyprocess_id, offerer_id):
     return JsonResponse(data)
 
 
+@otp_required
+@login_required
 def add_offerer_cash(request, propertyprocess_id, offerer_id):
     """
     Ajax URL for adding a offerer cash options.
@@ -1201,6 +1252,8 @@ def add_offerer_cash(request, propertyprocess_id, offerer_id):
     return JsonResponse(data)
 
 
+@otp_required
+@login_required
 def add_offer(request, propertyprocess_id, offerer_id):
     """
     Ajax URL for adding an offer.
@@ -1276,6 +1329,8 @@ def add_offer(request, propertyprocess_id, offerer_id):
     return JsonResponse(data)
 
 
+@otp_required
+@login_required
 def add_another_offer(request, propertyprocess_id):
     """
     Ajax URL for adding an offer to an existing offerer.
@@ -1381,6 +1436,8 @@ def add_another_offer(request, propertyprocess_id):
     return JsonResponse(data)
 
 
+@otp_required
+@login_required
 def edit_offerer_cash(request, offerer_id):
     """
     Ajax URL for editing an offerer's cash type.
@@ -1457,6 +1514,8 @@ def edit_offerer_cash(request, offerer_id):
     return JsonResponse(data)
 
 
+@otp_required
+@login_required
 def edit_offerer_mortgage(request, offerer_id):
     """
     Ajax URL for editing an offerer's mortgage type.
@@ -1554,6 +1613,8 @@ def edit_offerer_mortgage(request, offerer_id):
     return JsonResponse(data)
 
 
+@otp_required
+@login_required
 def edit_offer_status(request, offer_id):
     """
     Ajax URL for editing an offer status.
@@ -1629,6 +1690,8 @@ def edit_offer_status(request, offer_id):
     return JsonResponse(data)
 
 
+@otp_required
+@login_required
 def edit_instruction(request, propertyprocess_id):
     """
     Ajax URL for editing an instruction.
@@ -1770,6 +1833,8 @@ def edit_instruction(request, propertyprocess_id):
     return JsonResponse(data)
 
 
+@otp_required
+@login_required
 def edit_instruction_change(request, instruction_change_id):
     """
     Ajax URL for editing an instruction.
@@ -1908,6 +1973,8 @@ def edit_instruction_change(request, instruction_change_id):
     return JsonResponse(data)
 
 
+@otp_required
+@login_required
 def withdraw_property(request, propertyprocess_id):
     """
     Ajax URL for withdrawing a property.
@@ -2007,6 +2074,8 @@ def withdraw_property(request, propertyprocess_id):
     return JsonResponse(data)
 
 
+@otp_required
+@login_required
 def back_on_the_market(request, propertyprocess_id):
     """
     Ajax URL for putting a property back on the market.
@@ -2070,6 +2139,8 @@ def back_on_the_market(request, propertyprocess_id):
     return JsonResponse(data)
 
 
+@otp_required
+@login_required
 def add_deal(request, propertyprocess_id):
     """
     Ajax URL for adding a deal.
@@ -2235,6 +2306,8 @@ def add_deal(request, propertyprocess_id):
     return JsonResponse(data)
 
 
+@otp_required
+@login_required
 def edit_deal(request, propertyprocess_id):
     """
     Ajax URL for editing a deal.
@@ -2335,6 +2408,8 @@ def edit_deal(request, propertyprocess_id):
     return JsonResponse(data)
 
 
+@otp_required
+@login_required
 def add_exchange(request, propertyprocess_id):
     """
     Ajax URL for adding an exchange.
@@ -2423,6 +2498,8 @@ def add_exchange(request, propertyprocess_id):
     return JsonResponse(data)
 
 
+@otp_required
+@login_required
 def edit_sales_prog_settings(request, propertyprocess_id):
     """
     Ajax URL for editing sales progression settings.
@@ -2468,6 +2545,8 @@ def edit_sales_prog_settings(request, propertyprocess_id):
     return JsonResponse(data)
 
 
+@otp_required
+@login_required
 def phase_one(request, propertyprocess_id):
     """
     Ajax URL for phase one sales progression
@@ -2621,6 +2700,8 @@ def phase_one(request, propertyprocess_id):
     return JsonResponse(data)
 
 
+@otp_required
+@login_required
 def phase_two(request, propertyprocess_id):
     """
     Ajax URL for phase two sales progression
@@ -2751,6 +2832,8 @@ def phase_two(request, propertyprocess_id):
     return JsonResponse(data)
 
 
+@otp_required
+@login_required
 def phase_three(request, propertyprocess_id):
     """
     Ajax URL for phase three sales progression
@@ -2880,6 +2963,8 @@ def phase_three(request, propertyprocess_id):
     return JsonResponse(data)
 
 
+@otp_required
+@login_required
 def phase_four(request, propertyprocess_id):
     """
     Ajax URL for phase one sales progression
@@ -3038,6 +3123,8 @@ def phase_four(request, propertyprocess_id):
     return JsonResponse(data)
 
 
+@otp_required
+@login_required
 def add_client_info(request, propertyprocess_id):
     """
     Ajax URL for adding client info
@@ -3088,6 +3175,8 @@ def add_client_info(request, propertyprocess_id):
     return JsonResponse(data)
 
 
+@otp_required
+@login_required
 def edit_client_info(request, propertyprocess_id):
     """
     Ajax URL for editing client info
@@ -3138,6 +3227,8 @@ def edit_client_info(request, propertyprocess_id):
     return JsonResponse(data)
 
 
+@otp_required
+@login_required
 def edit_progression_notes(request, progression_notes_id):
     """
     Ajax URL for editing progression notes
@@ -3182,6 +3273,8 @@ def edit_progression_notes(request, progression_notes_id):
     return JsonResponse(data)
 
 
+@otp_required
+@login_required
 def add_progression_notes(request, propertyprocess_id):
     """
     Ajax URL for adding progression notes
@@ -3231,6 +3324,8 @@ def add_progression_notes(request, propertyprocess_id):
     return JsonResponse(data)
 
 
+@otp_required
+@login_required
 def delete_progression_notes(request, progression_notes_id):
     """
     Ajax URL for deleting progression notes
@@ -3256,6 +3351,8 @@ def delete_progression_notes(request, progression_notes_id):
     return JsonResponse(data)
 
 
+@otp_required
+@login_required
 def fall_through(request, propertyprocess_id):
     """
     Ajax URL for editing a deal.
@@ -3352,6 +3449,8 @@ def fall_through(request, propertyprocess_id):
     return JsonResponse(data)
 
 
+@otp_required
+@login_required
 def manage_sales_progression(request, propertyprocess_id):
     """
     Ajax URL for editing sales progression after a fall through

@@ -402,6 +402,8 @@ def index(request):
     return render(request, "home/index.html", context)
 
 
+@otp_required
+@login_required
 def offer_board(request):
     """A view to return the offer_board page"""
 

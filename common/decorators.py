@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.auth.decorators import user_passes_test
+from users.models import Profile
 
 
 def anonymous_required(function=None, redirect_url=None):
@@ -14,3 +15,19 @@ def anonymous_required(function=None, redirect_url=None):
     if function:
         return actual_decorator(function)
     return actual_decorator
+
+
+def director_required(function=None, redirect_url=None):
+
+    redirect_url = "/"
+
+    def is_director(u):
+        return Profile.objects.filter(user=u, director=True).exists()
+
+    actual_decorator = user_passes_test(
+        is_director, redirect_url)
+
+    if function:
+        return actual_decorator(function)
+    else:
+        return actual_decorator

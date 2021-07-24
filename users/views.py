@@ -2,16 +2,22 @@ from django_otp.decorators import otp_required
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.template.loader import render_to_string
 
+from common.decorators import director_required
 from common.functions import quarter_year_calc
 from users.forms import UserTargetsFormset, UserForm, ProfileForm
 from users.models import UserTargets, UserTargetsByYear, CustomUser
 
 
+@director_required
+@staff_member_required
+@otp_required
+@login_required
 def employees(request):
     """
     A view to show paginated lists of employees.
@@ -79,6 +85,10 @@ def employees(request):
     return render(request, template, context)
 
 
+@director_required
+@staff_member_required
+@otp_required
+@login_required
 def add_user_targets(request, user, year):
     """
     Ajax URL for adding user targets.
@@ -143,6 +153,10 @@ def add_user_targets(request, user, year):
     return JsonResponse(data)
 
 
+@director_required
+@staff_member_required
+@otp_required
+@login_required
 def edit_user_targets(request, user, year):
     """
     Ajax URL for editing user targets.
@@ -204,6 +218,10 @@ def edit_user_targets(request, user, year):
     return JsonResponse(data)
 
 
+@director_required
+@staff_member_required
+@otp_required
+@login_required
 def user_detail(request, user):
     """
     A view to render a large modal for showing user detail
@@ -253,6 +271,10 @@ def user_detail(request, user):
     return JsonResponse(data)
 
 
+@director_required
+@staff_member_required
+@otp_required
+@login_required
 def edit_user(request, user):
     """
     Deals with editing a user and profile
