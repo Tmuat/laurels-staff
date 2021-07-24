@@ -36,6 +36,9 @@ class UserInvitations(UpdatedAndCreated):
     employee_targets = models.BooleanField(
         null=False, blank=False, default=False
     )
+    personal_comm = models.DecimalField(
+        max_digits=4, decimal_places=2, default=10
+    )
     invite_sent = models.BooleanField(null=False, default=False)
 
     def send_invitation(self, request, **kwargs):

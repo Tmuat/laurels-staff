@@ -1,6 +1,6 @@
 $(document).ready(function () {
     // Deals with rendering a form with AJAX to the base modal
-    var loadFormBaseModal = function () {
+    var loadBaseModal = function () {
         var instance = $(this);
         $.ajax({
             url: instance.attr("data-url"),
@@ -345,8 +345,9 @@ $(document).ready(function () {
 
     // Binding functions
     // Links
-    $("#panel-div").on("click", ".js-edit-hub", loadFormBaseModal);
-    $(".js-edit-region").on("click", loadFormBaseModal);
-    $("#panel-div").on("click", ".js-hub-employees", loadFormBaseModal);
+    $("#base-modal").on("click", ".js-load-form", loadBaseModal);
+    $("#panel-div").on("click", ".js-edit-hub", loadBaseModal);
+    $(".js-edit-region").on("click", loadBaseModal);
+    $("#panel-div").on("click", ".js-hub-employees", loadBaseModal);
 
 });

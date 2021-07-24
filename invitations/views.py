@@ -19,9 +19,9 @@ from django.utils import timezone
 from accounts.forms import totp_digits
 from common.decorators import anonymous_required
 from common.functions import quarter_year_calc
-from invitations.forms import UserInvitationsForm
+from invitations.forms import UserInvitationsForm, UserTargetsFormset
 from invitations.models import UserInvitations
-from users.forms import UserTargetsFormset, CustomPasswordCreationForm
+from users.forms import CustomPasswordCreationForm
 from users.models import CustomUser, UserTargetsByYear, Profile
 
 
@@ -216,6 +216,7 @@ def accept_invite(request, invitation_key):
                 user=instance_form,
                 director=invitation_instance.director,
                 employee_targets=invitation_instance.employee_targets,
+                personal_comm=invitation_instance.personal_comm,
                 created_by=invitation_instance.created_by,
                 updated_by=invitation_instance.created_by,
             )

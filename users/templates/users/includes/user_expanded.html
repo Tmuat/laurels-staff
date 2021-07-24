@@ -68,7 +68,11 @@
                 </p>
             </div>
             <div class="col-12 text-center mt-2 mb-2">
-                <a href="" class="btn btn-info text-center">Edit</a>
+                <button 
+                    data-url="{% url 'users:edit_user' user.pk %}"
+                    class="btn btn-info text-center js-hide-modal js-load-form">
+                    Edit
+                </button>
             </div>
             {% if user.profile.employee_targets %}
                 <span class="hr"></span>

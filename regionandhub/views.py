@@ -40,9 +40,9 @@ def hub_and_region(request):
             hub_target["current_year"] = False
             hub_target["next_year"] = False
             for hub_targets_year in hub.hub_targets_year_set.all():
-                if hub_targets_year.year == current_year:
+                if hub_targets_year.year == current_year and hub_targets_year.targets_set:
                     hub_target["current_year"] = True
-                if hub_targets_year.year == next_year:
+                if hub_targets_year.year == next_year and hub_targets_year.targets_set:
                     hub_target["next_year"] = True
 
             targets_set.append(hub_target)

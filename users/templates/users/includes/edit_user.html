@@ -1,0 +1,89 @@
+{% load static i18n %}
+<div class="modal-content green-gradient">
+    <div class="modal-body">
+        <div class="text-center mt-2 mb-3">
+            <span><img src="{% static 'custom/images/logo.png' %}" alt="laurels" height="80"></span>
+        </div>
+        <div class="text-center">
+            <h4 class="text-white">Edit {{ user.get_full_name }}</h4>
+        </div>
+        <form action="{% url 'users:edit_user' user.pk %}" method="post" class="text-center text-white js-submit-form">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-6">
+                    <h4>First Name</h4>
+                </div>
+                <div class="col-6">
+                    <h4>Last Name</h4>
+                </div>
+                <div class="col-6">
+                    <p class="mb-1">{{ form.first_name|as_crispy_field }}</p>
+                </div>
+                <div class="col-6">
+                    <p class="mb-1">{{ form.last_name|as_crispy_field }}</p>
+                </div>
+                <div class="col-6 ">
+                    <h4>Email</h4>
+                </div>
+                <div class="col-6">
+                    <h4>Personal Commision</h4>
+                </div>
+                <div class="col-6">
+                    <p class="mb-1"><p class="mb-1">{{ form.email|as_crispy_field }}</p></p>
+                </div>
+                <div class="col-6">
+                    <p class="mb-1">{{ profile_form.personal_comm|as_crispy_field }}</p>
+                </div>
+                <div class="col-12">
+                    <h4>Targetted Employee</h4>
+                </div>
+                <div class="col-12">
+                    <p class="mb-1">{{ profile_form.employee_targets|as_crispy_field }}</p>
+                </div>
+                <div class="col-4">
+                    <h4>Director</h4>
+                </div>
+                <div class="col-4">
+                    <h4>Admin</h4>
+                </div>
+                <div class="col-4">
+                    <h4>Is Active?</h4>
+                </div>
+                <div class="col-4">
+                    {{ profile_form.director|as_crispy_field }}
+                </div>
+                <div class="col-4">
+                    {{ form.is_staff|as_crispy_field }}
+                </div>
+                <div class="col-4">
+                    {{ form.is_active|as_crispy_field }}
+                </div>
+                <div class="col-12">
+                    <label class=" requiredField">
+                        Associated Hubs?<span class="asteriskField">*</span>
+                    </label>
+                </div>
+                <div class="col-12">
+                    <div class="p-2 bg-white rounded text-dark scrollable multi-select">
+                        {% for checkbox in profile_form.hub %}
+                        <div class="d-block">
+                            <div class="pl-2 text-left">
+                                <span class="pr-2 border-right border-dark">
+                                    {{ checkbox.tag }}
+                                </span>
+                                <label class="pl-2 checkbox-input mb-0">
+                                    {{ checkbox.choice_label }}
+                                </label>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="col-12 text-center mt-1 mb-2">
+                    <button type="submit" class="btn btn-info" id="add-button">{% trans "Save" %}</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- /.modal-content -->
