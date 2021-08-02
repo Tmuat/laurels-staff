@@ -24,8 +24,7 @@ def director_required(function=None, redirect_url=None):
     def is_director(u):
         return Profile.objects.filter(user=u, director=True).exists()
 
-    actual_decorator = user_passes_test(
-        is_director, redirect_url)
+    actual_decorator = user_passes_test(is_director, redirect_url)
 
     if function:
         return actual_decorator(function)

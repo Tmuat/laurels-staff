@@ -15,21 +15,13 @@ urlpatterns = [
     path(
         "add/user-targets/<user>/<year>",
         add_user_targets,
-        name="add_user_targets"
+        name="add_user_targets",
     ),
     path(
         "edit/user-targets/<user>/<year>",
         edit_user_targets,
-        name="edit_user_targets"
+        name="edit_user_targets",
     ),
-    path(
-        "view/user/<user>/",
-        user_detail,
-        name="user_detail"
-    ),
-    path(
-        "edit/user/<user>/",
-        edit_user,
-        name="edit_user"
-    )
+    path("view/user/<user>/", user_detail, name="user_detail"),
+    path("edit/user/<user>/", edit_user, name="edit_user"),
 ]

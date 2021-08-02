@@ -9,7 +9,11 @@ from django.utils import timezone
 
 from common.functions import quarter_and_year_calc, last_quarter_and_year_calc
 from properties.models import (
-    Offer, PropertyFees, Instruction, Reduction, Valuation
+    Offer,
+    PropertyFees,
+    Instruction,
+    Reduction,
+    Valuation,
 )
 from regionandhub.models import Hub
 from users.models import Profile, UserTargets
@@ -22,9 +26,7 @@ def top_performers(date):
 
     data = dict()
 
-    last_quarter_and_year = last_quarter_and_year_calc(
-        date
-    )
+    last_quarter_and_year = last_quarter_and_year_calc(date)
 
     year = last_quarter_and_year["start_year"]
     start_month = last_quarter_and_year["start_month"]
@@ -33,57 +35,68 @@ def top_performers(date):
     company_year = last_quarter_and_year["company_year"]
 
     employee = "propertyprocess__employee__id"
-    link_to_employee = 'propertyprocess__employee'
-    reductions = 'propertyprocess__employee'
+    link_to_employee = "propertyprocess__employee"
+    reductions = "propertyprocess__employee"
 
-    valuations = Valuation.objects.values("valuer") \
-        .annotate(valuation_count=Count(link_to_employee)) \
-        .filter(date__iso_year=year,
-                date__month__gte=start_month,
-                date__month__lte=end_month,
-                propertyprocess__employee__employee_targets=True,
-                propertyprocess__employee__user__is_active=True) \
-        .order_by('-valuation_count')
-
-    instructions = Instruction.objects.values(employee) \
-        .annotate(instruction_count=Count(link_to_employee)) \
-        .filter(date__iso_year=year,
-                date__month__gte=start_month,
-                date__month__lte=end_month,
-                propertyprocess__employee__employee_targets=True,
-                propertyprocess__employee__user__is_active=True) \
-        .order_by('-instruction_count')
-
-    reductions = Reduction.objects.values(employee) \
-        .annotate(reduction_count=Count(link_to_employee)) \
-        .filter(date__iso_year=year,
-                date__month__gte=start_month,
-                date__month__lte=end_month,
-                propertyprocess__employee__employee_targets=True,
-                propertyprocess__employee__user__is_active=True) \
-        .order_by('-reduction_count')
-
-    new_business = PropertyFees.objects.values(employee) \
-        .annotate(new_business_sum=Sum('new_business')) \
-        .filter(date__iso_year=year,
-                date__month__gte=start_month,
-                date__month__lte=end_month,
-                propertyprocess__employee__employee_targets=True,
-                propertyprocess__employee__user__is_active=True,
-                active=True,
-                show_all=True) \
-        .order_by('-new_business_sum')
-
-    targets = UserTargets.objects.filter(
-        year=company_year,
-        quarter=quarter
+    valuations = (
+        Valuation.objects.values("valuer")
+        .annotate(valuation_count=Count(link_to_employee))
+        .filter(
+            date__iso_year=year,
+            date__month__gte=start_month,
+            date__month__lte=end_month,
+            propertyprocess__employee__employee_targets=True,
+            propertyprocess__employee__user__is_active=True,
+        )
+        .order_by("-valuation_count")
     )
+
+    instructions = (
+        Instruction.objects.values(employee)
+        .annotate(instruction_count=Count(link_to_employee))
+        .filter(
+            date__iso_year=year,
+            date__month__gte=start_month,
+            date__month__lte=end_month,
+            propertyprocess__employee__employee_targets=True,
+            propertyprocess__employee__user__is_active=True,
+        )
+        .order_by("-instruction_count")
+    )
+
+    reductions = (
+        Reduction.objects.values(employee)
+        .annotate(reduction_count=Count(link_to_employee))
+        .filter(
+            date__iso_year=year,
+            date__month__gte=start_month,
+            date__month__lte=end_month,
+            propertyprocess__employee__employee_targets=True,
+            propertyprocess__employee__user__is_active=True,
+        )
+        .order_by("-reduction_count")
+    )
+
+    new_business = (
+        PropertyFees.objects.values(employee)
+        .annotate(new_business_sum=Sum("new_business"))
+        .filter(
+            date__iso_year=year,
+            date__month__gte=start_month,
+            date__month__lte=end_month,
+            propertyprocess__employee__employee_targets=True,
+            propertyprocess__employee__user__is_active=True,
+            active=True,
+            show_all=True,
+        )
+        .order_by("-new_business_sum")
+    )
+
+    targets = UserTargets.objects.filter(year=company_year, quarter=quarter)
 
     # Renaming fields in querysets
     for instance in valuations:
-        instance["employee_id"] = instance[
-            "valuer"
-        ]
+        instance["employee_id"] = instance["valuer"]
         del instance["valuer"]
 
         instance["valuation_target"] = 0
@@ -91,17 +104,18 @@ def top_performers(date):
         for target in targets:
             if instance["employee_id"] == target.profile_targets.id:
                 try:
-                    valuation_target = round(instance[
-                        "valuation_count"
-                    ] / target.valuations, 2) * 100
+                    valuation_target = (
+                        round(
+                            instance["valuation_count"] / target.valuations, 2
+                        )
+                        * 100
+                    )
                 except ZeroDivisionError:
                     valuation_target = 0
                 instance["valuation_target"] = valuation_target
 
     for instance in instructions:
-        instance["employee_id"] = instance[
-            "propertyprocess__employee__id"
-        ]
+        instance["employee_id"] = instance["propertyprocess__employee__id"]
         del instance["propertyprocess__employee__id"]
 
         instance["instruction_target"] = 0
@@ -109,17 +123,20 @@ def top_performers(date):
         for target in targets:
             if instance["employee_id"] == target.profile_targets.id:
                 try:
-                    instruction_target = round(instance[
-                        "instruction_count"
-                    ] / target.instructions, 2) * 100
+                    instruction_target = (
+                        round(
+                            instance["instruction_count"]
+                            / target.instructions,
+                            2,
+                        )
+                        * 100
+                    )
                 except ZeroDivisionError:
                     instruction_target = 0
                 instance["instruction_target"] = instruction_target
 
     for instance in reductions:
-        instance["employee_id"] = instance[
-            "propertyprocess__employee__id"
-        ]
+        instance["employee_id"] = instance["propertyprocess__employee__id"]
         del instance["propertyprocess__employee__id"]
 
         instance["reduction_target"] = 0
@@ -127,17 +144,18 @@ def top_performers(date):
         for target in targets:
             if instance["employee_id"] == target.profile_targets.id:
                 try:
-                    reduction_target = round(instance[
-                        "reduction_count"
-                    ] / target.reductions, 2) * 100
+                    reduction_target = (
+                        round(
+                            instance["reduction_count"] / target.reductions, 2
+                        )
+                        * 100
+                    )
                 except ZeroDivisionError:
                     reduction_target = 0
                 instance["reduction_target"] = reduction_target
 
     for instance in new_business:
-        instance["employee_id"] = instance[
-            "propertyprocess__employee__id"
-        ]
+        instance["employee_id"] = instance["propertyprocess__employee__id"]
         del instance["propertyprocess__employee__id"]
 
         instance["new_business_target"] = 0
@@ -145,35 +163,31 @@ def top_performers(date):
         for target in targets:
             if instance["employee_id"] == target.profile_targets.id:
                 try:
-                    new_business_target = round(instance[
-                        "new_business_sum"
-                    ] / target.new_business, 2) * 100
+                    new_business_target = (
+                        round(
+                            instance["new_business_sum"] / target.new_business,
+                            2,
+                        )
+                        * 100
+                    )
                 except ZeroDivisionError:
                     new_business_target = 0
                 instance["new_business_target"] = new_business_target
 
     valuations = sorted(
-        valuations,
-        key=lambda k: k['valuation_target'],
-        reverse=True
+        valuations, key=lambda k: k["valuation_target"], reverse=True
     )
 
     instructions = sorted(
-        instructions,
-        key=lambda k: k['instruction_target'],
-        reverse=True
+        instructions, key=lambda k: k["instruction_target"], reverse=True
     )
 
     reductions = sorted(
-        reductions,
-        key=lambda k: k['reduction_target'],
-        reverse=True
+        reductions, key=lambda k: k["reduction_target"], reverse=True
     )
 
     new_business = sorted(
-        new_business,
-        key=lambda k: k['new_business_target'],
-        reverse=True
+        new_business, key=lambda k: k["new_business_target"], reverse=True
     )
 
     data["valuations"] = valuations[:2]
@@ -208,57 +222,68 @@ def index(request):
     company_year = quarter_and_year["company_year"]
 
     employee = "propertyprocess__employee__id"
-    link_to_employee = 'propertyprocess__employee'
-    reductions = 'propertyprocess__employee'
+    link_to_employee = "propertyprocess__employee"
+    reductions = "propertyprocess__employee"
 
-    valuations = Valuation.objects.values("valuer") \
-        .annotate(valuation_count=Count(link_to_employee)) \
-        .filter(date__iso_year=year,
-                date__month__gte=start_month,
-                date__month__lte=end_month,
-                propertyprocess__employee__employee_targets=True,
-                propertyprocess__employee__user__is_active=True) \
-        .order_by('-valuation_count')
-
-    instructions = Instruction.objects.values(employee) \
-        .annotate(instruction_count=Count(link_to_employee)) \
-        .filter(date__iso_year=year,
-                date__month__gte=start_month,
-                date__month__lte=end_month,
-                propertyprocess__employee__employee_targets=True,
-                propertyprocess__employee__user__is_active=True) \
-        .order_by('-instruction_count')
-
-    reductions = Reduction.objects.values(employee) \
-        .annotate(reduction_count=Count(link_to_employee)) \
-        .filter(date__iso_year=year,
-                date__month__gte=start_month,
-                date__month__lte=end_month,
-                propertyprocess__employee__employee_targets=True,
-                propertyprocess__employee__user__is_active=True) \
-        .order_by('-reduction_count')
-
-    new_business = PropertyFees.objects.values(employee) \
-        .annotate(new_business_sum=Sum('new_business')) \
-        .filter(date__iso_year=year,
-                date__month__gte=start_month,
-                date__month__lte=end_month,
-                propertyprocess__employee__employee_targets=True,
-                propertyprocess__employee__user__is_active=True,
-                active=True,
-                show_all=True) \
-        .order_by('-new_business_sum')
-
-    targets = UserTargets.objects.filter(
-        year=company_year,
-        quarter=quarter
+    valuations = (
+        Valuation.objects.values("valuer")
+        .annotate(valuation_count=Count(link_to_employee))
+        .filter(
+            date__iso_year=year,
+            date__month__gte=start_month,
+            date__month__lte=end_month,
+            propertyprocess__employee__employee_targets=True,
+            propertyprocess__employee__user__is_active=True,
+        )
+        .order_by("-valuation_count")
     )
+
+    instructions = (
+        Instruction.objects.values(employee)
+        .annotate(instruction_count=Count(link_to_employee))
+        .filter(
+            date__iso_year=year,
+            date__month__gte=start_month,
+            date__month__lte=end_month,
+            propertyprocess__employee__employee_targets=True,
+            propertyprocess__employee__user__is_active=True,
+        )
+        .order_by("-instruction_count")
+    )
+
+    reductions = (
+        Reduction.objects.values(employee)
+        .annotate(reduction_count=Count(link_to_employee))
+        .filter(
+            date__iso_year=year,
+            date__month__gte=start_month,
+            date__month__lte=end_month,
+            propertyprocess__employee__employee_targets=True,
+            propertyprocess__employee__user__is_active=True,
+        )
+        .order_by("-reduction_count")
+    )
+
+    new_business = (
+        PropertyFees.objects.values(employee)
+        .annotate(new_business_sum=Sum("new_business"))
+        .filter(
+            date__iso_year=year,
+            date__month__gte=start_month,
+            date__month__lte=end_month,
+            propertyprocess__employee__employee_targets=True,
+            propertyprocess__employee__user__is_active=True,
+            active=True,
+            show_all=True,
+        )
+        .order_by("-new_business_sum")
+    )
+
+    targets = UserTargets.objects.filter(year=company_year, quarter=quarter)
 
     # Renaming fields in querysets
     for instance in valuations:
-        instance["employee_id"] = instance[
-            "valuer"
-        ]
+        instance["employee_id"] = instance["valuer"]
         del instance["valuer"]
 
         instance["valuation_target"] = 0
@@ -266,17 +291,18 @@ def index(request):
         for target in targets:
             if instance["employee_id"] == target.profile_targets.id:
                 try:
-                    valuation_target = round(instance[
-                        "valuation_count"
-                    ] / target.valuations, 2) * 100
+                    valuation_target = (
+                        round(
+                            instance["valuation_count"] / target.valuations, 2
+                        )
+                        * 100
+                    )
                 except ZeroDivisionError:
                     valuation_target = 0
                 instance["valuation_target"] = valuation_target
 
     for instance in instructions:
-        instance["employee_id"] = instance[
-            "propertyprocess__employee__id"
-        ]
+        instance["employee_id"] = instance["propertyprocess__employee__id"]
         del instance["propertyprocess__employee__id"]
 
         instance["instruction_target"] = 0
@@ -284,17 +310,20 @@ def index(request):
         for target in targets:
             if instance["employee_id"] == target.profile_targets.id:
                 try:
-                    instruction_target = round(instance[
-                        "instruction_count"
-                    ] / target.instructions, 2) * 100
+                    instruction_target = (
+                        round(
+                            instance["instruction_count"]
+                            / target.instructions,
+                            2,
+                        )
+                        * 100
+                    )
                 except ZeroDivisionError:
                     instruction_target = 0
                 instance["instruction_target"] = instruction_target
 
     for instance in reductions:
-        instance["employee_id"] = instance[
-            "propertyprocess__employee__id"
-        ]
+        instance["employee_id"] = instance["propertyprocess__employee__id"]
         del instance["propertyprocess__employee__id"]
 
         instance["reduction_target"] = 0
@@ -302,17 +331,18 @@ def index(request):
         for target in targets:
             if instance["employee_id"] == target.profile_targets.id:
                 try:
-                    reduction_target = round(instance[
-                        "reduction_count"
-                    ] / target.reductions, 2) * 100
+                    reduction_target = (
+                        round(
+                            instance["reduction_count"] / target.reductions, 2
+                        )
+                        * 100
+                    )
                 except ZeroDivisionError:
                     reduction_target = 0
                 instance["reduction_target"] = reduction_target
 
     for instance in new_business:
-        instance["employee_id"] = instance[
-            "propertyprocess__employee__id"
-        ]
+        instance["employee_id"] = instance["propertyprocess__employee__id"]
         del instance["propertyprocess__employee__id"]
 
         instance["new_business_target"] = 0
@@ -320,35 +350,31 @@ def index(request):
         for target in targets:
             if instance["employee_id"] == target.profile_targets.id:
                 try:
-                    new_business_target = round(instance[
-                        "new_business_sum"
-                    ] / target.new_business, 2) * 100
+                    new_business_target = (
+                        round(
+                            instance["new_business_sum"] / target.new_business,
+                            2,
+                        )
+                        * 100
+                    )
                 except ZeroDivisionError:
                     new_business_target = 0
                 instance["new_business_target"] = new_business_target
 
     valuations = sorted(
-        valuations,
-        key=lambda k: k['valuation_target'],
-        reverse=True
+        valuations, key=lambda k: k["valuation_target"], reverse=True
     )
 
     instructions = sorted(
-        instructions,
-        key=lambda k: k['instruction_target'],
-        reverse=True
+        instructions, key=lambda k: k["instruction_target"], reverse=True
     )
 
     reductions = sorted(
-        reductions,
-        key=lambda k: k['reduction_target'],
-        reverse=True
+        reductions, key=lambda k: k["reduction_target"], reverse=True
     )
 
     new_business = sorted(
-        new_business,
-        key=lambda k: k['new_business_target'],
-        reverse=True
+        new_business, key=lambda k: k["new_business_target"], reverse=True
     )
 
     # Creating lists of employees who haven't aren't on the lists
@@ -412,14 +438,13 @@ def offer_board(request):
         employee_targets=True, user__is_active=True
     )
 
-    offers = Offer.objects.exclude(propertyprocess__macro_status=4). \
-        exclude(propertyprocess__macro_status=5). \
-        exclude(status=Offer.REJECTED). \
-        exclude(status=Offer.WITHDRAWN). \
-        select_related(
-            "propertyprocess",
-            "propertyprocess__property"
-        )
+    offers = (
+        Offer.objects.exclude(propertyprocess__macro_status=4)
+        .exclude(propertyprocess__macro_status=5)
+        .exclude(status=Offer.REJECTED)
+        .exclude(status=Offer.WITHDRAWN)
+        .select_related("propertyprocess", "propertyprocess__property")
+    )
 
     hub = None
     if "hub" in request.GET:

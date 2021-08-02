@@ -23,10 +23,13 @@ def employees(request):
     A view to show paginated lists of employees.
     """
 
-    users = get_user_model().objects.all(). \
-        order_by(
+    users = (
+        get_user_model()
+        .objects.all()
+        .order_by(
             "first_name",
         )
+    )
 
     active = True
 
@@ -98,8 +101,7 @@ def add_user_targets(request, user, year):
 
     if request.method == "POST":
         formset = UserTargetsFormset(
-            request.POST, request.FILES,
-            instance=user
+            request.POST, request.FILES, instance=user
         )
         request_user = request.user.get_full_name()
         profile = user.profile
@@ -136,14 +138,13 @@ def add_user_targets(request, user, year):
             )
     else:
         formset = UserTargetsFormset(
-            instance=user,
-            queryset=UserTargets.objects.filter(year=year)
+            instance=user, queryset=UserTargets.objects.filter(year=year)
         )
         context = {
-                "formset": formset,
-                "user": user,
-                "year": year,
-            }
+            "formset": formset,
+            "user": user,
+            "year": year,
+        }
         data["html_modal"] = render_to_string(
             "users/includes/add_user_targets.html",
             context,
@@ -166,8 +167,7 @@ def edit_user_targets(request, user, year):
 
     if request.method == "POST":
         formset = UserTargetsFormset(
-            request.POST, request.FILES,
-            instance=user
+            request.POST, request.FILES, instance=user
         )
         request_user = request.user.get_full_name()
         profile = user.profile
@@ -201,14 +201,13 @@ def edit_user_targets(request, user, year):
             )
     else:
         formset = UserTargetsFormset(
-            instance=user,
-            queryset=UserTargets.objects.filter(year=year)
+            instance=user, queryset=UserTargets.objects.filter(year=year)
         )
         context = {
-                "formset": formset,
-                "user": user,
-                "year": year,
-            }
+            "formset": formset,
+            "user": user,
+            "year": year,
+        }
         data["html_modal"] = render_to_string(
             "users/includes/edit_user_targets.html",
             context,
@@ -256,17 +255,17 @@ def user_detail(request, user):
         targets_set.append(user_target)
 
     context = {
-            "user": user,
-            "current_year": current_year,
-            "next_year": next_year,
-            "targets_set": targets_set,
-        }
+        "user": user,
+        "current_year": current_year,
+        "next_year": next_year,
+        "targets_set": targets_set,
+    }
 
     data["html_modal"] = render_to_string(
-            "users/includes/user_expanded.html",
-            context,
-            request=request,
-        )
+        "users/includes/user_expanded.html",
+        context,
+        request=request,
+    )
 
     return JsonResponse(data)
 
@@ -285,9 +284,9 @@ def edit_user(request, user):
     if request.method == "POST":
         print("HERE")
         form = UserForm(
-                    request.POST,
-                    instance=user,
-                )
+            request.POST,
+            instance=user,
+        )
         profile_form = ProfileForm(
             request.POST,
             instance=user.profile,
@@ -320,17 +319,13 @@ def edit_user(request, user):
             )
     else:
         print("GET REQUEST")
-        form = UserForm(
-            instance=user
-        )
-        profile_form = ProfileForm(
-            instance=user.profile
-        )
+        form = UserForm(instance=user)
+        profile_form = ProfileForm(instance=user.profile)
         context = {
-                "form": form,
-                "profile_form": profile_form,
-                "user": user,
-            }
+            "form": form,
+            "profile_form": profile_form,
+            "user": user,
+        }
         data["html_modal"] = render_to_string(
             "users/includes/edit_user.html",
             context,

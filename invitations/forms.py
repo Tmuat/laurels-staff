@@ -17,7 +17,7 @@ class UserInvitationsForm(forms.ModelForm):
             "is_staff",
             "hub",
             "employee_targets",
-            "personal_comm"
+            "personal_comm",
         )
         labels = {
             "is_staff": _("Admin"),

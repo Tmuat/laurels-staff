@@ -6,13 +6,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('invitations', '0008_alter_userinvitations_invited'),
+        ("invitations", "0008_alter_userinvitations_invited"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='userinvitations',
-            name='personal_comm',
-            field=models.DecimalField(decimal_places=2, default=10, max_digits=4),
+            model_name="userinvitations",
+            name="personal_comm",
+            field=models.DecimalField(
+                decimal_places=2, default=10, max_digits=4
+            ),
         ),
     ]

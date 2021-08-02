@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('regionandhub', '0011_alter_hubtargetsyear_hub'),
+        ("regionandhub", "0011_alter_hubtargetsyear_hub"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='hubtargets',
-            name='valuations',
+            model_name="hubtargets",
+            name="valuations",
             field=models.PositiveIntegerField(),
             preserve_default=False,
         ),

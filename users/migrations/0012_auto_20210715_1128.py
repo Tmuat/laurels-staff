@@ -7,18 +7,30 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0011_alter_profile_options'),
+        ("users", "0011_alter_profile_options"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='usertargets',
-            name='profile_targets',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='profile_targets', to='users.profile'),
+            model_name="usertargets",
+            name="profile_targets",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="profile_targets",
+                to="users.profile",
+            ),
         ),
         migrations.AddField(
-            model_name='usertargetsbyyear',
-            name='profile',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='profile_targets_year_set', to='users.profile'),
+            model_name="usertargetsbyyear",
+            name="profile",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="profile_targets_year_set",
+                to="users.profile",
+            ),
         ),
     ]

@@ -33,11 +33,7 @@ class CustomUser(AbstractUser):
 
     @property
     def abbreviated_name(self, **kwargs):
-        abbreviated_name = (
-            self.first_name[0] +
-            "." +
-            self.last_name
-        )
+        abbreviated_name = self.first_name[0] + "." + self.last_name
         return abbreviated_name
 
     def __str__(self):

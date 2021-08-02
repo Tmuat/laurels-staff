@@ -2599,9 +2599,9 @@ for instance in reduction_model:
 
         del instance["fields"]["instruction_change"]
 
-        reduction_fields["propertyprocess"] = instance[
-            "fields"
-        ]["propertyprocess"]
+        reduction_fields["propertyprocess"] = instance["fields"][
+            "propertyprocess"
+        ]
 
         # End loop
 
@@ -2911,11 +2911,16 @@ with open(
 for instance in setup:
     if instance["pk"] == "eac112a8-c670-4d20-bb66-c4ed0329362b":
         for property_instance in property_dict:
-            if property_instance["fields"]["address_line_1"] == "7 Ruston Avenue":
+            if (
+                property_instance["fields"]["address_line_1"]
+                == "7 Ruston Avenue"
+            ):
                 property_pk = property_instance["pk"]
         for property_process_instance in propertyprocess_dict:
             if property_process_instance["fields"]["property"] == property_pk:
-                instance["fields"]["propertyprocess"] = property_process_instance["pk"]
+                instance["fields"][
+                    "propertyprocess"
+                ] = property_process_instance["pk"]
 
 setup_dict = setup
 
@@ -3053,7 +3058,8 @@ with open(
     json.dump(property_history_extra_dict, json_data)
 
 with open(
-    "/workspace/laurels-staff/common/data_dump/new/prop_history_reduction.json", "w"
+    "/workspace/laurels-staff/common/data_dump/new/prop_history_reduction.json",
+    "w",
 ) as json_data:
     json.dump(property_history_reduction_dict, json_data)
 

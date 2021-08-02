@@ -161,9 +161,7 @@ def property_detail(request, propertyprocess_id):
         and propertyprocess.sector == "sales"
     ):
         percentages = sales_progression_percentage(propertyprocess.id)
-        property_chain = (
-            propertyprocess.property_chain.all()
-        )
+        property_chain = propertyprocess.property_chain.all()
 
     property_history_list_length = len(property_history)
     offers_length = len(offers)
@@ -1034,7 +1032,7 @@ def add_reduction(request, propertyprocess_id):
 
             instance.save()
 
-            property_process.reduction_count =+ 1
+            property_process.reduction_count = +1
             property_process.save()
 
             history_description = (
@@ -3369,12 +3367,9 @@ def fall_through(request, propertyprocess_id):
         property_process.updated_by = request.user.get_full_name()
         property_process.save()
 
-        deal_instance = Deal.objects.get(
-            propertyprocess=property_process.id
-        )
+        deal_instance = Deal.objects.get(propertyprocess=property_process.id)
 
-        offerer = deal_instance.offer_accepted. \
-            offerer_details.full_name
+        offerer = deal_instance.offer_accepted.offerer_details.full_name
 
         offer_amount = deal_instance.offer_accepted.offer
 

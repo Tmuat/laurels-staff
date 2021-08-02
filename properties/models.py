@@ -1215,10 +1215,8 @@ class PropertyChain(UpdatedAndCreated):
 
     def __str__(self):
         if (
-            self.propertyprocess.property.address_line_2
-            == ""
-            or self.propertyprocess.property.address_line_2
-            is None
+            self.propertyprocess.property.address_line_2 == ""
+            or self.propertyprocess.property.address_line_2 is None
         ):
             property_address = "%s, %s" % (
                 self.propertyprocess.property.postcode,
@@ -1496,10 +1494,8 @@ class Reduction(UpdatedAndCreated):
         on_delete=models.CASCADE,
         related_name="reduction",
     )
-    date = models.DateField(null=False,
-                            blank=False)
-    price_change = models.PositiveIntegerField(null=False,
-                                               blank=False)
+    date = models.DateField(null=False, blank=False)
+    price_change = models.PositiveIntegerField(null=False, blank=False)
 
     def __str__(self):
         if (
