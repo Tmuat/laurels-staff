@@ -1,5 +1,4 @@
 from two_factor.views import (
-    BackupTokensView,
     ProfileView,
     SetupCompleteView,
 )
@@ -28,6 +27,18 @@ urlpatterns = [
     ),
     path("logout/", auth_views.LogoutView.as_view(), name="logout"),
     path("logout-modal/", logout_modal, name="logout_modal"),
+    path(
+        "password-change/",
+        auth_views.PasswordChangeView.as_view(
+            success_url="done/"
+        ),
+        name="password-change",
+    ),
+    path(
+        "password-change/done/",
+        auth_views.PasswordChangeDoneView.as_view(),
+        name="password-change-done",
+    ),
     path(
         "two-factor/profile/",
         ProfileView.as_view(),
