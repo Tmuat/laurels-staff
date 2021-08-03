@@ -4,10 +4,8 @@ $(document).ready(function(){
       url: '/account/logout-modal/',
       type: 'get',
       dataType: 'json',
-      beforeSend: function () {
-        $("#base-modal").modal("show");
-      },
       success: function (data) {
+        $("#base-modal").modal("show");
         $("#base-modal .modal-dialog").html(data.html_modal);
       }
     });

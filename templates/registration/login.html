@@ -42,10 +42,14 @@ class="loading authentication-bg" data-layout-config='{"leftSideBarTheme":"dark"
                                 {{ form.username|as_crispy_field }}
                                 {{ form.password.errors }}
                                 {{ form.password|as_crispy_field }}
-                                {{ form.otp_token.errors }}
-                                {{ form.otp_token|as_crispy_field }}
+                                <div class="d-none" id="otp-inputs">
+                                    {{ form.otp_token.errors }}
+                                    {{ form.otp_token|as_crispy_field }}
+                                </div>
+                                
                                 <div class="form-group mb-0 mt-4 clearfix">
-                                      <button class="float-left btn btn-success" type="submit">{% trans "Sign In" %}</button>
+                                      <button class="float-left btn btn-success" id="show-otp">Add OTP</button>
+                                      <button class="float-left btn btn-success d-none" type="submit" id="submit">{% trans "Sign In" %}</button>
                                       <a class="button secondaryAction float-right align-middle" href="{% url 'accounts:password-reset' %}">{% trans "Forgot Password?" %}</a>
                                   </div>
                             </form>
@@ -64,4 +68,9 @@ class="loading authentication-bg" data-layout-config='{"leftSideBarTheme":"dark"
         {% now "Y" %} © Laurels - Designed By <a href="mailto: Thomas_Muat@hotmail.com">Thomas Muat</a>
     </footer>
 
+{% endblock %}
+
+{% block extra_javascript %}
+{{ block.super }}
+    <script src="{% static 'accounts/js/login.js' %}"></script>
 {% endblock %}
