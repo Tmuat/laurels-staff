@@ -13,6 +13,7 @@ from accounts.views import (
     otp_setup,
     otp_backup,
     QRGeneratorView,
+    CustomPasswordResetConfirmView
 )
 
 
@@ -38,6 +39,28 @@ urlpatterns = [
         "password-change/done/",
         auth_views.PasswordChangeDoneView.as_view(),
         name="password-change-done",
+    ),
+    path(
+        "password-reset/",
+        auth_views.PasswordResetView.as_view(
+            success_url="done/"
+        ),
+        name="password-reset",
+    ),
+    path(
+        "password-reset/done/",
+        auth_views.PasswordResetDoneView.as_view(),
+        name="password-reset-done",
+    ),
+    path(
+        "password-reset/<uidb64>/<token>/",
+        CustomPasswordResetConfirmView.as_view(),
+        name="password-reset-confirm",
+    ),
+    path(
+        "password-reset/complete/",
+        auth_views.PasswordResetCompleteView.as_view(),
+        name="password-reset-complete",
     ),
     path(
         "two-factor/profile/",

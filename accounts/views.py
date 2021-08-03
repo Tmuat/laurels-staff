@@ -23,6 +23,9 @@ from django.views.generic.base import View
 from accounts.forms import CustomConfirmChangeForm, totp_digits
 from accounts.utils import class_view_decorator
 
+from django.contrib.auth import views as auth_views
+from django.urls import reverse_lazy
+
 
 @login_required
 @otp_required
@@ -236,3 +239,7 @@ class QRGeneratorView(View):
         resp = HttpResponse(content_type=content_type)
         img.save(resp)
         return resp
+
+
+class CustomPasswordResetConfirmView(auth_views.PasswordResetConfirmView):
+    success_url = reverse_lazy('accounts:password-reset-complete')
