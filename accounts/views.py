@@ -242,4 +242,4 @@ class QRGeneratorView(View):
 
 
 class CustomPasswordResetConfirmView(auth_views.PasswordResetConfirmView):
-    success_url = reverse_lazy('accounts:password-reset-complete')
+    success_url = reverse_lazy("accounts:password-reset-complete")

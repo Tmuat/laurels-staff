@@ -110,6 +110,7 @@ LOCAL_APPS = [
     "home",
     "accounts",
     "properties",
+    "stats",
 ]
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps

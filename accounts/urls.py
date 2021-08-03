@@ -13,7 +13,7 @@ from accounts.views import (
     otp_setup,
     otp_backup,
     QRGeneratorView,
-    CustomPasswordResetConfirmView
+    CustomPasswordResetConfirmView,
 )
 
 
@@ -30,9 +30,7 @@ urlpatterns = [
     path("logout-modal/", logout_modal, name="logout_modal"),
     path(
         "password-change/",
-        auth_views.PasswordChangeView.as_view(
-            success_url="done/"
-        ),
+        auth_views.PasswordChangeView.as_view(success_url="done/"),
         name="password-change",
     ),
     path(
@@ -42,9 +40,7 @@ urlpatterns = [
     ),
     path(
         "password-reset/",
-        auth_views.PasswordResetView.as_view(
-            success_url="done/"
-        ),
+        auth_views.PasswordResetView.as_view(success_url="done/"),
         name="password-reset",
     ),
     path(
