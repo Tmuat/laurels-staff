@@ -1,3 +1,5 @@
+import datetime
+
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
@@ -193,3 +195,77 @@ def sales_progression_percentage(propertyprocess_id):
     percentages["phase_4"] = round(phase_4 / 8, 2) * 100
 
     return percentages
+
+
+def date_calc(date, filter):
+
+    data = dict()
+
+    def calculate_start_month(date):
+        start_month = (((date.month - 1) // 3) * 3) + 1
+        return start_month
+
+    def calculate_start_year(date):
+        start_year = date.year
+        return start_year
+
+    start_month = int(calculate_start_month(date))
+    start_year = int(calculate_start_year(date))
+    company_year = start_year
+
+    if filter == "last_quarter":
+        if start_month == 1:
+            start_month = 10
+            start_year = start_year - 1
+        else:
+            start_month = start_month - 3
+    elif filter == "year_to_date":
+        if start_month < 10:
+            start_month = 10
+            start_year = start_year - 1
+
+    if start_month == 10:
+        company_year += 1
+
+    if start_month == 10:
+        quarter = "q1"
+    elif start_month == 1:
+        quarter = "q2"
+    elif start_month == 4:
+        quarter = "q3"
+    elif start_month == 7:
+        quarter = "q4"
+
+    if filter == "year_to_date":
+        end_month = 9
+    else:
+        end_month = start_month + 2
+
+    start_date = datetime.date(start_year, start_month, 1)
+
+    if filter == "year_to_date":
+        end_date = (
+            datetime.date(
+                (start_year + 1) + (end_month == 12),
+                (end_month + 1 if end_month < 12 else 1),
+                1,
+            )
+            - datetime.timedelta(1)
+        )
+    else:
+        end_date = (
+            datetime.date(
+                start_year + (end_month == 12),
+                (end_month + 1 if end_month < 12 else 1),
+                1,
+            )
+            - datetime.timedelta(1)
+        )
+
+    data["start_year"] = start_year
+    data["company_year"] = company_year
+    data["quarter"] = quarter
+    data["start_date"] = start_date
+    data["end_date"] = end_date
+
+    return data

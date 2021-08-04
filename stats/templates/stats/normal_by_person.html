@@ -1,0 +1,117 @@
+{% extends "vertical_base.html" %}
+{% load static i18n %}
+
+{% block head_title %}{% trans "By Person" %}{% endblock head_title %}
+
+{% block content %}
+    <!-- Start Content-->
+    <div class="container-fluid">
+
+        <div class="row">
+            <div class="col">
+                <!-- start page title -->
+                <div class="page-title-box">
+                    <div class="page-title-right">
+                        <ol class="breadcrumb m-0 p-0">
+                            <li class="breadcrumb-item"><a href="{% url 'home:home' %}"><i class="uil-home-alt"></i> Home</a></li>
+                            <li class="breadcrumb-item active"><i class="mdi mdi-graph-outline"></i> Statistics</li>
+                            <li class="breadcrumb-item active"><i class="mdi mdi-account"></i> Normal By Person</li>
+                        </ol>
+                    </div>
+                    <div class="text-center text-sm-left">
+                        <h4 class="page-title">Normal By Person</h4>
+                    </div>
+                </div>
+                <!-- end page title -->
+            </div>
+        </div>
+        <!-- end row-->
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row mb-2">
+                            <div class="col-12 col-md-6 col-xl-4 pr-md-0">
+                                <form method="GET" action="{% url 'stats:quick_filter_conversion' %}" class="js-filter-get-form">
+                                <!-- <form method="GET"> -->
+                                    <div class="input-group mb-3">
+                                        <select class="custom-select" id="quick-filter">
+                                            <option value="current_quarter">Current Quarter</option>
+                                            <option value="last_quarter">Last Quarter</option>
+                                            <option value="year_to_date">Year To Date</option>
+                                            <option value="previous_year">Previous Year</option>
+                                            <option value="all_time">All Time</option>
+                                        </select>
+                                        <div class="input-group-append">
+                                            <button class="btn btn-info" type="submit">Filter</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-6 col-md-4 col-xl-6 pl-md-0">
+                                <span class="mx-2 d-none d-md-inline">Or </span>
+                                <button class="btn btn-info js-load-form" data-url="{% url 'stats:more_filters' %}">More Filters</button>
+                            </div>
+                            <div class="col-6 col-md-2">
+                                <div class="text-right">
+                                    <button type="button" class="btn btn-light mb-2">Export</button>
+                                </div>
+                            </div><!-- end col-->
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-centered mb-0">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Hub</th>
+                                        <th>Valuations</th>
+                                        <th>Instructions</th>
+                                        <th>Reductions</th>
+                                        <th>New Business</th>
+                                        <th>Exchanges</th>
+                                        <th>Withdrawn</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><a href="apps-ecommerce-orders-details.html" class="text-body font-weight-bold">#BM9708</a> </td>
+                                        <td>
+                                            August 05 2018 <small class="text-muted">10:29 PM</small>
+                                        </td>
+                                        <td>
+                                            <h5><span class="badge badge-success-lighten"><i class="mdi mdi-coin"></i> Paid</span></h5>
+                                        </td>
+                                        <td>
+                                            $176.41
+                                        </td>
+                                        <td>
+                                            Mastercard
+                                        </td>
+                                        <td>
+                                            <h5><span class="badge badge-info-lighten">Shipped</span></h5>
+                                        </td>
+                                        <td>
+                                            <a href="javascript:void(0);" class="action-icon"> <i class="mdi mdi-eye"></i></a>
+                                            <a href="javascript:void(0);" class="action-icon"> <i class="mdi mdi-square-edit-outline"></i></a>
+                                            <a href="javascript:void(0);" class="action-icon"> <i class="mdi mdi-delete"></i></a>
+                                        </td>
+                                    </tr>                               
+                                </tbody>
+                            </table>
+                        </div>
+                    </div> <!-- end card-body-->
+                </div> <!-- end card-->
+            </div> <!-- end col -->
+        </div>
+        <!-- end row --> 
+
+    </div>
+    <!-- container -->
+{% endblock %}
+
+{% block extra_javascript %}
+{{ block.super }}
+    <script src="{% static 'stats/js/stats.js' %}"></script>
+{% endblock %}

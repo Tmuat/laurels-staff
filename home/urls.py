@@ -1,4 +1,4 @@
-from django.urls import path, include
+from django.urls import path
 
 from home.views import index, offer_board
 

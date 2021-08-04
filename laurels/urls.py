@@ -16,7 +16,7 @@ urlpatterns = [
     path("region-hub/", include("regionandhub.urls")),
     path("", include("home.urls")),
     path("", include("properties.urls")),
-    path("", include("stats.urls")),
+    path("statistics/", include("stats.urls")),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

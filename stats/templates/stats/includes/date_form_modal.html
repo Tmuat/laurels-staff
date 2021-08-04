@@ -1,0 +1,23 @@
+{% load static i18n %}
+<div class="modal-content green-gradient">
+    <div class="modal-body">
+        <div class="text-center mt-2 mb-3">
+            <span><img src="{% static 'custom/images/logo.png' %}" alt="laurels" height="80"></span>
+        </div>
+        <div class="text-center text-white">
+            <h4 class="text-white">More Filters</h4>
+            <form method="GET" action="{% url 'stats:normal_by_person' %}" class="text-center text-white px-2 js-submit-get-form custom-form-margin">
+                <label for="start-date" class="form-label mx-2">Start Date</label>
+                <input class="form-control" id="start-date" type="date" name="start-date" required>
+
+                <label for="end-date" class="form-label mx-2">End Date</label>
+                <input class="form-control" id="end-date" type="date" name="end-date" required>
+
+                <div class="my-2 text-center">
+                    <button type="submit" class="btn btn-info" id="add-button">{% trans "Filter" %}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- /.modal-content -->
