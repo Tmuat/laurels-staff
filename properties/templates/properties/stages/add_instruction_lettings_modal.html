@@ -1,0 +1,50 @@
+{% load static i18n %}
+<div class="modal-content green-gradient">
+    <div class="modal-body">
+        <div class="text-center mt-2 mb-3">
+            <span><img src="{% static 'custom/images/logo.png' %}" alt="laurels" height="80"></span>
+        </div>
+        <div class="text-center text-white">
+            <h4 class="text-white">Add Instruction</h4>
+            <form method="post" action="{% url 'properties:add_lettings_instruction' propertyprocess_id%}" class="text-center text-white px-2 js-submit-form-success custom-form-margin">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-12 col-sm-6">
+                        {{ form.agreement_type|as_crispy_field }}
+                    </div>
+                    <div class="col-12 col-sm-6">
+                        {{ instruction_lettings_extra_form.lettings_service_level|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-sm-6">
+                        {{ form.length_of_contract|as_crispy_field }}
+                    </div>
+                    <div class="col-12 col-sm-6">
+                        {{ form.date|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-sm-6">
+                        {{ form.listing_price|as_crispy_field }}
+                    </div>
+                    <div class="col-12 col-sm-6">
+                        {{ form.fee_agreed|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-sm-6">
+                        {{ form.marketing_board|as_crispy_field }}
+                    </div>
+                    <div class="col-12 col-sm-6">
+                        {{ floor_space_form.floor_space|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="my-2 text-center">
+                    <button type="submit" class="btn btn-info" id="add-button">{% trans "Add Instruction" %}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- /.modal-content -->

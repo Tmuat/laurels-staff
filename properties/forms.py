@@ -5,6 +5,7 @@ from properties.models import (
     PropertyProcess,
     Valuation,
     Instruction,
+    InstructionLettingsExtra,
     InstructionChange,
     Marketing,
     PropertyHistory,
@@ -192,6 +193,25 @@ class InstructionForm(forms.ModelForm):
         self.fields["listing_price"].widget.attrs["min"] = 0
 
         self.fields["fee_agreed"].widget.attrs["min"] = 0
+
+        for field in self.fields:
+            label = f"{labels[field]}"
+            self.fields[field].label = label
+
+
+class InstructionLettingsExtraForm(forms.ModelForm):
+    class Meta:
+        model = InstructionLettingsExtra
+        fields = ("lettings_service_level",)
+
+    def __init__(self, *args, **kwargs):
+        """
+        Add new labels and order foreign key field
+        """
+        super().__init__(*args, **kwargs)
+        labels = {
+            "lettings_service_level": "Service Level",
+        }
 
         for field in self.fields:
             label = f"{labels[field]}"

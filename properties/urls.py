@@ -16,6 +16,7 @@ from properties.views import (
     add_propertyprocess,
     add_valuation,
     add_instruction,
+    add_lettings_instruction,
     render_history_notes,
     add_history_notes,
     add_reduction,
@@ -149,6 +150,11 @@ urlpatterns = [
         "properties/add/instruction/<propertyprocess_id>/",
         add_instruction,
         name="add_instruction",
+    ),
+    path(
+        "properties/add/instruction-lettings/<propertyprocess_id>/",
+        add_lettings_instruction,
+        name="add_lettings_instruction",
     ),
     path(
         "properties/add/reduction/<propertyprocess_id>/",

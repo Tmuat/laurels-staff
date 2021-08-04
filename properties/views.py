@@ -19,6 +19,7 @@ from properties.forms import (
     PropertyProcessForm,
     ValuationForm,
     InstructionForm,
+    InstructionLettingsExtraForm,
     SellerMarketingForm,
     HistoryNotesForm,
     FloorSpaceForm,
@@ -53,6 +54,7 @@ from properties.models import (
     PropertyFees,
     PropertyHistory,
     Instruction,
+    InstructionLettingsExtra,
     InstructionChange,
     Offer,
     OffererDetails,
@@ -997,6 +999,131 @@ def add_instruction(request, propertyprocess_id):
     }
     data["html_modal"] = render_to_string(
         "properties/stages/add_instruction_modal.html",
+        context,
+        request=request,
+    )
+    return JsonResponse(data)
+
+
+@otp_required
+@login_required
+def add_lettings_instruction(request, propertyprocess_id):
+    """
+    Ajax URL for adding a instruction on a lettings property.
+    """
+    data = dict()
+
+    property_process = get_object_or_404(
+        PropertyProcess, id=propertyprocess_id
+    )
+
+    property = get_object_or_404(Property, id=property_process.property.id)
+
+    if request.method == "POST":
+        form = InstructionForm(request.POST)
+        instruction_lettings_extra_form = InstructionLettingsExtraForm(
+            request.POST
+        )
+        floor_space_form = FloorSpaceForm(request.POST, instance=property)
+        if (
+            form.is_valid()
+            and floor_space_form.is_valid()
+            and instruction_lettings_extra_form.is_valid()
+        ):
+            instance = form.save(commit=False)
+
+            instance.propertyprocess = property_process
+
+            instance.created_by = request.user.get_full_name()
+            instance.updated_by = request.user.get_full_name()
+
+            instance.save()
+
+            instance.send_mail(request)
+
+            floor_space_form.save()
+
+            lettings_extra_instance = instruction_lettings_extra_form.save(
+                commit=False
+            )
+
+            service_level = instruction_lettings_extra_form.cleaned_data[
+                "lettings_service_level"
+            ]
+
+            lettings_extra_instance.propertyprocess = property_process
+            if service_level != InstructionLettingsExtra.INTRO:
+                lettings_extra_instance.managed_property = True
+
+            lettings_extra_instance.created_by = request.user.get_full_name()
+            lettings_extra_instance.updated_by = request.user.get_full_name()
+
+            lettings_extra_instance.save()
+
+            property_process.macro_status = PropertyProcess.INSTRUCTION
+            property_process.furthest_status = PropertyProcess.INSTRUCTION
+            property_process.save()
+
+            PropertyFees.objects.create(
+                propertyprocess=property_process,
+                fee=form.cleaned_data["fee_agreed"],
+                price=form.cleaned_data["listing_price"],
+                date=instance.date,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
+
+            history_description = (
+                f"{request.user.get_full_name()} has added a instruction."
+            )
+
+            history_description_two = (
+                f"{request.user.get_full_name()} has updated"
+                " property info (floor space)."
+            )
+
+            history_instruction = PropertyHistory.objects.create(
+                propertyprocess=property_process,
+                type=PropertyHistory.PROPERTY_EVENT,
+                description=history_description,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
+
+            PropertyHistory.objects.create(
+                propertyprocess=property_process,
+                type=PropertyHistory.PROPERTY_EVENT,
+                description=history_description_two,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
+
+            data["form_is_valid"] = True
+            context = {
+                "property_process": property_process,
+                "history": history_instruction,
+            }
+            data["html_success"] = render_to_string(
+                "properties/stages/includes/form_success.html",
+                context,
+                request=request,
+            )
+        else:
+            data["form_is_valid"] = False
+
+    else:
+        form = InstructionForm()
+        instruction_lettings_extra_form = InstructionLettingsExtraForm()
+        floor_space_form = FloorSpaceForm()
+
+    context = {
+        "form": form,
+        "instruction_lettings_extra_form": instruction_lettings_extra_form,
+        "floor_space_form": floor_space_form,
+        "propertyprocess_id": propertyprocess_id,
+    }
+    data["html_modal"] = render_to_string(
+        "properties/stages/add_instruction_lettings_modal.html",
         context,
         request=request,
     )

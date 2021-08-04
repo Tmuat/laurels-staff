@@ -563,7 +563,7 @@ class InstructionLettingsExtra(UpdatedAndCreated):
     def __str__(self):
         if (
             self.propertyprocess.property.address_line_2 == ""
-            or self.propertyprocess.property.address_line_2 == None
+            or self.propertyprocess.property.address_line_2 is None
         ):
             property_address = "%s, %s" % (
                 self.propertyprocess.property.postcode,

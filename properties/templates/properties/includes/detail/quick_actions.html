@@ -7,7 +7,12 @@
         <i class="mdi mdi-clipboard-file-outline icon-lg-size"></i>
 </button>
 <button 
-    data-url="{% url 'properties:add_instruction' propertyprocess.id %}" data-toggle="tooltip"
+    {% if propertyprocess.sector == "sales" %}
+        data-url="{% url 'properties:add_instruction' propertyprocess.id %}"
+    {% else %}
+        data-url="{% url 'properties:add_lettings_instruction' propertyprocess.id %}"
+    {% endif %}
+    data-toggle="tooltip"
     data-placement="top"
     title="Instruction"
     class="mb-1 btn px-2 py-1 {% if propertyprocess.macro_status != 2 %}btn-secondary" disabled{% else %}btn-info js-load-form"{% endif %}>
