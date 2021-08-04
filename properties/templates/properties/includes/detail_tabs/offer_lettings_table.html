@@ -1,0 +1,60 @@
+{% load humanize %}
+{% for instance in offers %}
+<tr>
+    <td>{{ instance.full_name }}</td>
+    <td class="text-center">
+        £{{ instance.offerdetailslettings.first.offer|intcomma }}
+        <span
+            class="mdi mdi-plus-box {% if propertyprocess.macro_status != 3 %}text-secondary" disabled{% else %}pointer text-success js-load-form"{% endif %}
+            data-url="{% url 'properties:add_another_lettings_offer' propertyprocess.id %}?id={{ instance.id }}" 
+        ></span>
+    </td>
+    <td class="text-center">
+        {% if instance.offerdetailslettings.first.status == "negotiating" %}
+            <span 
+                class="pointer badge badge-info-lighten js-load-form"
+                data-url="{% url 'properties:edit_offer_lettings_status' instance.offerdetailslettings.first.id %}"
+                data-toggle="tooltip"
+                data-placement="top"
+                title="Edit Offer Status"
+                
+            >
+        {% elif instance.offerdetailslettings.first.status == "rejected" %}
+            <span 
+                class="pointer badge badge-danger-lighten js-load-form"
+                data-url="{% url 'properties:edit_offer_lettings_status' instance.offerdetailslettings.first.id %}"
+                data-toggle="tooltip"
+                data-placement="top"
+                title="Edit Offer Status"
+                
+            >
+        {% elif instance.offerdetailslettings.first.status == "accepted" %}
+            <span 
+                class="pointer badge badge-success-lighten js-load-form"
+                data-url="{% url 'properties:edit_offer_lettings_status' instance.offerdetailslettings.first.id %}"
+                data-toggle="tooltip"
+                data-placement="top"
+                title="Edit Offer Status"
+                
+            >
+        {% elif instance.offerdetailslettings.first.status == "withdrawn" %}
+            <span 
+                class="pointer badge badge-secondary-lighten js-load-form"
+                data-url="{% url 'properties:edit_offer_lettings_status' instance.offerdetailslettings.first.id %}"
+                data-toggle="tooltip"
+                data-placement="top"
+                title="Edit Offer Status"
+                
+            >
+        {% endif %}
+            {{ instance.offerdetailslettings.first.get_status_display }}</span>
+    </td>
+    <td class="text-center">
+        {{ instance.offerdetailslettings.first.offer_extra.proposed_move_in_date|date:"d M Y" }}
+    </td>
+    <td class="text-center">
+        {{ instance.offerdetailslettings.first.offer_extra.get_term_display }}
+    </td>
+    <td class="text-center"><span class="mdi mdi-view-list pointer js-load-form" data-url="{% url 'properties:offerer_offers_lettings' instance.pk %}"></span></td>
+</tr>
+{% endfor %}

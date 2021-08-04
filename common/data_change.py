@@ -68,6 +68,7 @@ valuation_dict = None
 instruction_dict = None
 instruction_lettings_extra_dict = None
 offerer_dict = None
+offerer_extra_lettings_dict = None
 offer_dict = None
 deal_dict = None
 exchange_dict = None
@@ -1266,15 +1267,21 @@ with open(
 
 offerer_extra_dict = []
 
+offerer_extra_lettings_dict = []
+
 for instance in offer_model:
 
     offerer_extra = {}
     offerer_extra_fields = {}
 
+    offerer_lettings_extra = {}
+    offerer_lettings_extra_fields = {}
+
     # Changing the model to new value
 
     instance["model"] = "properties.offer"
     offerer_extra["model"] = "properties.offererdetails"
+    offerer_lettings_extra["model"] = "properties.offererdetailslettings"
 
     # End changing the model to new value
 
@@ -1286,6 +1293,9 @@ for instance in offer_model:
             == instance["fields"]["propertyprocess_link"]
         ):
             offerer_extra_fields["propertyprocess"] = propertyprocess_instance[
+                "pk"
+            ]
+            offerer_lettings_extra_fields["propertyprocess"] = propertyprocess_instance[
                 "pk"
             ]
             instance["old_pp_pk"] = propertyprocess_instance["old_pk"]
@@ -1306,7 +1316,13 @@ for instance in offer_model:
     # Add new fields
 
     offerer_extra_fields["full_name"] = instance["fields"]["full_name"]
+    offerer_lettings_extra_fields["full_name"] = instance["fields"]["full_name"]
     del instance["fields"]["full_name"]
+
+    offerer_lettings_extra_fields["created_by"] = "Admin"
+    offerer_lettings_extra_fields["created"] = "2000-01-13T13:13:13.000Z"
+    offerer_lettings_extra_fields["updated_by"] = "Admin"
+    offerer_lettings_extra_fields["updated"] = "2000-01-13T13:13:13.000Z"
 
     offerer_extra_fields["created_by"] = "Admin"
     offerer_extra_fields["created"] = "2000-01-13T13:13:13.000Z"
@@ -1323,6 +1339,7 @@ for instance in offer_model:
     # Add fields to larger dict
 
     offerer_extra["fields"] = offerer_extra_fields
+    offerer_lettings_extra["fields"] = offerer_lettings_extra_fields
 
     # End adding fields to larger dict
 
@@ -1338,15 +1355,36 @@ for instance in offer_model:
 
     offerer_extra["pk"] = str(uuid.uuid4())
 
-    offerer_extra_dict.append(offerer_extra)
+    offerer_lettings_extra["pk"] = str(uuid.uuid4())
 
     # End new UUID field
 
-    # Add UUID to link two new models
+    # Add to different dict depending on sector
 
-    instance["fields"]["offerer_details"] = offerer_extra["pk"]
+    for propertyprocess_instance in propertyprocess_dict:
+        if (
+            propertyprocess_instance["pk"]
+            == instance["fields"]["propertyprocess"]
+        ):
+            if propertyprocess_instance["fields"]["sector"] == "sales": 
+                
+                offerer_extra_dict.append(offerer_extra)
 
-    # End add UUID to link two new models
+                # Add UUID to link new models
+
+                instance["fields"]["offerer_details"] = offerer_extra["pk"]
+
+                # End add UUID to link new models
+
+            else:
+
+                offerer_extra_lettings_dict.append(offerer_lettings_extra)
+
+                # Add UUID to link new models
+
+                instance["fields"]["offerer_lettings_details"] = offerer_lettings_extra["pk"]
+
+                # End add UUID to link new models
 
     # Change status' dependent on deals
 
@@ -3010,6 +3048,12 @@ with open(
     json.dump(offerer_extra_dict, json_data)
 
 with open(
+    "/workspace/laurels-staff/common/data_dump/new/offerer_lettings.json",
+    "w",
+) as json_data:
+    json.dump(offerer_extra_lettings_dict, json_data)
+
+with open(
     "/workspace/laurels-staff/common/data_dump/new/deal.json", "w"
 ) as json_data:
     json.dump(deal_model, json_data)
@@ -3133,6 +3177,9 @@ for object in instruction_lettings_extra_dict:
     master_dict.append(object)
 
 for object in offerer_dict:
+    master_dict.append(object)
+
+for object in offerer_extra_lettings_dict:
     master_dict.append(object)
 
 for object in offer_dict:

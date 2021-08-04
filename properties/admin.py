@@ -11,6 +11,8 @@ from properties.models import (
     OffererDetails,
     OffererMortgage,
     OffererCash,
+    OffererDetailsLettings,
+    OfferLettingsExtra,
     Offer,
     Deal,
     ExchangeMove,
@@ -124,9 +126,20 @@ class OffererDetailsAdminInline(admin.TabularInline):
     ]
 
 
+class OffererDetailsLettingsAdminInline(admin.TabularInline):
+    model = OffererDetailsLettings
+    readonly_fields = [
+        "created",
+        "created_by",
+        "updated",
+        "updated_by",
+    ]
+
+
 class OfferAdminInline(admin.TabularInline):
     model = Offer
     readonly_fields = [
+        "offerer_lettings_details",
         "offerer_details",
         "created",
         "created_by",
@@ -236,6 +249,7 @@ class PropertyProcessAdmin(admin.ModelAdmin):
         InstructionChangeAdminInline,
         InstructionLettingsExtraAdminInline,
         OffererDetailsAdminInline,
+        OffererDetailsLettingsAdminInline,
         OfferAdminInline,
         DealAdminInline,
         ExchangeAdminInline,
@@ -312,6 +326,9 @@ class OffererCashAdminInline(admin.TabularInline):
 class OffersAdminInline(admin.TabularInline):
     model = Offer
     readonly_fields = [
+        "offerer_details",
+        "offerer_lettings_details",
+        "propertyprocess",
         "created",
         "created_by",
         "updated",
@@ -368,6 +385,67 @@ class OffererDetailsAdmin(admin.ModelAdmin):
 
 
 admin.site.register(OffererDetails, OffererDetailsAdmin)
+
+
+class OffersLettingsAdminInline(admin.TabularInline):
+    model = Offer
+    readonly_fields = [
+        "offerer_details",
+        "offerer_lettings_details",
+        "propertyprocess",
+        "created",
+        "created_by",
+        "updated",
+        "updated_by",
+    ]
+
+
+class OffererDetailsLettingsAdmin(admin.ModelAdmin):
+    inlines = [
+        OffersLettingsAdminInline,
+    ]
+
+    list_display = [
+        "__str__",
+        "completed_offer_form",
+    ]
+
+    ordering = [
+        "propertyprocess__property__postcode",
+        "propertyprocess__property__address_line_1",
+        "full_name",
+    ]
+
+    list_filter = ["propertyprocess__sector", "propertyprocess__hub"]
+
+    search_fields = [
+        "propertyprocess__property__postcode",
+        "propertyprocess__property__address_line_1",
+    ]
+
+    readonly_fields = [
+        "updated_by",
+        "updated",
+        "created_by",
+        "created",
+    ]
+
+    def save_model(self, request, obj, form, change):
+        if not obj.pk:
+            obj.created_by = request.user.get_full_name()
+        obj.updated_by = request.user.get_full_name()
+        super().save_model(request, obj, form, change)
+
+    def save_formset(self, request, form, formset, change):
+        instances = formset.save(commit=False)
+        for obj in instances:
+            if not obj.pk:
+                obj.created_by = request.user.get_full_name()
+            obj.updated_by = request.user.get_full_name()
+            super().save_model(request, obj, form, change)
+
+
+admin.site.register(OffererDetailsLettings, OffererDetailsLettingsAdmin)
 
 
 class SalesProgressionPhaseAdminInline(admin.TabularInline):

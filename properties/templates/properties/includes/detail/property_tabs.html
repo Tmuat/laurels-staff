@@ -43,6 +43,7 @@
             <!-- end tab pane -->
             <!-- end valuation section -->
 
+            {% if propertyprocess.sector == "sales" %}
             {% if propertyprocess.furthest_status > 2 %}
             <!-- offer section -->
             <!-- tab pane -->
@@ -72,6 +73,39 @@
             </div>
             <!-- end tab pane -->
             <!-- end offer section -->
+            {% endif %}
+            {% else %}
+            {% if propertyprocess.furthest_status > 2 %}
+            <!-- offer section -->
+            <!-- tab pane -->
+            <div class="tab-pane" id="offers">
+                <h5 class="text-uppercase"><i class="mdi mdi-currency-gbp mr-1"></i>
+                    Property Offer History {% if propertyprocess.legacy_property %} - {{ propertyprocess.get_legacy_property_display }}{% endif %}</h5>
+
+                <div class="table-responsive">
+                    <table class="table table-borderless table-nowrap mb-0">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>Name</th>
+                                <th class="text-center">Latest Offer</th>
+                                <th class="text-center">Offer Status</th>
+                                <th class="text-center">Proposed Move In</th>
+                                <th class="text-center">Proposed Term</th>
+                                <th class="text-center">Extra Info</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-offers">
+                            {% include 'properties/includes/detail_tabs/offer_lettings_table.html' %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-1" id="offers-pagination">
+                    {% include 'properties/includes/detail_tabs/offers_pagination.html' %}
+                </div>
+            </div>
+            <!-- end tab pane -->
+            <!-- end offer section -->
+            {% endif %}
             {% endif %}
             
             {% if propertyprocess.sector == "sales" %}

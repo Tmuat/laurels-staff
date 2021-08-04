@@ -27,9 +27,14 @@ from properties.forms import (
     OffererForm,
     OffererMortgageForm,
     OffererCashForm,
+    OffererLettingsForm,
     OfferForm,
+    OfferLettingsForm,
+    OfferLettingsExtraForm,
     AnotherOfferForm,
+    AnotherOfferLettingsForm,
     OfferStatusForm,
+    OfferStatusLettingsForm,
     InstructionChangeForm,
     WithdrawalForm,
     DateForm,
@@ -58,10 +63,12 @@ from properties.models import (
     InstructionChange,
     Offer,
     OffererDetails,
+    OffererDetailsLettings,
     OffererCash,
     PropertyChain,
     Valuation,
     OffererMortgage,
+    OfferLettingsExtra,
     Marketing,
     SalesProgression,
     SalesProgressionSettings,
@@ -155,12 +162,16 @@ def property_detail(request, propertyprocess_id):
 
     propertyprocess = get_object_or_404(PropertyProcess, id=propertyprocess_id)
     property_history = propertyprocess.history.all()
-    offers = propertyprocess.offerer_details.all()
     notes = propertyprocess.progression_notes.all()
+
+    if propertyprocess.sector == PropertyProcess.SALES:
+        offers = propertyprocess.offerer_details.all()
+    else:
+        offers = propertyprocess.offerer_details_lettings.all()
 
     if (
         propertyprocess.furthest_status > 3
-        and propertyprocess.sector == "sales"
+        and propertyprocess.sector == PropertyProcess.SALES
     ):
         percentages = sales_progression_percentage(propertyprocess.id)
         property_chain = propertyprocess.property_chain.all()
@@ -267,7 +278,11 @@ def offers_pagination(request, propertyprocess_id):
     data = dict()
 
     propertyprocess = get_object_or_404(PropertyProcess, id=propertyprocess_id)
-    offers = propertyprocess.offerer_details.all()
+
+    if propertyprocess.sector == PropertyProcess.SALES:
+        offers = propertyprocess.offerer_details.all()
+    else:
+        offers = propertyprocess.offerer_details_lettings.all()
 
     offers_length = len(offers)
 
@@ -292,16 +307,24 @@ def offers_pagination(request, propertyprocess_id):
     }
 
     data["pagination"] = render_to_string(
-        "properties/includes/detail_tabs/offers_pagination.html",
-        context,
-        request=request,
-    )
-    data["html_table"] = render_to_string(
-        "properties/includes/detail_tabs/offer_table.html",
-        context,
-        request=request,
-    )
+            "properties/includes/detail_tabs/offers_pagination.html",
+            context,
+            request=request,
+        )
 
+    if propertyprocess.sector == PropertyProcess.SALES:
+        data["html_table"] = render_to_string(
+            "properties/includes/detail_tabs/offer_table.html",
+            context,
+            request=request,
+        )
+    else:
+        data["html_table"] = render_to_string(
+            "properties/includes/detail_tabs/offer_lettings_table.html",
+            context,
+            request=request,
+        )
+    
     return JsonResponse(data)
 
 
@@ -389,6 +412,29 @@ def offer_history(request, offerer_id):
 
     data["html_modal"] = render_to_string(
         "properties/includes/detail_tabs/offer_history.html",
+        context,
+        request=request,
+    )
+
+    return JsonResponse(data)
+
+
+@otp_required
+@login_required
+def offer_history_lettings(request, offerer_id):
+    """
+    A view to return an ajax response with offerer offer history for lettings
+    """
+
+    data = dict()
+
+    offerer = get_object_or_404(OffererDetailsLettings, pk=offerer_id)
+    offers = Offer.objects.filter(offerer_lettings_details=offerer_id)
+
+    context = {"offers": offers, "offerer": offerer}
+
+    data["html_modal"] = render_to_string(
+        "properties/includes/detail_tabs/offer_lettings_history.html",
         context,
         request=request,
     )
@@ -1274,6 +1320,57 @@ def add_offerer(request, propertyprocess_id):
 
 @otp_required
 @login_required
+def add_offerer_lettings(request, propertyprocess_id):
+    """
+    Ajax URL for adding a offerer for lettings properties.
+    """
+    data = dict()
+
+    property_process = get_object_or_404(
+        PropertyProcess, id=propertyprocess_id
+    )
+
+    if request.method == "POST":
+        form = OffererLettingsForm(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+
+            instance.propertyprocess = property_process
+
+            instance.created_by = request.user.get_full_name()
+            instance.updated_by = request.user.get_full_name()
+
+            instance.save()
+
+            data["form_is_valid"] = True
+            data["url"] = reverse(
+                "properties:add_offer_lettings",
+                kwargs={
+                    "propertyprocess_id": propertyprocess_id,
+                    "offerer_id": instance.id,
+                },
+            )
+        else:
+            data["form_is_valid"] = False
+
+    else:
+        form = OffererLettingsForm()
+        form_lettings = OfferLettingsExtraForm()
+
+    context = {
+        "form": form,
+        "propertyprocess_id": propertyprocess_id,
+    }
+    data["html_modal"] = render_to_string(
+        "properties/stages/add_offerer_lettings_modal.html",
+        context,
+        request=request,
+    )
+    return JsonResponse(data)
+
+
+@otp_required
+@login_required
 def add_offerer_mortgage(request, propertyprocess_id, offerer_id):
     """
     Ajax URL for adding a offerer mortgage options.
@@ -1456,6 +1553,94 @@ def add_offer(request, propertyprocess_id, offerer_id):
 
 @otp_required
 @login_required
+def add_offer_lettings(request, propertyprocess_id, offerer_id):
+    """
+    Ajax URL for adding an offer.
+    """
+    data = dict()
+
+    property_process = get_object_or_404(
+        PropertyProcess, id=propertyprocess_id
+    )
+
+    offerer = get_object_or_404(OffererDetailsLettings, id=offerer_id)
+
+    if request.method == "POST":
+        form = OfferLettingsForm(request.POST)
+        form_lettings = OfferLettingsExtraForm(request.POST)
+        if form.is_valid() and form_lettings.is_valid():
+            instance = form.save(commit=False)
+
+            instance.propertyprocess = property_process
+
+            instance.offerer_lettings_details = offerer
+
+            instance.created_by = request.user.get_full_name()
+            instance.updated_by = request.user.get_full_name()
+
+            instance_lettings = form_lettings.save(commit=False)
+
+            instance_lettings.offer_extra = instance
+
+            instance.save()
+
+            instance_lettings.created_by = request.user.get_full_name()
+            instance_lettings.updated_by = request.user.get_full_name()
+
+            instance_lettings.save()
+
+            history_description = (
+                f"{request.user.get_full_name()} has added an offer."
+            )
+
+            notes = (
+                f"A new offer has been added ({offerer.full_name}). "
+                f"An initial offer of £{humanize.intcomma(instance.offer)}"
+                " was added."
+            )
+
+            history = PropertyHistory.objects.create(
+                propertyprocess=property_process,
+                type=PropertyHistory.PROPERTY_EVENT,
+                description=history_description,
+                notes=notes,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
+
+            data["form_is_valid"] = True
+            context = {
+                "property_process": property_process,
+                "history": history,
+            }
+            data["html_success"] = render_to_string(
+                "properties/stages/includes/form_success.html",
+                context,
+                request=request,
+            )
+        else:
+            data["form_is_valid"] = False
+
+    else:
+        form = OfferLettingsForm(initial={"date": datetime.date.today})
+        form_lettings = OfferLettingsExtraForm()
+
+    context = {
+        "form": form,
+        "form_lettings": form_lettings,
+        "propertyprocess_id": propertyprocess_id,
+        "offerer": offerer,
+    }
+    data["html_modal"] = render_to_string(
+        "properties/stages/add_offer_lettings_modal.html",
+        context,
+        request=request,
+    )
+    return JsonResponse(data)
+
+
+@otp_required
+@login_required
 def add_another_offer(request, propertyprocess_id):
     """
     Ajax URL for adding an offer to an existing offerer.
@@ -1555,6 +1740,142 @@ def add_another_offer(request, propertyprocess_id):
     }
     data["html_modal"] = render_to_string(
         "properties/stages/add_another_offer_modal.html",
+        context,
+        request=request,
+    )
+    return JsonResponse(data)
+
+
+@otp_required
+@login_required
+def add_another_lettings_offer(request, propertyprocess_id):
+    """
+    Ajax URL for adding an offer to an existing offerer (lettings).
+    """
+    data = dict()
+
+    property_process = get_object_or_404(
+        PropertyProcess, id=propertyprocess_id
+    )
+
+    if request.method == "POST":
+        form = AnotherOfferLettingsForm(request.POST)
+        form_lettings = OfferLettingsExtraForm(request.POST)
+        if form.is_valid() and form_lettings.is_valid():
+            instance = form.save(commit=False)
+
+            instance.propertyprocess = property_process
+
+            instance.created_by = request.user.get_full_name()
+            instance.updated_by = request.user.get_full_name()
+
+            offerer_offers = Offer.objects.filter(
+                offerer_lettings_details=instance.offerer_lettings_details.id
+            )
+
+            for offer in offerer_offers:
+                if (
+                    offer.status == Offer.GETTINGVERIFIED
+                    or offer.status == Offer.NEGOTIATING
+                ):
+                    offer.status = Offer.REJECTED
+                    offer.updated_by = request.user.get_full_name()
+                offer.save()
+
+            instance_lettings = form_lettings.save(commit=False)
+
+            instance_lettings.offer_extra = instance
+
+            instance.save()
+
+            instance_lettings.created_by = request.user.get_full_name()
+            instance_lettings.updated_by = request.user.get_full_name()
+
+            instance_lettings.save()
+
+            offerer = get_object_or_404(
+                OffererDetailsLettings, id=instance.offerer_lettings_details.id
+            )
+
+            history_description = (
+                f"{request.user.get_full_name()} has added an offer."
+            )
+
+            notes = (
+                f"An offer has been changed for ({offerer.full_name}). "
+                f"The new offer is for £{humanize.intcomma(instance.offer)}"
+            )
+
+            history = PropertyHistory.objects.create(
+                propertyprocess=property_process,
+                type=PropertyHistory.PROPERTY_EVENT,
+                description=history_description,
+                notes=notes,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
+
+            data["form_is_valid"] = True
+            context = {
+                "property_process": property_process,
+                "history": history,
+            }
+            data["html_success"] = render_to_string(
+                "properties/stages/includes/form_success.html",
+                context,
+                request=request,
+            )
+        else:
+            data["form_is_valid"] = False
+
+    else:
+        if "id" in request.GET:
+            offerer_id = request.GET["id"]
+            offerer = get_object_or_404(OffererDetailsLettings, id=offerer_id)
+            form = AnotherOfferLettingsForm(
+                initial={
+                    "date": datetime.date.today,
+                    "offerer_lettings_details": offerer,
+                }
+            )
+            exists = False
+            try:
+                exists = (
+                    offerer.offerdetailslettings.first().offer_extra is not None
+                )
+            except OfferLettingsExtra.DoesNotExist:
+                pass
+
+            if exists:
+                form_lettings = OfferLettingsExtraForm(
+                    initial={
+                        "proposed_move_in_date": offerer.offerdetailslettings.first().offer_extra.proposed_move_in_date,
+                        "term": offerer.offerdetailslettings.first().offer_extra.term,
+                    }
+                )
+            else:
+                form_lettings = OfferLettingsExtraForm()
+        else:
+            form = AnotherOfferLettingsForm(
+                initial={
+                    "date": datetime.date.today,
+                }
+            )
+            form_lettings = OfferLettingsExtraForm()
+
+        form.fields[
+            "offerer_lettings_details"
+        ].queryset = OffererDetailsLettings.objects.filter(
+            propertyprocess=propertyprocess_id
+        )
+
+    context = {
+        "form": form,
+        "form_lettings": form_lettings,
+        "propertyprocess_id": propertyprocess_id,
+    }
+    data["html_modal"] = render_to_string(
+        "properties/stages/add_another_lettings_offer_modal.html",
         context,
         request=request,
     )
@@ -1809,6 +2130,83 @@ def edit_offer_status(request, offer_id):
     }
     data["html_modal"] = render_to_string(
         "properties/stages/edit_offer_status_modal.html",
+        context,
+        request=request,
+    )
+    return JsonResponse(data)
+
+
+@otp_required
+@login_required
+def edit_offer_lettings_status(request, offer_id):
+    """
+    Ajax URL for editing an offer status, lettings.
+    """
+
+    data = dict()
+
+    offer = get_object_or_404(Offer, id=offer_id)
+    property_process = get_object_or_404(
+        PropertyProcess, id=offer.propertyprocess.id
+    )
+    old_status = offer.status
+
+    if request.method == "POST":
+        form = OfferStatusLettingsForm(request.POST, instance=offer)
+        if form.is_valid():
+            instance = form.save(commit=False)
+
+            instance.updated_by = request.user.get_full_name()
+
+            history_description = (
+                f"{request.user.get_full_name()} has updated offer status."
+            )
+
+            for choice in Offer.STATUS:
+                if choice[0] == old_status:
+                    old_status = choice[1]
+                if choice[0] == instance.status:
+                    new_status = choice[1]
+
+            notes = (
+                f"The status for the offer from {offer.offerer_lettings_details.full_name}"
+                f" for £{humanize.intcomma(instance.offer)} has been changed from "
+                f"'{old_status}' to '{new_status}'."
+            )
+
+            instance.save()
+
+            history = PropertyHistory.objects.create(
+                propertyprocess=property_process,
+                type=PropertyHistory.PROPERTY_EVENT,
+                description=history_description,
+                notes=notes,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
+
+            data["form_is_valid"] = True
+            context = {
+                "property_process": property_process,
+                "history": history,
+            }
+            data["html_success"] = render_to_string(
+                "properties/stages/includes/form_success.html",
+                context,
+                request=request,
+            )
+        else:
+            data["form_is_valid"] = False
+
+    else:
+        form = OfferStatusLettingsForm(instance=offer)
+
+    context = {
+        "form": form,
+        "offer": offer,
+    }
+    data["html_modal"] = render_to_string(
+        "properties/stages/edit_offer_status_lettings_modal.html",
         context,
         request=request,
     )

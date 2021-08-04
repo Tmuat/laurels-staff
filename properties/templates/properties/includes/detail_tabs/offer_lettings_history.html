@@ -1,0 +1,93 @@
+{% load static i18n %}
+{% load humanize %}
+
+<div class="modal-content green-gradient">
+    <div class="modal-body">
+        <div class="text-center mt-2 mb-3">
+            <span><img src="{% static 'custom/images/logo.png' %}" alt="laurels" height="80"></span>
+        </div>
+        <div class="text-center">
+            <h4 class="text-white">{{ offerer.full_name }}</h4>
+            {% if offerer.funding is not none %}
+                <p class="text-white text-center mb-0">
+                    <strong>
+                    {{ offerer.get_funding_display }}:
+                    </strong>
+                </p>
+            {% endif %}
+            {% if offerer.funding == "cash" %}
+                <p class="text-white text-center">
+                    {{ offerer.offerer_cash_details.get_cash_display }}
+                </p>
+            {% elif offerer.funding == "mortgage" %}
+                <p class="text-white text-center mb-0">
+                    Deposit: {{ offerer.offerer_mortgage_details.deposit_percentage }}%
+                </p>
+                <p class="text-white text-center mb-0">
+                    Verified: {{ offerer.offerer_mortgage_details.verified }} ({{ offerer.offerer_mortgage_details.get_verified_status_display }})
+                </p>
+            {% endif %}
+            {% if offerer.status is not none %}
+                <p class="text-white text-center mb-0">
+                    <strong>
+                    Status:
+                    </strong>
+                </p>
+                <p class="text-white text-center">{{ offerer.get_status_display }}</p>
+            {% endif %}
+        </div>
+        {% for instance in offers %}
+            <div class="card my-1 shadow-none border">
+                <div class="p-2">
+                    <div class="row align-items-center text-center">
+                        <div class="col-6">
+                            <p class="text-muted font-weight-bold mb-0">£{{ instance.offer|intcomma }}</p>
+                            <p class="mb-0"><small>{{ instance.date }}</small></p>
+                        </div>
+                        <div class="col-6">
+                            {% if instance.status == "negotiating" %}
+                                <h4>
+                                    <span
+                                        class="pointer badge badge-info-lighten js-edit-offer-status"
+                                        data-url="{% url 'properties:edit_offer_lettings_status' instance.id %}"
+                                        data-toggle="tooltip"
+                                        data-placement="top"
+                                        title="Edit Offer Status"
+                                    >
+                            {% elif instance.status == "rejected" %}
+                                <h4>
+                                    <span
+                                        class="pointer badge badge-danger-lighten js-edit-offer-status"
+                                        data-url="{% url 'properties:edit_offer_lettings_status' instance.id %}"
+                                        data-toggle="tooltip"
+                                        data-placement="top"
+                                        title="Edit Offer Status"
+                                    >
+                            {% elif instance.status == "accepted" %}
+                                <h4>
+                                    <span
+                                        class="pointer badge badge-success-lighten js-edit-offer-status"
+                                        data-url="{% url 'properties:edit_offer_lettings_status' instance.id %}"
+                                        data-toggle="tooltip"
+                                        data-placement="top"
+                                        title="Edit Offer Status"
+                                    >
+                            {% elif instance.status == "withdrawn" %}
+                                <h4>
+                                    <span
+                                        class="pointer badge badge-secondary-lighten js-edit-offer-status"
+                                        data-url="{% url 'properties:edit_offer_lettings_status' instance.id %}"
+                                        data-toggle="tooltip"
+                                        data-placement="top"
+                                        title="Edit Offer Status"
+                                    >
+                            {% endif %}
+                                {{ instance.get_status_display }}</span></h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+<!-- /.modal-content -->

@@ -13,6 +13,8 @@ from properties.models import (
     OffererDetails,
     OffererMortgage,
     OffererCash,
+    OffererDetailsLettings,
+    OfferLettingsExtra,
     Offer,
     Deal,
     ExchangeMove,
@@ -292,6 +294,51 @@ class OffererForm(forms.ModelForm):
             self.fields[field].label = label
 
 
+class OffererLettingsForm(forms.ModelForm):
+
+    completed_offer_form = forms.BooleanField()
+
+    class Meta:
+        model = OffererDetailsLettings
+        fields = ("full_name", "completed_offer_form",)
+
+    def __init__(self, *args, **kwargs):
+        """
+        Add new labels and order foreign key field
+        """
+        super().__init__(*args, **kwargs)
+        labels = {
+            "full_name": "Full Name/s",
+            "completed_offer_form": "Completed Offer Form?",
+        }
+
+        for field in self.fields:
+            label = f"{labels[field]}"
+            self.fields[field].label = label
+
+
+class OfferLettingsExtraForm(forms.ModelForm):
+    class Meta:
+        model = OfferLettingsExtra
+        fields = ("proposed_move_in_date", "term",)
+
+    def __init__(self, *args, **kwargs):
+        """
+        Add new labels and order foreign key field
+        """
+        super().__init__(*args, **kwargs)
+        labels = {
+            "proposed_move_in_date": "Proposed Move In",
+            "term": "Proposed Term",
+        }
+
+        for field in self.fields:
+            label = f"{labels[field]}"
+            self.fields[field].label = label
+
+            self.fields["proposed_move_in_date"].widget = DateInput()
+
+
 class OffererMortgageForm(forms.ModelForm):
     class Meta:
         model = OffererMortgage
@@ -357,6 +404,36 @@ class OfferForm(forms.ModelForm):
             self.fields[field].label = label
 
 
+class OfferLettingsForm(forms.ModelForm):
+    class Meta:
+        model = Offer
+        fields = ("date", "offer", "status")
+
+    def __init__(self, *args, **kwargs):
+        """
+        Add new labels and order foreign key field
+        """
+        super(OfferLettingsForm, self).__init__(*args, **kwargs)
+        labels = {
+            "date": "Offer Date",
+            "offer": "Offer Amount (£)",
+            "status": "Offer Status",
+        }
+
+        self.fields["date"].widget = DateInput()
+
+        for field in self.fields:
+            label = f"{labels[field]}"
+            self.fields[field].label = label
+
+        for field_name in self.fields:
+            field = self.fields.get(field_name)
+            if field and isinstance(field, forms.TypedChoiceField):
+                choices = self.fields["status"].choices
+                del choices[1]
+                field.choices = choices
+
+
 class OfferStatusForm(forms.ModelForm):
     class Meta:
         model = Offer
@@ -374,6 +451,32 @@ class OfferStatusForm(forms.ModelForm):
         for field in self.fields:
             label = f"{labels[field]}"
             self.fields[field].label = label
+
+
+class OfferStatusLettingsForm(forms.ModelForm):
+    class Meta:
+        model = Offer
+        fields = ("status",)
+
+    def __init__(self, *args, **kwargs):
+        """
+        Add new labels and order foreign key field
+        """
+        super().__init__(*args, **kwargs)
+        labels = {
+            "status": "Offer Status",
+        }
+
+        for field in self.fields:
+            label = f"{labels[field]}"
+            self.fields[field].label = label
+
+        for field_name in self.fields:
+            field = self.fields.get(field_name)
+            if field and isinstance(field, forms.TypedChoiceField):
+                choices = self.fields["status"].choices
+                del choices[1]
+                field.choices = choices
 
 
 class AnotherOfferForm(forms.ModelForm):
@@ -398,6 +501,37 @@ class AnotherOfferForm(forms.ModelForm):
         for field in self.fields:
             label = f"{labels[field]}"
             self.fields[field].label = label
+
+
+class AnotherOfferLettingsForm(forms.ModelForm):
+    class Meta:
+        model = Offer
+        fields = ("offerer_lettings_details", "date", "offer", "status")
+
+    def __init__(self, *args, **kwargs):
+        """
+        Add new labels and order foreign key field
+        """
+        super().__init__(*args, **kwargs)
+        labels = {
+            "offerer_lettings_details": "Offerer",
+            "date": "Offer Date",
+            "offer": "Offer Amount (£)",
+            "status": "Offer Status",
+        }
+
+        self.fields["date"].widget = DateInput()
+
+        for field in self.fields:
+            label = f"{labels[field]}"
+            self.fields[field].label = label
+
+        for field_name in self.fields:
+            field = self.fields.get(field_name)
+            if field and isinstance(field, forms.TypedChoiceField):
+                choices = self.fields["status"].choices
+                del choices[1]
+                field.choices = choices
 
 
 class InstructionChangeForm(forms.ModelForm):

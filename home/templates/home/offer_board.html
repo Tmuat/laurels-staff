@@ -116,25 +116,48 @@
                                                     <div class="dropdown-menu dropdown-menu-right">
                                                         <!-- item-->
                                                         <a href="{% url 'properties:property_detail' instance.propertyprocess.id %}" class="dropdown-item"><i class="mdi mdi-arrow-expand-all mr-1"></i>Go To Property</a>
+                                                        <!-- End item-->
                                                         <!-- item-->
-                                                        <span data-url="{% url 'properties:edit_offer_status' instance.id %}" class="dropdown-item js-load-form pointer"><i class="mdi mdi-file-edit-outline mr-1"></i>Change Offer Status</span>
+                                                        <span 
+                                                        {% if instance.propertyprocess.sector == "sales" %}
+                                                            data-url="{% url 'properties:edit_offer_status' instance.id %}"
+                                                        {% else %}
+                                                            data-url="{% url 'properties:edit_offer_lettings_status' instance.id %}"
+                                                        {% endif %}
+                                                        class="dropdown-item js-load-form pointer"><i class="mdi mdi-file-edit-outline mr-1"></i>Change Offer Status</span>
+                                                        <!-- End item-->
                                                     </div>
                                                 </div>
 
-                                                <p class="mb-0 text-muted">
-                                                    {% if instance.offerer_details.calculate_str_length > 15 %}
-                                                        <span 
-                                                            class="pointer"
-                                                            data-toggle="tooltip"
-                                                            data-placement="top"
-                                                            title="{{ instance.offerer_details }}">
-                                                                {{ instance.offerer_details|truncatechars:15 }}
-                                                        </span>
-                                                    {% else %}
-                                                        {{ instance.offerer_details }}
-                                                    {% endif %}
-                                                </p>
-
+                                                {% if instance.propertyprocess.sector == "sales" %}
+                                                    <p class="mb-0 text-muted">
+                                                        {% if instance.offerer_details.calculate_str_length > 15 %}
+                                                            <span 
+                                                                class="pointer"
+                                                                data-toggle="tooltip"
+                                                                data-placement="top"
+                                                                title="{{ instance.offerer_details }}">
+                                                                    {{ instance.offerer_details|truncatechars:15 }}
+                                                            </span>
+                                                        {% else %}
+                                                            {{ instance.offerer_details }}
+                                                        {% endif %}
+                                                    </p>
+                                                {% else %}
+                                                    <p class="mb-0 text-muted">
+                                                        {% if instance.offerer_lettings_details.calculate_str_length > 15 %}
+                                                            <span 
+                                                                class="pointer"
+                                                                data-toggle="tooltip"
+                                                                data-placement="top"
+                                                                title="{{ instance.offerer_lettings_details }}">
+                                                                    {{ instance.offerer_lettings_details|truncatechars:15 }}
+                                                            </span>
+                                                        {% else %}
+                                                            {{ instance.offerer_lettings_details }}
+                                                        {% endif %}
+                                                    </p>
+                                                {% endif %}
                                             </div>
                                             <!-- end card-body -->
                                         </div>
@@ -210,25 +233,59 @@
                                                         <div class="dropdown-menu dropdown-menu-right">
                                                             <!-- item-->
                                                             <a href="{% url 'properties:property_detail' instance.propertyprocess.id %}" class="dropdown-item"><i class="mdi mdi-arrow-expand-all mr-1"></i>Go To Property</a>
+                                                            <!-- End item-->
+
                                                             <!-- item-->
-                                                            <span data-url="{% url 'properties:edit_offer_status' instance.id %}" class="dropdown-item js-load-form pointer"><i class="mdi mdi-file-edit-outline mr-1"></i>Change Offer Status</span>
-                                                            <span data-url="{% url 'properties:add_another_offer' instance.propertyprocess.id %}?id={{ instance.offerer_details.id }}" class="dropdown-item js-load-form pointer"><i class="mdi mdi-piggy-bank mr-1"></i>Change Offer</span>
+                                                            <span 
+                                                            {% if instance.propertyprocess.sector == "sales" %}
+                                                                data-url="{% url 'properties:edit_offer_status' instance.id %}"
+                                                            {% else %}
+                                                                data-url="{% url 'properties:edit_offer_lettings_status' instance.id %}"
+                                                            {% endif %}
+                                                            class="dropdown-item js-load-form pointer"><i class="mdi mdi-file-edit-outline mr-1"></i>Change Offer Status</span>
+                                                            <!-- End item-->
+
+                                                            <!-- item-->
+                                                            <span
+                                                            {% if instance.propertyprocess.sector == "sales" %}
+                                                                data-url="{% url 'properties:add_another_offer' instance.id %}?id={{ instance.offerer_details.id }}"
+                                                            {% else %}
+                                                                data-url="{% url 'properties:add_another_lettings_offer' instance.id %}?id={{ instance.offerer_details.id }}"
+                                                            {% endif %}
+                                                            class="dropdown-item js-load-form pointer"><i class="mdi mdi-piggy-bank mr-1"></i>Change Offer</span>
+                                                            <!-- End item-->
                                                         </div>
                                                     </div>
 
-                                                    <p class="mb-0 text-muted">
-                                                        {% if instance.offerer_details.calculate_str_length > 15 %}
-                                                            <span 
-                                                                class="pointer"
-                                                                data-toggle="tooltip"
-                                                                data-placement="top"
-                                                                title="{{ instance.offerer_details }}">
-                                                                    {{ instance.offerer_details|truncatechars:15 }}
-                                                            </span>
-                                                        {% else %}
-                                                            {{ instance.offerer_details }}
-                                                        {% endif %}
-                                                    </p>
+                                                    {% if instance.propertyprocess.sector == "sales" %}
+                                                        <p class="mb-0 text-muted">
+                                                            {% if instance.offerer_details.calculate_str_length > 15 %}
+                                                                <span 
+                                                                    class="pointer"
+                                                                    data-toggle="tooltip"
+                                                                    data-placement="top"
+                                                                    title="{{ instance.offerer_details }}">
+                                                                        {{ instance.offerer_details|truncatechars:15 }}
+                                                                </span>
+                                                            {% else %}
+                                                                {{ instance.offerer_details }}
+                                                            {% endif %}
+                                                        </p>
+                                                    {% else %}
+                                                        <p class="mb-0 text-muted">
+                                                            {% if instance.offerer_lettings_details.calculate_str_length > 15 %}
+                                                                <span 
+                                                                    class="pointer"
+                                                                    data-toggle="tooltip"
+                                                                    data-placement="top"
+                                                                    title="{{ instance.offerer_lettings_details }}">
+                                                                        {{ instance.offerer_lettings_details|truncatechars:15 }}
+                                                                </span>
+                                                            {% else %}
+                                                                {{ instance.offerer_lettings_details }}
+                                                            {% endif %}
+                                                        </p>
+                                                    {% endif %}
 
                                                 </div>
                                                 <!-- end card-body -->
@@ -305,25 +362,54 @@
                                                     <div class="dropdown-menu dropdown-menu-right">
                                                         <!-- item-->
                                                         <a href="{% url 'properties:property_detail' instance.propertyprocess.id %}" class="dropdown-item"><i class="mdi mdi-arrow-expand-all mr-1"></i>Go To Property</a>
+                                                        <!-- End item-->
+
                                                         <!-- item-->
-                                                        <span data-url="{% url 'properties:edit_offer_status' instance.id %}" class="dropdown-item js-load-form pointer"><i class="mdi mdi-file-edit-outline mr-1"></i>Change Offer Status</span>
-                                                        <span data-url="{% url 'properties:add_deal' instance.propertyprocess.id %}" class="dropdown-item js-load-form pointer"><i class="mdi mdi-handshake mr-1"></i>Add Deal</span>
+                                                        <span
+                                                            {% if instance.propertyprocess.sector == "sales" %}
+                                                                data-url="{% url 'properties:edit_offer_status' instance.id %}"
+                                                            {% else %}
+                                                                data-url="{% url 'properties:edit_offer_lettings_status' instance.id %}"
+                                                            {% endif %}
+                                                            class="dropdown-item js-load-form pointer"><i class="mdi mdi-file-edit-outline mr-1"></i>Change Offer Status</span>
+                                                        <!-- End item-->
+
+                                                        <!-- item-->
+                                                        <span
+                                                            data-url="{% url 'properties:add_deal' instance.propertyprocess.id %}" class="dropdown-item js-load-form pointer"><i class="mdi mdi-handshake mr-1"></i>Add Deal</span>
+                                                        <!-- End item-->
                                                     </div>
                                                 </div>
 
-                                                <p class="mb-0 text-muted">
-                                                    {% if instance.offerer_details.calculate_str_length > 15 %}
-                                                        <span 
-                                                            class="pointer"
-                                                            data-toggle="tooltip"
-                                                            data-placement="top"
-                                                            title="{{ instance.offerer_details }}">
-                                                                {{ instance.offerer_details|truncatechars:15 }}
-                                                        </span>
+                                                {% if instance.propertyprocess.sector == "sales" %}
+                                                        <p class="mb-0 text-muted">
+                                                            {% if instance.offerer_details.calculate_str_length > 15 %}
+                                                                <span 
+                                                                    class="pointer"
+                                                                    data-toggle="tooltip"
+                                                                    data-placement="top"
+                                                                    title="{{ instance.offerer_details }}">
+                                                                        {{ instance.offerer_details|truncatechars:15 }}
+                                                                </span>
+                                                            {% else %}
+                                                                {{ instance.offerer_details }}
+                                                            {% endif %}
+                                                        </p>
                                                     {% else %}
-                                                        {{ instance.offerer_details }}
+                                                        <p class="mb-0 text-muted">
+                                                            {% if instance.offerer_lettings_details.calculate_str_length > 15 %}
+                                                                <span 
+                                                                    class="pointer"
+                                                                    data-toggle="tooltip"
+                                                                    data-placement="top"
+                                                                    title="{{ instance.offerer_lettings_details }}">
+                                                                        {{ instance.offerer_lettings_details|truncatechars:15 }}
+                                                                </span>
+                                                            {% else %}
+                                                                {{ instance.offerer_lettings_details }}
+                                                            {% endif %}
+                                                        </p>
                                                     {% endif %}
-                                                </p>
 
                                             </div>
                                             <!-- end card-body -->

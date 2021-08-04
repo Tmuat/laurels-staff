@@ -6,6 +6,7 @@ from properties.views import (
     property_history_pagination,
     property_history_detail,
     offer_history,
+    offer_history_lettings,
     offers_pagination,
     notes_pagination,
     save_property_order,
@@ -23,11 +24,15 @@ from properties.views import (
     add_offerer,
     add_offerer_mortgage,
     add_offerer_cash,
+    add_offerer_lettings,
     add_offer,
+    add_offer_lettings,
     add_another_offer,
+    add_another_lettings_offer,
     edit_offerer_cash,
     edit_offerer_mortgage,
     edit_offer_status,
+    edit_offer_lettings_status,
     edit_instruction,
     edit_instruction_change,
     withdraw_property,
@@ -85,6 +90,11 @@ urlpatterns = [
         "properties/offers/<offerer_id>/",
         offer_history,
         name="offerer_offers",
+    ),
+    path(
+        "properties/offers-lettings/<offerer_id>/",
+        offer_history_lettings,
+        name="offerer_offers_lettings",
     ),
     path(
         "properties/property-chain/new-order/",
@@ -167,6 +177,11 @@ urlpatterns = [
         name="add_offerer",
     ),
     path(
+        "properties/add/offerer-lettings/<propertyprocess_id>/",
+        add_offerer_lettings,
+        name="add_offerer_lettings",
+    ),
+    path(
         "properties/add/offerer-mortgage/<propertyprocess_id>/<offerer_id>/",
         add_offerer_mortgage,
         name="add_offerer_mortgage",
@@ -182,9 +197,19 @@ urlpatterns = [
         name="add_offer",
     ),
     path(
+        "properties/add/offer-lettings/<propertyprocess_id>/<offerer_id>/",
+        add_offer_lettings,
+        name="add_offer_lettings",
+    ),
+    path(
         "properties/add/another-offer/<propertyprocess_id>/",
         add_another_offer,
         name="add_another_offer",
+    ),
+    path(
+        "properties/add/another-offer-lettings/<propertyprocess_id>/",
+        add_another_lettings_offer,
+        name="add_another_lettings_offer",
     ),
     path(
         "properties/edit/offerer-cash/<offerer_id>/",
@@ -200,6 +225,11 @@ urlpatterns = [
         "properties/edit/offer-status/<offer_id>/",
         edit_offer_status,
         name="edit_offer_status",
+    ),
+    path(
+        "properties/edit/offer-status-lettings/<offer_id>/",
+        edit_offer_lettings_status,
+        name="edit_offer_lettings_status",
     ),
     path(
         "properties/edit/instruction/<propertyprocess_id>/",

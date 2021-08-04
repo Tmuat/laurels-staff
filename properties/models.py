@@ -737,6 +737,36 @@ class OffererCash(UpdatedAndCreated):
         return property_address
 
 
+class OffererDetailsLettings(UpdatedAndCreated):
+    class Meta:
+        ordering = [
+            "propertyprocess__property__postcode",
+            "propertyprocess__property__address_line_1",
+            "full_name",
+        ]
+        verbose_name = "Offerer History Lettings"
+        verbose_name_plural = "Offerer History Lettings"
+
+    COMPLETED = [(True, "Completed"), (False, "Incomplete")]
+
+    propertyprocess = models.ForeignKey(
+        PropertyProcess,
+        on_delete=models.CASCADE,
+        related_name="offerer_details_lettings",
+    )
+    full_name = models.CharField(max_length=100, null=False, blank=False)
+    completed_offer_form = models.BooleanField(
+        default=False, null=True, blank=False, choices=COMPLETED
+    )
+
+    @property
+    def calculate_str_length(self, **kwargs):
+        return len(self.full_name)
+
+    def __str__(self):
+        return self.full_name
+
+
 class Offer(UpdatedAndCreated):
     class Meta:
         ordering = [
@@ -766,7 +796,14 @@ class Offer(UpdatedAndCreated):
     offerer_details = models.ForeignKey(
         OffererDetails,
         on_delete=models.CASCADE,
+        null=True,
         related_name="offerdetails",
+    )
+    offerer_lettings_details = models.ForeignKey(
+        OffererDetailsLettings,
+        on_delete=models.CASCADE,
+        null=True,
+        related_name="offerdetailslettings",
     )
     propertyprocess = models.ForeignKey(
         PropertyProcess,
@@ -787,8 +824,54 @@ class Offer(UpdatedAndCreated):
         return time_between_insertion
 
     def __str__(self):
+        if self.offerer_details:
+            str = "%s (£%s)" % (
+                self.offerer_details.full_name,
+                humanize.intcomma(self.offer),
+            )
+        elif self.offerer_lettings_details:
+            str = "%s (£%s)" % (
+                self.offerer_lettings_details.full_name,
+                humanize.intcomma(self.offer),
+            )
+        return str
+
+
+class OfferLettingsExtra(UpdatedAndCreated):
+    class Meta:
+        ordering = [
+            "offer_extra__offerer_lettings_details__propertyprocess__property__postcode",
+            "offer_extra__offerer_lettings_details__propertyprocess__property__address_line_1",
+            "offer_extra__offerer_lettings_details__full_name",
+            "-offer_extra__date",
+            "-created",
+        ]
+        verbose_name = "Offer Extra"
+        verbose_name_plural = "Offer Extra"
+
+    SIX = 6
+    TWELVE = 12
+    EIGHTEEN = 18
+    TWENTYFOUR = 24
+
+    TERM = [
+        (SIX, "6 Months"),
+        (TWELVE, "12 Months"),
+        (EIGHTEEN, "18 Months"),
+        (TWENTYFOUR, "24 Months"),
+    ]
+
+    offer_extra = models.OneToOneField(
+        Offer,
+        on_delete=models.CASCADE,
+        related_name="offer_extra",
+    )
+    proposed_move_in_date = models.DateField(null=True, blank=False)
+    term = models.IntegerField(null=True, blank=False, choices=TERM)
+
+    def __str__(self):
         return "%s (£%s)" % (
-            self.offerer_details.full_name,
+            self.offer_extra.offerer_details.full_name,
             humanize.intcomma(self.offer),
         )
 

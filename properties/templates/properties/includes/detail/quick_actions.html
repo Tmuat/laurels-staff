@@ -26,14 +26,24 @@
         <i class="mdi mdi-cash-minus icon-lg-size"></i>
 </button>
 <button 
-    data-url="{% url 'properties:add_offerer' propertyprocess.id %}" data-toggle="tooltip"
+    {% if propertyprocess.sector == "sales" %}
+        data-url="{% url 'properties:add_offerer' propertyprocess.id %}"
+    {% else %}
+        data-url="{% url 'properties:add_offerer_lettings' propertyprocess.id %}"
+    {% endif %}
+    data-toggle="tooltip"
     data-placement="top"
     title="Add Offer"
     class="mb-1 btn px-2 py-1 {% if propertyprocess.macro_status != 3 %}btn-secondary" disabled{% else %}btn-info js-add-offerer"{% endif %}>
         <i class="mdi mdi-offer icon-lg-size"></i>
 </button>
 <button 
-    data-url="{% url 'properties:add_another_offer' propertyprocess.id %}" data-toggle="tooltip"
+    {% if propertyprocess.sector == "sales" %}
+        data-url="{% url 'properties:add_another_offer' propertyprocess.id %}"
+    {% else %}
+        data-url="{% url 'properties:add_another_lettings_offer' propertyprocess.id %}"
+    {% endif %}
+    data-toggle="tooltip"
     data-placement="top"
     title="Change Offer"
     class="mb-1 btn px-2 py-1 {% if propertyprocess.macro_status != 3 %}btn-secondary" disabled{% else %}btn-info js-load-form"{% endif %}>

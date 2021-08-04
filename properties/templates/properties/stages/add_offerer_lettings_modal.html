@@ -1,0 +1,34 @@
+{% load static i18n %}
+<div class="modal-content green-gradient">
+    <div class="modal-body">
+        <div class="text-center mt-2 mb-3">
+            <span><img src="{% static 'custom/images/logo.png' %}" alt="laurels" height="80"></span>
+        </div>
+        <div class="text-center text-white">
+            <h4 class="text-white">Add New Offerer</h4>
+            <form method="post" action="{% url 'properties:add_offerer_lettings' propertyprocess_id%}" class="text-center text-white px-2 js-add-offerer-lettings-form custom-form-margin">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-12">
+                        {{ form.full_name|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 mt-1">
+                        <label for="id_completed_offer_form" class="form-check-label requiredField">
+                            Completed Offer Form?<span class="asteriskField">*</span>
+                        </label>
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="id_completed_offer_form" name="completed_offer_form">
+                            <label class="form-check-label" for="id_completed_offer_form">Completed</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="my-2 text-center">
+                    <button type="submit" class="btn btn-info" id="add-button" disabled>{% trans "Add New Offerer" %}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- /.modal-content -->
