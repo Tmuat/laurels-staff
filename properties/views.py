@@ -307,10 +307,10 @@ def offers_pagination(request, propertyprocess_id):
     }
 
     data["pagination"] = render_to_string(
-            "properties/includes/detail_tabs/offers_pagination.html",
-            context,
-            request=request,
-        )
+        "properties/includes/detail_tabs/offers_pagination.html",
+        context,
+        request=request,
+    )
 
     if propertyprocess.sector == PropertyProcess.SALES:
         data["html_table"] = render_to_string(
@@ -324,7 +324,7 @@ def offers_pagination(request, propertyprocess_id):
             context,
             request=request,
         )
-    
+
     return JsonResponse(data)
 
 
@@ -1841,7 +1841,8 @@ def add_another_lettings_offer(request, propertyprocess_id):
             exists = False
             try:
                 exists = (
-                    offerer.offerdetailslettings.first().offer_extra is not None
+                    offerer.offerdetailslettings.first().offer_extra
+                    is not None
                 )
             except OfferLettingsExtra.DoesNotExist:
                 pass

@@ -8,26 +8,52 @@ import uuid
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('properties', '0079_offererdetailslettings'),
+        ("properties", "0079_offererdetailslettings"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='OfferLettingsExtra',
+            name="OfferLettingsExtra",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('updated', models.DateTimeField(auto_now=True)),
-                ('created_by', models.CharField(blank=True, max_length=100)),
-                ('updated_by', models.CharField(blank=True, max_length=100)),
-                ('proposed_move_in_date', models.DateField()),
-                ('term', models.IntegerField(choices=[(6, 6), (12, 12), (18, 18), (24, 24)])),
-                ('offer_extra', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='offer_extra', to='properties.offer')),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                ("created", models.DateTimeField(auto_now_add=True)),
+                ("updated", models.DateTimeField(auto_now=True)),
+                ("created_by", models.CharField(blank=True, max_length=100)),
+                ("updated_by", models.CharField(blank=True, max_length=100)),
+                ("proposed_move_in_date", models.DateField()),
+                (
+                    "term",
+                    models.IntegerField(
+                        choices=[(6, 6), (12, 12), (18, 18), (24, 24)]
+                    ),
+                ),
+                (
+                    "offer_extra",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="offer_extra",
+                        to="properties.offer",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Offer Extra',
-                'verbose_name_plural': 'Offer Extra',
-                'ordering': ['offer_extra__offerer_details__propertyprocess__property__postcode', 'offer_extra__offerer_details__propertyprocess__property__address_line_1', 'offer_extra__offerer_details__full_name', '-offer_extra__date', '-created'],
+                "verbose_name": "Offer Extra",
+                "verbose_name_plural": "Offer Extra",
+                "ordering": [
+                    "offer_extra__offerer_details__propertyprocess__property__postcode",
+                    "offer_extra__offerer_details__propertyprocess__property__address_line_1",
+                    "offer_extra__offerer_details__full_name",
+                    "-offer_extra__date",
+                    "-created",
+                ],
             },
         ),
     ]

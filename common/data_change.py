@@ -1295,9 +1295,9 @@ for instance in offer_model:
             offerer_extra_fields["propertyprocess"] = propertyprocess_instance[
                 "pk"
             ]
-            offerer_lettings_extra_fields["propertyprocess"] = propertyprocess_instance[
-                "pk"
-            ]
+            offerer_lettings_extra_fields[
+                "propertyprocess"
+            ] = propertyprocess_instance["pk"]
             instance["old_pp_pk"] = propertyprocess_instance["old_pk"]
             instance["fields"]["propertyprocess"] = propertyprocess_instance[
                 "pk"
@@ -1316,7 +1316,9 @@ for instance in offer_model:
     # Add new fields
 
     offerer_extra_fields["full_name"] = instance["fields"]["full_name"]
-    offerer_lettings_extra_fields["full_name"] = instance["fields"]["full_name"]
+    offerer_lettings_extra_fields["full_name"] = instance["fields"][
+        "full_name"
+    ]
     del instance["fields"]["full_name"]
 
     offerer_lettings_extra_fields["created_by"] = "Admin"
@@ -1366,8 +1368,8 @@ for instance in offer_model:
             propertyprocess_instance["pk"]
             == instance["fields"]["propertyprocess"]
         ):
-            if propertyprocess_instance["fields"]["sector"] == "sales": 
-                
+            if propertyprocess_instance["fields"]["sector"] == "sales":
+
                 offerer_extra_dict.append(offerer_extra)
 
                 # Add UUID to link new models
@@ -1382,7 +1384,9 @@ for instance in offer_model:
 
                 # Add UUID to link new models
 
-                instance["fields"]["offerer_lettings_details"] = offerer_lettings_extra["pk"]
+                instance["fields"][
+                    "offerer_lettings_details"
+                ] = offerer_lettings_extra["pk"]
 
                 # End add UUID to link new models
 

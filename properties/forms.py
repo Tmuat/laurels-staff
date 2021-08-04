@@ -300,7 +300,10 @@ class OffererLettingsForm(forms.ModelForm):
 
     class Meta:
         model = OffererDetailsLettings
-        fields = ("full_name", "completed_offer_form",)
+        fields = (
+            "full_name",
+            "completed_offer_form",
+        )
 
     def __init__(self, *args, **kwargs):
         """
@@ -320,7 +323,10 @@ class OffererLettingsForm(forms.ModelForm):
 class OfferLettingsExtraForm(forms.ModelForm):
     class Meta:
         model = OfferLettingsExtra
-        fields = ("proposed_move_in_date", "term",)
+        fields = (
+            "proposed_move_in_date",
+            "term",
+        )
 
     def __init__(self, *args, **kwargs):
         """

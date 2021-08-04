@@ -6,18 +6,26 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('properties', '0081_auto_20210804_1321'),
+        ("properties", "0081_auto_20210804_1321"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='offerlettingsextra',
-            name='proposed_move_in_date',
+            model_name="offerlettingsextra",
+            name="proposed_move_in_date",
             field=models.DateField(null=True),
         ),
         migrations.AlterField(
-            model_name='offerlettingsextra',
-            name='term',
-            field=models.IntegerField(choices=[(6, '6 Months'), (12, '12 Months'), (18, '18 Months'), (24, '24 Months')], null=True),
+            model_name="offerlettingsextra",
+            name="term",
+            field=models.IntegerField(
+                choices=[
+                    (6, "6 Months"),
+                    (12, "12 Months"),
+                    (18, "18 Months"),
+                    (24, "24 Months"),
+                ],
+                null=True,
+            ),
         ),
     ]
