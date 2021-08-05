@@ -66,8 +66,13 @@
         <i class="mdi mdi-home-plus icon-lg-size"></i>
     </button>
 {% endif %}
-<button 
-    data-url="{% url 'properties:add_deal' propertyprocess.id %}" data-toggle="tooltip"
+<button
+    {% if propertyprocess.sector == "sales" %}
+        data-url="{% url 'properties:add_deal' propertyprocess.id %}"
+    {% else %}
+        data-url="{% url 'properties:add_deal_lettings' propertyprocess.id %}"
+    {% endif %}
+    data-toggle="tooltip"
     data-placement="top"
     title="Add Deal"
     class="mb-1 btn px-2 py-1 {% if propertyprocess.macro_status != 3 %}btn-secondary" disabled{% else %}btn-info js-load-form"{% endif %}>

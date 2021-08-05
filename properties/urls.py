@@ -38,6 +38,7 @@ from properties.views import (
     withdraw_property,
     back_on_the_market,
     add_deal,
+    add_deal_lettings,
     edit_deal,
     add_exchange,
     edit_sales_prog_settings,
@@ -255,6 +256,11 @@ urlpatterns = [
         "properties/add/deal/<propertyprocess_id>/",
         add_deal,
         name="add_deal",
+    ),
+    path(
+        "properties/add/deal-lettings/<propertyprocess_id>/",
+        add_deal_lettings,
+        name="add_deal_lettings",
     ),
     path(
         "properties/edit/deal/<propertyprocess_id>/",

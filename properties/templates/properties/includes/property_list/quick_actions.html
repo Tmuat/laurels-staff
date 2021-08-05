@@ -59,7 +59,8 @@
     </button>
 {% elif instance.macro_status == 0 %}
     <button 
-        data-url="{% url 'properties:back_on_the_market' instance.id %}" data-toggle="tooltip"
+        data-url="{% url 'properties:back_on_the_market' instance.id %}"
+        data-toggle="tooltip"
         data-placement="top"
         title="Back On The Market"
         class="btn mb-1 btn-info js-load-form">
@@ -67,7 +68,12 @@
     </button>
 {% endif %}
 <button 
-    data-url="{% url 'properties:add_deal' instance.id %}" data-toggle="tooltip"
+    {% if instance.sector == "sales" %}
+        data-url="{% url 'properties:add_deal' instance.id %}"
+    {% else %}
+        data-url="{% url 'properties:add_deal_lettings' instance.id %}"
+    {% endif %}
+    data-toggle="tooltip"
     data-placement="top"
     title="Add Deal"
     class="btn mb-1 {% if instance.macro_status != 3 %}btn-secondary" disabled{% else %}btn-info js-load-form"{% endif %}>

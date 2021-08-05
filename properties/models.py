@@ -928,6 +928,37 @@ class Deal(UpdatedAndCreated):
         except BadHeaderError:
             return HttpResponse("Invalid header found.")
 
+    def send_lettings_deal_mail(self, request, marketing_board, **kwargs):
+        no_reply_email = settings.NO_REPLY_EMAIL
+        admin_email = settings.ADMIN_EMAIL
+        humanized_offer = humanize.intcomma(self.offer_accepted.offer)
+        context = kwargs
+        context.update(
+            {
+                "marketing_board": marketing_board,
+                "address": self.__str__,
+                "hub": self.propertyprocess.hub,
+                "employee": self.propertyprocess.employee,
+                "offer": self.offer_accepted,
+                "humanized_offer": humanized_offer,
+            }
+        )
+        subject = f"Sales Deal: {self.__str__}"
+        body = render_to_string("properties/emails/new_lettings_deal.txt", context)
+
+        try:
+            send_mail(
+                subject=subject,
+                message=body,
+                from_email=f'"Laurels Auto Emails" <{no_reply_email}>',
+                recipient_list=[
+                    admin_email,
+                ],
+                fail_silently=False,
+            )
+        except BadHeaderError:
+            return HttpResponse("Invalid header found.")
+
     def __str__(self):
         if (
             self.propertyprocess.property.address_line_2 == ""
@@ -944,6 +975,48 @@ class Deal(UpdatedAndCreated):
                 self.propertyprocess.property.address_line_2,
             )
         return property_address
+
+
+class DealExtraLettings(UpdatedAndCreated):
+    class Meta:
+        ordering = [
+            "deal__propertyprocess__property__postcode",
+            "deal__propertyprocess__property__address_line_1",
+            "deal__date",
+        ]
+        verbose_name = "Deal Extra"
+        verbose_name_plural = "Deal Extra"
+
+    NONE = 0
+    SIX = 6
+    TWELVE = 12
+    EIGHTEEN = 18
+    TWENTYFOUR = 24
+
+    TERM = [
+        (SIX, "6 Months"),
+        (TWELVE, "12 Months"),
+        (EIGHTEEN, "18 Months"),
+        (TWENTYFOUR, "24 Months"),
+    ]
+
+    BREAKCLAUSE = [
+        (NONE, "No Break Clause"),
+        (SIX, "6 Months"),
+        (TWELVE, "12 Months"),
+        (EIGHTEEN, "18 Months"),
+        (TWENTYFOUR, "24 Months"),
+    ]
+
+    deal = models.OneToOneField(
+        Deal,
+        on_delete=models.CASCADE,
+        related_name="deal_extra",
+    )
+    term = models.IntegerField(null=True, blank=False, choices=TERM)
+    break_clause = models.IntegerField(
+        null=True, blank=False, choices=BREAKCLAUSE
+    )
 
 
 class ExchangeMove(UpdatedAndCreated):

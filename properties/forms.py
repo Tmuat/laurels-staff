@@ -17,6 +17,7 @@ from properties.models import (
     OfferLettingsExtra,
     Offer,
     Deal,
+    DealExtraLettings,
     ExchangeMove,
     SalesProgressionSettings,
     SalesProgression,
@@ -610,6 +611,26 @@ class DealForm(forms.ModelForm):
 
         self.fields["date"].widget = DateInput()
         self.fields["target_move_date"].widget = DateInput()
+
+        for field in self.fields:
+            label = f"{labels[field]}"
+            self.fields[field].label = label
+
+
+class DealExtraForm(forms.ModelForm):
+    class Meta:
+        model = DealExtraLettings
+        fields = ("term", "break_clause",)
+
+    def __init__(self, *args, **kwargs):
+        """
+        Add new labels and order foreign key field
+        """
+        super().__init__(*args, **kwargs)
+        labels = {
+            "term": "Agreed Term",
+            "break_clause": "Agreed Break Clause",
+        }
 
         for field in self.fields:
             label = f"{labels[field]}"
