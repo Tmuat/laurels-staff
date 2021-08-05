@@ -992,12 +992,13 @@ class DealExtraLettings(UpdatedAndCreated):
     TWELVE = 12
     EIGHTEEN = 18
     TWENTYFOUR = 24
+    THIRTYSIX = 36
 
     TERM = [
-        (SIX, "6 Months"),
         (TWELVE, "12 Months"),
         (EIGHTEEN, "18 Months"),
         (TWENTYFOUR, "24 Months"),
+        (THIRTYSIX, "36 Months"),
     ]
 
     BREAKCLAUSE = [

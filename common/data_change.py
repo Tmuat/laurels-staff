@@ -28,6 +28,7 @@ from users.models import UserTargets, UserTargetsByYear
 # python3 manage.py dumpdata home.instruction > data/instruction.json --settings=laurels_staff_portal.settings.production
 # python3 manage.py dumpdata home.offer > data/offer.json --settings=laurels_staff_portal.settings.production
 # python3 manage.py dumpdata home.deal > data/deal.json --settings=laurels_staff_portal.settings.production
+# python3 manage.py dumpdata home.deallettings > data/deallettings.json --settings=laurels_staff_portal.settings.production
 # python3 manage.py dumpdata home.exchangemove > data/exchangemove.json --settings=laurels_staff_portal.settings.production
 # python3 manage.py dumpdata home.salestatus > data/salesprogression.json --settings=laurels_staff_portal.settings.production
 # python3 manage.py dumpdata home.propertychain > data/propertychain.json --settings=laurels_staff_portal.settings.production
@@ -71,6 +72,7 @@ offerer_dict = None
 offerer_extra_lettings_dict = None
 offer_dict = None
 deal_dict = None
+deal_extra_dict = None
 exchange_dict = None
 salesprogression_dict = None
 salesprogressionsettings_dict = None
@@ -1265,6 +1267,12 @@ with open(
 ) as json_data:
     deal_model = json.load(json_data)
 
+with open(
+    "/workspace/laurels-staff/common/data_dump/originals/deallettings.json",
+    "r",
+) as json_data:
+    deal_lettings_model = json.load(json_data)
+
 offerer_extra_dict = []
 
 offerer_extra_lettings_dict = []
@@ -1404,6 +1412,16 @@ for instance in offer_model:
         if deal_instance["fields"]["offer_accepted"] == instance["old_pk"]:
             instance["fields"]["status"] = "accepted"
 
+    for deal_instance in deal_lettings_model:
+        if (
+            deal_instance["fields"]["propertyprocess_link"]
+            == instance["old_pp_pk"]
+        ):
+            instance["fields"]["status"] = "rejected"
+
+        if deal_instance["fields"]["offer_accepted"] == instance["old_pk"]:
+            instance["fields"]["status"] = "accepted"
+
     for propertyprocess_instance in propertyprocess_dict:
         if (
             propertyprocess_instance["pk"]
@@ -1419,6 +1437,12 @@ offer_dict = offer_model
 # ----------------------------------------
 # DEAL MODEL
 # ----------------------------------------
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/originals/deallettings.json",
+    "r",
+) as json_data:
+    deal_lettings_model = json.load(json_data)
 
 with open(
     "/workspace/laurels-staff/common/data_dump/originals/deal.json",
@@ -1459,7 +1483,7 @@ for instance in deal_model:
 
     for offer_instance in offer_dict:
         if offer_instance["old_pk"] == instance["fields"]["offer_accepted"]:
-            instance["fields"]["offer_accepted"] = offer_instance["pk"]
+            instance["fields"]["offer_accepted"] = offer_instance["pk"]   
 
     # End loop through offers
 
@@ -1521,6 +1545,158 @@ for instance in deal_model:
     history_extra.append(history)
 
 deal_dict = deal_model
+
+deal_extra_dict = []
+
+for instance in deal_lettings_model:
+
+    deal_lettings = {}
+    deal_lettings_fields = {}
+
+    deal_extra = {}
+    deal_extra_fields = {}
+
+    # Changing the model to new value
+
+    deal_lettings["model"] = "properties.deal"
+    deal_extra["model"] = "properties.dealextralettings"
+
+    # End changing the model to new value
+
+    # Loop property list for property process & delete old field
+
+    for propertyprocess_instance in propertyprocess_dict:
+        if (
+            propertyprocess_instance["old_pk"]
+            == instance["fields"]["propertyprocess_link"]
+        ):
+            deal_lettings_fields["propertyprocess"] = propertyprocess_instance[
+                "pk"
+            ]
+            instance["fields"]["propertyprocess"] = propertyprocess_instance[
+                "pk"
+            ]
+            propertyprocess_instance["fields"]["furthest_status"] = 4
+
+    # End loop
+
+    # Edit old fields
+
+    deal_lettings_fields["date"] = instance["fields"]["deal_date"]
+
+    # Loop through offers
+
+    for offer_instance in offer_dict:
+        if offer_instance["old_pk"] == instance["fields"]["offer_accepted"]:
+            deal_lettings_fields["offer_accepted"] = offer_instance["pk"]
+
+    # End loop through offers
+
+    # Loop and move fields into new model
+
+    if instance["fields"]["break_clause"] == "No Break Clause":
+        deal_extra_fields["break_clause"] = 0
+    elif instance["fields"]["break_clause"] == "6":
+        deal_extra_fields["break_clause"] = 6
+    elif instance["fields"]["break_clause"] == "12":
+        deal_extra_fields["break_clause"] = 12
+    elif instance["fields"]["break_clause"] == "18":
+        deal_extra_fields["break_clause"] = 18
+    elif instance["fields"]["break_clause"] == "24":
+        deal_extra_fields["break_clause"] = 24
+
+    if instance["fields"]["lettings_length_of_term"] == "12":
+        deal_extra_fields["term"] = 12
+    elif instance["fields"]["lettings_length_of_term"] == "18":
+        deal_extra_fields["term"] = 18
+    elif instance["fields"]["lettings_length_of_term"] == "24":
+        deal_extra_fields["term"] = 24
+    elif instance["fields"]["lettings_length_of_term"] == "36":
+        deal_extra_fields["term"] = 36
+
+    # End loop and move fields into new model
+
+    # Move across target move date
+
+    deal_lettings_fields["target_move_date"] = instance["fields"][
+        "target_move_date"
+    ]
+
+    # Add new fields
+
+    deal_lettings_fields["created_by"] = "Admin"
+    deal_lettings_fields["created"] = "2000-01-13T13:13:13.000Z"
+    deal_lettings_fields["updated_by"] = "Admin"
+    deal_lettings_fields["updated"] = "2000-01-13T13:13:13.000Z"
+
+    deal_extra_fields["created_by"] = "Admin"
+    deal_extra_fields["created"] = "2000-01-13T13:13:13.000Z"
+    deal_extra_fields["updated_by"] = "Admin"
+    deal_extra_fields["updated"] = "2000-01-13T13:13:13.000Z"
+
+    # End add new fields
+
+    # Move original PK
+
+    instance["old_pk"] = instance["pk"]
+
+    # End move original PK
+
+    # Create new UUID field
+
+    deal_lettings["pk"] = str(uuid.uuid4())
+
+    deal_lettings["lettings"] = True
+
+    deal_lettings["fields"] = deal_lettings_fields
+
+    deal_dict.append(deal_lettings)
+
+    deal_extra_fields["deal"] = deal_lettings["pk"]
+
+    deal_extra["pk"] = str(uuid.uuid4())
+
+    deal_extra["fields"] = deal_extra_fields
+
+    deal_extra_dict.append(deal_extra)
+
+    # Property history fields
+
+    history = {}
+    history_fields = {}
+
+    # Add model
+
+    history["model"] = "properties.propertyhistory"
+
+    # End add model
+
+    # Add new fields
+
+    history_fields["propertyprocess"] = instance["fields"]["propertyprocess"]
+    history_fields["created_by"] = "Admin"
+    history_fields["updated_by"] = "Admin"
+    history_fields["updated"] = "2000-01-13T13:13:13.000Z"
+
+    history_fields[
+        "description"
+    ] = "A deal has been processed for this property."
+
+    history_fields["created"] = deal_lettings_fields["date"]
+
+    history_fields["type"] = "property_event"
+
+    # Create new UUID field
+
+    history["pk"] = str(uuid.uuid4())
+
+    # End create new UUID field
+
+    # End property history fields
+
+    history["fields"] = history_fields
+
+    history_extra.append(history)
 
 # ----------------------------------------
 # EXCHANGE MODEL
@@ -3063,6 +3239,11 @@ with open(
     json.dump(deal_model, json_data)
 
 with open(
+    "/workspace/laurels-staff/common/data_dump/new/deal_lettings.json", "w"
+) as json_data:
+    json.dump(deal_extra_dict, json_data)
+
+with open(
     "/workspace/laurels-staff/common/data_dump/new/exchangemove.json", "w"
 ) as json_data:
     json.dump(exchange_dict, json_data)
@@ -3190,6 +3371,9 @@ for object in offer_dict:
     master_dict.append(object)
 
 for object in deal_dict:
+    master_dict.append(object)
+
+for object in deal_extra_dict:
     master_dict.append(object)
 
 for object in exchange_dict:

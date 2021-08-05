@@ -23,14 +23,12 @@
         </a>
     </li>
     {% endif %}
-    {% if propertyprocess.sector == "sales" %}
-        {% if propertyprocess.furthest_status > 3 %}
-        <li class="nav-item">
-            <a href="#deal" data-toggle="tab" aria-expanded="false" class="nav-link rounded-0">
-                Deal
-            </a>
-        </li>
-        {% endif %}
+    {% if propertyprocess.furthest_status > 3 %}
+    <li class="nav-item">
+        <a href="#deal" data-toggle="tab" aria-expanded="false" class="nav-link rounded-0">
+            Deal
+        </a>
+    </li>
     {% endif %}
     {% if propertyprocess.sector == "sales" %}
         {% if propertyprocess.furthest_status > 4 %}

@@ -376,7 +376,12 @@
 
                                                         <!-- item-->
                                                         <span
-                                                            data-url="{% url 'properties:add_deal' instance.propertyprocess.id %}" class="dropdown-item js-load-form pointer"><i class="mdi mdi-handshake mr-1"></i>Add Deal</span>
+                                                            {% if instance.propertyprocess.sector == "sales" %}
+                                                                data-url="{% url 'properties:add_deal' instance.propertyprocess.id %}"
+                                                            {% else %}
+                                                                data-url="{% url 'properties:add_deal_lettings' instance.propertyprocess.id %}"
+                                                            {% endif %}
+                                                            class="dropdown-item js-load-form pointer"><i class="mdi mdi-handshake mr-1"></i>Add Deal</span>
                                                         <!-- End item-->
                                                     </div>
                                                 </div>
