@@ -74,6 +74,7 @@ offer_dict = None
 deal_dict = None
 deal_extra_dict = None
 exchange_dict = None
+exchange_extra_dict = None
 salesprogression_dict = None
 salesprogressionsettings_dict = None
 salesprogressionphase_dict = None
@@ -1709,8 +1710,12 @@ with open(
     exchange_model = json.load(json_data)
 
 exchange_dict = []
+exchange_extra_dict = []
 
 for instance in exchange_model:
+
+    exchange_extra = {}
+    exchange_extra_fields = {}
 
     # Changing the model to new value
 
@@ -1730,18 +1735,37 @@ for instance in exchange_model:
             ]
             propertyprocess_instance["fields"]["furthest_status"] = 5
 
+            if propertyprocess_instance["fields"]["sector"] == "sales":
+                exchange_extra["model"] = "properties.exchangemovesales"
+                exchange_extra["sector"] = propertyprocess_instance[
+                    "fields"
+                ]["sector"]
+            else:
+                exchange_extra["model"] = "properties.exchangemovelettings"
+                exchange_extra["sector"] = propertyprocess_instance[
+                    "fields"
+                ]["sector"]
+
     del instance["fields"]["propertyprocess_link"]
 
     # End loop
 
     # Edit old fields
 
-    instance["fields"]["exchange_date"] = instance["fields"][
-        "exchange_move_in_date"
-    ]
-    instance["fields"]["completion_date"] = instance["fields"][
-        "sales_completion_date"
-    ]
+    if exchange_extra["sector"] == "sales":
+        exchange_extra_fields["exchange_date"] = instance["fields"][
+            "exchange_move_in_date"
+        ]
+        exchange_extra_fields["completion_date"] = instance["fields"][
+            "sales_completion_date"
+        ]
+    else:
+        exchange_extra_fields["move_in_date"] = instance["fields"][
+            "exchange_move_in_date"
+        ]
+        exchange_extra_fields["first_renewal"] = instance["fields"][
+            "lettings_renewal_date"
+        ]
 
     del instance["fields"]["exchange_move_in_date"]
     del instance["fields"]["sales_completion_date"]
@@ -1754,6 +1778,11 @@ for instance in exchange_model:
     instance["fields"]["updated_by"] = "Admin"
     instance["fields"]["updated"] = "2000-01-13T13:13:13.000Z"
 
+    exchange_extra_fields["created_by"] = "Admin"
+    exchange_extra_fields["created"] = "2000-01-13T13:13:13.000Z"
+    exchange_extra_fields["updated_by"] = "Admin"
+    exchange_extra_fields["updated"] = "2000-01-13T13:13:13.000Z"
+
     # End add new fields
 
     # Move original PK
@@ -1765,6 +1794,14 @@ for instance in exchange_model:
     # Create new UUID field
 
     instance["pk"] = str(uuid.uuid4())
+
+    exchange_extra_fields["exchange"] = instance["pk"]
+
+    exchange_extra["pk"] = str(uuid.uuid4())
+
+    exchange_extra["fields"] = exchange_extra_fields
+
+    exchange_extra_dict.append(exchange_extra)
 
     for propertyprocess_instance in propertyprocess_dict:
         if (
@@ -1796,7 +1833,47 @@ for instance in exchange_model:
 
                 history_fields["description"] = "The property has exchanged."
 
-                history_fields["created"] = instance["fields"]["exchange_date"]
+                history_fields["created"] = exchange_extra_fields["exchange_date"]
+
+                history_fields["type"] = "property_event"
+
+                # Create new UUID field
+
+                history["pk"] = str(uuid.uuid4())
+
+                # End create new UUID field
+
+                # End property history fields
+
+                history["fields"] = history_fields
+
+                history_extra.append(history)
+            else:
+                exchange_dict.append(instance)
+
+                # Property history fields
+
+                history = {}
+                history_fields = {}
+
+                # Add model
+
+                history["model"] = "properties.propertyhistory"
+
+                # End add model
+
+                # Add new fields
+
+                history_fields["propertyprocess"] = instance["fields"][
+                    "propertyprocess"
+                ]
+                history_fields["created_by"] = "Admin"
+                history_fields["updated_by"] = "Admin"
+                history_fields["updated"] = "2000-01-13T13:13:13.000Z"
+
+                history_fields["description"] = "The property has a lettings exchange."
+
+                history_fields["created"] = exchange_extra_fields["move_in_date"]
 
                 history_fields["type"] = "property_event"
 
@@ -3249,6 +3326,11 @@ with open(
     json.dump(exchange_dict, json_data)
 
 with open(
+    "/workspace/laurels-staff/common/data_dump/new/exchangemove_extra.json", "w"
+) as json_data:
+    json.dump(exchange_extra_dict, json_data)
+
+with open(
     "/workspace/laurels-staff/common/data_dump/new/salesprogression.json", "w"
 ) as json_data:
     json.dump(saleprogression_model, json_data)
@@ -3377,6 +3459,9 @@ for object in deal_extra_dict:
     master_dict.append(object)
 
 for object in exchange_dict:
+    master_dict.append(object)
+
+for object in exchange_extra_dict:
     master_dict.append(object)
 
 for object in salesprogression_dict:

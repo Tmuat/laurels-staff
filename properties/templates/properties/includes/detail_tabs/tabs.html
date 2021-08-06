@@ -38,5 +38,13 @@
             </a>
         </li>
         {% endif %}
+    {% else %}
+        {% if propertyprocess.furthest_status > 4 %}
+        <li class="nav-item">
+            <a href="#exchange" data-toggle="tab" aria-expanded="false" class="nav-link px-1 rounded-0">
+                Move In
+            </a>
+        </li>
+        {% endif %}
     {% endif %}
 </ul>

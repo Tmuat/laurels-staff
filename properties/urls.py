@@ -41,6 +41,7 @@ from properties.views import (
     add_deal_lettings,
     edit_deal,
     add_exchange,
+    add_exchange_lettings,
     edit_sales_prog_settings,
     phase_one,
     phase_two,
@@ -271,6 +272,11 @@ urlpatterns = [
         "properties/add/exchange/<propertyprocess_id>/",
         add_exchange,
         name="add_exchange",
+    ),
+    path(
+        "properties/add/exchange-lettings/<propertyprocess_id>/",
+        add_exchange_lettings,
+        name="add_exchange_lettings",
     ),
     path(
         "properties/edit/sales-progression/settings/<propertyprocess_id>/",

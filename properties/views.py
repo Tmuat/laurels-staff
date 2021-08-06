@@ -43,7 +43,8 @@ from properties.forms import (
     BuyerMarketingForm,
     SoldMarketingBoardForm,
     PropertyFeesForm,
-    ExchangeMoveForm,
+    ExchangeMoveSalesForm,
+    ExchangeMoveLettingsForm,
     SalesProgressionSettingsForm,
     SalesProgressionPhaseOneForm,
     SalesProgressionPhaseTwoForm,
@@ -75,6 +76,7 @@ from properties.models import (
     SalesProgressionSettings,
     SalesProgressionPhase,
     Deal,
+    ExchangeMove,
     DealExtraLettings,
     ProgressionNotes,
     PropertySellingInformation,
@@ -3131,14 +3133,20 @@ def add_exchange(request, propertyprocess_id):
     )
 
     if request.method == "POST":
-        form = ExchangeMoveForm(request.POST)
+        form = ExchangeMoveSalesForm(request.POST)
         if form.is_valid():
+            exchange_instance = ExchangeMove.objects.create(
+                propertyprocess=property_process,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name()
+            )
+
             instance = form.save(commit=False)
 
             exchange_date = form.cleaned_data["exchange_date"]
             completion_date = form.cleaned_data["completion_date"]
 
-            instance.propertyprocess = property_process
+            instance.exchange = exchange_instance
 
             instance.created_by = request.user.get_full_name()
             instance.updated_by = request.user.get_full_name()
@@ -3188,7 +3196,7 @@ def add_exchange(request, propertyprocess_id):
         else:
             data["form_is_valid"] = False
     else:
-        form = ExchangeMoveForm(
+        form = ExchangeMoveSalesForm(
             initial={
                 "exchange_date": datetime.date.today,
                 "completion_date": datetime.date.today,
@@ -3201,6 +3209,102 @@ def add_exchange(request, propertyprocess_id):
     }
     data["html_modal"] = render_to_string(
         "properties/stages/add_exchange_modal.html",
+        context,
+        request=request,
+    )
+
+    return JsonResponse(data)
+
+
+@otp_required
+@login_required
+def add_exchange_lettings(request, propertyprocess_id):
+    """
+    Ajax URL for adding a lettings exchange.
+    """
+    data = dict()
+
+    property_process = get_object_or_404(
+        PropertyProcess, id=propertyprocess_id
+    )
+
+    if request.method == "POST":
+        form = ExchangeMoveLettingsForm(request.POST)
+        if form.is_valid():
+            exchange_instance = ExchangeMove.objects.create(
+                propertyprocess=property_process,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name()
+            )
+
+            instance = form.save(commit=False)
+
+            move_in_date = form.cleaned_data["move_in_date"]
+            first_renewal = form.cleaned_data["first_renewal"]
+
+            instance.exchange = exchange_instance
+
+            instance.created_by = request.user.get_full_name()
+            instance.updated_by = request.user.get_full_name()
+
+            instance.save()
+
+            instance.send_exchange_mail(request)
+
+            property_process.macro_status = PropertyProcess.COMPLETE
+            property_process.furthest_status = PropertyProcess.COMPLETE
+            property_process.save()
+
+            history_description = (
+                f"{request.user.get_full_name()} has added a lettings exchange."
+            )
+
+            formatted_move_in_date = move_in_date.strftime("%d/%m/%Y")
+            formatted_first_renewal = first_renewal.strftime("%d/%m/%Y")
+
+            notes = (
+                "An lettings completion has been processed "
+                f" with an move in date of {formatted_move_in_date} "
+                f"and a first renewal date of "
+                f"{formatted_first_renewal}."
+            )
+
+            history = PropertyHistory.objects.create(
+                propertyprocess=property_process,
+                type=PropertyHistory.PROPERTY_EVENT,
+                description=history_description,
+                notes=notes,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
+
+            data["form_is_valid"] = True
+
+            context = {
+                "property_process": property_process,
+                "history": history,
+            }
+            data["html_success"] = render_to_string(
+                "properties/stages/includes/form_success.html",
+                context,
+                request=request,
+            )
+
+        else:
+            data["form_is_valid"] = False
+    else:
+        form = ExchangeMoveLettingsForm(
+            initial={
+                "move_in_date": datetime.date.today,
+            }
+        )
+
+    context = {
+        "form": form,
+        "propertyprocess_id": propertyprocess_id,
+    }
+    data["html_modal"] = render_to_string(
+        "properties/stages/add_exchange_lettings_modal.html",
         context,
         request=request,
     )

@@ -18,7 +18,8 @@ from properties.models import (
     Offer,
     Deal,
     DealExtraLettings,
-    ExchangeMove,
+    ExchangeMoveSales,
+    ExchangeMoveLettings,
     SalesProgressionSettings,
     SalesProgression,
     PropertySellingInformation,
@@ -690,9 +691,9 @@ class PropertyFeesForm(forms.ModelForm):
             self.fields[field].label = label
 
 
-class ExchangeMoveForm(forms.ModelForm):
+class ExchangeMoveSalesForm(forms.ModelForm):
     class Meta:
-        model = ExchangeMove
+        model = ExchangeMoveSales
         fields = ("exchange_date", "completion_date")
 
     def __init__(self, *args, **kwargs):
@@ -707,6 +708,29 @@ class ExchangeMoveForm(forms.ModelForm):
 
         self.fields["exchange_date"].widget = DateInput()
         self.fields["completion_date"].widget = DateInput()
+
+        for field in self.fields:
+            label = f"{labels[field]}"
+            self.fields[field].label = label
+
+
+class ExchangeMoveLettingsForm(forms.ModelForm):
+    class Meta:
+        model = ExchangeMoveLettings
+        fields = ("move_in_date", "first_renewal")
+
+    def __init__(self, *args, **kwargs):
+        """
+        Add new labels
+        """
+        super().__init__(*args, **kwargs)
+        labels = {
+            "move_in_date": "Move In Date",
+            "first_renewal": "First Renewal Date",
+        }
+
+        self.fields["move_in_date"].widget = DateInput()
+        self.fields["first_renewal"].widget = DateInput()
 
         for field in self.fields:
             label = f"{labels[field]}"

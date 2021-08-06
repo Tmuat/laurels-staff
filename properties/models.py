@@ -1029,10 +1029,43 @@ class ExchangeMove(UpdatedAndCreated):
         verbose_name = "Exchange & Move"
         verbose_name_plural = "Exchange & Move"
 
-    propertyprocess = models.OneToOneField(
+    propertyprocess = models.ForeignKey(
         PropertyProcess,
         on_delete=models.CASCADE,
         related_name="exchange_and_move",
+    )
+
+    def __str__(self):
+        if (
+            self.propertyprocess.property.address_line_2 == ""
+            or self.propertyprocess.property.address_line_2 is None
+        ):
+            property_address = "%s, %s" % (
+                self.propertyprocess.property.postcode,
+                self.propertyprocess.property.address_line_1,
+            )
+        else:
+            property_address = "%s, %s, %s" % (
+                self.propertyprocess.property.postcode,
+                self.propertyprocess.property.address_line_1,
+                self.propertyprocess.property.address_line_2,
+            )
+        return property_address
+
+
+class ExchangeMoveSales(UpdatedAndCreated):
+    class Meta:
+        ordering = [
+            "exchange__propertyprocess__property__postcode",
+            "exchange__propertyprocess__property__address_line_1",
+        ]
+        verbose_name = "Exchange & Move Sales"
+        verbose_name_plural = "Exchange & Move Sales"
+
+    exchange = models.OneToOneField(
+        ExchangeMove,
+        on_delete=models.CASCADE,
+        related_name="exchange_and_move_sales",
     )
     exchange_date = models.DateField()
     completion_date = models.DateField()
@@ -1043,9 +1076,9 @@ class ExchangeMove(UpdatedAndCreated):
         context = kwargs
         context.update(
             {
-                "address": self.propertyprocess.__str__,
-                "hub": self.propertyprocess.hub,
-                "employee": self.propertyprocess.employee,
+                "address": self.exchange.propertyprocess.__str__,
+                "hub": self.exchange.propertyprocess.hub,
+                "employee": self.exchange.propertyprocess.employee,
                 "exchange": self.exchange_date.strftime("%d/%m/%Y"),
                 "completion": self.completion_date.strftime("%d/%m/%Y"),
             }
@@ -1068,20 +1101,87 @@ class ExchangeMove(UpdatedAndCreated):
 
     def __str__(self):
         if (
-            self.propertyprocess.property.address_line_2 == ""
-            or self.propertyprocess.property.address_line_2 == None
+            self.exchange.propertyprocess.property.address_line_2 == ""
+            or self.exchange.propertyprocess.property.address_line_2 is None
         ):
             property_address = "%s, %s" % (
-                self.propertyprocess.property.postcode,
-                self.propertyprocess.property.address_line_1,
+                self.exchange.propertyprocess.property.postcode,
+                self.exchange.propertyprocess.property.address_line_1,
             )
         else:
             property_address = "%s, %s, %s" % (
-                self.propertyprocess.property.postcode,
-                self.propertyprocess.property.address_line_1,
-                self.propertyprocess.property.address_line_2,
+                self.exchange.propertyprocess.property.postcode,
+                self.exchange.propertyprocess.property.address_line_1,
+                self.exchange.propertyprocess.property.address_line_2,
             )
         return property_address
+
+
+class ExchangeMoveLettings(UpdatedAndCreated):
+    class Meta:
+        ordering = [
+            "exchange__propertyprocess__property__postcode",
+            "exchange__propertyprocess__property__address_line_1",
+        ]
+        verbose_name = "Exchange & Move Lettings"
+        verbose_name_plural = "Exchange & Move Lettings"
+
+    exchange = models.OneToOneField(
+        ExchangeMove,
+        on_delete=models.CASCADE,
+        related_name="exchange_and_move_lettings",
+    )
+    move_in_date = models.DateField()
+    first_renewal = models.DateField()
+
+    def send_exchange_mail(self, request, **kwargs):
+        no_reply_email = settings.NO_REPLY_EMAIL
+        admin_email = settings.ADMIN_EMAIL
+        context = kwargs
+        context.update(
+            {
+                "address": self.exchange.propertyprocess.__str__,
+                "hub": self.exchange.propertyprocess.hub,
+                "employee": self.exchange.propertyprocess.employee,
+                "move_in_date": self.move_in_date.strftime("%d/%m/%Y"),
+                "first_renewal": self.first_renewal.strftime("%d/%m/%Y"),
+            }
+        )
+        subject = f"Lettings Exchange: {self.__str__}"
+        body = render_to_string(
+            "properties/emails/exchange_lettings.txt", context
+        )
+
+        try:
+            send_mail(
+                subject=subject,
+                message=body,
+                from_email=f'"Laurels Auto Emails" <{no_reply_email}>',
+                recipient_list=[
+                    admin_email,
+                ],
+                fail_silently=False,
+            )
+        except BadHeaderError:
+            return HttpResponse("Invalid header found.")
+
+    def __str__(self):
+        if (
+            self.exchange.propertyprocess.property.address_line_2 == ""
+            or self.exchange.propertyprocess.property.address_line_2 is None
+        ):
+            property_address = "%s, %s" % (
+                self.exchange.propertyprocess.property.postcode,
+                self.exchange.propertyprocess.property.address_line_1,
+            )
+        else:
+            property_address = "%s, %s, %s" % (
+                self.exchange.propertyprocess.property.postcode,
+                self.exchange.propertyprocess.property.address_line_1,
+                self.exchange.propertyprocess.property.address_line_2,
+            )
+        return property_address
+
 
 
 class SalesProgression(UpdatedAndCreated):

@@ -1,0 +1,24 @@
+{% autoescape off %}
+Hello,
+
+There has been an lettings exchange put through for:
+
+{{ address }}
+
+The property consultant and hub are: 
+
+Hub - {{ hub }}
+Employee - {{ employee }}
+
+The details are:
+
+Move In Date - {{ move_in_date }}
+First Renewal - {{ first_renewal }}
+
+Sincerely,
+The Laurels Website Team
+
+Note. This email was sent from a notification-only address that does not accept incoming emails. Please do not reply to this message.
+
+
+{% endautoescape %}

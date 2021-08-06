@@ -80,7 +80,12 @@
         <i class="mdi mdi-handshake"></i>
 </button>
 <button 
-    data-url="{% url 'properties:add_exchange' instance.id %}" data-toggle="tooltip"
+    {% if instance.sector == "sales" %}
+        data-url="{% url 'properties:add_exchange' instance.id %}"
+    {% else %}
+        data-url="{% url 'properties:add_exchange_lettings' instance.id %}"
+    {% endif %}
+    data-toggle="tooltip"
     data-placement="top"
     title="Add Exchange"
     class="btn mb-1 {% if instance.macro_status != 4 %}btn-secondary" disabled{% else %}btn-info js-load-form"{% endif %}>

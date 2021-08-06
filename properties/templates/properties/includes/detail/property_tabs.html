@@ -127,11 +127,36 @@
                     <div class="row">
                         <div class="col-6 text-center">
                             <p class="mb-1"><strong>Exchange Date:</strong></p>
-                            <p><span>{{ propertyprocess.exchange_and_move.exchange_date }}</span></p>
+                            <p><span>{{ propertyprocess.exchange_and_move.first.exchange_and_move_sales.exchange_date }}</span></p>
                         </div>
                         <div class="col-6 text-center">
                             <p class="mb-1"><strong>Completion Date:</strong></p>
-                            <p><span>{{ propertyprocess.exchange_and_move.completion_date }}</span></p>
+                            <p><span>{{ propertyprocess.exchange_and_move.first.exchange_and_move_sales.completion_date }}</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end tab pane -->
+            <!-- end exchange section -->
+            {% endif %}
+            {% endif %}
+
+            {% if propertyprocess.sector == "lettings" %}
+            {% if propertyprocess.furthest_status > 4 %}
+            <!-- exchange section -->
+            <!-- tab pane -->
+            <div class="tab-pane" id="exchange">
+                <h5 class="text-uppercase"><i class="mdi mdi-van-utility mr-1"></i>
+                    Lettings Move In Information</h5>
+                <div class="mt-2">
+                    <div class="row">
+                        <div class="col-6 text-center">
+                            <p class="mb-1"><strong>Move In Date:</strong></p>
+                            <p><span>{{ propertyprocess.exchange_and_move.first.exchange_and_move_lettings.move_in_date }}</span></p>
+                        </div>
+                        <div class="col-6 text-center">
+                            <p class="mb-1"><strong>First Renewal Date:</strong></p>
+                            <p><span>{{ propertyprocess.exchange_and_move.first.exchange_and_move_lettings.first_renewal }}</span></p>
                         </div>
                     </div>
                 </div>
