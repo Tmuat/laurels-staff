@@ -8,39 +8,65 @@ import uuid
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('properties', '0083_dealextralettings'),
+        ("properties", "0083_dealextralettings"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='exchangemove',
-            name='completion_date',
+            model_name="exchangemove",
+            name="completion_date",
         ),
         migrations.RemoveField(
-            model_name='exchangemove',
-            name='exchange_date',
+            model_name="exchangemove",
+            name="exchange_date",
         ),
         migrations.AlterField(
-            model_name='dealextralettings',
-            name='term',
-            field=models.IntegerField(choices=[(12, '12 Months'), (18, '18 Months'), (24, '24 Months'), (36, '36 Months')], null=True),
+            model_name="dealextralettings",
+            name="term",
+            field=models.IntegerField(
+                choices=[
+                    (12, "12 Months"),
+                    (18, "18 Months"),
+                    (24, "24 Months"),
+                    (36, "36 Months"),
+                ],
+                null=True,
+            ),
         ),
         migrations.CreateModel(
-            name='ExchangeMoveSales',
+            name="ExchangeMoveSales",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('updated', models.DateTimeField(auto_now=True)),
-                ('created_by', models.CharField(blank=True, max_length=100)),
-                ('updated_by', models.CharField(blank=True, max_length=100)),
-                ('exchange_date', models.DateField()),
-                ('completion_date', models.DateField()),
-                ('exchange', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='exchange_and_move_sales', to='properties.exchangemove')),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                ("created", models.DateTimeField(auto_now_add=True)),
+                ("updated", models.DateTimeField(auto_now=True)),
+                ("created_by", models.CharField(blank=True, max_length=100)),
+                ("updated_by", models.CharField(blank=True, max_length=100)),
+                ("exchange_date", models.DateField()),
+                ("completion_date", models.DateField()),
+                (
+                    "exchange",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="exchange_and_move_sales",
+                        to="properties.exchangemove",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Exchange & Move Sales',
-                'verbose_name_plural': 'Exchange & Move Sales',
-                'ordering': ['exchange__propertyprocess__property__postcode', 'exchange__propertyprocess__property__address_line_1'],
+                "verbose_name": "Exchange & Move Sales",
+                "verbose_name_plural": "Exchange & Move Sales",
+                "ordering": [
+                    "exchange__propertyprocess__property__postcode",
+                    "exchange__propertyprocess__property__address_line_1",
+                ],
             },
         ),
     ]

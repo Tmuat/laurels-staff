@@ -2537,7 +2537,9 @@ def withdraw_property(request, propertyprocess_id):
                 if property_process.sector == PropertyProcess.SALES:
                     Deal.objects.get(propertyprocess=property_process).delete()
                 else:
-                    DealExtraLettings.objects.get(deal=property_process.deal).delete()
+                    DealExtraLettings.objects.get(
+                        deal=property_process.deal
+                    ).delete()
                     Deal.objects.get(propertyprocess=property_process).delete()
 
             for offer_instance in property_process.offer.all():
@@ -3138,7 +3140,7 @@ def add_exchange(request, propertyprocess_id):
             exchange_instance = ExchangeMove.objects.create(
                 propertyprocess=property_process,
                 created_by=request.user.get_full_name(),
-                updated_by=request.user.get_full_name()
+                updated_by=request.user.get_full_name(),
             )
 
             instance = form.save(commit=False)
@@ -3234,7 +3236,7 @@ def add_exchange_lettings(request, propertyprocess_id):
             exchange_instance = ExchangeMove.objects.create(
                 propertyprocess=property_process,
                 created_by=request.user.get_full_name(),
-                updated_by=request.user.get_full_name()
+                updated_by=request.user.get_full_name(),
             )
 
             instance = form.save(commit=False)
@@ -3255,9 +3257,7 @@ def add_exchange_lettings(request, propertyprocess_id):
             property_process.furthest_status = PropertyProcess.COMPLETE
             property_process.save()
 
-            history_description = (
-                f"{request.user.get_full_name()} has added a lettings exchange."
-            )
+            history_description = f"{request.user.get_full_name()} has added a lettings exchange."
 
             formatted_move_in_date = move_in_date.strftime("%d/%m/%Y")
             formatted_first_renewal = first_renewal.strftime("%d/%m/%Y")

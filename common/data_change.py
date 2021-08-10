@@ -952,12 +952,12 @@ for instance in propertyprocess_dict:
     if instance["fields"]["sector"] == "sales":
         property_history_fields["description"] = (
             "This is a legacy property and property"
-            " history is limited for this sale starts here."
+            " history is limited for this sale."
         )
     else:
         property_history_fields["description"] = (
             "This is a legacy property and property"
-            " history is limited for this letting starts here."
+            " history is limited for this letting."
         )
 
     property_history_fields["created_by"] = "Admin"
@@ -1484,7 +1484,7 @@ for instance in deal_model:
 
     for offer_instance in offer_dict:
         if offer_instance["old_pk"] == instance["fields"]["offer_accepted"]:
-            instance["fields"]["offer_accepted"] = offer_instance["pk"]   
+            instance["fields"]["offer_accepted"] = offer_instance["pk"]
 
     # End loop through offers
 
@@ -1737,14 +1737,14 @@ for instance in exchange_model:
 
             if propertyprocess_instance["fields"]["sector"] == "sales":
                 exchange_extra["model"] = "properties.exchangemovesales"
-                exchange_extra["sector"] = propertyprocess_instance[
-                    "fields"
-                ]["sector"]
+                exchange_extra["sector"] = propertyprocess_instance["fields"][
+                    "sector"
+                ]
             else:
                 exchange_extra["model"] = "properties.exchangemovelettings"
-                exchange_extra["sector"] = propertyprocess_instance[
-                    "fields"
-                ]["sector"]
+                exchange_extra["sector"] = propertyprocess_instance["fields"][
+                    "sector"
+                ]
 
     del instance["fields"]["propertyprocess_link"]
 
@@ -1833,7 +1833,9 @@ for instance in exchange_model:
 
                 history_fields["description"] = "The property has exchanged."
 
-                history_fields["created"] = exchange_extra_fields["exchange_date"]
+                history_fields["created"] = exchange_extra_fields[
+                    "exchange_date"
+                ]
 
                 history_fields["type"] = "property_event"
 
@@ -1871,9 +1873,13 @@ for instance in exchange_model:
                 history_fields["updated_by"] = "Admin"
                 history_fields["updated"] = "2000-01-13T13:13:13.000Z"
 
-                history_fields["description"] = "The property has a lettings exchange."
+                history_fields[
+                    "description"
+                ] = "The property has a lettings exchange."
 
-                history_fields["created"] = exchange_extra_fields["move_in_date"]
+                history_fields["created"] = exchange_extra_fields[
+                    "move_in_date"
+                ]
 
                 history_fields["type"] = "property_event"
 
@@ -3326,7 +3332,8 @@ with open(
     json.dump(exchange_dict, json_data)
 
 with open(
-    "/workspace/laurels-staff/common/data_dump/new/exchangemove_extra.json", "w"
+    "/workspace/laurels-staff/common/data_dump/new/exchangemove_extra.json",
+    "w",
 ) as json_data:
     json.dump(exchange_extra_dict, json_data)
 

@@ -7,13 +7,17 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('properties', '0085_exchangemovelettings'),
+        ("properties", "0085_exchangemovelettings"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='exchangemove',
-            name='propertyprocess',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='exchange_and_move', to='properties.propertyprocess'),
+            model_name="exchangemove",
+            name="propertyprocess",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="exchange_and_move",
+                to="properties.propertyprocess",
+            ),
         ),
     ]

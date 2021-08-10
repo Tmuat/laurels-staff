@@ -944,7 +944,9 @@ class Deal(UpdatedAndCreated):
             }
         )
         subject = f"Sales Deal: {self.__str__}"
-        body = render_to_string("properties/emails/new_lettings_deal.txt", context)
+        body = render_to_string(
+            "properties/emails/new_lettings_deal.txt", context
+        )
 
         try:
             send_mail(
@@ -1669,7 +1671,7 @@ class ProgressionNotes(UpdatedAndCreated):
     def __str__(self):
         if (
             self.propertyprocess.property.address_line_2 == ""
-            or self.propertyprocess.property.address_line_2 == None
+            or self.propertyprocess.property.address_line_2 is None
         ):
             property_address = "%s, %s" % (
                 self.propertyprocess.property.postcode,

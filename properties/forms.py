@@ -621,7 +621,10 @@ class DealForm(forms.ModelForm):
 class DealExtraForm(forms.ModelForm):
     class Meta:
         model = DealExtraLettings
-        fields = ("term", "break_clause",)
+        fields = (
+            "term",
+            "break_clause",
+        )
 
     def __init__(self, *args, **kwargs):
         """
