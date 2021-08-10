@@ -81,12 +81,13 @@
 <button 
     {% if propertyprocess.sector == "sales" %}
         data-url="{% url 'properties:add_exchange' propertyprocess.id %}"
+        title="Add Exchange"
     {% else %}
         data-url="{% url 'properties:add_exchange_lettings' propertyprocess.id %}"
+        title="Add Lettings Exchange"
     {% endif %}
     data-toggle="tooltip"
     data-placement="top"
-    title="Add Exchange"
     class="mb-1 btn px-2 py-1 {% if propertyprocess.macro_status != 4 %}btn-secondary" disabled{% else %}btn-info js-load-form"{% endif %}>
         <i class="mdi mdi-home-lock icon-lg-size"></i>
 </button>

@@ -1183,7 +1183,6 @@ class ExchangeMoveLettings(UpdatedAndCreated):
         return property_address
 
 
-
 class SalesProgression(UpdatedAndCreated):
     class Meta:
         ordering = [

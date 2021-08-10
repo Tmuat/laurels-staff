@@ -82,12 +82,13 @@
 <button 
     {% if instance.sector == "sales" %}
         data-url="{% url 'properties:add_exchange' instance.id %}"
+        title="Add Exchange"
     {% else %}
         data-url="{% url 'properties:add_exchange_lettings' instance.id %}"
+        title="Add Lettings Exchange"
     {% endif %}
     data-toggle="tooltip"
     data-placement="top"
-    title="Add Exchange"
     class="btn mb-1 {% if instance.macro_status != 4 %}btn-secondary" disabled{% else %}btn-info js-load-form"{% endif %}>
         <i class="mdi mdi-home-lock"></i>
 </button>
