@@ -1771,3 +1771,232 @@ class Reduction(UpdatedAndCreated):
                 self.propertyprocess.property.address_line_2,
             )
         return property_address
+
+
+class LettingsProgression(UpdatedAndCreated):
+    class Meta:
+        ordering = [
+            "propertyprocess__property__postcode",
+            "propertyprocess__property__address_line_1",
+        ]
+        verbose_name = "Lettings Progression"
+        verbose_name_plural = "Lettings Progressions"
+
+    TRUE_FALSE_CHOICES = ((True, "Done"), (False, "Not Done"))
+
+    propertyprocess = models.OneToOneField(
+        PropertyProcess,
+        on_delete=models.CASCADE,
+        related_name="lettings_progression",
+    )
+
+    contact_touch_point_to_ll_and_tt = models.BooleanField(
+        null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
+    )
+    contact_touch_point_to_ll_and_tt_date = models.DateField(
+        null=True, blank=True
+    )
+
+    reference_forms_sent_to_tenant = models.BooleanField(
+        null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
+    )
+    reference_forms_sent_to_tenant_date = models.DateField(
+        null=True, blank=True
+    )
+
+    compliance_form_sent_to_landlord = models.BooleanField(
+        null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
+    )
+    compliance_form_sent_to_landlord_date = models.DateField(
+        null=True, blank=True
+    )
+
+    google_drive_and_email_inbox = models.BooleanField(
+        null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
+    )
+    google_drive_and_email_inbox_date = models.DateField(
+        null=True, blank=True
+    )
+
+    tenancy_created_on_expert_agent = models.BooleanField(
+        null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
+    )
+    tenancy_created_on_expert_agent_date = models.DateField(null=True, blank=True)
+
+    references_passed = models.BooleanField(
+        null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
+    )
+    references_passed_date = models.DateField(null=True, blank=True)
+
+    gas_safety_certificate = models.BooleanField(
+        null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
+    )
+    gas_safety_certificate_date = models.DateField(
+        null=True, blank=True
+    )
+
+    electrical_certificate = models.BooleanField(
+        null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
+    )
+    electrical_certificate_date = models.DateField(null=True, blank=True)
+
+    epc_certificate = models.BooleanField(
+        null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
+    )
+    epc_certificate_date = models.DateField(
+        null=True, blank=True
+    )
+
+    tenancy_certificate_sent = models.BooleanField(
+        null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
+    )
+    tenancy_certificate_sent_date = models.DateField(null=True, blank=True)
+
+    tenancy_certificate_signed = models.BooleanField(
+        null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
+    )
+    tenancy_certificate_signed_date = models.DateField(null=True, blank=True)
+
+    tenant_invoice_sent = models.BooleanField(
+        null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
+    )
+    tenant_invoice_sent_date = models.DateField(null=True, blank=True)
+
+    move_in_funds_received = models.BooleanField(
+        null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
+    )
+    move_in_funds_received_date = models.DateField(null=True, blank=True)
+
+    prescribed_info_and_statutory_docs_sent = models.BooleanField(
+        null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
+    )
+    prescribed_info_and_statutory_docs_sent_date = models.DateField(null=True, blank=True)
+
+    deposit_registered_with_tds = models.BooleanField(
+        null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
+    )
+    deposit_registered_with_tds_date = models.DateField(null=True, blank=True)
+
+    landlord_invoices_sent_to_ea = models.BooleanField(
+        null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
+    )
+    landlord_invoices_sent_to_ea_date = models.DateField(null=True, blank=True)
+
+    right_to_rent = models.BooleanField(
+        null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
+    )
+    right_to_rent_date = models.DateField(null=True, blank=True)
+
+    def __str__(self):
+        if (
+            self.propertyprocess.property.address_line_2 == ""
+            or self.propertyprocess.property.address_line_2 is None
+        ):
+            property_address = "%s, %s" % (
+                self.propertyprocess.property.postcode,
+                self.propertyprocess.property.address_line_1,
+            )
+        else:
+            property_address = "%s, %s, %s" % (
+                self.propertyprocess.property.postcode,
+                self.propertyprocess.property.address_line_1,
+                self.propertyprocess.property.address_line_2,
+            )
+        return property_address
+
+
+class LettingsProgressionSettings(UpdatedAndCreated):
+    class Meta:
+        ordering = [
+            "lettings_progression__propertyprocess__property__postcode",
+            "lettings_progression__propertyprocess__property__address_line_1",
+        ]
+        verbose_name = "Lettings Progression Settings"
+        verbose_name_plural = "Lettings Progressions Settings"
+
+    SHOW_HIDE_CHOICES = ((True, "Show"), (False, "Hide"))
+
+    lettings_progression = models.OneToOneField(
+        LettingsProgression,
+        on_delete=models.CASCADE,
+        related_name="lettings_progression_settings",
+    )
+
+    show_gas = models.BooleanField(
+        null=True, blank=True, default=True, choices=SHOW_HIDE_CHOICES
+    )
+
+    def __str__(self):
+        if (
+            self.sales_progression.propertyprocess.property.address_line_2
+            == ""
+            or self.sales_progression.propertyprocess.property.address_line_2
+            is None
+        ):
+            property_address = "%s, %s" % (
+                self.sales_progression.propertyprocess.property.postcode,
+                self.sales_progression.propertyprocess.property.address_line_1,
+            )
+        else:
+            property_address = "%s, %s, %s" % (
+                self.sales_progression.propertyprocess.property.postcode,
+                self.sales_progression.propertyprocess.property.address_line_1,
+                self.sales_progression.propertyprocess.property.address_line_2,
+            )
+        return property_address
+
+
+class LettingsProgressionPhase(UpdatedAndCreated):
+    class Meta:
+        ordering = [
+            "lettings_progression__propertyprocess__property__postcode",
+            "lettings_progression__propertyprocess__property__address_line_1",
+        ]
+        verbose_name = "Lettings Progression Phase"
+        verbose_name_plural = "Lettings Progressions Phase"
+
+    PHASE_CHOICE = [
+        (1, "Phase 1 Complete"),
+        (2, "Phase 2 Complete"),
+        (3, "Phase 3 Complete"),
+        (4, "Phase 4 Complete"),
+    ]
+
+    lettings_progression = models.OneToOneField(
+        LettingsProgression,
+        on_delete=models.CASCADE,
+        related_name="lettings_progression_phase",
+    )
+
+    overall_phase = models.PositiveIntegerField(
+        default=0,
+        validators=[MinValueValidator(0), MaxValueValidator(4)],
+        choices=PHASE_CHOICE,
+    )
+
+    phase_1 = models.BooleanField(default=False)
+
+    phase_2 = models.BooleanField(default=False)
+
+    phase_3 = models.BooleanField(default=False)
+
+    phase_4 = models.BooleanField(default=False)
+
+    def __str__(self):
+        if (
+            self.lettings_progression.propertyprocess.property.address_line_2
+            == ""
+            or self.lettings_progression.propertyprocess.property.address_line_2
+            == None
+        ):
+            property_address = "%s, %s" % (
+                self.lettings_progression.propertyprocess.property.postcode,
+                self.lettings_progression.propertyprocess.property.address_line_1,
+            )
+        else:
+            property_address = "%s, %s, %s" % (
+                self.lettings_progression.propertyprocess.property.postcode,
+                self.lettings_progression.propertyprocess.property.address_line_1,
+                self.lettings_progression.propertyprocess.property.address_line_2,
+            )
+        return property_address

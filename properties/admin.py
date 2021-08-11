@@ -25,6 +25,9 @@ from properties.models import (
     ProgressionNotes,
     PropertySellingInformation,
     Reduction,
+    LettingsProgression,
+    LettingsProgressionPhase,
+    LettingsProgressionSettings
 )
 
 
@@ -189,6 +192,16 @@ class SalesProgressionAdminInline(admin.StackedInline):
     ]
 
 
+class LettingsProgressionAdminInline(admin.StackedInline):
+    model = LettingsProgression
+    readonly_fields = [
+        "created",
+        "created_by",
+        "updated",
+        "updated_by",
+    ]
+
+
 class MarketingAdminInline(admin.StackedInline):
     model = Marketing
     readonly_fields = [
@@ -254,6 +267,7 @@ class PropertyProcessAdmin(admin.ModelAdmin):
         DealAdminInline,
         ExchangeAdminInline,
         SalesProgressionAdminInline,
+        LettingsProgressionAdminInline,
         ProgressionNotesAdminInline,
         PropertySellingInformationAdminInline,
         MarketingAdminInline,
@@ -524,3 +538,81 @@ class SalesProgressionAdmin(admin.ModelAdmin):
 
 
 admin.site.register(SalesProgression, SalesProgressionAdmin)
+
+
+class LettingsProgressionPhaseAdminInline(admin.TabularInline):
+    model = LettingsProgressionPhase
+    readonly_fields = [
+        "created",
+        "created_by",
+        "updated",
+        "updated_by",
+    ]
+
+
+class LettingsProgressionSettingsAdminInline(admin.TabularInline):
+    model = LettingsProgressionSettings
+    readonly_fields = [
+        "created",
+        "created_by",
+        "updated",
+        "updated_by",
+    ]
+
+
+class LettingsProgressionAdmin(admin.ModelAdmin):
+    inlines = [
+        LettingsProgressionPhaseAdminInline,
+        LettingsProgressionSettingsAdminInline,
+    ]
+
+    list_display = [
+        "__str__",
+        "get_phase",
+    ]
+
+    ordering = [
+        "propertyprocess__property__postcode",
+        "propertyprocess__property__address_line_1",
+    ]
+
+    list_filter = [
+        "propertyprocess__hub",
+    ]
+
+    search_fields = [
+        "propertyprocess__property__postcode",
+        "propertyprocess__property__address_line_1",
+    ]
+
+    readonly_fields = [
+        "updated_by",
+        "updated",
+        "created_by",
+        "created",
+    ]
+
+    def save_model(self, request, obj, form, change):
+        if not obj.pk:
+            obj.created_by = request.user.get_full_name()
+        obj.updated_by = request.user.get_full_name()
+        super().save_model(request, obj, form, change)
+
+    def save_formset(self, request, form, formset, change):
+        instances = formset.save(commit=False)
+        for obj in instances:
+            if not obj.pk:
+                obj.created_by = request.user.get_full_name()
+            obj.updated_by = request.user.get_full_name()
+            super().save_model(request, obj, form, change)
+
+    def get_phase(self, obj):
+        phase = obj.lettings_progression_phase.get_overall_phase_display()
+        if phase == 0:
+            phase = "No Phase Complete"
+        return phase
+
+    get_phase.short_description = "Lettings Progression Phase"
+
+
+admin.site.register(LettingsProgression, LettingsProgressionAdmin)
