@@ -26,6 +26,8 @@ from users.models import UserTargets, UserTargetsByYear
 # python3 manage.py dumpdata home.propertyprocess > data/property_process.json --settings=laurels_staff_portal.settings.production
 # python3 manage.py dumpdata home.valuation > data/valuation.json --settings=laurels_staff_portal.settings.production
 # python3 manage.py dumpdata home.instruction > data/instruction.json --settings=laurels_staff_portal.settings.production
+# python3 manage.py dumpdata home.instructionrenewals > data/instructionrenewals.json --settings=laurels_staff_portal.settings.production
+# python3 manage.py dumpdata home.lettingssecondtwelve > data/secondtwelve.json --settings=laurels_staff_portal.settings.production
 # python3 manage.py dumpdata home.offer > data/offer.json --settings=laurels_staff_portal.settings.production
 # python3 manage.py dumpdata home.deal > data/deal.json --settings=laurels_staff_portal.settings.production
 # python3 manage.py dumpdata home.deallettings > data/deallettings.json --settings=laurels_staff_portal.settings.production
@@ -67,6 +69,7 @@ property_history_dict = None
 property_history_extra_dict = None
 valuation_dict = None
 instruction_dict = None
+renewals_dict = None
 instruction_lettings_extra_dict = None
 offerer_dict = None
 offerer_extra_lettings_dict = None
@@ -1711,15 +1714,29 @@ with open(
 
 exchange_dict = []
 exchange_extra_dict = []
+renewals_dict = []
+
+managed = []
+lettings_renewal = []
 
 for instance in exchange_model:
 
     exchange_extra = {}
     exchange_extra_fields = {}
 
+    managed_property = {}
+    managed_property_fields = {}
+
+    renewals_one = {}
+    renewals_one_fields = {}
+
     # Changing the model to new value
 
     instance["model"] = "properties.exchangemove"
+
+    managed_property["model"] = "lettings.managedproperties"
+
+    renewals_one["model"] = "lettings.renewals"
 
     # End changing the model to new value
 
@@ -1733,6 +1750,9 @@ for instance in exchange_model:
             instance["fields"]["propertyprocess"] = propertyprocess_instance[
                 "pk"
             ]
+            managed_property_fields[
+                "propertyprocess"
+            ] = propertyprocess_instance["pk"]
             propertyprocess_instance["fields"]["furthest_status"] = 5
 
             if propertyprocess_instance["fields"]["sector"] == "sales":
@@ -1750,6 +1770,17 @@ for instance in exchange_model:
 
     # End loop
 
+    # Add service level to managed property
+
+    for instruction_instance in instruction_extra_dict:
+        if (
+            instruction_instance["fields"]["propertyprocess"]
+            == instance["fields"]["propertyprocess"]
+        ):
+            managed_property_fields[
+                "lettings_service_level"
+            ] = instruction_instance["fields"]["lettings_service_level"]
+
     # Edit old fields
 
     if exchange_extra["sector"] == "sales":
@@ -1765,6 +1796,12 @@ for instance in exchange_model:
         ]
         exchange_extra_fields["first_renewal"] = instance["fields"][
             "lettings_renewal_date"
+        ]
+        renewals_one_fields["renewed_on"] = exchange_extra_fields[
+            "move_in_date"
+        ]
+        renewals_one_fields["renewal_date"] = exchange_extra_fields[
+            "first_renewal"
         ]
 
     del instance["fields"]["exchange_move_in_date"]
@@ -1783,6 +1820,16 @@ for instance in exchange_model:
     exchange_extra_fields["updated_by"] = "Admin"
     exchange_extra_fields["updated"] = "2000-01-13T13:13:13.000Z"
 
+    managed_property_fields["created_by"] = "Admin"
+    managed_property_fields["created"] = "2000-01-13T13:13:13.000Z"
+    managed_property_fields["updated_by"] = "Admin"
+    managed_property_fields["updated"] = "2000-01-13T13:13:13.000Z"
+
+    renewals_one_fields["created_by"] = "Admin"
+    renewals_one_fields["created"] = "2000-01-13T13:13:13.000Z"
+    renewals_one_fields["updated_by"] = "Admin"
+    renewals_one_fields["updated"] = "2000-01-13T13:13:13.000Z"
+
     # End add new fields
 
     # Move original PK
@@ -1799,7 +1846,17 @@ for instance in exchange_model:
 
     exchange_extra["pk"] = str(uuid.uuid4())
 
+    managed_property["pk"] = str(uuid.uuid4())
+
+    renewals_one["pk"] = str(uuid.uuid4())
+
+    renewals_one_fields["managed_property"] = managed_property["pk"]
+
     exchange_extra["fields"] = exchange_extra_fields
+
+    managed_property["fields"] = managed_property_fields
+
+    renewals_one["fields"] = renewals_one_fields
 
     exchange_extra_dict.append(exchange_extra)
 
@@ -1851,8 +1908,144 @@ for instance in exchange_model:
 
                 history_extra.append(history)
             else:
+                if managed_property_fields[
+                    "propertyprocess"
+                ] not in managed:
+                    managed.append(managed_property_fields[
+                        "propertyprocess"
+                    ])
+                    renewals_dict.append(managed_property)
+                    renewals_dict.append(renewals_one)
                 exchange_dict.append(instance)
 
+                if instance["fields"]["propertyprocess"] not in lettings_renewal:
+                    lettings_renewal.append(instance["fields"]["propertyprocess"])
+
+                    # Property history fields
+
+                    history = {}
+                    history_fields = {}
+
+                    # Add model
+
+                    history["model"] = "properties.propertyhistory"
+
+                    # End add model
+
+                    # Add new fields
+
+                    history_fields["propertyprocess"] = instance["fields"][
+                        "propertyprocess"
+                    ]
+                    history_fields["created_by"] = "Admin"
+                    history_fields["updated_by"] = "Admin"
+                    history_fields["updated"] = "2000-01-13T13:13:13.000Z"
+
+                    history_fields[
+                        "description"
+                    ] = "The property has a lettings exchange."
+
+                    history_fields["created"] = exchange_extra_fields[
+                        "move_in_date"
+                    ]
+
+                    history_fields["type"] = "property_event"
+
+                    # Create new UUID field
+
+                    history["pk"] = str(uuid.uuid4())
+
+                    # End create new UUID field
+
+                    # End property history fields
+
+                    history["fields"] = history_fields
+
+                    history_extra.append(history)
+
+# ----------------------------------------
+# RENEWALS MODEL
+# ----------------------------------------
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/originals/instructionrenewals.json",
+    "r",
+) as json_data:
+    renewals_model = json.load(json_data)
+
+for instance in renewals_model:
+
+    managed_property = {}
+    managed_property_fields = {}
+
+    renewals_one = {}
+    renewals_one_fields = {}
+
+    # Changing the model to new value
+
+    renewals_one["model"] = "lettings.renewals"
+
+    # End changing the model to new value
+
+    # Loop instruction dict to get property process pk
+
+    for instruction_instance in instruction_dict:
+        if (
+            instruction_instance["old_pk"]
+            == instance["fields"]["instruction_link"]
+        ):
+            propertyprocess = instruction_instance[
+                "fields"
+            ]["propertyprocess"]
+
+    # Get managed property link
+
+    for managed_instance in renewals_dict:
+        if managed_instance["model"] == "lettings.managedproperties":
+            if managed_instance["fields"][
+                "propertyprocess"
+            ] == propertyprocess:
+                renewals_one_fields["managed_property"] = managed_instance["pk"]        
+
+    # End loop
+
+    if instance["fields"]["second_lettings_renewal_date"]:
+        renewals_one_fields["renewed_on"] = instance["fields"][
+            "first_lettings_renewal_date"
+        ]
+        renewals_one_fields["renewal_date"] = instance["fields"][
+            "second_lettings_renewal_date"
+        ]
+    else:
+        renewals_one_fields["renewal_date"] = False
+
+    # Add new fields
+
+    renewals_one_fields["created_by"] = "Admin"
+    renewals_one_fields["created"] = "2000-01-13T13:13:13.000Z"
+    renewals_one_fields["updated_by"] = "Admin"
+    renewals_one_fields["updated"] = "2000-01-13T13:13:13.000Z"
+
+    # End add new fields
+
+    # # End adding fields to larger dict
+
+    renewals_one["old_pk"] = instance["pk"]
+
+    # Create new UUID field
+
+    renewals_one["pk"] = str(uuid.uuid4())
+
+    renewals_one["fields"] = renewals_one_fields
+
+    if renewals_one_fields["renewal_date"]:
+        renewals_dict.append(renewals_one)
+
+        for propertyprocess_instance in propertyprocess_dict:
+            if (
+                propertyprocess_instance["pk"]
+                == propertyprocess
+            ):
                 # Property history fields
 
                 history = {}
@@ -1866,22 +2059,20 @@ for instance in exchange_model:
 
                 # Add new fields
 
-                history_fields["propertyprocess"] = instance["fields"][
-                    "propertyprocess"
-                ]
+                history_fields["propertyprocess"] = propertyprocess
                 history_fields["created_by"] = "Admin"
                 history_fields["updated_by"] = "Admin"
                 history_fields["updated"] = "2000-01-13T13:13:13.000Z"
 
                 history_fields[
                     "description"
-                ] = "The property has a lettings exchange."
+                ] = "A lettings renewal has been processed."
 
-                history_fields["created"] = exchange_extra_fields[
-                    "move_in_date"
+                history_fields["created"] = renewals_one_fields[
+                    "renewed_on"
                 ]
 
-                history_fields["type"] = "property_event"
+                history_fields["type"] = "management"
 
                 # Create new UUID field
 
@@ -3332,6 +3523,11 @@ with open(
     json.dump(exchange_dict, json_data)
 
 with open(
+    "/workspace/laurels-staff/common/data_dump/new/renewals.json", "w"
+) as json_data:
+    json.dump(renewals_dict, json_data)
+
+with open(
     "/workspace/laurels-staff/common/data_dump/new/exchangemove_extra.json",
     "w",
 ) as json_data:
@@ -3463,6 +3659,9 @@ for object in deal_dict:
     master_dict.append(object)
 
 for object in deal_extra_dict:
+    master_dict.append(object)
+
+for object in renewals_dict:
     master_dict.append(object)
 
 for object in exchange_dict:
