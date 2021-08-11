@@ -29,7 +29,7 @@ class ManagedProperties(UpdatedAndCreated):
     lettings_service_level = models.CharField(
         max_length=40, null=True, blank=True, choices=SERVICE_LEVEL
     )
-    is_active = models.BooleanField(choices=BOOL_CHOICES)
+    is_active = models.BooleanField(choices=BOOL_CHOICES, default=True)
 
     def __str__(self):
         if (
@@ -52,6 +52,7 @@ class ManagedProperties(UpdatedAndCreated):
 class Renewals(UpdatedAndCreated):
     class Meta:
         ordering = [
+            "-renewed_on",
             "managed_property__propertyprocess__property__postcode",
             "managed_property__propertyprocess__property__address_line_1",
         ]
@@ -81,3 +82,39 @@ class Renewals(UpdatedAndCreated):
                 self.managed_property.propertyprocess.property.address_line_2,
             )
         return property_address
+
+
+class SecondTwelve(UpdatedAndCreated):
+    class Meta:
+        ordering = [
+            "-date",
+            "managed_property__propertyprocess__property__postcode",
+            "managed_property__propertyprocess__property__address_line_1",
+        ]
+        verbose_name = "Second Twelve"
+        verbose_name_plural = "Second Twelve's"
+
+    managed_property = models.ForeignKey(
+        ManagedProperties, on_delete=models.CASCADE,
+        related_name="second_twelve"
+    )
+    date = models.DateField(null=False, blank=False)
+
+    def __str__(self):
+        if (
+            self.managed_property.propertyprocess.property.address_line_2 == ""
+            or self.managed_property.propertyprocess.property.address_line_2
+            is None
+        ):
+            property_address = "%s, %s" % (
+                self.managed_property.propertyprocess.property.postcode,
+                self.managed_property.propertyprocess.property.address_line_1,
+            )
+        else:
+            property_address = "%s, %s, %s" % (
+                self.managed_property.propertyprocess.property.postcode,
+                self.managed_property.propertyprocess.property.address_line_1,
+                self.managed_property.propertyprocess.property.address_line_2,
+            )
+        return property_address
+
