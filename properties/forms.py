@@ -22,6 +22,8 @@ from properties.models import (
     ExchangeMoveLettings,
     SalesProgressionSettings,
     SalesProgression,
+    LettingsProgression,
+    LettingsProgressionSettings,
     PropertySellingInformation,
     ProgressionNotes,
     PropertyChain,
@@ -1040,3 +1042,170 @@ class SalesProgressionResetForm(forms.Form):
         required=False,
         label=("Reset Progression Notes"),
     )
+
+
+class LettingsProgressionSettingsForm(forms.ModelForm):
+    class Meta:
+        model = LettingsProgressionSettings
+        fields = ("show_gas",)
+
+    def __init__(self, *args, **kwargs):
+        """
+        Add new labels and order foreign key field
+        """
+        super().__init__(*args, **kwargs)
+        labels = {
+            "show_gas": "Show Gas Certificate",
+        }
+
+        for field in self.fields:
+            label = f"{labels[field]}"
+            self.fields[field].label = label
+
+
+class LettingsProgressionPhaseOneForm(forms.ModelForm):
+    class Meta:
+        model = LettingsProgression
+        fields = (
+            "contact_touch_point_to_ll_and_tt",
+            "reference_forms_sent_to_tenant",
+            "compliance_form_sent_to_landlord",
+            "google_drive_and_email_inbox",
+            "tenancy_created_on_expert_agent",
+        )
+
+    def __init__(self, *args, **kwargs):
+        """
+        Add new labels and order foreign key field
+        """
+
+        super().__init__(*args, **kwargs)
+        labels = {
+            "contact_touch_point_to_ll_and_tt": "Contact Touch Point To LL & TT:",
+            "reference_forms_sent_to_tenant": "Referencing Forms Sent To Tenant:",
+            "compliance_form_sent_to_landlord": "Compliance Form Sent To Landlord:",
+            "google_drive_and_email_inbox": "Google Drive & Email Inbox Created:",
+            "tenancy_created_on_expert_agent": "Tenancy Created On Expert Agent:",
+        }
+
+        instance = getattr(self, "instance", None)
+        for model_field in instance._meta.get_fields():
+            for field in self.fields:
+                if model_field.name == field:
+                    if getattr(instance, model_field.name) is True:
+                        self.fields[field].disabled = True
+
+        for field in self.fields:
+            label = f"{labels[field]}"
+            self.fields[field].label = label
+
+
+class LettingsProgressionPhaseTwoForm(forms.ModelForm):
+    class Meta:
+        model = LettingsProgression
+        fields = (
+            "references_passed",
+            "gas_safety_certificate",
+            "gas_safety_certificate_expiry",
+            "electrical_certificate",
+            "electrical_certificate_expiry",
+            "epc_certificate",
+            "epc_certificate_expiry",
+            "tenancy_certificate_sent",
+        )
+
+    def __init__(self, *args, **kwargs):
+        """
+        Add new labels and order foreign key field
+        """
+
+        super().__init__(*args, **kwargs)
+        labels = {
+            "references_passed": "References Passed:",
+            "gas_safety_certificate": "Gas Safety Certificate:",
+            "gas_safety_certificate_expiry": "Gas Safety Certificate Expiry",
+            "electrical_certificate": "Electrical Installation Certificate:",
+            "electrical_certificate_expiry": "Electrical Certificate Expiry",
+            "epc_certificate": "Energy Performance Certificate:",
+            "epc_certificate_expiry": "EPC Certificate Expiry",
+            "tenancy_certificate_sent": "Tenancy Agreement Sent For Signature",
+        }
+
+        instance = getattr(self, "instance", None)
+        for model_field in instance._meta.get_fields():
+            for field in self.fields:
+                if model_field.name == field:
+                    if getattr(instance, model_field.name) is True:
+                        self.fields[field].disabled = True
+
+        for field in self.fields:
+            label = f"{labels[field]}"
+            self.fields[field].label = label
+
+
+class LettingsProgressionPhaseThreeForm(forms.ModelForm):
+    class Meta:
+        model = LettingsProgression
+        fields = (
+            "tenancy_agreement_signed",
+            "tenant_invoice_sent",
+            "move_in_funds_received",
+            "prescribed_info_and_statutory_docs_sent",
+        )
+
+    def __init__(self, *args, **kwargs):
+        """
+        Add new labels and order foreign key field
+        """
+
+        super().__init__(*args, **kwargs)
+        labels = {
+            "tenancy_agreement_signed": "Tenancy Agreement Signed:",
+            "tenant_invoice_sent": "Tenancy Invoice Sent:",
+            "move_in_funds_received": "Move In Funds Received:",
+            "prescribed_info_and_statutory_docs_sent": "Prescribed Info & Statutory Docs Sent:",
+        }
+
+        instance = getattr(self, "instance", None)
+        for model_field in instance._meta.get_fields():
+            for field in self.fields:
+                if model_field.name == field:
+                    if getattr(instance, model_field.name) is True:
+                        self.fields[field].disabled = True
+
+        for field in self.fields:
+            label = f"{labels[field]}"
+            self.fields[field].label = label
+
+
+class LettingsProgressionPhaseFourForm(forms.ModelForm):
+    class Meta:
+        model = LettingsProgression
+        fields = (
+            "deposit_registered_with_tds",
+            "landlord_invoices_sent_to_ea",
+            "right_to_rent",
+        )
+
+    def __init__(self, *args, **kwargs):
+        """
+        Add new labels and order foreign key field
+        """
+
+        super().__init__(*args, **kwargs)
+        labels = {
+            "deposit_registered_with_tds": "Deposit Registered With TDS:",
+            "landlord_invoices_sent_to_ea": "Landlord Invoices Sent To EA:",
+            "right_to_rent": "Right To Rent:",
+        }
+
+        instance = getattr(self, "instance", None)
+        for model_field in instance._meta.get_fields():
+            for field in self.fields:
+                if model_field.name == field:
+                    if getattr(instance, model_field.name) is True:
+                        self.fields[field].disabled = True
+
+        for field in self.fields:
+            label = f"{labels[field]}"
+            self.fields[field].label = label

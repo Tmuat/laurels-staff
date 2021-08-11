@@ -1,10 +1,43 @@
 from django.contrib import admin
 
 from lettings.models import (
-    ManagedProperties,
+    LettingProperties,
     Renewals,
-    SecondTwelve
+    SecondTwelve,
+    EPC,
+    Gas,
+    Electrical
 )
+
+
+class GasAdminInline(admin.TabularInline):
+    model = Gas
+    readonly_fields = [
+        "created",
+        "created_by",
+        "updated",
+        "updated_by",
+    ]
+
+
+class EPCAdminInline(admin.TabularInline):
+    model = EPC
+    readonly_fields = [
+        "created",
+        "created_by",
+        "updated",
+        "updated_by",
+    ]
+
+
+class ElectricalAdminInline(admin.TabularInline):
+    model = Electrical
+    readonly_fields = [
+        "created",
+        "created_by",
+        "updated",
+        "updated_by",
+    ]
 
 
 class SecondTwelveAdminInline(admin.TabularInline):
@@ -27,10 +60,13 @@ class RenewalsAdminInline(admin.TabularInline):
     ]
 
 
-class ManagedPropertiesAdmin(admin.ModelAdmin):
+class LettingPropertiesAdmin(admin.ModelAdmin):
     inlines = [
         RenewalsAdminInline,
         SecondTwelveAdminInline,
+        ElectricalAdminInline,
+        EPCAdminInline,
+        GasAdminInline
     ]
 
     list_display = [
@@ -55,4 +91,4 @@ class ManagedPropertiesAdmin(admin.ModelAdmin):
         super().save_model(request, obj, form, change)
 
 
-admin.site.register(ManagedProperties, ManagedPropertiesAdmin)
+admin.site.register(LettingProperties, LettingPropertiesAdmin)

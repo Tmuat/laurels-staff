@@ -54,6 +54,11 @@ from properties.forms import (
     ProgressionNotesForm,
     PropertyChainForm,
     SalesProgressionResetForm,
+    LettingsProgressionSettingsForm,
+    LettingsProgressionPhaseOneForm,
+    LettingsProgressionPhaseTwoForm,
+    LettingsProgressionPhaseThreeForm,
+    LettingsProgressionPhaseFourForm
 )
 from properties.models import (
     Property,
@@ -80,6 +85,9 @@ from properties.models import (
     DealExtraLettings,
     ProgressionNotes,
     PropertySellingInformation,
+    LettingsProgression,
+    LettingsProgressionSettings,
+    LettingsProgressionPhase
 )
 from users.models import Profile
 
@@ -2923,21 +2931,21 @@ def add_deal_lettings(request, propertyprocess_id):
                 updated_by=request.user.get_full_name(),
             )
 
-            if not SalesProgression.objects.filter(
+            if not LettingsProgression.objects.filter(
                 propertyprocess=property_process
             ).exists():
-                sales_prog = SalesProgression.objects.create(
+                lettings_prog = LettingsProgression.objects.create(
                     propertyprocess=property_process,
                     created_by=request.user.get_full_name(),
                     updated_by=request.user.get_full_name(),
                 )
-                SalesProgressionSettings.objects.create(
-                    sales_progression=sales_prog,
+                LettingsProgressionSettings.objects.create(
+                    lettings_progression=lettings_prog,
                     created_by=request.user.get_full_name(),
                     updated_by=request.user.get_full_name(),
                 )
-                SalesProgressionPhase.objects.create(
-                    sales_progression=sales_prog,
+                LettingsProgressionPhase.objects.create(
+                    lettings_progression=lettings_prog,
                     created_by=request.user.get_full_name(),
                     updated_by=request.user.get_full_name(),
                 )
@@ -4438,6 +4446,631 @@ def manage_sales_progression(request, propertyprocess_id):
     }
     data["html_modal"] = render_to_string(
         "properties/sales_progression/manage_sales_progression_modal.html",
+        context,
+        request=request,
+    )
+
+    return JsonResponse(data)
+
+
+@otp_required
+@login_required
+def edit_lettings_prog_settings(request, propertyprocess_id):
+    """
+    Ajax URL for editing lettings progression settings.
+    """
+    data = dict()
+
+    property_process = get_object_or_404(
+        PropertyProcess, id=propertyprocess_id
+    )
+
+    if request.method == "POST":
+        form = LettingsProgressionSettingsForm(
+            request.POST,
+            instance=property_process.lettings_progression.lettings_progression_settings,
+        )
+        if form.is_valid():
+            instance = form.save(commit=False)
+
+            instance.created_by = request.user.get_full_name()
+            instance.updated_by = request.user.get_full_name()
+
+            instance.save()
+
+            data["form_is_valid"] = True
+
+        else:
+            data["form_is_valid"] = False
+    else:
+        form = LettingsProgressionSettingsForm(
+            instance=property_process.lettings_progression.lettings_progression_settings,
+        )
+
+    context = {
+        "form": form,
+        "propertyprocess_id": propertyprocess_id,
+    }
+    data["html_modal"] = render_to_string(
+        "properties/lettings_progression/edit_lettings_prog_settings_modal.html",
+        context,
+        request=request,
+    )
+
+    return JsonResponse(data)
+
+
+@otp_required
+@login_required
+def phase_one(request, propertyprocess_id):
+    """
+    Ajax URL for phase one sales progression
+    """
+    data = dict()
+
+    property_process = get_object_or_404(
+        PropertyProcess, id=propertyprocess_id
+    )
+
+    sales_prog_phase = get_object_or_404(
+        SalesProgressionPhase,
+        sales_progression=property_process.sales_progression.id,
+    )
+
+    progression = property_process.sales_progression
+
+    old_aml = progression.buyers_aml_checks_and_sales_memo
+    old_initial_sol = progression.buyers_initial_solicitors_paperwork
+    old_sellers_initial_sol = progression.sellers_inital_solicitors_paperwork
+    old_draft_contracts = (
+        progression.draft_contracts_recieved_by_buyers_solicitors
+    )
+    old_searches_paid = progression.searches_paid_for
+    old_searches_ordered = progression.searches_ordered
+
+    if request.method == "POST":
+        form = SalesProgressionPhaseOneForm(request.POST, instance=progression)
+        if form.is_valid():
+            instance = form.save(commit=False)
+
+            instance.updated_by = request.user.get_full_name()
+
+            history_description = (
+                f"{request.user.get_full_name()} has "
+                "updated sales progression."
+            )
+
+            notes_dict = []
+
+            if old_aml != instance.buyers_aml_checks_and_sales_memo:
+                aml_notes = "Buyers AML Checks & Sales Memo"
+                notes_dict.append(aml_notes)
+                instance.buyers_aml_checks_and_sales_memo_date = (
+                    datetime.date.today()
+                )
+
+            if old_initial_sol != instance.buyers_initial_solicitors_paperwork:
+                sol_notes = "Buyers Initial Paperwork"
+                notes_dict.append(sol_notes)
+                instance.buyers_initial_solicitors_paperwork_date = (
+                    datetime.date.today()
+                )
+
+            if (
+                old_sellers_initial_sol
+                != instance.sellers_inital_solicitors_paperwork
+            ):
+                seller_sol_notes = "Sellers Initial Paperwork"
+                notes_dict.append(seller_sol_notes)
+                instance.sellers_inital_solicitors_paperwork_date = (
+                    datetime.date.today()
+                )
+
+            if (
+                old_draft_contracts
+                != instance.draft_contracts_recieved_by_buyers_solicitors
+            ):
+                draft_contract_notes = (
+                    "Draft Contracts Received By Buyers Solicitors"
+                )
+                notes_dict.append(draft_contract_notes)
+                instance.draft_contracts_recieved_by_buyers_solicitors_date = (
+                    datetime.date.today()
+                )
+
+            if old_searches_paid != instance.searches_paid_for:
+                searches_paid_notes = "Searches Paid For"
+                notes_dict.append(searches_paid_notes)
+                instance.searches_paid_for_date = datetime.date.today()
+
+            if old_searches_ordered != instance.searches_ordered:
+                searches_ordered_notes = "Searches Ordered"
+                notes_dict.append(searches_ordered_notes)
+                instance.searches_ordered_date = datetime.date.today()
+
+            instance.save()
+
+            phases = sales_progression_percentage(property_process.id)
+
+            phase_one = phases.get("phase_1")
+            if phase_one == 100:
+                sales_prog_phase.phase_1 = True
+                sales_prog_phase.save()
+
+            notes = "The following has been marked as complete, "
+
+            for i, note in enumerate(notes_dict):
+                if len(notes_dict) == 1:
+                    notes += note
+                    notes += "."
+                else:
+                    if i == len(notes_dict) - 1:
+                        notes += note
+                        notes += "."
+                    elif i == len(notes_dict) - 2:
+                        notes += note
+                        notes += " and "
+                    else:
+                        notes += note
+                        notes += ", "
+
+            history = PropertyHistory.objects.create(
+                propertyprocess=property_process,
+                type=PropertyHistory.PROGRESSION,
+                description=history_description,
+                notes=notes,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
+
+            context = {
+                "property_process": property_process,
+                "history": history,
+            }
+            data["html_success"] = render_to_string(
+                "properties/stages/includes/form_success.html",
+                context,
+                request=request,
+            )
+
+            data["form_is_valid"] = True
+
+        else:
+            data["form_is_valid"] = False
+    else:
+        form = SalesProgressionPhaseOneForm(
+            instance=progression,
+        )
+
+    context = {
+        "form": form,
+        "propertyprocess_id": propertyprocess_id,
+    }
+    data["html_modal"] = render_to_string(
+        "properties/sales_progression/phase_one_modal.html",
+        context,
+        request=request,
+    )
+
+    return JsonResponse(data)
+
+
+@otp_required
+@login_required
+def phase_two(request, propertyprocess_id):
+    """
+    Ajax URL for phase two sales progression
+    """
+    data = dict()
+
+    property_process = get_object_or_404(
+        PropertyProcess, id=propertyprocess_id
+    )
+
+    sales_prog_phase = get_object_or_404(
+        SalesProgressionPhase,
+        sales_progression=property_process.sales_progression.id,
+    )
+
+    progression = property_process.sales_progression
+
+    old_mor_submitted = progression.mortgage_application_submitted
+    old_mor_survey = progression.mortgage_survey_arranged
+    old_mor_offer = progression.mortgage_offer_with_solicitors
+    old_search = progression.all_search_results_recieved
+
+    if request.method == "POST":
+        form = SalesProgressionPhaseTwoForm(request.POST, instance=progression)
+        if form.is_valid():
+            instance = form.save(commit=False)
+
+            instance.updated_by = request.user.get_full_name()
+
+            history_description = (
+                f"{request.user.get_full_name()} has "
+                "updated sales progression."
+            )
+
+            notes_dict = []
+
+            if old_mor_submitted != instance.mortgage_application_submitted:
+                mor_notes = "Mortgage Application Submitted"
+                notes_dict.append(mor_notes)
+                instance.mortgage_application_submitted_date = (
+                    datetime.date.today()
+                )
+
+            if old_mor_survey != instance.mortgage_survey_arranged:
+                mor_sur_notes = "Mortgage Survey Booked"
+                notes_dict.append(mor_sur_notes)
+                instance.mortgage_survey_arranged_date = datetime.date.today()
+
+            if old_mor_offer != instance.mortgage_offer_with_solicitors:
+                mor_offer_notes = "Mortgage Offer With Solicitors"
+                notes_dict.append(mor_offer_notes)
+                instance.mortgage_offer_with_solicitors_date = (
+                    datetime.date.today()
+                )
+
+            if old_search != instance.all_search_results_recieved:
+                search_notes = "All Search Results Received"
+                notes_dict.append(search_notes)
+                instance.all_search_results_recieved_date = (
+                    datetime.date.today()
+                )
+
+            instance.save()
+
+            phases = sales_progression_percentage(property_process.id)
+
+            phase_two = phases.get("phase_2")
+            if phase_two == 100:
+                sales_prog_phase.phase_2 = True
+                sales_prog_phase.save()
+
+            notes = "The following has been marked as complete, "
+
+            for i, note in enumerate(notes_dict):
+                if len(notes_dict) == 1:
+                    notes += note
+                    notes += "."
+                else:
+                    if i == len(notes_dict) - 1:
+                        notes += note
+                        notes += "."
+                    elif i == len(notes_dict) - 2:
+                        notes += note
+                        notes += " and "
+                    else:
+                        notes += note
+                        notes += ", "
+
+            history = PropertyHistory.objects.create(
+                propertyprocess=property_process,
+                type=PropertyHistory.PROGRESSION,
+                description=history_description,
+                notes=notes,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
+
+            context = {
+                "property_process": property_process,
+                "history": history,
+            }
+            data["html_success"] = render_to_string(
+                "properties/stages/includes/form_success.html",
+                context,
+                request=request,
+            )
+
+            data["form_is_valid"] = True
+
+        else:
+            data["form_is_valid"] = False
+    else:
+        form = SalesProgressionPhaseTwoForm(
+            instance=progression,
+        )
+
+    context = {
+        "form": form,
+        "propertyprocess_id": propertyprocess_id,
+        "propertyprocess": property_process,
+    }
+    data["html_modal"] = render_to_string(
+        "properties/sales_progression/phase_two_modal.html",
+        context,
+        request=request,
+    )
+
+    return JsonResponse(data)
+
+
+@otp_required
+@login_required
+def phase_three(request, propertyprocess_id):
+    """
+    Ajax URL for phase three sales progression
+    """
+    data = dict()
+
+    property_process = get_object_or_404(
+        PropertyProcess, id=propertyprocess_id
+    )
+
+    sales_prog_phase = get_object_or_404(
+        SalesProgressionPhase,
+        sales_progression=property_process.sales_progression.id,
+    )
+
+    progression = property_process.sales_progression
+
+    old_enquries = progression.enquiries_raised
+    old_enquries_answered = progression.enquiries_answered
+    old_survey = progression.structural_survey_booked
+    old_survey_comp = progression.structural_survey_completed
+
+    if request.method == "POST":
+        form = SalesProgressionPhaseThreeForm(
+            request.POST, instance=progression
+        )
+        if form.is_valid():
+
+            instance = form.save(commit=False)
+
+            instance.updated_by = request.user.get_full_name()
+
+            history_description = (
+                f"{request.user.get_full_name()} has "
+                "updated sales progression."
+            )
+
+            notes_dict = []
+
+            if old_enquries != instance.enquiries_raised:
+                enq_notes = "Enquiries Raised"
+                notes_dict.append(enq_notes)
+                instance.enquiries_raised_date = datetime.date.today()
+
+            if old_enquries_answered != instance.enquiries_answered:
+                enq_answered_notes = "Enquiries Answered"
+                notes_dict.append(enq_answered_notes)
+                instance.enquiries_answered_date = datetime.date.today()
+
+            if old_survey != instance.structural_survey_booked:
+                survey_notes = "Structural Survey Booked"
+                notes_dict.append(survey_notes)
+                instance.structural_survey_booked_date = datetime.date.today()
+
+            if old_survey_comp != instance.structural_survey_completed:
+                survey_complete_notes = "Structural Survey Complete"
+                notes_dict.append(survey_complete_notes)
+                instance.structural_survey_completed_date = (
+                    datetime.date.today()
+                )
+
+            instance.save()
+
+            phases = sales_progression_percentage(property_process.id)
+
+            phase_three = phases.get("phase_3")
+            if phase_three == 100:
+                sales_prog_phase.phase_3 = True
+                sales_prog_phase.save()
+
+            notes = "The following has been marked as complete, "
+
+            for i, note in enumerate(notes_dict):
+                if len(notes_dict) == 1:
+                    notes += note
+                    notes += "."
+                else:
+                    if i == len(notes_dict) - 1:
+                        notes += note
+                        notes += "."
+                    elif i == len(notes_dict) - 2:
+                        notes += note
+                        notes += " and "
+                    else:
+                        notes += note
+                        notes += ", "
+
+            history = PropertyHistory.objects.create(
+                propertyprocess=property_process,
+                type=PropertyHistory.PROGRESSION,
+                description=history_description,
+                notes=notes,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
+
+            context = {
+                "property_process": property_process,
+                "history": history,
+            }
+            data["html_success"] = render_to_string(
+                "properties/stages/includes/form_success.html",
+                context,
+                request=request,
+            )
+
+            data["form_is_valid"] = True
+
+        else:
+            data["form_is_valid"] = False
+    else:
+        form = SalesProgressionPhaseThreeForm(
+            instance=progression,
+        )
+
+    context = {
+        "form": form,
+        "propertyprocess_id": propertyprocess_id,
+        "propertyprocess": property_process,
+    }
+    data["html_modal"] = render_to_string(
+        "properties/sales_progression/phase_three_modal.html",
+        context,
+        request=request,
+    )
+
+    return JsonResponse(data)
+
+
+@otp_required
+@login_required
+def phase_four(request, propertyprocess_id):
+    """
+    Ajax URL for phase one sales progression
+    """
+    data = dict()
+
+    property_process = get_object_or_404(
+        PropertyProcess, id=propertyprocess_id
+    )
+
+    sales_prog_phase = get_object_or_404(
+        SalesProgressionPhase,
+        sales_progression=property_process.sales_progression.id,
+    )
+
+    progression = property_process.sales_progression
+
+    old_add_enquiries = progression.additional_enquiries_raised
+    old_equiries_answered = progression.all_enquiries_answered
+    old_contracts_sent = progression.final_contracts_sent_out
+    old_buyers_contracts = progression.buyers_final_contracts_signed
+    old_sellers_contracts = progression.sellers_final_contracts_signed
+    old_deposit = progression.buyers_deposit_sent
+    old_deposit_received = progression.buyers_deposit_recieved
+    old_comp_date = progression.completion_date_agreed
+
+    if request.method == "POST":
+        form = SalesProgressionPhaseFourForm(
+            request.POST, instance=progression
+        )
+        if form.is_valid():
+            instance = form.save(commit=False)
+
+            instance.updated_by = request.user.get_full_name()
+
+            history_description = (
+                f"{request.user.get_full_name()} has "
+                "updated sales progression."
+            )
+
+            notes_dict = []
+
+            if old_add_enquiries != instance.additional_enquiries_raised:
+                additional_enquiries_notes = "Additional Enquiries Raised"
+                notes_dict.append(additional_enquiries_notes)
+                instance.additional_enquiries_raised_date = (
+                    datetime.date.today()
+                )
+
+            if old_equiries_answered != instance.all_enquiries_answered:
+                enquiries_answered_notes = "All Enquiries Answered"
+                notes_dict.append(enquiries_answered_notes)
+                instance.all_enquiries_answered_date = datetime.date.today()
+
+            if old_contracts_sent != instance.final_contracts_sent_out:
+                contracts_sent_notes = "Final Contracts Sent Out"
+                notes_dict.append(contracts_sent_notes)
+                instance.final_contracts_sent_out_date = datetime.date.today()
+
+            if old_buyers_contracts != instance.buyers_final_contracts_signed:
+                buyers_contract_notes = "Buyers Final Contracts Signed"
+                notes_dict.append(buyers_contract_notes)
+                instance.buyers_final_contracts_signed_date = (
+                    datetime.date.today()
+                )
+
+            if (
+                old_sellers_contracts
+                != instance.sellers_final_contracts_signed
+            ):
+                seller_contract_notes = "Sellers Final Contracts Signed"
+                notes_dict.appendseller_contract_notes()
+                instance.sellers_final_contracts_signed_date = (
+                    datetime.date.today()
+                )
+
+            if old_deposit != instance.buyers_deposit_sent:
+                deposit_notes = "Buyers Deposit Sent"
+                notes_dict.append(deposit_notes)
+                instance.buyers_deposit_sent_date = datetime.date.today()
+
+            if old_deposit_received != instance.buyers_deposit_recieved:
+                deposit_received_notes = "Buyers Deposit Received"
+                notes_dict.append(deposit_received_notes)
+                instance.buyers_deposit_recieved_date = datetime.date.today()
+
+            if old_comp_date != instance.completion_date_agreed:
+                comp_notes = "Completion Date Agreed"
+                notes_dict.append(comp_notes)
+                instance.completion_date_agreed_date = datetime.date.today()
+
+            instance.save()
+
+            phases = sales_progression_percentage(property_process.id)
+
+            phase_four = phases.get("phase_4")
+            if phase_four == 100:
+                sales_prog_phase.phase_4 = True
+                sales_prog_phase.save()
+
+            notes = "The following has been marked as complete, "
+
+            for i, note in enumerate(notes_dict):
+                if len(notes_dict) == 1:
+                    notes += note
+                    notes += "."
+                else:
+                    if i == len(notes_dict) - 1:
+                        notes += note
+                        notes += "."
+                    elif i == len(notes_dict) - 2:
+                        notes += note
+                        notes += " and "
+                    else:
+                        notes += note
+                        notes += ", "
+
+            history = PropertyHistory.objects.create(
+                propertyprocess=property_process,
+                type=PropertyHistory.PROGRESSION,
+                description=history_description,
+                notes=notes,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
+
+            context = {
+                "property_process": property_process,
+                "history": history,
+            }
+            data["html_success"] = render_to_string(
+                "properties/stages/includes/form_success.html",
+                context,
+                request=request,
+            )
+
+            data["form_is_valid"] = True
+
+        else:
+            data["form_is_valid"] = False
+    else:
+        form = SalesProgressionPhaseFourForm(
+            instance=progression,
+        )
+
+    context = {
+        "form": form,
+        "propertyprocess_id": propertyprocess_id,
+    }
+    data["html_modal"] = render_to_string(
+        "properties/sales_progression/phase_four_modal.html",
         context,
         request=request,
     )

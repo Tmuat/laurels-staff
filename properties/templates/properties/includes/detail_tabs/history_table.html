@@ -8,6 +8,8 @@
         <td class="text-center"><span class="badge badge-warning-lighten">Property Event</span></td>
     {% elif instance.type ==  "progression" %}
         <td class="text-center"><span class="badge badge-info-lighten">Progression</span></td>
+    {% elif instance.type ==  "management" %}
+        <td class="text-center"><span class="badge badge-primary-lighten">Management</span></td>
     {% endif %}
     {% if instance.notes is not None %}
         {% if instance.notes != "" %}

@@ -33,6 +33,11 @@ from users.models import UserTargets, UserTargetsByYear
 # python3 manage.py dumpdata home.deallettings > data/deallettings.json --settings=laurels_staff_portal.settings.production
 # python3 manage.py dumpdata home.exchangemove > data/exchangemove.json --settings=laurels_staff_portal.settings.production
 # python3 manage.py dumpdata home.salestatus > data/salesprogression.json --settings=laurels_staff_portal.settings.production
+# python3 manage.py dumpdata home.lettingsstatus > data/lettingsprogression.json --settings=laurels_staff_portal.settings.production
+# python3 manage.py dumpdata home.gassafety > data/gas.json --settings=laurels_staff_portal.settings.production
+# python3 manage.py dumpdata home.epc > data/epc.json --settings=laurels_staff_portal.settings.production
+# python3 manage.py dumpdata home.electricalreport > data/electrical.json --settings=laurels_staff_portal.settings.production
+
 # python3 manage.py dumpdata home.propertychain > data/propertychain.json --settings=laurels_staff_portal.settings.production
 # python3 manage.py dumpdata home.marketing > data/marketing.json --settings=laurels_staff_portal.settings.production
 # python3 manage.py dumpdata home.newbusiness > data/propertyfee.json --settings=laurels_staff_portal.settings.production
@@ -81,6 +86,8 @@ exchange_extra_dict = None
 salesprogression_dict = None
 salesprogressionsettings_dict = None
 salesprogressionphase_dict = None
+lettingsprogression_dict = None
+lettingsextra_dict = None
 propertychain_dict = None
 propertyfee_dict = None
 marketing_dict = None
@@ -823,6 +830,34 @@ with open(
 ) as json_data:
     property_process_model = json.load(json_data)
 
+with open(
+    "/workspace/laurels-staff/common/data_dump/originals/lettingsprogression.json",
+    "r",
+) as json_data:
+    lettings_prog_model = json.load(json_data)
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/originals/gas.json",
+    "r",
+) as json_data:
+    gas_model = json.load(json_data)
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/originals/epc.json",
+    "r",
+) as json_data:
+    epc_model = json.load(json_data)
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/originals/electrical.json",
+    "r",
+) as json_data:
+    electrical_model = json.load(json_data)  
+
+
+lettingsprogression_dict = []
+lettingsextra_dict = []
+
 for instance in property_process_model:
 
     # Changing the model to new value
@@ -919,7 +954,150 @@ for instance in property_process_model:
 
     instance["pk"] = str(uuid.uuid4())
 
+    # Loop lettings prog
+
+    for lettings_instance in lettings_prog_model:
+        if lettings_instance["fields"]["propertyprocess_link"] == instance["old_pk"]:
+            lettings_instance["fields"]["propertyprocess_link"] = instance["pk"]
+
+        for gas_instance in gas_model:
+            if gas_instance["fields"]["letting_status"] == lettings_instance["pk"]:
+                gas_instance["pp"] = lettings_instance["fields"]["propertyprocess_link"]
+
+        for epc_instance in epc_model:
+            if epc_instance["fields"]["letting_status"] == lettings_instance["pk"]:
+                epc_instance["pp"] = lettings_instance["fields"]["propertyprocess_link"]
+
+        for elec_instance in electrical_model:
+            if elec_instance["fields"]["letting_status"] == lettings_instance["pk"]:
+                elec_instance["pp"] = lettings_instance["fields"]["propertyprocess_link"]
+
+    # Adding lettings prog to lettings property proccesses
+
+    if instance["fields"]["sector"] == "lettings":
+        lettings = {}
+        lettings_fields = {}
+
+        lettings_settings = {}
+        lettings_settings_fields = {}
+
+        lettings_phase = {}
+        lettings_phase_fields = {}
+
+        lettings["model"] = "properties.lettingsprogression"
+        lettings_settings["model"] = "properties.lettingsprogressionsettings"
+        lettings_phase["model"] = "properties.lettingsprogressionphase"
+
+        lettings_fields["propertyprocess"] = instance["pk"]
+
+        lettings_fields["created_by"] = "Admin"
+        lettings_fields["created"] = "2000-01-13T13:13:13.000Z"
+        lettings_fields["updated_by"] = "Admin"
+        lettings_fields["updated"] = "2000-01-13T13:13:13.000Z"
+
+        lettings_settings_fields["created_by"] = "Admin"
+        lettings_settings_fields["created"] = "2000-01-13T13:13:13.000Z"
+        lettings_settings_fields["updated_by"] = "Admin"
+        lettings_settings_fields["updated"] = "2000-01-13T13:13:13.000Z"
+
+        lettings_phase_fields["created_by"] = "Admin"
+        lettings_phase_fields["created"] = "2000-01-13T13:13:13.000Z"
+        lettings_phase_fields["updated_by"] = "Admin"
+        lettings_phase_fields["updated"] = "2000-01-13T13:13:13.000Z"
+
+        lettings["pk"] = str(uuid.uuid4())
+        lettings_settings["pk"] = str(uuid.uuid4())
+        lettings_phase["pk"] = str(uuid.uuid4())
+
+        elec_pp = []
+
+        for elec_instance in electrical_model:
+            if elec_instance["pp"] == instance["pk"]:
+                if elec_instance["fields"]["completed_eletrical_report"]:
+                    if elec_instance["pp"] not in elec_pp:
+                        elec_pp.append(elec_instance["pp"])
+                        lettings_fields["electrical_certificate"] = True
+                        lettings_fields["electrical_certificate_expiry"] = elec_instance["fields"]["date"]
+                        lettings_fields["electrical_certificate_date"] = elec_instance["fields"]["date"]
+
+                    elec_instance["pk"] = str(uuid.uuid4())
+                    elec_instance["model"] = "lettings.electrical"
+                    elec_instance["fields"]["expiry"] = elec_instance["fields"]["date"]
+                    elec_instance["fields"]["lettings_properties"] = "null"
+
+                    elec_instance["fields"]["created_by"] = "Admin"
+                    elec_instance["fields"]["created"] = "2000-01-13T13:13:13.000Z"
+                    elec_instance["fields"]["updated_by"] = "Admin"
+                    elec_instance["fields"]["updated"] = "2000-01-13T13:13:13.000Z"
+
+                    del elec_instance["fields"]["completed_eletrical_report"]
+                    lettingsextra_dict.append(elec_instance)
+
+        gas_pp = []
+
+        for gas_instance in gas_model:
+            if gas_instance["pp"] == instance["pk"]:
+                if gas_instance["fields"]["valid_gas_safety"]:
+                    if gas_instance["pp"] not in gas_pp:
+                        gas_pp.append(gas_instance["pp"])
+                        lettings_fields["gas_safety_certificate"] = True
+                        lettings_fields["gas_safety_certificate_expiry"] = gas_instance["fields"]["date"]
+                        lettings_fields["gas_safety_certificate_date"] = gas_instance["fields"]["date"]
+
+                    gas_instance["pk"] = str(uuid.uuid4())
+                    gas_instance["model"] = "lettings.gas"
+                    gas_instance["fields"]["expiry"] = gas_instance["fields"]["date"]
+                    gas_instance["fields"]["lettings_properties"] = "null"
+
+                    gas_instance["fields"]["created_by"] = "Admin"
+                    gas_instance["fields"]["created"] = "2000-01-13T13:13:13.000Z"
+                    gas_instance["fields"]["updated_by"] = "Admin"
+                    gas_instance["fields"]["updated"] = "2000-01-13T13:13:13.000Z"
+
+                    del gas_instance["fields"]["valid_gas_safety"]
+                    lettingsextra_dict.append(gas_instance)
+
+        epc_pp = []
+
+        for epc_instance in epc_model:
+            if epc_instance["pp"] == instance["pk"]:
+                if epc_instance["fields"]["valid_epc"]:
+                    if epc_instance["pp"] not in epc_pp:
+                        epc_pp.append(epc_instance["pp"])
+                        lettings_fields["epc_certificate"] = True
+                        lettings_fields["epc_certificate_expiry"] = epc_instance["fields"]["date"]
+                        lettings_fields["epc_certificate_date"] = epc_instance["fields"]["date"]
+
+                    epc_instance["pk"] = str(uuid.uuid4())
+                    epc_instance["model"] = "lettings.epc"
+                    epc_instance["fields"]["expiry"] = epc_instance["fields"]["date"]
+                    epc_instance["fields"]["lettings_properties"] = "null"
+
+                    epc_instance["fields"]["created_by"] = "Admin"
+                    epc_instance["fields"]["created"] = "2000-01-13T13:13:13.000Z"
+                    epc_instance["fields"]["updated_by"] = "Admin"
+                    epc_instance["fields"]["updated"] = "2000-01-13T13:13:13.000Z"
+
+                    del epc_instance["fields"]["valid_epc"]
+                    lettingsextra_dict.append(epc_instance)
+
+        lettings_settings_fields["lettings_progression"] = lettings["pk"]
+        lettings_phase_fields["lettings_progression"] = lettings["pk"]
+
+        lettings["fields"] = lettings_fields
+        lettings_settings["fields"] = lettings_settings_fields
+        lettings_phase["fields"] = lettings_phase_fields
+
+        lettingsprogression_dict.append(lettings)
+        lettingsprogression_dict.append(lettings_settings)
+        lettingsprogression_dict.append(lettings_phase)
+
 propertyprocess_dict = property_process_model
+
+# Delete letting status
+
+for instance in lettingsextra_dict:
+    del instance["fields"]["letting_status"]
 
 # ----------------------------------------
 # PROPERTY HISTORY MODEL
@@ -1734,7 +1912,7 @@ for instance in exchange_model:
 
     instance["model"] = "properties.exchangemove"
 
-    managed_property["model"] = "lettings.managedproperties"
+    managed_property["model"] = "lettings.lettingproperties"
 
     renewals_one["model"] = "lettings.renewals"
 
@@ -1850,7 +2028,7 @@ for instance in exchange_model:
 
     renewals_one["pk"] = str(uuid.uuid4())
 
-    renewals_one_fields["managed_property"] = managed_property["pk"]
+    renewals_one_fields["lettings_properties"] = managed_property["pk"]
 
     exchange_extra["fields"] = exchange_extra_fields
 
@@ -2001,11 +2179,11 @@ for instance in renewals_model:
     # Get managed property link
 
     for managed_instance in renewals_dict:
-        if managed_instance["model"] == "lettings.managedproperties":
+        if managed_instance["model"] == "lettings.lettingproperties":
             if managed_instance["fields"][
                 "propertyprocess"
             ] == propertyprocess:
-                renewals_one_fields["managed_property"] = managed_instance["pk"]        
+                renewals_one_fields["lettings_properties"] = managed_instance["pk"]        
 
     # End loop
 
@@ -2085,6 +2263,16 @@ for instance in renewals_model:
                 history["fields"] = history_fields
 
                 history_extra.append(history)
+
+
+# Changing lettings extra link
+
+for lettings_extra_instance in lettingsextra_dict:
+    for managed_instance in renewals_dict:
+        if managed_instance["model"] == "lettings.lettingproperties":
+            if lettings_extra_instance["pp"] == managed_instance["fields"]["propertyprocess"]:
+                lettings_extra_instance["fields"]["lettings_properties"] = managed_instance["pk"]
+
 
 # ----------------------------------------
 # SALE PROGRESSION MODEL
@@ -3600,6 +3788,18 @@ with open(
 ) as json_data:
     json.dump(reduction_dict, json_data)
 
+with open(
+    "/workspace/laurels-staff/common/data_dump/new/lettingsprog.json",
+    "w",
+) as json_data:
+    json.dump(lettingsprogression_dict, json_data)
+
+with open(
+    "/workspace/laurels-staff/common/data_dump/new/lettingsextra.json",
+    "w",
+) as json_data:
+    json.dump(lettingsextra_dict, json_data)
+
 
 # ----------------------------------------
 # CREATE MASTER JSON
@@ -3704,6 +3904,12 @@ for object in user_targets_dict:
     master_dict.append(object)
 
 for object in reduction_dict:
+    master_dict.append(object)
+
+for object in lettingsprogression_dict:
+    master_dict.append(object)
+
+for object in lettingsextra_dict:
     master_dict.append(object)
 
 with open(

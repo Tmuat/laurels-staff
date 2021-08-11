@@ -1831,6 +1831,9 @@ class LettingsProgression(UpdatedAndCreated):
     gas_safety_certificate = models.BooleanField(
         null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
     )
+    gas_safety_certificate_expiry = models.DateField(
+        null=True, blank=True
+    )
     gas_safety_certificate_date = models.DateField(
         null=True, blank=True
     )
@@ -1838,10 +1841,16 @@ class LettingsProgression(UpdatedAndCreated):
     electrical_certificate = models.BooleanField(
         null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
     )
+    electrical_certificate_expiry = models.DateField(
+        null=True, blank=True
+    )
     electrical_certificate_date = models.DateField(null=True, blank=True)
 
     epc_certificate = models.BooleanField(
         null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
+    )
+    epc_certificate_expiry = models.DateField(
+        null=True, blank=True
     )
     epc_certificate_date = models.DateField(
         null=True, blank=True
@@ -1852,10 +1861,10 @@ class LettingsProgression(UpdatedAndCreated):
     )
     tenancy_certificate_sent_date = models.DateField(null=True, blank=True)
 
-    tenancy_certificate_signed = models.BooleanField(
+    tenancy_agreement_signed = models.BooleanField(
         null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
     )
-    tenancy_certificate_signed_date = models.DateField(null=True, blank=True)
+    tenancy_agreement_signed_date = models.DateField(null=True, blank=True)
 
     tenant_invoice_sent = models.BooleanField(
         null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
@@ -1987,7 +1996,7 @@ class LettingsProgressionPhase(UpdatedAndCreated):
             self.lettings_progression.propertyprocess.property.address_line_2
             == ""
             or self.lettings_progression.propertyprocess.property.address_line_2
-            == None
+            is None
         ):
             property_address = "%s, %s" % (
                 self.lettings_progression.propertyprocess.property.postcode,

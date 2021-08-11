@@ -5,21 +5,21 @@
             <span><img src="{% static 'custom/images/logo.png' %}" alt="laurels" height="80"></span>
         </div>
         <div class="text-center text-white">
-            <h4 class="text-white">Add Lettings Exchange</h4>
-            <form method="post" action="{% url 'properties:add_exchange_lettings' propertyprocess_id %}" class="text-center text-white px-2 js-submit-form-success custom-form-margin">
+            <h4 class="text-white">Edit Sales Progression Settings</h4>
+            <form method="post" action="{% url 'properties:edit_sales_prog_settings' propertyprocess_id %}" class="text-center text-white px-2 js-submit-form custom-form-margin">
                 {% csrf_token %}
                 <div class="row">
                     <div class="col-12">
-                        {{ form.move_in_date|as_crispy_field }}
+                        {{ form.show_mortgage|as_crispy_field }}
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-12">
-                        {{ form.first_renewal|as_crispy_field }}
+                        {{ form.show_survey|as_crispy_field }}
                     </div>
                 </div>
                 <div class="my-2 text-center">
-                    <button type="submit" class="btn btn-info" id="add-button">{% trans "Add Lettings Exchange" %}</button>
+                    <button type="submit" class="btn btn-info" id="add-button">{% trans "Save Settings" %}</button>
                 </div>
             </form>
         </div>
