@@ -3294,13 +3294,23 @@ def add_exchange_lettings(request, propertyprocess_id):
 
             instance.save()
 
+            LettingProperties.objects.create(
+                propertyprocess=property_process,
+                lettings_service_level=property_process.instruction_letting_extra.lettings_service_level,
+                is_active=True,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name()
+            )
+
             instance.send_exchange_mail(request)
 
             property_process.macro_status = PropertyProcess.COMPLETE
             property_process.furthest_status = PropertyProcess.COMPLETE
             property_process.save()
 
-            history_description = f"{request.user.get_full_name()} has added a lettings exchange."
+            history_description = (
+                f"{request.user.get_full_name()} has added a lettings exchange."
+            )
 
             formatted_move_in_date = move_in_date.strftime("%d/%m/%Y")
             formatted_first_renewal = first_renewal.strftime("%d/%m/%Y")

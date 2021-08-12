@@ -1,4 +1,6 @@
 from django.db import models
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 
 from common.models import UpdatedAndCreated
 from properties.models import PropertyProcess, InstructionLettingsExtra
@@ -30,23 +32,6 @@ class LettingProperties(UpdatedAndCreated):
         max_length=40, null=True, blank=True, choices=SERVICE_LEVEL
     )
     is_active = models.BooleanField(choices=BOOL_CHOICES, default=True)
-
-    def create_managed(self, request, model_instance, **kwargs):
-        EPC.objects.create(
-            lettings_properties=model_instance,
-            created_by=request.user.get_full_name(),
-            updated_by=request.user.get_full_name(),
-        )
-        Gas.objects.create(
-            lettings_properties=model_instance,
-            created_by=request.user.get_full_name(),
-            updated_by=request.user.get_full_name(),
-        )
-        Electrical.objects.create(
-            lettings_properties=model_instance,
-            created_by=request.user.get_full_name(),
-            updated_by=request.user.get_full_name(),
-        )
 
     def __str__(self):
         if (
