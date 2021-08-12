@@ -5,17 +5,12 @@
             <span><img src="{% static 'custom/images/logo.png' %}" alt="laurels" height="80"></span>
         </div>
         <div class="text-center text-white">
-            <h4 class="text-white">Edit Sales Progression Settings</h4>
-            <form method="post" action="{% url 'properties:edit_sales_prog_settings' propertyprocess_id %}" class="text-center text-white px-2 js-submit-form custom-form-margin">
+            <h4 class="text-white">Edit Lettings Progression Settings</h4>
+            <form method="post" action="{% url 'properties:edit_lettings_prog_settings' propertyprocess_id %}" class="text-center text-white px-2 js-submit-form custom-form-margin">
                 {% csrf_token %}
                 <div class="row">
                     <div class="col-12">
-                        {{ form.show_mortgage|as_crispy_field }}
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12">
-                        {{ form.show_survey|as_crispy_field }}
+                        {{ form.show_gas|as_crispy_field }}
                     </div>
                 </div>
                 <div class="my-2 text-center">

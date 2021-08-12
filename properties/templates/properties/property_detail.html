@@ -58,6 +58,16 @@
             <!-- end row -->
         {% endif %}
 
+        {% if propertyprocess.sector == "lettings" %}
+            <div class="row">
+                <div class="col-12">
+                    {% include 'properties/includes/detail/lettings_progression.html' %}
+                </div>
+                <!-- end col -->
+            </div>
+            <!-- end row -->
+        {% endif %}
+
             <div class="row">
                 {% if propertyprocess.sector == "sales" %}
                 <div class="col-lg-4">

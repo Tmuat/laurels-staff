@@ -1,0 +1,73 @@
+<!-- phase 4 section -->
+<!-- tab pane -->
+<div class="tab-pane" id="phase4">
+    
+    <h5 class="text-uppercase"><i class="mdi mdi-progress-check mr-1"></i>
+        Phase 4
+        <span
+            data-url="{% url 'properties:lettings_phase_four' propertyprocess.id %}"
+            class="ml-2 mdi mdi-square-edit-outline 
+            {% if propertyprocess.macro_status < 4 %}
+            text-secondary" disabled
+            {% else %}
+            pointer text-warning js-load-form" 
+            {% endif %}
+            data-toggle="tooltip"
+            data-placement="top"
+            title="Adjust Phase Four"
+        ></span>
+    </h5>
+    <div class="d-none d-md-inline">
+        <div class="row">
+            <div class="col-md-4 text-center">
+                <p class="mb-1"><strong>Deposit Registered With TDS:</strong></p>
+            </div>
+            <div class="col-md-4 col text-center">
+                <p class="mb-1"><strong>Landlord Invoices Sent To EA:</strong></p>
+            </div>
+            <div class="col-md-4 text-center">
+                <p class="mb-1"><strong>Right To Rent:</strong></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 text-center">
+                {% if propertyprocess.lettings_progression.deposit_registered_with_tds %}
+                    <h5 class="text-uppercase badge badge-success">Completed</h5>
+                    <p>
+                        <small>
+                            {{ propertyprocess.lettings_progression.deposit_registered_with_tds_date }}
+                        </small>
+                    </p>
+                {% else %}
+                    <p><span class="badge badge-danger">Incomplete</span></p>
+                {% endif %}
+            </div>
+            <div class="col-md-4 text-center">
+                {% if propertyprocess.lettings_progression.landlord_invoices_sent_to_ea %}
+                    <h5 class="text-uppercase badge badge-success">Completed</h5>
+                    <p>
+                        <small>
+                            {{ propertyprocess.lettings_progression.landlord_invoices_sent_to_ea_date }}
+                        </small>
+                    </p>
+                {% else %}
+                    <p><span class="badge badge-danger">Incomplete</span></p>
+                {% endif %}
+            </div>
+            <div class="col-md-4 text-center">
+                {% if propertyprocess.lettings_progression.right_to_rent %}
+                    <h5 class="text-uppercase badge badge-success">Completed</h5>
+                    <p>
+                        <small>
+                            {{ propertyprocess.lettings_progression.right_to_rent_date }}
+                        </small>
+                    </p>
+                {% else %}
+                    <p><span class="badge badge-danger">Incomplete</span></p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end tab-pane -->
+<!-- end phase 4 section -->

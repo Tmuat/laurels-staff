@@ -1,0 +1,94 @@
+<!-- phase 3 section -->
+<!-- tab pane -->
+<div class="tab-pane" id="phase3">
+    
+    <h5 class="text-uppercase"><i class="mdi mdi-progress-check mr-1"></i>
+        Phase 3
+        <span
+            data-url="{% url 'properties:lettings_phase_three' propertyprocess.id %}"
+            class="ml-2 mdi mdi-square-edit-outline 
+            {% if propertyprocess.macro_status < 4 %}
+            text-secondary" disabled
+            {% else %}
+            pointer text-warning js-load-form" 
+            {% endif %}
+            data-toggle="tooltip"
+            data-placement="top"
+            title="Adjust Phase Three"
+        ></span>
+    </h5>
+
+    <div>
+        <div class="row">
+            <div class="col-6 text-center">
+                <p class="mb-1"><strong>Tenancy Agreement Signed:
+                </strong></p>
+            </div>
+            <div class="col-6 col text-center">
+                <p class="mb-1"><strong>Tenancy Invoice Sent:</strong></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6 text-center">
+                {% if propertyprocess.lettings_progression.tenancy_agreement_signed %}
+                    <h5 class="text-uppercase badge badge-success">Completed</h5>
+                    <p>
+                        <small>
+                            {{ propertyprocess.lettings_progression.tenancy_agreement_signed_date }}
+                        </small>
+                    </p>
+                {% else %}
+                    <p><span class="badge badge-danger">Incomplete</span></p>
+                {% endif %}
+            </div>
+            <div class="col-6 text-center">
+                {% if propertyprocess.lettings_progression.tenant_invoice_sent %}
+                    <h5 class="text-uppercase badge badge-success">Completed</h5>
+                    <p>
+                        <small>
+                            {{ propertyprocess.lettings_progression.tenant_invoice_sent_date }}
+                        </small>
+                    </p>
+                {% else %}
+                    <p><span class="badge badge-danger">Incomplete</span></p>
+                {% endif %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6 text-center">
+                <p class="mb-1"><strong>Move In Funds Received:</strong></p>
+            </div>
+            <div class="col-6 text-center">
+                <p class="mb-1"><strong>Prescribed Info & Statutory Docs Sent:</strong></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6 text-center">
+                {% if propertyprocess.lettings_progression.move_in_funds_received %}
+                    <h5 class="text-uppercase badge badge-success">Completed</h5>
+                    <p>
+                        <small>
+                            {{ propertyprocess.lettings_progression.move_in_funds_received_date }}
+                        </small>
+                    </p>
+                {% else %}
+                    <p><span class="badge badge-danger">Incomplete</span></p>
+                {% endif %}
+            </div>
+            <div class="col-6 text-center">
+                {% if propertyprocess.lettings_progression.prescribed_info_and_statutory_docs_sent %}
+                    <h5 class="text-uppercase badge badge-success">Completed</h5>
+                    <p>
+                        <small>
+                            {{ propertyprocess.lettings_progression.prescribed_info_and_statutory_docs_sent_date }}
+                        </small>
+                    </p>
+                {% else %}
+                    <p><span class="badge badge-danger">Incomplete</span></p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end tab-pane -->
+<!-- end phase 3 section -->

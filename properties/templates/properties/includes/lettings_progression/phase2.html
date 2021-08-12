@@ -1,0 +1,112 @@
+<!-- phase 2 section -->
+<!-- tab pane -->
+<div class="tab-pane" id="phase2">
+    
+    <h5 class="text-uppercase"><i class="mdi mdi-progress-check mr-1"></i>
+        Phase 2
+        <span
+            data-url="{% url 'properties:lettings_phase_two' propertyprocess.id %}"
+            class="ml-2 mdi mdi-square-edit-outline 
+            {% if propertyprocess.macro_status < 4 %}
+            text-secondary" disabled
+            {% else %}
+            pointer text-warning js-load-form" 
+            {% endif %}
+            data-toggle="tooltip"
+            data-placement="top"
+            title="Adjust Phase Two"
+        ></span>
+    </h5>
+
+    <div>
+        <div class="row">
+            <div class="col text-center">
+                <p class="mb-1"><strong>References Passed:</strong></p>
+            </div>
+            {% if propertyprocess.lettings_progression.lettings_progression_settings.show_gas %}
+            <div class="col col text-center">
+                <p class="mb-1"><strong>Gas Certificate:</strong></p>
+            </div>
+            {% endif %}
+            <div class="col col text-center">
+                <p class="mb-1"><strong>Electrical Certificate:</strong></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col text-center">
+                {% if propertyprocess.lettings_progression.references_passed %}
+                    <h5 class="text-uppercase badge badge-success">Completed</h5>
+                    <p>
+                        <small>
+                            {{ propertyprocess.lettings_progression.references_passed_date }}
+                        </small>
+                    </p>
+                {% else %}
+                    <p><span class="badge badge-danger">Incomplete</span></p>
+                {% endif %}
+            </div>
+            {% if propertyprocess.lettings_progression.lettings_progression_settings.show_gas %}
+            <div class="col text-center">
+                {% if propertyprocess.lettings_progression.gas_safety_certificate %}
+                    <h5 class="text-uppercase badge badge-success">Completed</h5>
+                    <p>
+                        <small>
+                            {{ propertyprocess.lettings_progression.gas_safety_certificate_date }}
+                        </small>
+                    </p>
+                {% else %}
+                    <p><span class="badge badge-danger">Incomplete</span></p>
+                {% endif %}
+            </div>
+            {% endif %}
+            <div class="col text-center">
+                {% if propertyprocess.lettings_progression.electrical_certificate %}
+                    <h5 class="text-uppercase badge badge-success">Completed</h5>
+                    <p>
+                        <small>
+                            {{ propertyprocess.lettings_progression.electrical_certificate_date }}
+                        </small>
+                    </p>
+                {% else %}
+                    <p><span class="badge badge-danger">Incomplete</span></p>
+                {% endif %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6 text-center">
+                <p class="mb-1"><strong>Energy Performance Certificate:</strong></p>
+            </div>
+            <div class="col-6 text-center">
+                <p class="mb-1"><strong>Tenancy Agreement Sent For Signature:</strong></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6 text-center">
+                {% if propertyprocess.lettings_progression.epc_certificate %}
+                    <h5 class="text-uppercase badge badge-success">Completed</h5>
+                    <p>
+                        <small>
+                            {{ propertyprocess.lettings_progression.epc_certificate_date }}
+                        </small>
+                    </p>
+                {% else %}
+                    <p><span class="badge badge-danger">Incomplete</span></p>
+                {% endif %}
+            </div>
+            <div class="col-6 text-center">
+                {% if propertyprocess.lettings_progression.tenancy_certificate_sent %}
+                    <h5 class="text-uppercase badge badge-success">Completed</h5>
+                    <p>
+                        <small>
+                            {{ propertyprocess.lettings_progression.tenancy_certificate_sent_date }}
+                        </small>
+                    </p>
+                {% else %}
+                    <p><span class="badge badge-danger">Incomplete</span></p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end tab-pane -->
+<!-- end phase 2 section -->

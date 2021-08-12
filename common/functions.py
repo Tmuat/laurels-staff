@@ -3,7 +3,7 @@ import datetime
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
-from properties.models import SalesProgression
+from properties.models import SalesProgression, LettingsProgression
 
 
 def quarter_year_calc():
@@ -193,6 +193,72 @@ def sales_progression_percentage(propertyprocess_id):
         percentages["phase_3"] = round(phase_3 / 2, 2) * 100
 
     percentages["phase_4"] = round(phase_4 / 8, 2) * 100
+
+    return percentages
+
+
+def lettings_progression_percentage(propertyprocess_id):
+    instance = get_object_or_404(
+        LettingsProgression, propertyprocess=propertyprocess_id
+    )
+
+    percentages = {}
+
+    phase_1 = 0
+    phase_2 = 0
+    phase_3 = 0
+    phase_4 = 0
+
+    if instance.contact_touch_point_to_ll_and_tt:
+        phase_1 += 1
+    if instance.reference_forms_sent_to_tenant:
+        phase_1 += 1
+    if instance.compliance_form_sent_to_landlord:
+        phase_1 += 1
+    if instance.google_drive_and_email_inbox:
+        phase_1 += 1
+    if instance.tenancy_created_on_expert_agent:
+        phase_1 += 1
+
+    if instance.lettings_progression_settings.show_gas:
+        if instance.gas_safety_certificate:
+            phase_2 += 1
+    if instance.references_passed:
+        phase_2 += 1
+    if instance.electrical_certificate:
+        phase_2 += 1
+    if instance.epc_certificate:
+        phase_2 += 1
+    if instance.tenancy_certificate_sent:
+        phase_2 += 1
+
+    if instance.tenancy_agreement_signed:
+        phase_3 += 1
+    if instance.tenant_invoice_sent:
+        phase_3 += 1
+    if instance.move_in_funds_received:
+        phase_3 += 1
+    if instance.prescribed_info_and_statutory_docs_sent:
+        phase_3 += 1
+
+    if instance.deposit_registered_with_tds:
+        phase_4 += 1
+    if instance.landlord_invoices_sent_to_ea:
+        phase_4 += 1
+    if instance.right_to_rent:
+        phase_4 += 1
+
+    percentages["phase_1"] = round(phase_1 / 5, 2) * 100
+
+    if instance.lettings_progression_settings.show_gas:
+        percentages["phase_2"] = round(phase_2 / 5, 2) * 100
+        print("HERE")
+    else:
+        percentages["phase_2"] = round(phase_2 / 4, 2) * 100
+
+    percentages["phase_3"] = round(phase_3 / 4, 2) * 100
+
+    percentages["phase_4"] = round(phase_4 / 3, 2) * 100
 
     return percentages
 

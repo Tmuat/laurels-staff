@@ -1937,20 +1937,20 @@ class LettingsProgressionSettings(UpdatedAndCreated):
 
     def __str__(self):
         if (
-            self.sales_progression.propertyprocess.property.address_line_2
+            self.lettings_progression.propertyprocess.property.address_line_2
             == ""
-            or self.sales_progression.propertyprocess.property.address_line_2
+            or self.lettings_progression.propertyprocess.property.address_line_2
             is None
         ):
             property_address = "%s, %s" % (
-                self.sales_progression.propertyprocess.property.postcode,
-                self.sales_progression.propertyprocess.property.address_line_1,
+                self.lettings_progression.propertyprocess.property.postcode,
+                self.lettings_progression.propertyprocess.property.address_line_1,
             )
         else:
             property_address = "%s, %s, %s" % (
-                self.sales_progression.propertyprocess.property.postcode,
-                self.sales_progression.propertyprocess.property.address_line_1,
-                self.sales_progression.propertyprocess.property.address_line_2,
+                self.lettings_progression.propertyprocess.property.postcode,
+                self.lettings_progression.propertyprocess.property.address_line_1,
+                self.lettings_progression.propertyprocess.property.address_line_2,
             )
         return property_address
 

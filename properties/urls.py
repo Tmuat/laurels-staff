@@ -57,6 +57,11 @@ from properties.views import (
     delete_property_chain_detail,
     fall_through,
     manage_sales_progression,
+    edit_lettings_prog_settings,
+    lettings_phase_one,
+    lettings_phase_two,
+    lettings_phase_three,
+    lettings_phase_four,
 )
 
 
@@ -302,6 +307,31 @@ urlpatterns = [
         "properties/edit/sales-progression/phase-four/<propertyprocess_id>/",
         phase_four,
         name="phase_four",
+    ),
+    path(
+        "properties/edit/lettings-progression/settings/<propertyprocess_id>/",
+        edit_lettings_prog_settings,
+        name="edit_lettings_prog_settings",
+    ),
+    path(
+        "properties/edit/lettings-progression/phase-one/<propertyprocess_id>/",
+        lettings_phase_one,
+        name="lettings_phase_one",
+    ),
+    path(
+        "properties/edit/lettings-progression/phase-two/<propertyprocess_id>/",
+        lettings_phase_two,
+        name="lettings_phase_two",
+    ),
+    path(
+        "properties/edit/lettings-progression/phase-three/<propertyprocess_id>/",
+        lettings_phase_three,
+        name="lettings_phase_three",
+    ),
+    path(
+        "properties/edit/lettings-progression/phase-four/<propertyprocess_id>/",
+        lettings_phase_four,
+        name="lettings_phase_four",
     ),
     path(
         "properties/add/sales-progression/client-info/<propertyprocess_id>/",

@@ -31,6 +31,23 @@ class LettingProperties(UpdatedAndCreated):
     )
     is_active = models.BooleanField(choices=BOOL_CHOICES, default=True)
 
+    def create_managed(self, request, model_instance, **kwargs):
+        EPC.objects.create(
+            lettings_properties=model_instance,
+            created_by=request.user.get_full_name(),
+            updated_by=request.user.get_full_name(),
+        )
+        Gas.objects.create(
+            lettings_properties=model_instance,
+            created_by=request.user.get_full_name(),
+            updated_by=request.user.get_full_name(),
+        )
+        Electrical.objects.create(
+            lettings_properties=model_instance,
+            created_by=request.user.get_full_name(),
+            updated_by=request.user.get_full_name(),
+        )
+
     def __str__(self):
         if (
             self.propertyprocess.property.address_line_2 == ""

@@ -1,0 +1,60 @@
+{% load static i18n %}
+<div class="modal-content green-gradient">
+    <div class="modal-body">
+        <div class="text-center mt-2 mb-3">
+            <span><img src="{% static 'custom/images/logo.png' %}" alt="laurels" height="80"></span>
+        </div>
+        <div class="text-center text-white">
+            <h4 class="text-white">Edit Lettings Progression Settings</h4>
+            <form method="post" action="{% url 'properties:lettings_phase_two' propertyprocess_id %}" class="text-center text-white px-2 js-submit-form-success custom-form-margin">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-12">
+                        {{ form.references_passed|as_crispy_field }}
+                    </div>
+                </div>
+                {% if propertyprocess.lettings_progression.lettings_progression_settings.show_gas %}
+                <div class="row">
+                    <div class="col-12">
+                        {{ form.gas_safety_certificate|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        {{ form.gas_safety_certificate_expiry|as_crispy_field }}
+                    </div>
+                </div>
+                {% endif %}
+                <div class="row">
+                    <div class="col-12">
+                        {{ form.electrical_certificate|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        {{ form.electrical_certificate_expiry|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        {{ form.epc_certificate|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        {{ form.epc_certificate_expiry|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        {{ form.tenancy_certificate_sent|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="my-2 text-center">
+                    <button type="submit" class="btn btn-info" id="add-button">{% trans "Save Lettings Progression" %}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- /.modal-content -->

@@ -1131,6 +1131,10 @@ class LettingsProgressionPhaseTwoForm(forms.ModelForm):
             "tenancy_certificate_sent": "Tenancy Agreement Sent For Signature",
         }
 
+        self.fields["gas_safety_certificate_expiry"].widget = DateInput()
+        self.fields["electrical_certificate_expiry"].widget = DateInput()
+        self.fields["epc_certificate_expiry"].widget = DateInput()
+
         instance = getattr(self, "instance", None)
         for model_field in instance._meta.get_fields():
             for field in self.fields:

@@ -1,0 +1,38 @@
+{% load static i18n %}
+<div class="modal-content green-gradient">
+    <div class="modal-body">
+        <div class="text-center mt-2 mb-3">
+            <span><img src="{% static 'custom/images/logo.png' %}" alt="laurels" height="80"></span>
+        </div>
+        <div class="text-center text-white">
+            <h4 class="text-white">Edit Lettings Progression Settings</h4>
+            <form method="post" action="{% url 'properties:lettings_phase_three' propertyprocess_id %}" class="text-center text-white px-2 js-submit-form-success custom-form-margin">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-12">
+                        {{ form.tenancy_agreement_signed|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        {{ form.tenant_invoice_sent|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        {{ form.move_in_funds_received|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        {{ form.prescribed_info_and_statutory_docs_sent|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="my-2 text-center">
+                    <button type="submit" class="btn btn-info" id="add-button">{% trans "Save Lettings Progression" %}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- /.modal-content -->
