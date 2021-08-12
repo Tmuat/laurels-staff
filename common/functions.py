@@ -252,7 +252,6 @@ def lettings_progression_percentage(propertyprocess_id):
 
     if instance.lettings_progression_settings.show_gas:
         percentages["phase_2"] = round(phase_2 / 5, 2) * 100
-        print("HERE")
     else:
         percentages["phase_2"] = round(phase_2 / 4, 2) * 100
 

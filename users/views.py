@@ -282,7 +282,6 @@ def edit_user(request, user):
     user = get_object_or_404(CustomUser, pk=user)
 
     if request.method == "POST":
-        print("HERE")
         form = UserForm(
             request.POST,
             instance=user,

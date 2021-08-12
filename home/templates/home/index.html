@@ -395,23 +395,25 @@
                                         </thead>
                                         <tbody>
                                             {% for instance in valuations %}
-                                            <tr>
-                                                <td>
-                                                    {% for employee in employees %}
-                                                        {% if instance.employee_id == employee.id %}
+                                                {% for employee in employees %}
+                                                    {% if instance.employee_id == employee.id %}
+                                                    <tr>
+                                                        <td>
                                                             {{ employee.user.abbreviated_name }}
-                                                        {% endif %}
-                                                    {% endfor %}
-                                                </td>
-                                                <td>{{ instance.valuation_count }}</td>
-                                                <td>
-                                                    <div class="progress" style="height: 3px;">
-                                                        <div class="progress-bar bg-success" role="progressbar"
-                                                            style="width: {{ instance.valuation_target }}%; height: 20px;" aria-valuenow="{{ instance.valuation_target }}"
-                                                            aria-valuemin="0" aria-valuemax="100"></div>
-                                                    </div>
-                                                </td>
-                                            </tr>
+                                                        </td>
+                                                        <td>
+                                                            {{ instance.valuation_count }}
+                                                        </td>
+                                                        <td>
+                                                            <div class="progress" style="height: 3px;">
+                                                                <div class="progress-bar bg-success" role="progressbar"
+                                                                    style="width: {{ instance.valuation_target }}%; height: 20px;" aria-valuenow="{{ instance.valuation_target }}"
+                                                                    aria-valuemin="0" aria-valuemax="100"></div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    {% endif %}
+                                                {% endfor %}
                                             {% endfor %}
                                             {% for employee in no_valuation_employees %}
                                             <tr>
