@@ -1002,6 +1002,7 @@ class DealExtraLettings(UpdatedAndCreated):
     THIRTYSIX = 36
 
     TERM = [
+        (SIX, "6 Months"),
         (TWELVE, "12 Months"),
         (EIGHTEEN, "18 Months"),
         (TWENTYFOUR, "24 Months"),
