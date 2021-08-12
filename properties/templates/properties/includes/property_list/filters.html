@@ -1,7 +1,10 @@
 <div class="text-center text-sm-right mt-2 mt-sm-0">
     <div class="btn-group mb-2">
         <a href="?{% if query %}query={{ query }}{% endif %}{% if sector %}sector={{ sector }}{% endif %}" class="btn btn-sm {% if status %}btn-light text-dark{% else %}btn-success text-white{% endif %}">All</a>
-        <a href="?{% if query %}query={{ query }}&{% endif %}{% if sector %}sector={{ sector }}&{% endif %}status=live" class="btn btn-sm {% if status %}btn-success text-white{% else %}btn-light text-dark{% endif %}">Live Only</a>
+        <a href="?{% if query %}query={{ query }}&{% endif %}{% if sector %}sector={{ sector }}&{% endif %}status=potential" class="btn btn-sm {% if status == "potential" %}btn-success text-white{% else %}btn-light text-dark{% endif %}">Potential</a>
+        <a href="?{% if query %}query={{ query }}&{% endif %}{% if sector %}sector={{ sector }}&{% endif %}status=live" class="btn btn-sm {% if status == "live" %}btn-success text-white{% else %}btn-light text-dark{% endif %}">Live</a>
+        <a href="?{% if query %}query={{ query }}&{% endif %}{% if sector %}sector={{ sector }}&{% endif %}status=deal" class="btn btn-sm {% if status == "deal" %}btn-success text-white{% else %}btn-light text-dark{% endif %}">Deal</a>
+        <a href="?{% if query %}query={{ query }}&{% endif %}{% if sector %}sector={{ sector }}&{% endif %}status=complete" class="btn btn-sm {% if status == "complete" %}btn-success text-white{% else %}btn-light text-dark{% endif %}">Completed</a>
     </div>
     <div class="btn-group ml-1 mb-2">
         <a href="?{% if query %}query={{ query }}{% endif %}{% if query and status %}&{% endif %}{% if status %}status={{ status }}{% endif %}" class="btn btn-sm {% if sector %}btn-light text-dark{% else %}btn-success text-white{% endif %}">All</a>

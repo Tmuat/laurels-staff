@@ -27,6 +27,12 @@
                 </a>
             </li>
             <li class="side-nav-item">
+                <a href="{% url 'home:offer_board' %}?hub={{ request.user.profile.hub.first.slug }}" class="side-nav-link">
+                    <i class="mdi mdi-monitor-dashboard"></i>
+                    <span> {% trans "Offer Board" %} </span>
+                </a>
+            </li>
+            <li class="side-nav-item">
                 <a href="javascript: void(0);" class="side-nav-link">
                     <i class="mdi mdi-warehouse"></i>
                     <span> {% trans "Properties" %} </span>
@@ -34,17 +40,23 @@
                 </a>
                 <ul class="side-nav-second-level" aria-expanded="false">
                     <li {% if request.resolver_match.url_name == 'property_list' %}class="active"{% endif %}>
-                        <a href="{% url 'properties:property_list' %}">{% trans "Property List" %}</a>
+                        <a href="{% url 'properties:property_list' %}">{% trans "All Property List" %}</a>
                     </li>
-                    <li {% if request.resolver_match.url_name == 'offer_board' %}class="active mm-active"{% endif %}>
-                        <a 
-                            href="{% url 'home:offer_board' %}?hub={{ request.user.profile.hub.first.slug }}"
-                            {% if request.resolver_match.url_name == 'offer_board' %}class="active"{% endif %}
-                        >{% trans "Offer Board" %}</a>
+                    <li {% if request.resolver_match.url_name == 'property_list' %}class="active"{% endif %}>
+                        <a href="{% url 'properties:property_list' %}?status=potential">{% trans "Potential Properties" %}</a>
+                    </li>
+                    <li {% if request.resolver_match.url_name == 'property_list' %}class="active"{% endif %}>
+                        <a href="{% url 'properties:property_list' %}?status=live">{% trans "On The Market" %}</a>
+                    </li>
+                    <li {% if request.resolver_match.url_name == 'property_list' %}class="active"{% endif %}>
+                        <a href="{% url 'properties:property_list' %}?status=deal">{% trans "Sold/Let" %}</a>
+                    </li>
+                    <li {% if request.resolver_match.url_name == 'property_list' %}class="active"{% endif %}>
+                        <a href="{% url 'properties:property_list' %}?status=complete">{% trans "Completed/Moved In" %}</a>
                     </li>
                 </ul>
             </li>
-            <li class="side-nav-item">
+            <!-- <li class="side-nav-item">
                 <a href="javascript: void(0);" class="side-nav-link">
                     <i class="mdi mdi-home-group"></i>
                     <span> {% trans "Lettings" %} </span>
@@ -61,7 +73,7 @@
                         >{% trans "Offer Board" %}</a>
                     </li>
                 </ul>
-            </li>
+            </li> -->
             <!-- <li class="side-nav-item">
                 <a href="javascript: void(0);" class="side-nav-link">
                     <i class="mdi mdi-graph-outline"></i>

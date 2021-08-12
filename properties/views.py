@@ -122,9 +122,31 @@ def property_list(request):
     if request.GET:
         if "status" in request.GET:
             status = request.GET["status"]
-            properties_list = properties_list.exclude(macro_status=5).exclude(
-                macro_status=0
-            )
+            if status == "potential":
+                properties_list = properties_list. \
+                    exclude(macro_status=4). \
+                    exclude(macro_status=5)
+            elif status == "live":
+                properties_list = properties_list. \
+                    exclude(macro_status=0). \
+                    exclude(macro_status=1). \
+                    exclude(macro_status=2). \
+                    exclude(macro_status=4). \
+                    exclude(macro_status=5)
+            elif status == "deal":
+                properties_list = properties_list. \
+                    exclude(macro_status=0). \
+                    exclude(macro_status=1). \
+                    exclude(macro_status=2). \
+                    exclude(macro_status=3). \
+                    exclude(macro_status=5)
+            elif status == "complete":
+                properties_list = properties_list. \
+                    exclude(macro_status=0). \
+                    exclude(macro_status=1). \
+                    exclude(macro_status=2). \
+                    exclude(macro_status=3). \
+                    exclude(macro_status=4)
         if "sector" in request.GET:
             sector = request.GET["sector"]
             properties_list = properties_list.filter(sector=sector)
@@ -161,6 +183,7 @@ def property_list(request):
         "query": query,
         "status": status,
         "sector": sector,
+        "filter": filter,
     }
 
     template = "properties/property_list.html"
