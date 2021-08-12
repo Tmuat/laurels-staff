@@ -204,19 +204,37 @@ class PropertyProcess(UpdatedAndCreated):
     legacy_property = models.BooleanField(default=False, choices=LEGACY)
     previously_fallen_through = models.BooleanField(default=False)
 
+    def __str__(self):
+        if (
+            self.property.address_line_2 == ""
+            or self.property.address_line_2 == None
+        ):
+            property_address = "%s, %s" % (
+                self.property.postcode,
+                self.property.address_line_1,
+            )
+        else:
+            property_address = "%s, %s, %s" % (
+                self.property.postcode,
+                self.property.address_line_1,
+                self.property.address_line_2,
+            )
+        return property_address
+
     def send_withdrawn_mail(self, request, reason, **kwargs):
         no_reply_email = settings.NO_REPLY_EMAIL
         admin_email = settings.ADMIN_EMAIL
+        address = str(self.__str__())
         context = kwargs
         context.update(
             {
                 "withdrawn": reason,
-                "address": self.__str__,
+                "address": address,
                 "hub": self.hub,
                 "employee": self.employee,
             }
         )
-        subject = f"Withdrawal: {self.__str__}"
+        subject = f"Withdrawal: {address}"
         body = render_to_string("properties/emails/withdrawal.txt", context)
 
         try:
@@ -235,16 +253,17 @@ class PropertyProcess(UpdatedAndCreated):
     def send_back_on_market_mail(self, request, **kwargs):
         no_reply_email = settings.NO_REPLY_EMAIL
         admin_email = settings.ADMIN_EMAIL
+        address = str(self.__str__())
         context = kwargs
         context.update(
             {
                 "marketing_board": self.instruction.marketing_board,
-                "address": self.__str__,
+                "address": address,
                 "hub": self.hub,
                 "employee": self.employee,
             }
         )
-        subject = f"Back On The Market: {self.__str__}"
+        subject = f"Back On The Market: {address}"
         body = render_to_string(
             "properties/emails/back_on_market.txt", context
         )
@@ -261,23 +280,6 @@ class PropertyProcess(UpdatedAndCreated):
             )
         except BadHeaderError:
             return HttpResponse("Invalid header found.")
-
-    def __str__(self):
-        if (
-            self.property.address_line_2 == ""
-            or self.property.address_line_2 == None
-        ):
-            property_address = "%s, %s" % (
-                self.property.postcode,
-                self.property.address_line_1,
-            )
-        else:
-            property_address = "%s, %s, %s" % (
-                self.property.postcode,
-                self.property.address_line_1,
-                self.property.address_line_2,
-            )
-        return property_address
 
 
 class PropertyHistory(UpdatedAndCreated):
@@ -418,16 +420,17 @@ class Instruction(UpdatedAndCreated):
     def send_mail(self, request, **kwargs):
         no_reply_email = settings.NO_REPLY_EMAIL
         admin_email = settings.ADMIN_EMAIL
+        address = str(self.__str__)
         context = kwargs
         context.update(
             {
                 "marketing_board": self.marketing_board,
-                "address": self.__str__,
+                "address": address,
                 "hub": self.propertyprocess.hub,
                 "employee": self.propertyprocess.employee,
             }
         )
-        subject = f"Sales Instruction: {self.__str__}"
+        subject = f"Sales Instruction: {address}"
         body = render_to_string(
             "properties/emails/new_instruction.txt", context
         )
@@ -901,18 +904,19 @@ class Deal(UpdatedAndCreated):
         no_reply_email = settings.NO_REPLY_EMAIL
         admin_email = settings.ADMIN_EMAIL
         humanized_offer = humanize.intcomma(self.offer_accepted.offer)
+        address = str(self.__str__)
         context = kwargs
         context.update(
             {
                 "marketing_board": marketing_board,
-                "address": self.__str__,
+                "address": address,
                 "hub": self.propertyprocess.hub,
                 "employee": self.propertyprocess.employee,
                 "offer": self.offer_accepted,
                 "humanized_offer": humanized_offer,
             }
         )
-        subject = f"Sales Deal: {self.__str__}"
+        subject = f"Sales Deal: {address}"
         body = render_to_string("properties/emails/new_deal.txt", context)
 
         try:
@@ -932,18 +936,19 @@ class Deal(UpdatedAndCreated):
         no_reply_email = settings.NO_REPLY_EMAIL
         admin_email = settings.ADMIN_EMAIL
         humanized_offer = humanize.intcomma(self.offer_accepted.offer)
+        address = str(self.__str__)
         context = kwargs
         context.update(
             {
                 "marketing_board": marketing_board,
-                "address": self.__str__,
+                "address": address,
                 "hub": self.propertyprocess.hub,
                 "employee": self.propertyprocess.employee,
                 "offer": self.offer_accepted,
                 "humanized_offer": humanized_offer,
             }
         )
-        subject = f"Sales Deal: {self.__str__}"
+        subject = f"Sales Deal: {address}"
         body = render_to_string(
             "properties/emails/new_lettings_deal.txt", context
         )
@@ -1075,17 +1080,18 @@ class ExchangeMoveSales(UpdatedAndCreated):
     def send_exchange_mail(self, request, **kwargs):
         no_reply_email = settings.NO_REPLY_EMAIL
         admin_email = settings.ADMIN_EMAIL
+        address = str(self.exchange.propertyprocess.__str__)
         context = kwargs
         context.update(
             {
-                "address": self.exchange.propertyprocess.__str__,
+                "address": address,
                 "hub": self.exchange.propertyprocess.hub,
                 "employee": self.exchange.propertyprocess.employee,
                 "exchange": self.exchange_date.strftime("%d/%m/%Y"),
                 "completion": self.completion_date.strftime("%d/%m/%Y"),
             }
         )
-        subject = f"Exchange: {self.__str__}"
+        subject = f"Exchange: {address}"
         body = render_to_string("properties/emails/exchange.txt", context)
 
         try:
@@ -1139,17 +1145,18 @@ class ExchangeMoveLettings(UpdatedAndCreated):
     def send_exchange_mail(self, request, **kwargs):
         no_reply_email = settings.NO_REPLY_EMAIL
         admin_email = settings.ADMIN_EMAIL
+        address = str(self.exchange.propertyprocess.__str__)
         context = kwargs
         context.update(
             {
-                "address": self.exchange.propertyprocess.__str__,
+                "address": address,
                 "hub": self.exchange.propertyprocess.hub,
                 "employee": self.exchange.propertyprocess.employee,
                 "move_in_date": self.move_in_date.strftime("%d/%m/%Y"),
                 "first_renewal": self.first_renewal.strftime("%d/%m/%Y"),
             }
         )
-        subject = f"Lettings Exchange: {self.__str__}"
+        subject = f"Lettings Exchange: {address}"
         body = render_to_string(
             "properties/emails/exchange_lettings.txt", context
         )
