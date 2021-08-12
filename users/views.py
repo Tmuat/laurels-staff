@@ -291,12 +291,13 @@ def edit_user(request, user):
             instance=user.profile,
         )
         if form.is_valid() and profile_form.is_valid():
-            print("NOT VALID")
             form.save()
 
             profile_instance = profile_form.save(commit=False)
             profile_instance.updated_by = request.user.get_full_name()
             profile_instance.save()
+
+            profile_instance.hub.clear()
 
             for hub in profile_form.cleaned_data["hub"]:
                 profile_instance.hub.add(hub)
