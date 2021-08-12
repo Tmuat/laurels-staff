@@ -124,6 +124,7 @@ def property_list(request):
             status = request.GET["status"]
             if status == "potential":
                 properties_list = properties_list. \
+                    exclude(macro_status=3). \
                     exclude(macro_status=4). \
                     exclude(macro_status=5)
             elif status == "live":
