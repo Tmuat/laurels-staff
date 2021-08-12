@@ -3,10 +3,17 @@
         aria-controls="property{{ forloop.counter }}">
         <h5 class="m-0 pb-2">
             <i class='uil uil-angle-down font-18'></i>{{ instance }} <span class="text-muted">({{ instance.get_macro_status_display }})</span>
+            <span class="badge 
+            {% if instance.sector == "sales" %}
+                badge-primary">Sales
+            {% elif instance.sector == "lettings" %}
+                badge-info">Lettings
+            {% endif %}
+        </span>
         </h5>
     </a>
 
-    <div class="collapse {% if forloop.first %}show{% endif %}" id="property{{ forloop.counter }}">
+    <div class="collapse" id="property{{ forloop.counter }}">
         <div class="card mb-0">
             <div class="card-body">
                 <div class="row">

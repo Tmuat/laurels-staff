@@ -167,7 +167,7 @@ def property_list(request):
 
     page = request.GET.get("page", 1)
 
-    paginator = Paginator(properties_list, 12)
+    paginator = Paginator(properties_list, 16)
     last_page = paginator.num_pages
 
     try:
