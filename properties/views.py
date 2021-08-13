@@ -4868,7 +4868,6 @@ def lettings_phase_three(request, propertyprocess_id):
             request.POST, instance=progression
         )
         if form.is_valid():
-
             instance = form.save(commit=False)
 
             instance.updated_by = request.user.get_full_name()
@@ -4883,7 +4882,7 @@ def lettings_phase_three(request, propertyprocess_id):
             if old_tenancy != instance.tenancy_agreement_signed:
                 old_tenancy_notes = "Tenancy Agreement Signed"
                 notes_dict.append(old_tenancy_notes)
-                instance.enquiries_raised_date = datetime.date.today()
+                instance.tenancy_agreement_signed_date = datetime.date.today()
 
             if old_invoice != instance.tenant_invoice_sent:
                 old_invoice_notes = "Tenancy Invoice Sent"
@@ -4901,10 +4900,9 @@ def lettings_phase_three(request, propertyprocess_id):
                 instance.prescribed_info_and_statutory_docs_sent_date = (
                     datetime.date.today()
                 )
-
             instance.save()
 
-            phases = sales_progression_percentage(property_process.id)
+            phases = lettings_progression_percentage(property_process.id)
 
             phase_three = phases.get("phase_3")
             if phase_three > 99:
