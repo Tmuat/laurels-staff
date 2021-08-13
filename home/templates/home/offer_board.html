@@ -248,9 +248,9 @@
                                                             <!-- item-->
                                                             <span
                                                             {% if instance.propertyprocess.sector == "sales" %}
-                                                                data-url="{% url 'properties:add_another_offer' instance.id %}?id={{ instance.offerer_details.id }}"
+                                                                data-url="{% url 'properties:add_another_offer' instance.propertyprocess.id %}?id={{ instance.offerer_details.id }}"
                                                             {% else %}
-                                                                data-url="{% url 'properties:add_another_lettings_offer' instance.id %}?id={{ instance.offerer_details.id }}"
+                                                                data-url="{% url 'properties:add_another_lettings_offer' instance.propertyprocess.id %}?id={{ instance.offerer_details.id }}"
                                                             {% endif %}
                                                             class="dropdown-item js-load-form pointer"><i class="mdi mdi-piggy-bank mr-1"></i>Change Offer</span>
                                                             <!-- End item-->
