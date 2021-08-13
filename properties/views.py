@@ -3907,7 +3907,7 @@ def phase_four(request, propertyprocess_id):
                 != instance.sellers_final_contracts_signed
             ):
                 seller_contract_notes = "Sellers Final Contracts Signed"
-                notes_dict.appendseller_contract_notes()
+                notes_dict.append(seller_contract_notes)
                 instance.sellers_final_contracts_signed_date = (
                     datetime.date.today()
                 )
