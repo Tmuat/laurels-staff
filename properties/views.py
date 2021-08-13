@@ -2600,7 +2600,11 @@ def withdraw_property(request, propertyprocess_id):
                 if withdrawal_reason[0] == reason:
                     reason = withdrawal_reason[1]
 
-            history_notes = reason
+            formatted_date = date.strftime("%d/%m/%Y")
+
+            full_note = reason + f" - Withdrawn on {formatted_date}"
+
+            history_notes = full_note
 
             for offer in property_process.offer.all():
                 if (
