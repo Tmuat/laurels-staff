@@ -4882,7 +4882,7 @@ def lettings_phase_three(request, propertyprocess_id):
 
             if old_tenancy != instance.tenancy_agreement_signed:
                 old_tenancy_notes = "Tenancy Agreement Signed"
-                notes_dict.append(enq_notes)
+                notes_dict.append(old_tenancy_notes)
                 instance.enquiries_raised_date = datetime.date.today()
 
             if old_invoice != instance.tenant_invoice_sent:
@@ -4907,7 +4907,7 @@ def lettings_phase_three(request, propertyprocess_id):
             phases = sales_progression_percentage(property_process.id)
 
             phase_three = phases.get("phase_3")
-            if phase_three  > 99:
+            if phase_three > 99:
                 lettings_prog_phase.phase_3 = True
                 lettings_prog_phase.save()
 
