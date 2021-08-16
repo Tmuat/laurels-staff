@@ -22,7 +22,7 @@
                             {% for instance in hub.employee.all %}
                             <tr>
                                 <td>{{ instance }}</td>
-                                <td class="text-center"><span class="mdi mdi-arrow-expand-all pointer js-load-form" data-url="{% url 'users:user_detail' instance.user.pk %}"></span></td>
+                                <td class="text-center"><span class="mdi mdi-arrow-expand-all pointer js-load-large-form js-hide-modal" data-url="{% url 'users:user_detail' instance.user.pk %}"></span></td>
                             </tr>
                             {% endfor %}
                         </tbody>

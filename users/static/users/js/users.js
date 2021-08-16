@@ -80,8 +80,15 @@ $(document).ready(function () {
         $("#base-modal").modal("hide");
     };
 
+    // Deals with hiding a large modal
+    var hideLargeModal = function () {
+        $("#base-large-modal").modal("hide");
+    };
+
     $("#base-modal").on("click", ".js-hide-modal", hideModal);
     $("#base-modal").on("click", ".js-load-form", loadBaseModal);
+    $("#base-large-modal").on("click", ".js-load-large-form", loadFormLargeModal);
+
     $(".js-load-form").on("click", loadBaseModal);
     $(".js-load-large-form").on("click", loadFormLargeModal);
     $("#base-modal").on("click", ".js-load-large-form", loadFormLargeModal);

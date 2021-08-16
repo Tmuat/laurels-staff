@@ -343,9 +343,42 @@ $(document).ready(function () {
         });
     });
 
+    // Deals with rendering a form with AJAX to the large modal
+    var loadFormLargeModal = function () {
+        var instance = $(this);
+        $.ajax({
+            url: instance.attr("data-url"),
+            type: 'get',
+            dataType: 'json',
+            success: function (data) {
+                $("#base-large-modal").modal("show");
+                $("#base-large-modal .modal-dialog").html(data.html_modal);
+            }
+        });
+        return false;
+    };
+
+    // Deals with hiding a modal
+    var hideModal = function () {
+        $("#base-modal").modal("hide");
+    };
+
+    // Deals with hiding a large modal
+    var hideLargeModal = function () {
+        $("#base-large-modal").modal("hide");
+    };
+
     // Binding functions
     // Links
     $("#base-modal").on("click", ".js-load-form", loadBaseModal);
+    $("#base-modal").on("click", ".js-load-large-form", loadFormLargeModal);
+    $("#base-large-modal").on("click", ".js-load-large-form", loadFormLargeModal);
+
+    $("#base-modal").on("click", ".js-hide-modal", hideModal);
+    $("#base-large-modal").on("click", ".js-hide-large-modal", hideLargeModal);
+
+    $(".js-load-large-form").on("click", loadFormLargeModal);
+
     $("#panel-div").on("click", ".js-edit-hub", loadBaseModal);
     $(".js-edit-region").on("click", loadBaseModal);
     $("#panel-div").on("click", ".js-hub-employees", loadBaseModal);
