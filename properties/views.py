@@ -4157,6 +4157,7 @@ def edit_client_info(request, propertyprocess_id):
             data["form_is_valid"] = True
 
         else:
+            print(form.errors)
             data["form_is_valid"] = False
     else:
         form = PropertySellingInformationForm(
