@@ -28,7 +28,7 @@ from properties.models import (
     ProgressionNotes,
     PropertyChain,
 )
-from properties.widgets import DateInput
+from properties.widgets import DateInput, NumberInput
 from users.models import Profile
 
 
@@ -986,6 +986,12 @@ class PropertySellingInformationForm(forms.ModelForm):
             "broker_phone": "Phone",
             "broker_email": "Email",
         }
+
+        self.fields["seller_phone"].widget = NumberInput()
+        self.fields["buyer_phone"].widget = NumberInput()
+        self.fields["seller_sol_phone"].widget = NumberInput()
+        self.fields["buyer_sol_phone"].widget = NumberInput()
+        self.fields["broker_phone"].widget = NumberInput()
 
         for field in self.fields:
             label = f"{labels[field]}"
