@@ -608,8 +608,6 @@ class OffererDetails(UpdatedAndCreated):
         (NOT_ON_MARKET, "Not On Market"),
     ]
 
-    COMPLETED = [(True, "Completed"), (False, "Incomplete")]
-
     propertyprocess = models.ForeignKey(
         PropertyProcess,
         on_delete=models.CASCADE,
@@ -617,7 +615,7 @@ class OffererDetails(UpdatedAndCreated):
     )
     full_name = models.CharField(max_length=100, null=False, blank=False)
     completed_offer_form = models.BooleanField(
-        default=False, null=True, blank=False, choices=COMPLETED
+        default=False, null=True, blank=True
     )
     funding = models.CharField(
         max_length=10, null=True, blank=False, choices=FUNDING

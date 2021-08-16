@@ -274,7 +274,7 @@ class ReductionForm(forms.ModelForm):
 
 class OffererForm(forms.ModelForm):
 
-    completed_offer_form = forms.BooleanField()
+    completed_offer_form = forms.BooleanField(required=False)
 
     class Meta:
         model = OffererDetails
@@ -283,7 +283,7 @@ class OffererForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         """
-        Add new labels and order foreign key field
+        Add new labels
         """
         super().__init__(*args, **kwargs)
         labels = {
@@ -291,6 +291,28 @@ class OffererForm(forms.ModelForm):
             "completed_offer_form": "Completed Offer Form?",
             "funding": "Funding Type",
             "status": "Status",
+        }
+
+        for field in self.fields:
+            label = f"{labels[field]}"
+            self.fields[field].label = label
+
+
+class OfferFormForm(forms.ModelForm):
+
+    completed_offer_form = forms.BooleanField()
+
+    class Meta:
+        model = OffererDetails
+        fields = ("completed_offer_form",)
+
+    def __init__(self, *args, **kwargs):
+        """
+        Add new labels and order foreign key field
+        """
+        super().__init__(*args, **kwargs)
+        labels = {
+            "completed_offer_form": "Completed Offer Form?",
         }
 
         for field in self.fields:

@@ -3,6 +3,20 @@
 <tr>
     <td>{{ instance.full_name }}</td>
     <td class="text-center">
+        <span class="badge 
+        {% if instance.completed_offer_form %}
+            badge-success">Complete
+        {% else %}
+            badge-danger pointer js-load-form"
+            data-url="{% url 'properties:add_offer_form' instance.propertyprocess.id instance.id %}"
+            data-toggle="tooltip"
+            data-placement="top"
+            title="Edit Offer Form"
+            >Incomplete
+        {% endif %}
+        </span>
+    </td>
+    <td class="text-center">
         {% if instance.funding is not none %}
             {% if instance.funding == "cash" %}
                 <span 

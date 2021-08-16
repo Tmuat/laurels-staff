@@ -572,14 +572,6 @@ $(document).ready(function () {
         });
     };
 
-    $("#base-modal").on("change", "#id_completed_offer_form", function() {
-        if ($(this).is(':checked')) {
-            $("#base-modal").find("#add-button").removeAttr("disabled");
-        } else {
-            $("#base-modal").find("#add-button").attr("disabled", true);
-        }
-    });
-
     // Add scrollable to modal
     $(".js-large-scrollable-modal").on("click", function() {
         $("#base-large-modal .modal-dialog").addClass("modal-dialog-scrollable");

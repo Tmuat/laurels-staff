@@ -39,6 +39,7 @@ from properties.forms import (
     AnotherOfferLettingsForm,
     OfferStatusForm,
     OfferStatusLettingsForm,
+    OfferFormForm,
     InstructionChangeForm,
     WithdrawalForm,
     DateForm,
@@ -1359,6 +1360,83 @@ def add_offerer(request, propertyprocess_id):
     }
     data["html_modal"] = render_to_string(
         "properties/stages/add_offerer_modal.html",
+        context,
+        request=request,
+    )
+    return JsonResponse(data)
+
+
+@otp_required
+@login_required
+def add_offer_form(request, propertyprocess_id, offerer_id):
+    """
+    Ajax URL for updating offer form status.
+    """
+    data = dict()
+
+    property_process = get_object_or_404(
+        PropertyProcess, id=propertyprocess_id
+    )
+
+    offerer = get_object_or_404(OffererDetails, id=offerer_id)
+
+    if request.method == "POST":
+        form = OfferFormForm(
+            request.POST,
+            instance=offerer,
+        )
+        if form.is_valid():
+            instance = form.save(commit=False)
+
+            instance.updated_by = request.user.get_full_name()
+
+            instance.save()
+
+            history_description = (
+                f"{request.user.get_full_name()} has updated an offer form."
+            )
+
+            notes = (
+                f"The offer form for {offerer.full_name} "
+                "has been updated."
+            )
+
+            history = PropertyHistory.objects.create(
+                propertyprocess=property_process,
+                type=PropertyHistory.PROPERTY_EVENT,
+                description=history_description,
+                notes=notes,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
+
+            data["form_is_valid"] = True
+            context = {
+                "property_process": property_process,
+                "history": history,
+            }
+            data["html_success"] = render_to_string(
+                "properties/stages/includes/form_success.html",
+                context,
+                request=request,
+            )
+
+            data["form_is_valid"] = True
+        else:
+            data["form_is_valid"] = False
+
+    else:
+        form = OfferFormForm(
+            instance=offerer
+        )
+
+    context = {
+        "form": form,
+        "propertyprocess_id": propertyprocess_id,
+        "offerer_id": offerer_id,
+    }
+    data["html_modal"] = render_to_string(
+        "properties/stages/edit_offer_form_modal.html",
         context,
         request=request,
     )

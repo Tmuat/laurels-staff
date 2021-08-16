@@ -1,0 +1,29 @@
+{% load static i18n %}
+<div class="modal-content green-gradient">
+    <div class="modal-body">
+        <div class="text-center mt-2 mb-3">
+            <span><img src="{% static 'custom/images/logo.png' %}" alt="laurels" height="80"></span>
+        </div>
+        <div class="text-center text-white">
+            <h4 class="text-white">Edit Offer Form Status</h4>
+            <form method="post" action="{% url 'properties:add_offer_form' propertyprocess_id offerer_id %}" class="text-center text-white px-2 js-submit-form-success custom-form-margin">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-12 mt-1">
+                        <label for="id_completed_offer_form" class="form-check-label requiredField">
+                            Completed Offer Form?<span class="asteriskField">*</span>
+                        </label>
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="id_completed_offer_form" name="completed_offer_form">
+                            <label class="form-check-label" for="id_completed_offer_form">Completed</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="my-2 text-center">
+                    <button type="submit" class="btn btn-info" id="add-button">{% trans "Update Offer Form" %}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- /.modal-content -->
