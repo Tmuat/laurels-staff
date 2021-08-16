@@ -4148,6 +4148,7 @@ def edit_client_info(request, propertyprocess_id):
             request.POST, instance=property_process.selling_information
         )
         if form.is_valid():
+            print("Form Valid")
             instance = form.save(commit=False)
 
             instance.updated_by = request.user.get_full_name()
@@ -4157,6 +4158,7 @@ def edit_client_info(request, propertyprocess_id):
             data["form_is_valid"] = True
 
         else:
+            print("Form Not Valid")
             print(form.errors)
             data["form_is_valid"] = False
     else:

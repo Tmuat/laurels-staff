@@ -349,6 +349,29 @@ $(document).ready(function () {
         return false;
     };
 
+    // Deals with the form submission only
+    var submitLargeForm = function () {
+        $('#modal-overlay').fadeToggle(100);
+        var form = $(this);
+        $.ajax({
+            url: form.attr("action"),
+            data: form.serialize(),
+            type: form.attr("method"),
+            dataType: 'json',
+            success: function (data) {
+                if (data.form_is_valid) {
+                    $("#base-large-modal").modal("hide");
+                    location.reload();
+                    $('#modal-overlay').fadeToggle(100);
+                } else {
+                    $('#modal-overlay').fadeToggle(100);
+                    $("#base-large-modal .modal-dialog").html(data.html_modal);
+                }
+            }
+        });
+        return false;
+    };
+
     // Deals with the form submission before loading success modal
     var submitFormAndLoadSuccess = function () {
         $('#modal-overlay').fadeToggle(100);
@@ -596,6 +619,6 @@ $(document).ready(function () {
     $("#base-static-modal").on("submit", ".js-submit-form-success", submitFormAndLoadSuccess);
 
     $("#base-modal").on("submit", ".js-submit-form", submitForm);
-    $("#base-large-modal").on("submit", ".js-submit-form", submitForm);
+    $("#base-large-modal").on("submit", ".js-submit-form", submitLargeForm);
     $("#base-static-modal").on("submit", ".js-submit-form", submitStaticForm);
 });
