@@ -30,7 +30,14 @@
                         <div class="custom-control custom-checkbox">
                             <input type="checkbox" class="custom-control-input" id="{{ hub_instance.id }}">
                             <label class="custom-control-label" for="{{ hub_instance.id }}">
-                                {{ hub_instance }}
+                                {{ hub_instance }} - 
+                                <span class="badge 
+                                {% if hub_instance.is_active %}
+                                    badge-success">Active
+                                {% else %}
+                                    badge-danger">Inactive
+                                {% endif %}
+                                </span>
                             </label>
                         </div>
                         <!-- end checkbox -->
