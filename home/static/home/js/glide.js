@@ -3,7 +3,7 @@ const Config = {
     startAt: 0,
     perView: 3,
     focusAt: 0,
-    autoplay: 8000,
+    autoplay: 20000,
     hoverpause: true,
     breakpoints: {
     1700: {
