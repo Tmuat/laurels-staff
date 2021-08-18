@@ -1,0 +1,44 @@
+{% load static i18n %}
+<div class="modal-content green-gradient">
+    <div class="modal-body">
+        <div class="text-center mt-2 mb-3">
+            <span><img src="{% static 'custom/images/logo.png' %}" alt="laurels" height="80"></span>
+        </div>
+        <div class="text-center text-white">
+            <h4 class="text-white">Reductions</h4>
+            <p class="text-white text-center">{{ user.user.get_full_name }} reductions for the current quarter.</p>
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm table-centered mb-0 font-14">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th class="text-left">Address</th>
+                                    <th class="text-center">Reduction Date</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for instance in reductions %}
+                                <tr>
+                                    <td class="text-left">{{ instance }}</td>
+                                    <td>{{ instance.date }}</td>
+                                    <td>
+                                        <a href="{% url 'properties:property_detail' instance.propertyprocess.id %}" class="pointer">
+                                            <i class="mdi mdi-arrow-expand-all font-16 mr-1">
+                                            </i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- end table-responsive-->
+                </div>
+                <!-- end card-body-->
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.modal-content -->

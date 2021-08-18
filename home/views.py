@@ -2,7 +2,9 @@ from django_otp.decorators import otp_required
 
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Sum
+from django.http import JsonResponse
 from django.shortcuts import render
+from django.template.loader import render_to_string
 from django.utils import timezone
 
 from common.functions import quarter_and_year_calc, last_quarter_and_year_calc
@@ -102,11 +104,9 @@ def top_performers(date):
         for target in targets:
             if instance["employee_id"] == target.profile_targets.id:
                 try:
-                    valuation_target = (
-                        round(
-                            instance["valuation_count"] / target.valuations, 2
-                        )
-                        * 100
+                    valuation_target = round(
+                        instance["valuation_count"] / target.valuations * 100,
+                        2,
                     )
                 except ZeroDivisionError:
                     valuation_target = 0
@@ -121,13 +121,11 @@ def top_performers(date):
         for target in targets:
             if instance["employee_id"] == target.profile_targets.id:
                 try:
-                    instruction_target = (
-                        round(
-                            instance["instruction_count"]
-                            / target.instructions,
-                            2,
-                        )
-                        * 100
+                    instruction_target = round(
+                        instance["instruction_count"]
+                        / target.instructions
+                        * 100,
+                        2,
                     )
                 except ZeroDivisionError:
                     instruction_target = 0
@@ -142,11 +140,9 @@ def top_performers(date):
         for target in targets:
             if instance["employee_id"] == target.profile_targets.id:
                 try:
-                    reduction_target = (
-                        round(
-                            instance["reduction_count"] / target.reductions, 2
-                        )
-                        * 100
+                    reduction_target = round(
+                        instance["reduction_count"] / target.reductions * 100,
+                        2,
                     )
                 except ZeroDivisionError:
                     reduction_target = 0
@@ -161,12 +157,11 @@ def top_performers(date):
         for target in targets:
             if instance["employee_id"] == target.profile_targets.id:
                 try:
-                    new_business_target = (
-                        round(
-                            instance["new_business_sum"] / target.new_business,
-                            2,
-                        )
-                        * 100
+                    new_business_target = round(
+                        instance["new_business_sum"]
+                        / target.new_business
+                        * 100,
+                        2,
                     )
                 except ZeroDivisionError:
                     new_business_target = 0
@@ -289,11 +284,9 @@ def index(request):
         for target in targets:
             if instance["employee_id"] == target.profile_targets.id:
                 try:
-                    valuation_target = (
-                        round(
-                            instance["valuation_count"] / target.valuations, 2
-                        )
-                        * 100
+                    valuation_target = round(
+                        instance["valuation_count"] / target.valuations * 100,
+                        2,
                     )
                 except ZeroDivisionError:
                     valuation_target = 0
@@ -308,13 +301,11 @@ def index(request):
         for target in targets:
             if instance["employee_id"] == target.profile_targets.id:
                 try:
-                    instruction_target = (
-                        round(
-                            instance["instruction_count"]
-                            / target.instructions,
-                            2,
-                        )
-                        * 100
+                    instruction_target = round(
+                        instance["instruction_count"]
+                        / target.instructions
+                        * 100,
+                        2,
                     )
                 except ZeroDivisionError:
                     instruction_target = 0
@@ -329,11 +320,9 @@ def index(request):
         for target in targets:
             if instance["employee_id"] == target.profile_targets.id:
                 try:
-                    reduction_target = (
-                        round(
-                            instance["reduction_count"] / target.reductions, 2
-                        )
-                        * 100
+                    reduction_target = round(
+                        instance["reduction_count"] / target.reductions * 100,
+                        2,
                     )
                 except ZeroDivisionError:
                     reduction_target = 0
@@ -348,12 +337,11 @@ def index(request):
         for target in targets:
             if instance["employee_id"] == target.profile_targets.id:
                 try:
-                    new_business_target = (
-                        round(
-                            instance["new_business_sum"] / target.new_business,
-                            2,
-                        )
-                        * 100
+                    new_business_target = round(
+                        instance["new_business_sum"]
+                        / target.new_business
+                        * 100,
+                        2,
                     )
                 except ZeroDivisionError:
                     new_business_target = 0
@@ -467,3 +455,148 @@ def offer_board(request):
     }
 
     return render(request, "home/offer_board.html", context)
+
+
+@otp_required
+@login_required
+def employee_valuation_list(request, profile_id):
+    """
+    An AJAX view to return all valuations in a quarter
+    """
+
+    data = dict()
+
+    user = Profile.objects.get(id=profile_id)
+
+    quarter_and_year = quarter_and_year_calc(timezone.now())
+
+    year = quarter_and_year["start_year"]
+    start_month = quarter_and_year["start_month"]
+    end_month = quarter_and_year["end_month"]
+
+    valuations = Valuation.objects.filter(
+        date__iso_year=year,
+        date__month__gte=start_month,
+        date__month__lte=end_month,
+        valuer=user,
+    ).order_by("date")
+
+    context = {"valuations": valuations, "user": user}
+
+    data["html_modal"] = render_to_string(
+        "home/includes/employee_lists/valuation.html",
+        context,
+        request=request,
+    )
+
+    return JsonResponse(data)
+
+
+@otp_required
+@login_required
+def employee_instruction_list(request, profile_id):
+    """
+    An AJAX view to return all instructions in a quarter
+    """
+
+    data = dict()
+
+    user = Profile.objects.get(id=profile_id)
+
+    quarter_and_year = quarter_and_year_calc(timezone.now())
+
+    year = quarter_and_year["start_year"]
+    start_month = quarter_and_year["start_month"]
+    end_month = quarter_and_year["end_month"]
+
+    instructions = Instruction.objects.filter(
+        date__iso_year=year,
+        date__month__gte=start_month,
+        date__month__lte=end_month,
+        propertyprocess__employee=user,
+    ).order_by("date")
+
+    context = {"instructions": instructions, "user": user}
+
+    data["html_modal"] = render_to_string(
+        "home/includes/employee_lists/instruction.html",
+        context,
+        request=request,
+    )
+
+    return JsonResponse(data)
+
+
+@otp_required
+@login_required
+def employee_reduction_list(request, profile_id):
+    """
+    An AJAX view to return all reductions in a quarter
+    """
+
+    data = dict()
+
+    user = Profile.objects.get(id=profile_id)
+
+    quarter_and_year = quarter_and_year_calc(timezone.now())
+
+    year = quarter_and_year["start_year"]
+    start_month = quarter_and_year["start_month"]
+    end_month = quarter_and_year["end_month"]
+
+    reductions = Reduction.objects.filter(
+        date__iso_year=year,
+        date__month__gte=start_month,
+        date__month__lte=end_month,
+        propertyprocess__employee=user,
+    ).order_by("date")
+
+    context = {"reductions": reductions, "user": user}
+
+    data["html_modal"] = render_to_string(
+        "home/includes/employee_lists/reduction.html",
+        context,
+        request=request,
+    )
+
+    return JsonResponse(data)
+
+
+@otp_required
+@login_required
+def employee_new_business_list(request, profile_id):
+    """
+    An AJAX view to return all new business in a quarter
+    """
+
+    data = dict()
+
+    user = Profile.objects.get(id=profile_id)
+
+    quarter_and_year = quarter_and_year_calc(timezone.now())
+
+    year = quarter_and_year["start_year"]
+    start_month = quarter_and_year["start_month"]
+    end_month = quarter_and_year["end_month"]
+
+    new_business = (
+        PropertyFees.objects.filter(
+            date__iso_year=year,
+            date__month__gte=start_month,
+            date__month__lte=end_month,
+            propertyprocess__employee=user,
+            active=True,
+            show_all=True,
+        )
+        .order_by("date")
+    )
+
+    context = {"new_business": new_business, "user": user}
+
+    data["html_modal"] = render_to_string(
+        "home/includes/employee_lists/new_business.html",
+        context,
+        request=request,
+    )
+
+    return JsonResponse(data)
