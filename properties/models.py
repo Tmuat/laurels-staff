@@ -1820,14 +1820,14 @@ class LettingsProgression(UpdatedAndCreated):
     google_drive_and_email_inbox = models.BooleanField(
         null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
     )
-    google_drive_and_email_inbox_date = models.DateField(
-        null=True, blank=True
-    )
+    google_drive_and_email_inbox_date = models.DateField(null=True, blank=True)
 
     tenancy_created_on_expert_agent = models.BooleanField(
         null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
     )
-    tenancy_created_on_expert_agent_date = models.DateField(null=True, blank=True)
+    tenancy_created_on_expert_agent_date = models.DateField(
+        null=True, blank=True
+    )
 
     references_passed = models.BooleanField(
         null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
@@ -1837,30 +1837,20 @@ class LettingsProgression(UpdatedAndCreated):
     gas_safety_certificate = models.BooleanField(
         null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
     )
-    gas_safety_certificate_expiry = models.DateField(
-        null=True, blank=True
-    )
-    gas_safety_certificate_date = models.DateField(
-        null=True, blank=True
-    )
+    gas_safety_certificate_expiry = models.DateField(null=True, blank=True)
+    gas_safety_certificate_date = models.DateField(null=True, blank=True)
 
     electrical_certificate = models.BooleanField(
         null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
     )
-    electrical_certificate_expiry = models.DateField(
-        null=True, blank=True
-    )
+    electrical_certificate_expiry = models.DateField(null=True, blank=True)
     electrical_certificate_date = models.DateField(null=True, blank=True)
 
     epc_certificate = models.BooleanField(
         null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
     )
-    epc_certificate_expiry = models.DateField(
-        null=True, blank=True
-    )
-    epc_certificate_date = models.DateField(
-        null=True, blank=True
-    )
+    epc_certificate_expiry = models.DateField(null=True, blank=True)
+    epc_certificate_date = models.DateField(null=True, blank=True)
 
     tenancy_certificate_sent = models.BooleanField(
         null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
@@ -1885,7 +1875,9 @@ class LettingsProgression(UpdatedAndCreated):
     prescribed_info_and_statutory_docs_sent = models.BooleanField(
         null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
     )
-    prescribed_info_and_statutory_docs_sent_date = models.DateField(null=True, blank=True)
+    prescribed_info_and_statutory_docs_sent_date = models.DateField(
+        null=True, blank=True
+    )
 
     deposit_registered_with_tds = models.BooleanField(
         null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES

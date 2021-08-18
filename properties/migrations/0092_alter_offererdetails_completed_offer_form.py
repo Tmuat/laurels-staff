@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('properties', '0091_alter_offererdetails_completed_offer_form'),
+        ("properties", "0091_alter_offererdetails_completed_offer_form"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='offererdetails',
-            name='completed_offer_form',
+            model_name="offererdetails",
+            name="completed_offer_form",
             field=models.BooleanField(blank=True, default=False, null=True),
         ),
     ]

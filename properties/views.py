@@ -15,9 +15,7 @@ from common.functions import (
     sales_progression_percentage,
     lettings_progression_percentage,
 )
-from lettings.models import (
-    LettingProperties
-)
+from lettings.models import LettingProperties
 from properties.forms import (
     PropertyForm,
     PropertyProcessForm,
@@ -63,7 +61,7 @@ from properties.forms import (
     LettingsProgressionPhaseOneForm,
     LettingsProgressionPhaseTwoForm,
     LettingsProgressionPhaseThreeForm,
-    LettingsProgressionPhaseFourForm
+    LettingsProgressionPhaseFourForm,
 )
 from properties.models import (
     Property,
@@ -124,31 +122,35 @@ def property_list(request):
         if "status" in request.GET:
             status = request.GET["status"]
             if status == "potential":
-                properties_list = properties_list. \
-                    exclude(macro_status=3). \
-                    exclude(macro_status=4). \
-                    exclude(macro_status=5)
+                properties_list = (
+                    properties_list.exclude(macro_status=3)
+                    .exclude(macro_status=4)
+                    .exclude(macro_status=5)
+                )
             elif status == "live":
-                properties_list = properties_list. \
-                    exclude(macro_status=0). \
-                    exclude(macro_status=1). \
-                    exclude(macro_status=2). \
-                    exclude(macro_status=4). \
-                    exclude(macro_status=5)
+                properties_list = (
+                    properties_list.exclude(macro_status=0)
+                    .exclude(macro_status=1)
+                    .exclude(macro_status=2)
+                    .exclude(macro_status=4)
+                    .exclude(macro_status=5)
+                )
             elif status == "deal":
-                properties_list = properties_list. \
-                    exclude(macro_status=0). \
-                    exclude(macro_status=1). \
-                    exclude(macro_status=2). \
-                    exclude(macro_status=3). \
-                    exclude(macro_status=5)
+                properties_list = (
+                    properties_list.exclude(macro_status=0)
+                    .exclude(macro_status=1)
+                    .exclude(macro_status=2)
+                    .exclude(macro_status=3)
+                    .exclude(macro_status=5)
+                )
             elif status == "complete":
-                properties_list = properties_list. \
-                    exclude(macro_status=0). \
-                    exclude(macro_status=1). \
-                    exclude(macro_status=2). \
-                    exclude(macro_status=3). \
-                    exclude(macro_status=4)
+                properties_list = (
+                    properties_list.exclude(macro_status=0)
+                    .exclude(macro_status=1)
+                    .exclude(macro_status=2)
+                    .exclude(macro_status=3)
+                    .exclude(macro_status=4)
+                )
         if "sector" in request.GET:
             sector = request.GET["sector"]
             properties_list = properties_list.filter(sector=sector)
@@ -157,10 +159,10 @@ def property_list(request):
             if not query:
                 return redirect(reverse("properties:property_list"))
 
-            queries = Q(property__postcode__icontains=query) | Q(
-                property__address_line_1__icontains=query
-            ) | Q(
-                property__address_line_2__icontains=query
+            queries = (
+                Q(property__postcode__icontains=query)
+                | Q(property__address_line_1__icontains=query)
+                | Q(property__address_line_2__icontains=query)
             )
             properties_list = properties_list.filter(queries)
 
@@ -1397,8 +1399,7 @@ def add_offer_form(request, propertyprocess_id, offerer_id):
             )
 
             notes = (
-                f"The offer form for {offerer.full_name} "
-                "has been updated."
+                f"The offer form for {offerer.full_name} " "has been updated."
             )
 
             history = PropertyHistory.objects.create(
@@ -1426,9 +1427,7 @@ def add_offer_form(request, propertyprocess_id, offerer_id):
             data["form_is_valid"] = False
 
     else:
-        form = OfferFormForm(
-            instance=offerer
-        )
+        form = OfferFormForm(instance=offerer)
 
     context = {
         "form": form,
@@ -3381,7 +3380,7 @@ def add_exchange_lettings(request, propertyprocess_id):
                 lettings_service_level=property_process.instruction_letting_extra.lettings_service_level,
                 is_active=True,
                 created_by=request.user.get_full_name(),
-                updated_by=request.user.get_full_name()
+                updated_by=request.user.get_full_name(),
             )
 
             instance.send_exchange_mail(request)
@@ -3390,9 +3389,7 @@ def add_exchange_lettings(request, propertyprocess_id):
             property_process.furthest_status = PropertyProcess.COMPLETE
             property_process.save()
 
-            history_description = (
-                f"{request.user.get_full_name()} has added a lettings exchange."
-            )
+            history_description = f"{request.user.get_full_name()} has added a lettings exchange."
 
             formatted_move_in_date = move_in_date.strftime("%d/%m/%Y")
             formatted_first_renewal = first_renewal.strftime("%d/%m/%Y")
@@ -4683,23 +4680,15 @@ def lettings_phase_one(request, propertyprocess_id):
                     datetime.date.today()
                 )
 
-            if (
-                old_compliance
-                != instance.compliance_form_sent_to_landlord
-            ):
+            if old_compliance != instance.compliance_form_sent_to_landlord:
                 old_compliance_notes = "Compliance Form Sent To Landlord"
                 notes_dict.append(old_compliance_notes)
                 instance.compliance_form_sent_to_landlord_date = (
                     datetime.date.today()
                 )
 
-            if (
-                old_google
-                != instance.google_drive_and_email_inbox
-            ):
-                old_google_notes = (
-                    "Google Drive & Email Inbox Created"
-                )
+            if old_google != instance.google_drive_and_email_inbox:
+                old_google_notes = "Google Drive & Email Inbox Created"
                 notes_dict.append(old_google_notes)
                 instance.google_drive_and_email_inbox_date = (
                     datetime.date.today()
@@ -4708,14 +4697,16 @@ def lettings_phase_one(request, propertyprocess_id):
             if old_tenancy != instance.tenancy_created_on_expert_agent:
                 old_tenancy_notes = "Tenancy Created On Expert Agent"
                 notes_dict.append(old_tenancy_notes)
-                instance.tenancy_created_on_expert_agent_date = datetime.date.today()
+                instance.tenancy_created_on_expert_agent_date = (
+                    datetime.date.today()
+                )
 
             instance.save()
 
             phases = lettings_progression_percentage(property_process.id)
 
             phase_one = phases.get("phase_1")
-            if phase_one  > 99:
+            if phase_one > 99:
                 lettings_prog_phase.phase_1 = True
                 lettings_prog_phase.save()
 
@@ -4803,7 +4794,9 @@ def lettings_phase_two(request, propertyprocess_id):
     old_tenancy = progression.tenancy_certificate_sent
 
     if request.method == "POST":
-        form = LettingsProgressionPhaseTwoForm(request.POST, instance=progression)
+        form = LettingsProgressionPhaseTwoForm(
+            request.POST, instance=progression
+        )
         if form.is_valid():
             instance = form.save(commit=False)
 
@@ -4819,9 +4812,7 @@ def lettings_phase_two(request, propertyprocess_id):
             if old_ref != instance.references_passed:
                 old_ref_notes = "References Passed"
                 notes_dict.append(old_ref_notes)
-                instance.references_passed_date = (
-                    datetime.date.today()
-                )
+                instance.references_passed_date = datetime.date.today()
 
             if old_gas != instance.gas_safety_certificate:
                 old_gas_notes = "Gas Safety Certificate"
@@ -4831,30 +4822,24 @@ def lettings_phase_two(request, propertyprocess_id):
             if old_elec != instance.electrical_certificate:
                 old_elec_notes = "Electrical Installation Certificate"
                 notes_dict.append(old_elec_notes)
-                instance.electrical_certificate_date = (
-                    datetime.date.today()
-                )
+                instance.electrical_certificate_date = datetime.date.today()
 
             if old_epc != instance.epc_certificate:
                 old_epc_notes = "Energy Performance Certificate"
                 notes_dict.append(old_epc_notes)
-                instance.epc_certificate_date = (
-                    datetime.date.today()
-                )
-            
+                instance.epc_certificate_date = datetime.date.today()
+
             if old_tenancy != instance.tenancy_certificate_sent:
                 old_tenancy_notes = "Tenancy Agreement Sent For Signature"
                 notes_dict.append(old_tenancy_notes)
-                instance.tenancy_certificate_sent_date = (
-                    datetime.date.today()
-                )
+                instance.tenancy_certificate_sent_date = datetime.date.today()
 
             instance.save()
 
             phases = lettings_progression_percentage(property_process.id)
 
             phase_two = phases.get("phase_2")
-            if phase_two  > 99:
+            if phase_two > 99:
                 lettings_prog_phase.phase_2 = True
                 lettings_prog_phase.save()
 
@@ -4972,7 +4957,10 @@ def lettings_phase_three(request, propertyprocess_id):
                 notes_dict.append(old_move_in_funds_notes)
                 instance.move_in_funds_received_date = datetime.date.today()
 
-            if old_prescribed != instance.prescribed_info_and_statutory_docs_sent:
+            if (
+                old_prescribed
+                != instance.prescribed_info_and_statutory_docs_sent
+            ):
                 old_prescribed_notes = "Prescribed Info & Statutory Docs Sent"
                 notes_dict.append(old_prescribed_notes)
                 instance.prescribed_info_and_statutory_docs_sent_date = (
@@ -5095,7 +5083,9 @@ def lettings_phase_four(request, propertyprocess_id):
             if old_landlord != instance.landlord_invoices_sent_to_ea:
                 old_landlord_notes = "Landlord Invoices Sent To EA"
                 notes_dict.append(old_landlord_notes)
-                instance.landlord_invoices_sent_to_ea_date = datetime.date.today()
+                instance.landlord_invoices_sent_to_ea_date = (
+                    datetime.date.today()
+                )
 
             if old_right_to_rent != instance.right_to_rent:
                 old_right_to_rent_notes = "Right To Rent"

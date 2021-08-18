@@ -27,7 +27,7 @@ from properties.models import (
     Reduction,
     LettingsProgression,
     LettingsProgressionPhase,
-    LettingsProgressionSettings
+    LettingsProgressionSettings,
 )
 
 

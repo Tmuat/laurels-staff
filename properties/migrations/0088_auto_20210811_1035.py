@@ -6,18 +6,21 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('properties', '0087_lettingsprogression_lettingsprogressionphase_lettingsprogressionsettings'),
+        (
+            "properties",
+            "0087_lettingsprogression_lettingsprogressionphase_lettingsprogressionsettings",
+        ),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='lettingsprogression',
-            old_name='tenancy_certificate_signed',
-            new_name='tenancy_agreement_signed',
+            model_name="lettingsprogression",
+            old_name="tenancy_certificate_signed",
+            new_name="tenancy_agreement_signed",
         ),
         migrations.RenameField(
-            model_name='lettingsprogression',
-            old_name='tenancy_certificate_signed_date',
-            new_name='tenancy_agreement_signed_date',
+            model_name="lettingsprogression",
+            old_name="tenancy_certificate_signed_date",
+            new_name="tenancy_agreement_signed_date",
         ),
     ]

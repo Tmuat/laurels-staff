@@ -6,13 +6,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('lettings', '0001_initial'),
+        ("lettings", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='managedproperties',
-            name='is_active',
-            field=models.BooleanField(choices=[(True, 'Yes'), (False, 'No')], default=True),
+            model_name="managedproperties",
+            name="is_active",
+            field=models.BooleanField(
+                choices=[(True, "Yes"), (False, "No")], default=True
+            ),
         ),
     ]

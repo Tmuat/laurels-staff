@@ -6,7 +6,7 @@ from lettings.models import (
     SecondTwelve,
     EPC,
     Gas,
-    Electrical
+    Electrical,
 )
 
 
@@ -66,7 +66,7 @@ class LettingPropertiesAdmin(admin.ModelAdmin):
         SecondTwelveAdminInline,
         ElectricalAdminInline,
         EPCAdminInline,
-        GasAdminInline
+        GasAdminInline,
     ]
 
     list_display = [
@@ -75,7 +75,10 @@ class LettingPropertiesAdmin(admin.ModelAdmin):
         "is_active",
     ]
 
-    list_filter = ["is_active", "lettings_service_level",]
+    list_filter = [
+        "is_active",
+        "lettings_service_level",
+    ]
 
     readonly_fields = [
         "updated_by",

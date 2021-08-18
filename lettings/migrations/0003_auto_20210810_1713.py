@@ -8,29 +8,56 @@ import uuid
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('lettings', '0002_alter_managedproperties_is_active'),
+        ("lettings", "0002_alter_managedproperties_is_active"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='renewals',
-            options={'ordering': ['-renewed_on', 'managed_property__propertyprocess__property__postcode', 'managed_property__propertyprocess__property__address_line_1'], 'verbose_name': 'Renewals', 'verbose_name_plural': 'Renewals'},
+            name="renewals",
+            options={
+                "ordering": [
+                    "-renewed_on",
+                    "managed_property__propertyprocess__property__postcode",
+                    "managed_property__propertyprocess__property__address_line_1",
+                ],
+                "verbose_name": "Renewals",
+                "verbose_name_plural": "Renewals",
+            },
         ),
         migrations.CreateModel(
-            name='SecondTwelve',
+            name="SecondTwelve",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('updated', models.DateTimeField(auto_now=True)),
-                ('created_by', models.CharField(blank=True, max_length=100)),
-                ('updated_by', models.CharField(blank=True, max_length=100)),
-                ('date', models.DateField()),
-                ('managed_property', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='second_twelve', to='lettings.managedproperties')),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                ("created", models.DateTimeField(auto_now_add=True)),
+                ("updated", models.DateTimeField(auto_now=True)),
+                ("created_by", models.CharField(blank=True, max_length=100)),
+                ("updated_by", models.CharField(blank=True, max_length=100)),
+                ("date", models.DateField()),
+                (
+                    "managed_property",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="second_twelve",
+                        to="lettings.managedproperties",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Second Twelve',
-                'verbose_name_plural': "Second Twelve's",
-                'ordering': ['-date', 'managed_property__propertyprocess__property__postcode', 'managed_property__propertyprocess__property__address_line_1'],
+                "verbose_name": "Second Twelve",
+                "verbose_name_plural": "Second Twelve's",
+                "ordering": [
+                    "-date",
+                    "managed_property__propertyprocess__property__postcode",
+                    "managed_property__propertyprocess__property__address_line_1",
+                ],
             },
         ),
     ]

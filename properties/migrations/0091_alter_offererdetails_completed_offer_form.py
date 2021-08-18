@@ -6,13 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('properties', '0090_alter_dealextralettings_term'),
+        ("properties", "0090_alter_dealextralettings_term"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='offererdetails',
-            name='completed_offer_form',
-            field=models.BooleanField(blank=True, choices=[(True, 'Completed'), (False, 'Incomplete')], default=False, null=True),
+            model_name="offererdetails",
+            name="completed_offer_form",
+            field=models.BooleanField(
+                blank=True,
+                choices=[(True, "Completed"), (False, "Incomplete")],
+                default=False,
+                null=True,
+            ),
         ),
     ]

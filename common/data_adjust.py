@@ -26,5 +26,6 @@ def recent_deals():
         if instance.date > seven_days_ago:
             print(instance)
 
+
 # from common.data_adjust import *
 # delete_surrey()

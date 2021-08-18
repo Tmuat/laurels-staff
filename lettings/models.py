@@ -69,7 +69,8 @@ class Renewals(UpdatedAndCreated):
 
     def __str__(self):
         if (
-            self.lettings_properties.propertyprocess.property.address_line_2 == ""
+            self.lettings_properties.propertyprocess.property.address_line_2
+            == ""
             or self.lettings_properties.propertyprocess.property.address_line_2
             is None
         ):
@@ -97,14 +98,16 @@ class SecondTwelve(UpdatedAndCreated):
         verbose_name_plural = "Second Twelve's"
 
     lettings_properties = models.ForeignKey(
-        LettingProperties, on_delete=models.CASCADE,
-        related_name="second_twelve"
+        LettingProperties,
+        on_delete=models.CASCADE,
+        related_name="second_twelve",
     )
     date = models.DateField(null=False, blank=False)
 
     def __str__(self):
         if (
-            self.lettings_properties.propertyprocess.property.address_line_2 == ""
+            self.lettings_properties.propertyprocess.property.address_line_2
+            == ""
             or self.lettings_properties.propertyprocess.property.address_line_2
             is None
         ):
@@ -132,15 +135,15 @@ class EPC(UpdatedAndCreated):
         verbose_name_plural = "EPC"
 
     lettings_properties = models.ForeignKey(
-        LettingProperties, on_delete=models.CASCADE,
-        related_name="epc"
+        LettingProperties, on_delete=models.CASCADE, related_name="epc"
     )
     date = models.DateField(null=False, blank=False)
     expiry = models.DateField(null=False, blank=False)
 
     def __str__(self):
         if (
-            self.lettings_properties.propertyprocess.property.address_line_2 == ""
+            self.lettings_properties.propertyprocess.property.address_line_2
+            == ""
             or self.lettings_properties.propertyprocess.property.address_line_2
             is None
         ):
@@ -168,15 +171,15 @@ class Gas(UpdatedAndCreated):
         verbose_name_plural = "Gas"
 
     lettings_properties = models.ForeignKey(
-        LettingProperties, on_delete=models.CASCADE,
-        related_name="gas"
+        LettingProperties, on_delete=models.CASCADE, related_name="gas"
     )
     date = models.DateField(null=False, blank=False)
     expiry = models.DateField(null=False, blank=False)
 
     def __str__(self):
         if (
-            self.lettings_properties.propertyprocess.property.address_line_2 == ""
+            self.lettings_properties.propertyprocess.property.address_line_2
+            == ""
             or self.lettings_properties.propertyprocess.property.address_line_2
             is None
         ):
@@ -204,15 +207,15 @@ class Electrical(UpdatedAndCreated):
         verbose_name_plural = "Electrical"
 
     lettings_properties = models.ForeignKey(
-        LettingProperties, on_delete=models.CASCADE,
-        related_name="electrical"
+        LettingProperties, on_delete=models.CASCADE, related_name="electrical"
     )
     date = models.DateField(null=False, blank=False)
     expiry = models.DateField(null=False, blank=False)
 
     def __str__(self):
         if (
-            self.lettings_properties.propertyprocess.property.address_line_2 == ""
+            self.lettings_properties.propertyprocess.property.address_line_2
+            == ""
             or self.lettings_properties.propertyprocess.property.address_line_2
             is None
         ):

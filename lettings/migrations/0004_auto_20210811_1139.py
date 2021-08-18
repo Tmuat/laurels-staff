@@ -8,102 +8,193 @@ import uuid
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('properties', '0089_auto_20210811_1127'),
-        ('lettings', '0003_auto_20210810_1713'),
+        ("properties", "0089_auto_20210811_1127"),
+        ("lettings", "0003_auto_20210810_1713"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='EPC',
+            name="EPC",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('updated', models.DateTimeField(auto_now=True)),
-                ('created_by', models.CharField(blank=True, max_length=100)),
-                ('updated_by', models.CharField(blank=True, max_length=100)),
-                ('date', models.DateField()),
-                ('expiry', models.DateField()),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                ("created", models.DateTimeField(auto_now_add=True)),
+                ("updated", models.DateTimeField(auto_now=True)),
+                ("created_by", models.CharField(blank=True, max_length=100)),
+                ("updated_by", models.CharField(blank=True, max_length=100)),
+                ("date", models.DateField()),
+                ("expiry", models.DateField()),
             ],
             options={
-                'verbose_name': 'EPC',
-                'verbose_name_plural': 'EPC',
-                'ordering': ['-date', 'lettings_properties__propertyprocess__property__postcode', 'lettings_properties__propertyprocess__property__address_line_1'],
+                "verbose_name": "EPC",
+                "verbose_name_plural": "EPC",
+                "ordering": [
+                    "-date",
+                    "lettings_properties__propertyprocess__property__postcode",
+                    "lettings_properties__propertyprocess__property__address_line_1",
+                ],
             },
         ),
         migrations.CreateModel(
-            name='Gas',
+            name="Gas",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('updated', models.DateTimeField(auto_now=True)),
-                ('created_by', models.CharField(blank=True, max_length=100)),
-                ('updated_by', models.CharField(blank=True, max_length=100)),
-                ('date', models.DateField()),
-                ('expiry', models.DateField()),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                ("created", models.DateTimeField(auto_now_add=True)),
+                ("updated", models.DateTimeField(auto_now=True)),
+                ("created_by", models.CharField(blank=True, max_length=100)),
+                ("updated_by", models.CharField(blank=True, max_length=100)),
+                ("date", models.DateField()),
+                ("expiry", models.DateField()),
             ],
             options={
-                'verbose_name': 'Gas',
-                'verbose_name_plural': 'Gas',
-                'ordering': ['-date', 'lettings_properties__propertyprocess__property__postcode', 'lettings_properties__propertyprocess__property__address_line_1'],
+                "verbose_name": "Gas",
+                "verbose_name_plural": "Gas",
+                "ordering": [
+                    "-date",
+                    "lettings_properties__propertyprocess__property__postcode",
+                    "lettings_properties__propertyprocess__property__address_line_1",
+                ],
             },
         ),
         migrations.CreateModel(
-            name='LettingProperties',
+            name="LettingProperties",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('updated', models.DateTimeField(auto_now=True)),
-                ('created_by', models.CharField(blank=True, max_length=100)),
-                ('updated_by', models.CharField(blank=True, max_length=100)),
-                ('lettings_service_level', models.CharField(blank=True, choices=[('intro_only', 'Intro Only'), ('rent_collect', 'Rent Collect'), ('fully_managed', 'Fully Managed')], max_length=40, null=True)),
-                ('is_active', models.BooleanField(choices=[(True, 'Yes'), (False, 'No')], default=True)),
-                ('propertyprocess', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='lettings_properties', to='properties.propertyprocess')),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                ("created", models.DateTimeField(auto_now_add=True)),
+                ("updated", models.DateTimeField(auto_now=True)),
+                ("created_by", models.CharField(blank=True, max_length=100)),
+                ("updated_by", models.CharField(blank=True, max_length=100)),
+                (
+                    "lettings_service_level",
+                    models.CharField(
+                        blank=True,
+                        choices=[
+                            ("intro_only", "Intro Only"),
+                            ("rent_collect", "Rent Collect"),
+                            ("fully_managed", "Fully Managed"),
+                        ],
+                        max_length=40,
+                        null=True,
+                    ),
+                ),
+                (
+                    "is_active",
+                    models.BooleanField(
+                        choices=[(True, "Yes"), (False, "No")], default=True
+                    ),
+                ),
+                (
+                    "propertyprocess",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="lettings_properties",
+                        to="properties.propertyprocess",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Lettings Property',
-                'verbose_name_plural': 'Lettings Properties',
-                'ordering': ['propertyprocess__property__postcode', 'propertyprocess__property__address_line_1'],
+                "verbose_name": "Lettings Property",
+                "verbose_name_plural": "Lettings Properties",
+                "ordering": [
+                    "propertyprocess__property__postcode",
+                    "propertyprocess__property__address_line_1",
+                ],
             },
         ),
         migrations.AlterModelOptions(
-            name='renewals',
-            options={'ordering': ['-renewed_on', 'lettings_properties__propertyprocess__property__postcode', 'lettings_properties__propertyprocess__property__address_line_1'], 'verbose_name': 'Renewals', 'verbose_name_plural': 'Renewals'},
+            name="renewals",
+            options={
+                "ordering": [
+                    "-renewed_on",
+                    "lettings_properties__propertyprocess__property__postcode",
+                    "lettings_properties__propertyprocess__property__address_line_1",
+                ],
+                "verbose_name": "Renewals",
+                "verbose_name_plural": "Renewals",
+            },
         ),
         migrations.AlterModelOptions(
-            name='secondtwelve',
-            options={'ordering': ['-date', 'lettings_properties__propertyprocess__property__postcode', 'lettings_properties__propertyprocess__property__address_line_1'], 'verbose_name': 'Second Twelve', 'verbose_name_plural': "Second Twelve's"},
+            name="secondtwelve",
+            options={
+                "ordering": [
+                    "-date",
+                    "lettings_properties__propertyprocess__property__postcode",
+                    "lettings_properties__propertyprocess__property__address_line_1",
+                ],
+                "verbose_name": "Second Twelve",
+                "verbose_name_plural": "Second Twelve's",
+            },
         ),
         migrations.RemoveField(
-            model_name='renewals',
-            name='managed_property',
+            model_name="renewals",
+            name="managed_property",
         ),
         migrations.RemoveField(
-            model_name='secondtwelve',
-            name='managed_property',
+            model_name="secondtwelve",
+            name="managed_property",
         ),
         migrations.DeleteModel(
-            name='ManagedProperties',
+            name="ManagedProperties",
         ),
         migrations.AddField(
-            model_name='gas',
-            name='lettings_properties',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='gas', to='lettings.lettingproperties'),
+            model_name="gas",
+            name="lettings_properties",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="gas",
+                to="lettings.lettingproperties",
+            ),
         ),
         migrations.AddField(
-            model_name='epc',
-            name='lettings_properties',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='epc', to='lettings.lettingproperties'),
+            model_name="epc",
+            name="lettings_properties",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="epc",
+                to="lettings.lettingproperties",
+            ),
         ),
         migrations.AddField(
-            model_name='renewals',
-            name='lettings_properties',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='renewals', to='lettings.lettingproperties'),
+            model_name="renewals",
+            name="lettings_properties",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="renewals",
+                to="lettings.lettingproperties",
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='secondtwelve',
-            name='lettings_properties',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='second_twelve', to='lettings.lettingproperties'),
+            model_name="secondtwelve",
+            name="lettings_properties",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="second_twelve",
+                to="lettings.lettingproperties",
+            ),
             preserve_default=False,
         ),
     ]
