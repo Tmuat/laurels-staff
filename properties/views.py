@@ -91,6 +91,7 @@ from properties.models import (
     LettingsProgression,
     LettingsProgressionSettings,
     LettingsProgressionPhase,
+    Reduction,
 )
 from users.models import Profile
 
@@ -1253,10 +1254,18 @@ def add_reduction(request, propertyprocess_id):
             instance.created_by = request.user.get_full_name()
             instance.updated_by = request.user.get_full_name()
 
+            date = form.cleaned_data["date"]
+            new_price = form.cleaned_data["price"]
+
             instance.save()
 
-            property_process.reduction_count = +1
-            property_process.save()
+            Reduction.objects.create(
+                propertyprocess=property_process,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+                date=date,
+                price_change=new_price,
+            )
 
             history_description = (
                 f"{request.user.get_full_name()} has added a reduction."
