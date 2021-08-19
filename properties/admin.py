@@ -12,7 +12,6 @@ from properties.models import (
     OffererMortgage,
     OffererCash,
     OffererDetailsLettings,
-    OfferLettingsExtra,
     Offer,
     Deal,
     ExchangeMove,
@@ -315,6 +314,46 @@ class PropertyProcessAdmin(admin.ModelAdmin):
 
 
 admin.site.register(PropertyProcess, PropertyProcessAdmin)
+
+
+class PropertyFeeAdmin(admin.ModelAdmin):
+    list_display = [
+        "__str__",
+        "date",
+        "new_business",
+        "price",
+        "fee",
+        "active",
+    ]
+
+    ordering = [
+        "propertyprocess__property__postcode",
+        "-date"
+    ]
+
+    list_filter = ["date",]
+
+    search_fields = [
+        "propertyprocess__property__postcode",
+        "propertyprocess__property__address_line_1"
+    ]
+
+    readonly_fields = [
+        "new_business",
+        "created",
+        "created_by",
+        "updated",
+        "updated_by",
+    ]
+
+    def save_model(self, request, obj, form, change):
+        if not obj.pk:
+            obj.created_by = request.user.get_full_name()
+        obj.updated_by = request.user.get_full_name()
+        super().save_model(request, obj, form, change)
+
+
+admin.site.register(PropertyFees, PropertyFeeAdmin)
 
 
 class OffererMortgageAdminInline(admin.TabularInline):
