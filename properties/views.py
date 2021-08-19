@@ -118,20 +118,13 @@ def property_list(request):
     query = None
     status = None
     sector = None
-    archive = None
+    archive = False
 
     if request.GET:
         if "archive" in request.GET:
             archive = request.GET["archive"]
             if archive == "true":
                 archive = True
-            else:
-                archive = False
-                properties_list.exclude(macro_status=-1)
-        else:
-            properties_list = (
-                properties_list.exclude(macro_status=-1)
-            )
         if "status" in request.GET:
             status = request.GET["status"]
             if status == "potential":
@@ -179,6 +172,11 @@ def property_list(request):
             )
             properties_list = properties_list.filter(queries)
 
+    if archive is False:
+        properties_list = (
+            properties_list.exclude(macro_status=-1)
+        )
+
     properties_list_length = len(properties_list)
 
     page = request.GET.get("page", 1)
@@ -192,7 +190,7 @@ def property_list(request):
         properties = paginator.page(1)
     except EmptyPage:
         properties = paginator.page(paginator.num_pages)
-    print(archive)
+
     context = {
         "properties": properties,
         "last_page": last_page,

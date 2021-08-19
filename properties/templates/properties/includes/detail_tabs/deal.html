@@ -21,7 +21,7 @@
         ></span>
         {% endif %}
     </h5>
-    {% if propertyprocess.macro_status < 4 %}
+    {% if propertyprocess.macro_status > -1 and propertyprocess.macro_status < 4 %}
         <div class="text-center mt-2">
             <div class="row">
                 <div class="col-12">
