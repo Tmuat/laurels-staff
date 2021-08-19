@@ -105,7 +105,7 @@ def property_list(request):
     """
 
     properties_list = (
-        PropertyProcess.objects.all()
+        PropertyProcess.objects
         .select_related(
             "property",
         )
@@ -118,8 +118,20 @@ def property_list(request):
     query = None
     status = None
     sector = None
+    archive = None
 
     if request.GET:
+        if "archive" in request.GET:
+            archive = request.GET["archive"]
+            if archive == "true":
+                archive = True
+            else:
+                archive = False
+                properties_list.exclude(macro_status=-1)
+        else:
+            properties_list = (
+                properties_list.exclude(macro_status=-1)
+            )
         if "status" in request.GET:
             status = request.GET["status"]
             if status == "potential":
@@ -180,7 +192,7 @@ def property_list(request):
         properties = paginator.page(1)
     except EmptyPage:
         properties = paginator.page(paginator.num_pages)
-
+    print(archive)
     context = {
         "properties": properties,
         "last_page": last_page,
@@ -189,6 +201,7 @@ def property_list(request):
         "status": status,
         "sector": sector,
         "filter": filter,
+        "archive": archive,
     }
 
     template = "properties/property_list.html"

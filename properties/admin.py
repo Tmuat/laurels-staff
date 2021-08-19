@@ -326,16 +326,15 @@ class PropertyFeeAdmin(admin.ModelAdmin):
         "active",
     ]
 
-    ordering = [
-        "propertyprocess__property__postcode",
-        "-date"
-    ]
+    ordering = ["propertyprocess__property__postcode", "-date"]
 
-    list_filter = ["date",]
+    list_filter = [
+        "date",
+    ]
 
     search_fields = [
         "propertyprocess__property__postcode",
-        "propertyprocess__property__address_line_1"
+        "propertyprocess__property__address_line_1",
     ]
 
     readonly_fields = [

@@ -40,6 +40,7 @@ def top_performers(date):
 
     valuations = (
         Valuation.objects.values("valuer")
+        .exclude(active=False)
         .annotate(valuation_count=Count(link_to_employee))
         .filter(
             date__iso_year=year,
@@ -220,6 +221,7 @@ def index(request):
 
     valuations = (
         Valuation.objects.values("valuer")
+        .exclude(active=False)
         .annotate(valuation_count=Count(link_to_employee))
         .filter(
             date__iso_year=year,
@@ -474,12 +476,16 @@ def employee_valuation_list(request, profile_id):
     start_month = quarter_and_year["start_month"]
     end_month = quarter_and_year["end_month"]
 
-    valuations = Valuation.objects.filter(
-        date__iso_year=year,
-        date__month__gte=start_month,
-        date__month__lte=end_month,
-        valuer=user,
-    ).order_by("date")
+    valuations = (
+        Valuation.objects
+        .exclude(active=False)
+        .filter(
+            date__iso_year=year,
+            date__month__gte=start_month,
+            date__month__lte=end_month,
+            valuer=user,
+        ).order_by("date")
+    )
 
     context = {"valuations": valuations, "user": user}
 
@@ -579,17 +585,14 @@ def employee_new_business_list(request, profile_id):
     start_month = quarter_and_year["start_month"]
     end_month = quarter_and_year["end_month"]
 
-    new_business = (
-        PropertyFees.objects.filter(
-            date__iso_year=year,
-            date__month__gte=start_month,
-            date__month__lte=end_month,
-            propertyprocess__employee=user,
-            active=True,
-            show_all=True,
-        )
-        .order_by("date")
-    )
+    new_business = PropertyFees.objects.filter(
+        date__iso_year=year,
+        date__month__gte=start_month,
+        date__month__lte=end_month,
+        propertyprocess__employee=user,
+        active=True,
+        show_all=True,
+    ).order_by("date")
 
     context = {"new_business": new_business, "user": user}
 

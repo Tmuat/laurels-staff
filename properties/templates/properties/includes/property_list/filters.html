@@ -1,14 +1,19 @@
 <div class="text-center text-sm-right mt-2 mt-sm-0">
     <div class="btn-group mb-2">
-        <a href="?{% if query %}query={{ query }}{% endif %}{% if sector %}sector={{ sector }}{% endif %}" class="btn btn-sm {% if status %}btn-light text-dark{% else %}btn-success text-white{% endif %}">All</a>
-        <a href="?{% if query %}query={{ query }}&{% endif %}{% if sector %}sector={{ sector }}&{% endif %}status=potential" class="btn btn-sm {% if status == "potential" %}btn-success text-white{% else %}btn-light text-dark{% endif %}">Potential</a>
-        <a href="?{% if query %}query={{ query }}&{% endif %}{% if sector %}sector={{ sector }}&{% endif %}status=live" class="btn btn-sm {% if status == "live" %}btn-success text-white{% else %}btn-light text-dark{% endif %}">Live</a>
-        <a href="?{% if query %}query={{ query }}&{% endif %}{% if sector %}sector={{ sector }}&{% endif %}status=deal" class="btn btn-sm {% if status == "deal" %}btn-success text-white{% else %}btn-light text-dark{% endif %}">Deal</a>
-        <a href="?{% if query %}query={{ query }}&{% endif %}{% if sector %}sector={{ sector }}&{% endif %}status=complete" class="btn btn-sm {% if status == "complete" %}btn-success text-white{% else %}btn-light text-dark{% endif %}">Completed</a>
+        <a href="?{% if query %}query={{ query }}{% endif %}{% if sector %}sector={{ sector }}{% endif %}{% if archive %}&archive=true{% endif %}" class="btn btn-sm {% if status %}btn-light text-dark{% else %}btn-success text-white{% endif %}">All</a>
+        <a href="?{% if query %}query={{ query }}&{% endif %}{% if sector %}sector={{ sector }}&{% endif %}status=potential{% if archive %}&archive=true{% endif %}" class="btn btn-sm {% if status == "potential" %}btn-success text-white{% else %}btn-light text-dark{% endif %}">Potential</a>
+        <a href="?{% if query %}query={{ query }}&{% endif %}{% if sector %}sector={{ sector }}&{% endif %}status=live{% if archive %}&archive=true{% endif %}" class="btn btn-sm {% if status == "live" %}btn-success text-white{% else %}btn-light text-dark{% endif %}">Live</a>
+        <a href="?{% if query %}query={{ query }}&{% endif %}{% if sector %}sector={{ sector }}&{% endif %}status=deal{% if archive %}&archive=true{% endif %}" class="btn btn-sm {% if status == "deal" %}btn-success text-white{% else %}btn-light text-dark{% endif %}">Deal</a>
+        <a href="?{% if query %}query={{ query }}&{% endif %}{% if sector %}sector={{ sector }}&{% endif %}status=complete{% if archive %}&archive=true{% endif %}" class="btn btn-sm {% if status == "complete" %}btn-success text-white{% else %}btn-light text-dark{% endif %}">Completed</a>
     </div>
+    <a 
+        href="?{% if query %}query={{ query }}&{% endif %}{% if sector %}sector={{ sector }}&{% endif %}{% if status %}status={{ status }}{% endif %}{% if status and not archive %}&{% endif %}{% if not archive %}archive=true{% endif %}"
+        class="btn btn-sm ml-1 mb-2 {% if archive %}btn-success text-white{% else %}btn-light text-dark{% endif %}">
+        Inc. Archived
+    </a>
     <div class="btn-group ml-1 mb-2">
-        <a href="?{% if query %}query={{ query }}{% endif %}{% if query and status %}&{% endif %}{% if status %}status={{ status }}{% endif %}" class="btn btn-sm {% if sector %}btn-light text-dark{% else %}btn-success text-white{% endif %}">All</a>
-        <a href="?{% if query %}query={{ query }}&{% endif %}sector=sales{% if status %}&status={{ status }}{% endif %}" class="btn btn-sm {% if sector == 'sales' %}btn-success text-white{% else %}btn-light text-dark{% endif %}">Sales</a>
-        <a href="?{% if query %}query={{ query }}&{% endif %}sector=lettings{% if status %}&status={{ status }}{% endif %}" class="btn btn-sm {% if sector == 'lettings' %}btn-success text-white{% else %}btn-light text-dark{% endif %}">Lettings</a>
+        <a href="?{% if query %}query={{ query }}{% endif %}{% if query and status %}&{% endif %}{% if status %}status={{ status }}{% endif %}{% if archive %}&archive=true{% endif %}" class="btn btn-sm {% if sector %}btn-light text-dark{% else %}btn-success text-white{% endif %}">All</a>
+        <a href="?{% if query %}query={{ query }}&{% endif %}sector=sales{% if status %}&status={{ status }}{% endif %}{% if archive %}&archive=true{% endif %}" class="btn btn-sm {% if sector == 'sales' %}btn-success text-white{% else %}btn-light text-dark{% endif %}">Sales</a>
+        <a href="?{% if query %}query={{ query }}&{% endif %}sector=lettings{% if status %}&status={{ status }}{% endif %}{% if archive %}&archive=true{% endif %}" class="btn btn-sm {% if sector == 'lettings' %}btn-success text-white{% else %}btn-light text-dark{% endif %}">Lettings</a>
     </div>
 </div>

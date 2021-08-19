@@ -168,6 +168,7 @@ class PropertyProcess(UpdatedAndCreated):
     LETTINGS = "lettings"
     SALES = "sales"
 
+    ARCHIVED = -1
     WITHDRAWN = 0
     AWAITINGVALUATION = 1
     VALUATION = 2
@@ -181,6 +182,7 @@ class PropertyProcess(UpdatedAndCreated):
     ]
 
     STATUS = [
+        (ARCHIVED, "Archived"),
         (WITHDRAWN, "Withdrawn"),
         (AWAITINGVALUATION, "Awaiting Valuation"),
         (VALUATION, "Valuation Complete"),
@@ -207,7 +209,7 @@ class PropertyProcess(UpdatedAndCreated):
     def __str__(self):
         if (
             self.property.address_line_2 == ""
-            or self.property.address_line_2 == None
+            or self.property.address_line_2 is None
         ):
             property_address = "%s, %s" % (
                 self.property.postcode,
@@ -349,11 +351,12 @@ class Valuation(UpdatedAndCreated):
     price_quoted = models.PositiveIntegerField()
     fee_quoted = models.DecimalField(max_digits=5, decimal_places=2)
     valuer = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    active = models.BooleanField(default=True)
 
     def __str__(self):
         if (
             self.propertyprocess.property.address_line_2 == ""
-            or self.propertyprocess.property.address_line_2 == None
+            or self.propertyprocess.property.address_line_2 is None
         ):
             property_address = "%s, %s" % (
                 self.propertyprocess.property.postcode,
