@@ -2843,6 +2843,10 @@ def back_on_the_market(request, propertyprocess_id):
     if request.method == "POST":
         form = HubAndEmployeeForm(request.POST)
         re_inst_form = ReInstructionForm(request.POST)
+        if property_process.sector == PropertyProcess.LETTINGS:
+            instruction_lettings_extra_form = InstructionLettingsExtraForm(
+                request.POST
+            )
         if form.is_valid() and re_inst_form.is_valid():
             instance = re_inst_form.save(commit=False)
             employee = form.data["employee"]
@@ -2875,6 +2879,25 @@ def back_on_the_market(request, propertyprocess_id):
             )
 
             instance.save()
+
+            if property_process.sector == PropertyProcess.LETTINGS:
+                lettings_extra_instance = instruction_lettings_extra_form.save(
+                    commit=False
+                )
+
+                service_level = instruction_lettings_extra_form.cleaned_data[
+                    "lettings_service_level"
+                ]
+
+                lettings_extra_instance.propertyprocess = new_property_process
+
+                if service_level != InstructionLettingsExtra.INTRO:
+                    lettings_extra_instance.managed_property = True
+
+                lettings_extra_instance.created_by = request.user.get_full_name()
+                lettings_extra_instance.updated_by = request.user.get_full_name()
+
+                lettings_extra_instance.save()
 
             history_description = (
                 f"{request.user.get_full_name()} has put the"
@@ -2922,11 +2945,19 @@ def back_on_the_market(request, propertyprocess_id):
             initial={"date": datetime.date.today},
             instance=property_process.instruction
         )
+
         context = {
             "property_process": property_process,
             "form": form,
             "re_inst_form": re_inst_form,
         }
+
+        if property_process.sector == PropertyProcess.LETTINGS:
+            instruction_lettings_extra_form = InstructionLettingsExtraForm(
+                instance=property_process.instruction_letting_extra
+            )
+            context["inst_extra_form"] = instruction_lettings_extra_form
+
         data["html_modal"] = render_to_string(
             "properties/stages/back_on_the_market_modal.html",
             context,

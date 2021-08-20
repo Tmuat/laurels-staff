@@ -15,6 +15,11 @@
                     <div class="col-12 col-sm-6 offset-sm-3">
                         {{ re_inst_form.date|as_crispy_field }}
                     </div>
+                    {% if property_process.sector == "lettings" %}
+                        <div class="col-12 col-sm-6 offset-sm-3">
+                            {{ inst_extra_form.lettings_service_level|as_crispy_field }}
+                        </div>
+                    {% endif %}
                     <div class="col-12 col-sm-6">
                         {{ form.employee|as_crispy_field }}
                     </div>
