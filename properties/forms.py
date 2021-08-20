@@ -29,6 +29,7 @@ from properties.models import (
     PropertyChain,
 )
 from properties.widgets import DateInput, NumberInput
+from regionandhub.models import Hub
 from users.models import Profile
 
 
@@ -187,6 +188,43 @@ class InstructionForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         labels = {
             "date": "Date",
+            "agreement_type": "Agreement Type",
+            "listing_price": "Listing Price",
+            "fee_agreed": "Fee Agreed",
+            "length_of_contract": "Length of Contract",
+            "marketing_board": "Marketing Board",
+        }
+
+        self.fields["date"].widget = DateInput()
+
+        self.fields["listing_price"].widget.attrs["min"] = 0
+
+        self.fields["fee_agreed"].widget.attrs["min"] = 0
+
+        for field in self.fields:
+            label = f"{labels[field]}"
+            self.fields[field].label = label
+
+
+class ReInstructionForm(forms.ModelForm):
+    class Meta:
+        model = Instruction
+        fields = (
+            "date",
+            "agreement_type",
+            "listing_price",
+            "fee_agreed",
+            "length_of_contract",
+            "marketing_board",
+        )
+
+    def __init__(self, *args, **kwargs):
+        """
+        Add new labels and order foreign key field
+        """
+        super().__init__(*args, **kwargs)
+        labels = {
+            "date": "Back On The Market Date",
             "agreement_type": "Agreement Type",
             "listing_price": "Listing Price",
             "fee_agreed": "Fee Agreed",
@@ -615,6 +653,19 @@ class DateForm(forms.Form):
     date = forms.DateField(
         label=("Date"),
         widget=DateInput(),
+    )
+
+
+class HubAndEmployeeForm(forms.Form):
+    employee = forms.ModelChoiceField(
+        queryset=Profile.objects.filter(
+            user__is_active=True,
+        ).order_by("user__first_name")
+    )
+    hub = forms.ModelChoiceField(
+        queryset=Hub.objects.filter(
+            is_active=True,
+        ).order_by("hub_name")
     )
 
 

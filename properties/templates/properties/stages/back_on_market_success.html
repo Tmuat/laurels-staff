@@ -1,0 +1,19 @@
+{% load static i18n %}
+<div class="modal-content green-gradient">
+    <div class="modal-body">
+        <div class="text-center mt-2 mb-3">
+            <span><img src="{% static 'custom/images/logo.png' %}" alt="laurels" height="80"></span>
+        </div>
+        <div class="text-center text-white">
+            <h4 class="text-white">Congrats</h4>
+            <p class="text-white text-center">{% blocktrans trimmed %}The property is back on the market.{% endblocktrans %}</p>
+
+            <a class="btn btn-warning mb-2 mt-2 mx-auto d-block w-50" href="{% url 'properties:property_detail' property_process.id %}"><i class="mdi mdi-note-plus-outline mr-1"></i> Go To Property.</a>
+
+            <button type="button" class="btn btn-secondary mb-2 mx-auto d-block w-50 js-reload" data-bs-dismiss="modal">
+                <i class="mdi mdi-close"></i> Close
+            </button>
+        </div>
+    </div>
+</div>
+<!-- /.modal-content -->
