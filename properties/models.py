@@ -419,6 +419,7 @@ class Instruction(UpdatedAndCreated):
         null=False, blank=False, choices=LENGTH_OF_CONTRACT
     )
     marketing_board = models.BooleanField(choices=BOOL_CHOICES)
+    active = models.BooleanField(default=True)
 
     def send_mail(self, request, **kwargs):
         no_reply_email = settings.NO_REPLY_EMAIL

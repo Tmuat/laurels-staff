@@ -107,3 +107,13 @@
         <i class="mdi mdi-cog-counterclockwise icon-lg-size"></i>
 </button>
 {% endif %}
+{% if propertyprocess.sector == "lettings" and propertyprocess.macro_status == 5 %}
+<button 
+    data-url="{% url 'properties:re_let' propertyprocess.id %}"
+    data-toggle="tooltip"
+    data-placement="top"
+    title="Re-Let Property"
+    class="mb-1 btn px-2 py-1 btn-info js-load-large-form">
+        <i class="mdi mdi-clipboard-play-outline icon-lg-size"></i>
+</button>
+{% endif %}

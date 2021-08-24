@@ -38,6 +38,7 @@ from properties.views import (
     edit_instruction_change,
     withdraw_property,
     back_on_the_market,
+    re_let,
     add_deal,
     add_deal_lettings,
     edit_deal,
@@ -260,9 +261,14 @@ urlpatterns = [
         name="withdraw_property",
     ),
     path(
-        "properties/back-on-market/<propertyprocess_id>/",
+        "properties/re-let/<propertyprocess_id>/",
         back_on_the_market,
         name="back_on_the_market",
+    ),
+    path(
+        "properties/back-on-market/<propertyprocess_id>/",
+        re_let,
+        name="re_let",
     ),
     path(
         "properties/add/deal/<propertyprocess_id>/",

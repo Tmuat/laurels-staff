@@ -54,6 +54,7 @@ def top_performers(date):
 
     instructions = (
         Instruction.objects.values(employee)
+        .exclude(active=False)
         .annotate(instruction_count=Count(link_to_employee))
         .filter(
             date__iso_year=year,
@@ -235,6 +236,7 @@ def index(request):
 
     instructions = (
         Instruction.objects.values(employee)
+        .exclude(active=False)
         .annotate(instruction_count=Count(link_to_employee))
         .filter(
             date__iso_year=year,
@@ -515,12 +517,16 @@ def employee_instruction_list(request, profile_id):
     start_month = quarter_and_year["start_month"]
     end_month = quarter_and_year["end_month"]
 
-    instructions = Instruction.objects.filter(
-        date__iso_year=year,
-        date__month__gte=start_month,
-        date__month__lte=end_month,
-        propertyprocess__employee=user,
-    ).order_by("date")
+    instructions = (
+        Instruction.objects
+        .exclude(active=False)
+        .filter(
+            date__iso_year=year,
+            date__month__gte=start_month,
+            date__month__lte=end_month,
+            propertyprocess__employee=user,
+        ).order_by("date")
+    )
 
     context = {"instructions": instructions, "user": user}
 

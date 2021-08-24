@@ -2754,7 +2754,7 @@ def withdraw_property(request, propertyprocess_id):
     return JsonResponse(data)
 
 
-def recreate_property(request, propertyprocess_id, hub_id, employee_id, type):
+def recreate_property(request, propertyprocess_id, hub_id, employee_id):
     """
     Is the process of re-creating a property and associated models
     if the property is put back on the market or re-let.
@@ -2851,7 +2851,6 @@ def back_on_the_market(request, propertyprocess_id):
             instance = re_inst_form.save(commit=False)
             employee = form.data["employee"]
             hub = form.data["hub"]
-            type = "re-inst"
 
             property_process.macro_status = PropertyProcess.ARCHIVED
             property_process.updated_by = request.user.get_full_name()
@@ -2862,7 +2861,6 @@ def back_on_the_market(request, propertyprocess_id):
                 propertyprocess_id,
                 hub,
                 employee,
-                type
             )
 
             instance.propertyprocess = new_property_process
@@ -2902,6 +2900,145 @@ def back_on_the_market(request, propertyprocess_id):
             history_description = (
                 f"{request.user.get_full_name()} has put the"
                 " property back on the market."
+            )
+
+            PropertyHistory.objects.create(
+                propertyprocess=property_process,
+                type=PropertyHistory.PROPERTY_EVENT,
+                description=history_description,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
+
+            PropertyHistory.objects.create(
+                propertyprocess=new_property_process,
+                type=PropertyHistory.PROPERTY_EVENT,
+                description=history_description,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
+
+            new_property_process.send_back_on_market_mail(request)
+
+            context = {
+                "property_process": new_property_process,
+            }
+            data["html_success"] = render_to_string(
+                "properties/stages/back_on_market_success.html",
+                context,
+                request=request,
+            )
+
+            data["form_is_valid"] = True
+        else:
+            data["form_is_valid"] = False
+    else:
+        form = HubAndEmployeeForm(
+            initial={
+                "employee": request.user.profile,
+                "hub": property_process.hub
+            },
+        )
+        re_inst_form = ReInstructionForm(
+            initial={"date": datetime.date.today},
+            instance=property_process.instruction
+        )
+
+        context = {
+            "property_process": property_process,
+            "form": form,
+            "re_inst_form": re_inst_form,
+        }
+
+        if property_process.sector == PropertyProcess.LETTINGS:
+            instruction_lettings_extra_form = InstructionLettingsExtraForm(
+                instance=property_process.instruction_letting_extra
+            )
+            context["inst_extra_form"] = instruction_lettings_extra_form
+
+        data["html_modal"] = render_to_string(
+            "properties/stages/back_on_the_market_modal.html",
+            context,
+            request=request,
+        )
+
+    return JsonResponse(data)
+
+
+@otp_required
+@login_required
+def re_let(request, propertyprocess_id):
+    """
+    Ajax URL for re-letting a property.
+    """
+
+    data = dict()
+
+    property_process = get_object_or_404(
+        PropertyProcess, id=propertyprocess_id
+    )
+
+    if request.method == "POST":
+        form = HubAndEmployeeForm(request.POST)
+        re_inst_form = ReInstructionForm(request.POST)
+        if property_process.sector == PropertyProcess.LETTINGS:
+            instruction_lettings_extra_form = InstructionLettingsExtraForm(
+                request.POST
+            )
+        if form.is_valid() and re_inst_form.is_valid():
+            instance = re_inst_form.save(commit=False)
+            employee = form.data["employee"]
+            hub = form.data["hub"]
+
+            property_process.macro_status = PropertyProcess.ARCHIVED
+            property_process.updated_by = request.user.get_full_name()
+            property_process.save()
+
+            new_property_process = recreate_property(
+                request,
+                propertyprocess_id,
+                hub,
+                employee,
+            )
+
+            instance.propertyprocess = new_property_process
+            instance.active = False
+            instance.created_by = request.user.get_full_name()
+            instance.updated_by = request.user.get_full_name()
+
+            PropertyFees.objects.create(
+                propertyprocess=new_property_process,
+                fee=re_inst_form.cleaned_data["fee_agreed"],
+                price=re_inst_form.cleaned_data["listing_price"],
+                date=re_inst_form.cleaned_data["date"],
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
+
+            instance.save()
+
+            if property_process.sector == PropertyProcess.LETTINGS:
+                lettings_extra_instance = instruction_lettings_extra_form.save(
+                    commit=False
+                )
+
+                service_level = instruction_lettings_extra_form.cleaned_data[
+                    "lettings_service_level"
+                ]
+
+                lettings_extra_instance.propertyprocess = new_property_process
+
+                if service_level != InstructionLettingsExtra.INTRO:
+                    lettings_extra_instance.managed_property = True
+
+                lettings_extra_instance.created_by = request.user.get_full_name()
+                lettings_extra_instance.updated_by = request.user.get_full_name()
+
+                lettings_extra_instance.save()
+
+            history_description = (
+                f"{request.user.get_full_name()} has put the"
+                " property back on the market (re-let)."
             )
 
             PropertyHistory.objects.create(
