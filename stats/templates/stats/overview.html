@@ -1,7 +1,7 @@
 {% extends "vertical_base.html" %}
 {% load static i18n %}
 
-{% block head_title %}{% trans "By Person" %}{% endblock head_title %}
+{% block head_title %}{% trans "Overview" %}{% endblock head_title %}
 
 {% block content %}
     <!-- Start Content-->
@@ -15,11 +15,11 @@
                         <ol class="breadcrumb m-0 p-0">
                             <li class="breadcrumb-item"><a href="{% url 'home:home' %}"><i class="uil-home-alt"></i> Home</a></li>
                             <li class="breadcrumb-item active"><i class="mdi mdi-graph-outline"></i> Statistics</li>
-                            <li class="breadcrumb-item active"><i class="mdi mdi-account"></i> Normal By Person</li>
+                            <li class="breadcrumb-item active"><i class="mdi mdi-teach"></i> Overview</li>
                         </ol>
                     </div>
                     <div class="text-center text-sm-left">
-                        <h4 class="page-title">Normal By Person</h4>
+                        <h4 class="page-title">Overview</h4>
                     </div>
                 </div>
                 <!-- end page title -->
@@ -34,14 +34,16 @@
                         <div class="row mb-2">
                             <div class="col-12 col-md-6 col-xl-4 pr-md-0">
                                 <form method="GET" action="{% url 'stats:quick_filter_conversion' %}" class="js-filter-get-form">
-                                <!-- <form method="GET"> -->
                                     <div class="input-group mb-3">
                                         <select class="custom-select" id="quick-filter">
-                                            <option value="current_quarter">Current Quarter</option>
-                                            <option value="last_quarter">Last Quarter</option>
-                                            <option value="year_to_date">Year To Date</option>
-                                            <option value="previous_year">Previous Year</option>
-                                            <option value="all_time">All Time</option>
+                                            <option value="current_quarter" {% if filter == "current_quarter" %}selected{% endif %}>Current Quarter</option>
+                                            <option value="last_quarter" {% if filter == "last_quarter" %}selected{% endif %}>Last Quarter</option>
+                                            <option value="year_to_date" {% if filter == "year_to_date" %}selected{% endif %}>Year To Date</option>
+                                            <option value="previous_year" {% if filter == "previous_year" %}selected{% endif %}>Previous Year</option>
+                                            <option value="all_time" {% if filter == "all_time" %}selected{% endif %}>All Time</option>
+                                            {% if filter == "custom" %}
+                                            <option value="custom" disabled selected>{{ start_date|date:"d/m/y" }} - {{ end_date|date:"d/m/y" }}</option>
+                                            {% endif %}
                                         </select>
                                         <div class="input-group-append">
                                             <button class="btn btn-info" type="submit">Filter</button>
@@ -69,9 +71,9 @@
                                         <th>Valuations</th>
                                         <th>Instructions</th>
                                         <th>Reductions</th>
-                                        <th>New Business</th>
                                         <th>Exchanges</th>
                                         <th>Withdrawn</th>
+                                        <th>New Business</th>
                                     </tr>
                                 </thead>
                                 <tbody>

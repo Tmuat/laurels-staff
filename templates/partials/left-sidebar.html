@@ -74,18 +74,18 @@
                     </li>
                 </ul>
             </li> -->
-            <!-- <li class="side-nav-item">
+            <li class="side-nav-item">
                 <a href="javascript: void(0);" class="side-nav-link">
                     <i class="mdi mdi-graph-outline"></i>
                     <span> {% trans "Statistics" %} </span>
                     <span class="menu-arrow"></span>
                 </a>
                 <ul class="side-nav-second-level" aria-expanded="false">
-                    <li {% if request.resolver_match.url_name == 'normal_by_person' %}class="active"{% endif %}>
-                        <a href="{% url 'stats:normal_by_person' %}">{% trans "Normal By Person" %}</a>
+                    <li {% if request.resolver_match.url_name == 'overview' %}class="active"{% endif %}>
+                        <a href="{% url 'stats:overview' %}">{% trans "Overview" %}</a>
                     </li>
                 </ul>
-            </li> -->
+            </li>
             {% if request.user.profile.director %}
             <li class="side-nav-item">
                 <a href="javascript: void(0);" class="side-nav-link">

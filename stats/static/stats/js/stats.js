@@ -1,31 +1,9 @@
 $(document).ready(function () {
 
-    // Deals with the form submission only
-    var submitGetForm = function () {
-        $('#modal-overlay').fadeToggle(100);
-        var form = $(this);
-        $.ajax({
-            url: form.attr("action"),
-            data: form.serialize(),
-            type: form.attr("method"),
-            dataType: 'json',
-            success: function (data) {
-                if (data.form_is_valid) {
-                    $("#base-modal").modal("hide");
-                    location.reload();
-                    $('#modal-overlay').fadeToggle(100);
-                } else {
-                    $('#modal-overlay').fadeToggle(100);
-                    $("#base-modal .modal-dialog").html(data.html_modal);
-                }
-            }
-        });
-        return false;
-    };
-
     // Deals with filtering
     var submitFilterGetForm = function () {
         $('#modal-overlay').fadeToggle(100);
+        var currentUrl = new URL(window.location);
         var form = $(this);
         var selectedOption = form.find(':selected').val()
         $.ajax({
@@ -36,10 +14,11 @@ $(document).ready(function () {
             type: form.attr("method"),
             dataType: 'json',
             success: function (data) {
-                // location.reload();
                 $('#modal-overlay').fadeToggle(100);
-                console.log(data.start_date)
-                console.log(data.end_date)
+                currentUrl.searchParams.set("start-date", data.start_date);
+                currentUrl.searchParams.set("end-date", data.end_date);
+                currentUrl.searchParams.set("filter", data.filter);
+                window.location.replace(currentUrl);
             }
         });
         return false;
@@ -65,5 +44,4 @@ $(document).ready(function () {
 
     $(".js-load-form").on("click", loadBaseModal);
     $(".js-filter-get-form").on("submit", submitFilterGetForm);
-    $("#base-modal").on("submit", ".js-submit-get-form", submitGetForm);
 });

@@ -1,3 +1,5 @@
+import datetime
+
 from django_otp.decorators import otp_required
 
 from django.contrib.auth.decorators import login_required
@@ -25,8 +27,8 @@ from properties.models import (
 
 @otp_required
 @login_required
-def normal_by_person(request):
-    """A view to return the stats page for normal stats by person"""
+def overview(request):
+    """A view to return an overview"""
 
     """
     Current Quarter
@@ -36,32 +38,46 @@ def normal_by_person(request):
     All Time
     """
 
+    filter = "current_quarter"
     link_to_employee = "propertyprocess__employee"
 
-    quarter_and_year = quarter_and_year_calc(timezone.now())
+    if "filter" in request.GET:
+        filter = request.GET.get("filter")
 
-    year = quarter_and_year["start_year"]
-    start_month = quarter_and_year["start_month"]
-    end_month = quarter_and_year["end_month"]
-    quarter = quarter_and_year["quarter"]
-    company_year = quarter_and_year["company_year"]
+    if filter == "current_quarter":
+        date_calc_data = date_calc(timezone.now(), filter)
+        start_date = date_calc_data["start_date"]
+        end_date = date_calc_data["end_date"]
+    else:
+        start_date = request.GET.get("start-date")
+        start_date = (
+            datetime.datetime.strptime(start_date, "%Y-%m-%d").date()
+        )
+
+        end_date = request.GET.get("end-date")
+        end_date = (
+            datetime.datetime.strptime(end_date, "%Y-%m-%d").date()
+        )
 
     valuations = (
         Valuation.objects.values("valuer")
+        .exclude(active=False)
         .annotate(valuation_count=Count(link_to_employee))
         .filter(
-            date__iso_year=year,
-            date__month__gte=start_month,
-            date__month__lte=end_month,
+            date__range=[start_date, end_date],
             propertyprocess__employee__employee_targets=True,
             propertyprocess__employee__user__is_active=True,
         )
         .order_by("-valuation_count")
     )
 
-    context = {}
+    context = {
+        "filter": filter,
+        "start_date": start_date,
+        "end_date": end_date
+    }
 
-    return render(request, "stats/normal_by_person.html", context)
+    return render(request, "stats/overview.html", context)
 
 
 @otp_required
@@ -98,5 +114,6 @@ def quick_filter_conversion(request):
 
     data["start_date"] = start_date
     data["end_date"] = end_date
+    data["filter"] = selected_filter
 
     return JsonResponse(data)
