@@ -204,7 +204,7 @@ def accept_invite(request, invitation_key):
 
     if request.method == "POST":
         form = CustomPasswordCreationForm(request.POST)
-        if form.is_valid:
+        if form.is_valid():
             instance_form = form.save(commit=False)
             instance_form.email = invitation_instance.email
             instance_form.first_name = invitation_instance.first_name

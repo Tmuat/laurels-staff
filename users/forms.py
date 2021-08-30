@@ -45,11 +45,24 @@ class CustomPasswordCreationForm(UserCreationForm):
             "is_active",
         )
 
+    password1 = forms.CharField(
+        widget=forms.PasswordInput,
+        min_length=12,
+        label="Enter Password"
+    )
+
+    password2 = forms.CharField(
+        widget=forms.PasswordInput,
+        min_length=12,
+        label="Repeat Password"
+    )
+
     def __init__(self, *args, **kwargs):
         """
         Remove help text.
         """
         super().__init__(*args, **kwargs)
+
         for field in self.fields:
             self.fields[field].help_text = False
 
