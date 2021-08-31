@@ -288,6 +288,10 @@ def date_calc(date, filter):
         if start_month < 10:
             start_month = 10
             start_year = start_year - 1
+    elif filter == "previous_year":
+        if start_month < 10:
+            start_month = 10
+            start_year = start_year - 2
 
     if start_month == 10:
         company_year += 1
@@ -303,6 +307,8 @@ def date_calc(date, filter):
 
     if filter == "year_to_date":
         end_month = 9
+    elif filter == "previous_year":
+        end_month = 9
     else:
         end_month = start_month + 2
 
@@ -317,6 +323,27 @@ def date_calc(date, filter):
             )
             - datetime.timedelta(1)
         )
+    elif filter == "previous_year":
+        end_date = (
+            datetime.date(
+                (start_year + 1) + (end_month == 12),
+                (end_month + 1 if end_month < 12 else 1),
+                1,
+            )
+            - datetime.timedelta(1)
+        )
+    elif filter == "all_time":
+        end_date = (
+            datetime.date(
+                (start_year + 1) + (end_month == 12),
+                (end_month + 1 if end_month < 12 else 1),
+                1,
+            )
+            - datetime.timedelta(1)
+        )
+        start_year = 2018
+        start_month = 1
+        start_date = datetime.date(start_year, start_month, 1)
     else:
         end_date = (
             datetime.date(
