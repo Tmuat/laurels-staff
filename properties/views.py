@@ -62,7 +62,7 @@ from properties.forms import (
     LettingsProgressionPhaseThreeForm,
     LettingsProgressionPhaseFourForm,
     HubAndEmployeeForm,
-    ReInstructionForm
+    ReInstructionForm,
 )
 from properties.models import (
     Property,
@@ -106,16 +106,12 @@ def property_list(request):
     searching and filtering.
     """
 
-    properties_list = (
-        PropertyProcess.objects
-        .select_related(
-            "property",
-        )
-        .prefetch_related(
-            "employee",
-            "hub",
-            "history",
-        )
+    properties_list = PropertyProcess.objects.select_related(
+        "property",
+    ).prefetch_related(
+        "employee",
+        "hub",
+        "history",
     )
     query = None
     status = None
@@ -175,9 +171,7 @@ def property_list(request):
             properties_list = properties_list.filter(queries)
 
     if archive is False:
-        properties_list = (
-            properties_list.exclude(macro_status=-1)
-        )
+        properties_list = properties_list.exclude(macro_status=-1)
 
     properties_list_length = len(properties_list)
 
@@ -2764,21 +2758,13 @@ def recreate_property(request, propertyprocess_id, hub_id, employee_id):
         PropertyProcess, id=propertyprocess_id
     )
 
-    valuation = get_object_or_404(
-        Valuation, id=property_process.valuation.id
-    )
+    valuation = get_object_or_404(Valuation, id=property_process.valuation.id)
 
-    marketing = get_object_or_404(
-        Marketing, id=property_process.marketing.id
-    )
+    marketing = get_object_or_404(Marketing, id=property_process.marketing.id)
 
-    employee = get_object_or_404(
-        Profile, id=employee_id
-    )
+    employee = get_object_or_404(Profile, id=employee_id)
 
-    hub = get_object_or_404(
-        Hub, id=hub_id
-    )
+    hub = get_object_or_404(Hub, id=hub_id)
 
     new_property_process = property_process
 
@@ -2892,8 +2878,12 @@ def back_on_the_market(request, propertyprocess_id):
                 if service_level != InstructionLettingsExtra.INTRO:
                     lettings_extra_instance.managed_property = True
 
-                lettings_extra_instance.created_by = request.user.get_full_name()
-                lettings_extra_instance.updated_by = request.user.get_full_name()
+                lettings_extra_instance.created_by = (
+                    request.user.get_full_name()
+                )
+                lettings_extra_instance.updated_by = (
+                    request.user.get_full_name()
+                )
 
                 lettings_extra_instance.save()
 
@@ -2936,12 +2926,12 @@ def back_on_the_market(request, propertyprocess_id):
         form = HubAndEmployeeForm(
             initial={
                 "employee": request.user.profile,
-                "hub": property_process.hub
+                "hub": property_process.hub,
             },
         )
         re_inst_form = ReInstructionForm(
             initial={"date": datetime.date.today},
-            instance=property_process.instruction
+            instance=property_process.instruction,
         )
 
         context = {
@@ -3031,8 +3021,12 @@ def re_let(request, propertyprocess_id):
                 if service_level != InstructionLettingsExtra.INTRO:
                     lettings_extra_instance.managed_property = True
 
-                lettings_extra_instance.created_by = request.user.get_full_name()
-                lettings_extra_instance.updated_by = request.user.get_full_name()
+                lettings_extra_instance.created_by = (
+                    request.user.get_full_name()
+                )
+                lettings_extra_instance.updated_by = (
+                    request.user.get_full_name()
+                )
 
                 lettings_extra_instance.save()
 
@@ -3075,12 +3069,12 @@ def re_let(request, propertyprocess_id):
         form = HubAndEmployeeForm(
             initial={
                 "employee": request.user.profile,
-                "hub": property_process.hub
+                "hub": property_process.hub,
             },
         )
         re_inst_form = ReInstructionForm(
             initial={"date": datetime.date.today},
-            instance=property_process.instruction
+            instance=property_process.instruction,
         )
 
         context = {

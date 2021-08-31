@@ -479,14 +479,14 @@ def employee_valuation_list(request, profile_id):
     end_month = quarter_and_year["end_month"]
 
     valuations = (
-        Valuation.objects
-        .exclude(active=False)
+        Valuation.objects.exclude(active=False)
         .filter(
             date__iso_year=year,
             date__month__gte=start_month,
             date__month__lte=end_month,
             valuer=user,
-        ).order_by("date")
+        )
+        .order_by("date")
     )
 
     context = {"valuations": valuations, "user": user}
@@ -518,14 +518,14 @@ def employee_instruction_list(request, profile_id):
     end_month = quarter_and_year["end_month"]
 
     instructions = (
-        Instruction.objects
-        .exclude(active=False)
+        Instruction.objects.exclude(active=False)
         .filter(
             date__iso_year=year,
             date__month__gte=start_month,
             date__month__lte=end_month,
             propertyprocess__employee=user,
-        ).order_by("date")
+        )
+        .order_by("date")
     )
 
     context = {"instructions": instructions, "user": user}

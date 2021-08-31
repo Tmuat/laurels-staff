@@ -412,7 +412,7 @@ class OffererDetailsAdmin(admin.ModelAdmin):
     search_fields = [
         "propertyprocess__property__postcode",
         "propertyprocess__property__address_line_1",
-        "full_name"
+        "full_name",
     ]
 
     readonly_fields = [
