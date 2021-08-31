@@ -46,15 +46,11 @@ class CustomPasswordCreationForm(UserCreationForm):
         )
 
     password1 = forms.CharField(
-        widget=forms.PasswordInput,
-        min_length=12,
-        label="Enter Password"
+        widget=forms.PasswordInput, min_length=12, label="Enter Password"
     )
 
     password2 = forms.CharField(
-        widget=forms.PasswordInput,
-        min_length=12,
-        label="Repeat Password"
+        widget=forms.PasswordInput, min_length=12, label="Repeat Password"
     )
 
     def __init__(self, *args, **kwargs):
