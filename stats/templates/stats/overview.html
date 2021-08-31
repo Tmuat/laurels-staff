@@ -190,40 +190,6 @@
                                         </th>
                                         <!-- <th>Withdrawn</th> -->
                                         <th class="text-center">
-                                            Exchanges
-                                            {% if sort == "exchanges" and direction == "desc" %}
-                                                <i 
-                                                class="fas fa-sort pointer js-sort text-success"
-                                                data-toggle="tooltip"
-                                                title="Sort Ascending"
-                                                data-url="{% url 'stats:quick_filter_conversion' %}"
-                                                data-sort="exchanges"
-                                                data-direction="asc"
-                                                >
-                                                </i>
-                                            {% elif sort == "exchanges" and direction == "asc" %}
-                                                <i 
-                                                class="fas fa-sort pointer js-sort text-success"
-                                                data-toggle="tooltip"
-                                                title="Sort Descending"
-                                                data-url="{% url 'stats:quick_filter_conversion' %}"
-                                                data-sort="exchanges"
-                                                data-direction="desc"
-                                                >
-                                                </i>
-                                            {% else %}
-                                                <i 
-                                                class="fas fa-sort pointer js-sort"
-                                                data-toggle="tooltip"
-                                                title="Sort Descending"
-                                                data-url="{% url 'stats:quick_filter_conversion' %}"
-                                                data-sort="exchanges"
-                                                data-direction="desc"
-                                                >
-                                                </i>
-                                            {% endif %}
-                                        </th>
-                                        <th class="text-center">
                                             New Business
                                             {% if sort == "new_business" and direction == "desc" %}
                                                 <i 
@@ -257,18 +223,59 @@
                                                 </i>
                                             {% endif %}
                                         </th>
+                                        <th class="text-center">
+                                            Exchanges
+                                            {% if sort == "exchanges" and direction == "desc" %}
+                                                <i 
+                                                class="fas fa-sort pointer js-sort text-success"
+                                                data-toggle="tooltip"
+                                                title="Sort Ascending"
+                                                data-url="{% url 'stats:quick_filter_conversion' %}"
+                                                data-sort="exchanges"
+                                                data-direction="asc"
+                                                >
+                                                </i>
+                                            {% elif sort == "exchanges" and direction == "asc" %}
+                                                <i 
+                                                class="fas fa-sort pointer js-sort text-success"
+                                                data-toggle="tooltip"
+                                                title="Sort Descending"
+                                                data-url="{% url 'stats:quick_filter_conversion' %}"
+                                                data-sort="exchanges"
+                                                data-direction="desc"
+                                                >
+                                                </i>
+                                            {% else %}
+                                                <i 
+                                                class="fas fa-sort pointer js-sort"
+                                                data-toggle="tooltip"
+                                                title="Sort Descending"
+                                                data-url="{% url 'stats:quick_filter_conversion' %}"
+                                                data-sort="exchanges"
+                                                data-direction="desc"
+                                                >
+                                                </i>
+                                            {% endif %}
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {% for instance in stats %}
-                                        {% if instance.employee_targets %}
+                                        {% if instance.employee_targets and instance.active %}
                                             <tr>
                                                 <td>{{ instance.name }}</td>
                                                 <td class="text-center">{{ instance.valuation_count }} </td>
                                                 <td class="text-center">{{ instance.instruction_count }}</td>
                                                 <td class="text-center">{{ instance.reduction_count }}</td>
-                                                <td class="text-center">{{ instance.exchange_count }}</td>
                                                 <td class="text-center">£{{ instance.new_business_sum|floatformat:2|intcomma }}</td>
+                                                <td class="text-center">
+                                                    <span
+                                                        class="pointer js-scrollable-modal"
+                                                        data-url="{% url 'stats:employee_exchanges' instance.id start_date|date:'d-m-y' end_date|date:'d-m-y' %}"
+                                                    >
+                                                        £{{ instance.exchange_sum|floatformat:2|intcomma }}
+                                                    </span>
+                                                </td>
                                             </tr>
                                         {% else %}
                                             {% if request.user.profile.director %}
@@ -277,8 +284,15 @@
                                                     <td class="text-center">{{ instance.valuation_count }} </td>
                                                     <td class="text-center">{{ instance.instruction_count }}</td>
                                                     <td class="text-center">{{ instance.reduction_count }}</td>
-                                                    <td class="text-center">{{ instance.exchange_count }}</td>
                                                     <td class="text-center">£{{ instance.new_business_sum|floatformat:2|intcomma }}</td>
+                                                    <td class="text-center">
+                                                        <span
+                                                            class="pointer js-scrollable-modal"
+                                                            data-url="{% url 'stats:employee_exchanges' instance.id start_date|date:'d-m-y' end_date|date:'d-m-y' %}"
+                                                        >
+                                                            £{{ instance.exchange_sum|floatformat:2|intcomma }}
+                                                        </span>
+                                                    </td>
                                                 </tr>
                                             {% endif %}
                                         {% endif %}
@@ -294,9 +308,13 @@
 
     </div>
     <!-- container -->
+    {% include 'partials/base-extra-large-modal.html' %}
 {% endblock %}
 
 {% block extra_javascript %}
 {{ block.super }}
+    <!-- Custom JS -->
     <script src="{% static 'stats/js/stats.js' %}"></script>
+    <script src="{% static 'stats/js/lists.js' %}"></script>
+    <!-- End Custom JS -->
 {% endblock %}

@@ -1,6 +1,11 @@
 from django.urls import path
 
-from stats.views import overview, more_filters, quick_filter_conversion
+from stats.views import (
+    overview,
+    more_filters,
+    quick_filter_conversion,
+    employee_exchanges,
+)
 
 
 app_name = "stats"
@@ -11,5 +16,10 @@ urlpatterns = [
         "quick-filters/",
         quick_filter_conversion,
         name="quick_filter_conversion",
+    ),
+    path(
+        "exchanges/<profile_id>/<start_date>/<end_date>/",
+        employee_exchanges,
+        name="employee_exchanges",
     ),
 ]
