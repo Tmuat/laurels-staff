@@ -14,7 +14,6 @@ $(document).ready(function () {
             type: form.attr("method"),
             dataType: 'json',
             success: function (data) {
-                $('#modal-overlay').fadeToggle(100);
                 currentUrl.searchParams.set("start-date", data.start_date);
                 currentUrl.searchParams.set("end-date", data.end_date);
                 currentUrl.searchParams.set("filter", data.filter);
@@ -22,6 +21,24 @@ $(document).ready(function () {
             }
         });
         return false;
+    };
+
+    // Deals with sorting
+    var setSort = function () {
+        var currentUrl = new URL(window.location);
+        var element = $(this);
+        currentUrl.searchParams.set("sort", element.attr("data-sort"));
+        currentUrl.searchParams.set("direction", element.attr("data-direction"));
+        window.location.replace(currentUrl);
+    };
+
+    // Deals with removing sorting
+    var removeSort = function () {
+        var currentUrl = new URL(window.location);
+        var element = $(this);
+        currentUrl.searchParams.delete("sort");
+        currentUrl.searchParams.delete("direction");
+        window.location.replace(currentUrl);
     };
 
     // Deals with rendering the base modal
@@ -44,4 +61,7 @@ $(document).ready(function () {
 
     $(".js-load-form").on("click", loadBaseModal);
     $(".js-filter-get-form").on("submit", submitFilterGetForm);
+
+    $(".js-sort").on("click", setSort);
+    $(".js-remove-sort").on("click", removeSort);
 });

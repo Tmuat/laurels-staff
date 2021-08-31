@@ -1,7 +1,17 @@
 {% extends "vertical_base.html" %}
 {% load static i18n %}
+{% load humanize %}
 
 {% block head_title %}{% trans "Overview" %}{% endblock head_title %}
+
+{% block extra_css %}
+<link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"
+      integrity="sha512-HK5fgLBL+xu6dm/Ii3z4xhlSUyZgTT9tuc/hSrtw6uzJOvgRr2a9jyxxT1ely+B+xFAmJKVSTbpM/CuL7qxO8w=="
+      crossorigin="anonymous"
+    />
+{% endblock %}
 
 {% block content %}
     <!-- Start Content-->
@@ -55,51 +65,224 @@
                                 <span class="mx-2 d-none d-md-inline">Or </span>
                                 <button class="btn btn-info js-load-form" data-url="{% url 'stats:more_filters' %}">More Filters</button>
                             </div>
-                            <div class="col-6 col-md-2">
+                            <!-- <div class="col-6 col-md-2">
                                 <div class="text-right">
                                     <button type="button" class="btn btn-light mb-2">Export</button>
                                 </div>
-                            </div><!-- end col-->
+                            </div> -->
                         </div>
 
                         <div class="table-responsive">
                             <table class="table table-centered mb-0">
                                 <thead class="thead-light">
                                     <tr>
-                                        <th>Name</th>
-                                        <th>Hub</th>
-                                        <th>Valuations</th>
-                                        <th>Instructions</th>
-                                        <th>Reductions</th>
-                                        <th>Exchanges</th>
-                                        <th>Withdrawn</th>
-                                        <th>New Business</th>
+                                        <th>
+                                            Name
+                                            {% if sort %}
+                                            <i 
+                                              class="fas fa-redo fa-xs pointer ml-1 js-remove-sort"
+                                              data-toggle="tooltip"
+                                              title="Sort Descending">
+                                            </i>
+                                            {% endif %}
+                                        </th>
+                                        <th class="text-center">
+                                            Valuations
+                                            {% if sort == "valuations" and direction == "desc" %}
+                                                <i 
+                                                class="fas fa-sort pointer js-sort text-success"
+                                                data-toggle="tooltip"
+                                                title="Sort Ascending"
+                                                data-url="{% url 'stats:quick_filter_conversion' %}"
+                                                data-sort="valuations"
+                                                data-direction="asc"
+                                                >
+                                                </i>
+                                            {% elif sort == "valuations" and direction == "asc" %}
+                                                <i 
+                                                class="fas fa-sort pointer js-sort text-success"
+                                                data-toggle="tooltip"
+                                                title="Sort Descending"
+                                                data-url="{% url 'stats:quick_filter_conversion' %}"
+                                                data-sort="valuations"
+                                                data-direction="desc"
+                                                >
+                                                </i>
+                                            {% else %}
+                                                <i 
+                                                class="fas fa-sort pointer js-sort"
+                                                data-toggle="tooltip"
+                                                title="Sort Descending"
+                                                data-url="{% url 'stats:quick_filter_conversion' %}"
+                                                data-sort="valuations"
+                                                data-direction="desc"
+                                                >
+                                                </i>
+                                            {% endif %}
+                                        </th>
+                                        <th class="text-center">
+                                            Instructions
+                                            {% if sort == "instructions" and direction == "desc" %}
+                                                <i 
+                                                class="fas fa-sort pointer js-sort text-success"
+                                                data-toggle="tooltip"
+                                                title="Sort Ascending"
+                                                data-url="{% url 'stats:quick_filter_conversion' %}"
+                                                data-sort="instructions"
+                                                data-direction="asc"
+                                                >
+                                                </i>
+                                            {% elif sort == "instructions" and direction == "asc" %}
+                                                <i 
+                                                class="fas fa-sort pointer js-sort text-success"
+                                                data-toggle="tooltip"
+                                                title="Sort Descending"
+                                                data-url="{% url 'stats:quick_filter_conversion' %}"
+                                                data-sort="instructions"
+                                                data-direction="desc"
+                                                >
+                                                </i>
+                                            {% else %}
+                                                <i 
+                                                class="fas fa-sort pointer js-sort"
+                                                data-toggle="tooltip"
+                                                title="Sort Descending"
+                                                data-url="{% url 'stats:quick_filter_conversion' %}"
+                                                data-sort="instructions"
+                                                data-direction="desc"
+                                                >
+                                                </i>
+                                            {% endif %}
+                                        </th>
+                                        <th class="text-center">
+                                            Reductions
+                                            {% if sort == "reductions" and direction == "desc" %}
+                                                <i 
+                                                class="fas fa-sort pointer js-sort text-success"
+                                                data-toggle="tooltip"
+                                                title="Sort Ascending"
+                                                data-url="{% url 'stats:quick_filter_conversion' %}"
+                                                data-sort="reductions"
+                                                data-direction="asc"
+                                                >
+                                                </i>
+                                            {% elif sort == "reductions" and direction == "asc" %}
+                                                <i 
+                                                class="fas fa-sort pointer js-sort text-success"
+                                                data-toggle="tooltip"
+                                                title="Sort Descending"
+                                                data-url="{% url 'stats:quick_filter_conversion' %}"
+                                                data-sort="reductions"
+                                                data-direction="desc"
+                                                >
+                                                </i>
+                                            {% else %}
+                                                <i 
+                                                class="fas fa-sort pointer js-sort"
+                                                data-toggle="tooltip"
+                                                title="Sort Descending"
+                                                data-url="{% url 'stats:quick_filter_conversion' %}"
+                                                data-sort="reductions"
+                                                data-direction="desc"
+                                                >
+                                                </i>
+                                            {% endif %}
+                                        </th>
+                                        <!-- <th>Withdrawn</th> -->
+                                        <th class="text-center">
+                                            Exchanges
+                                            {% if sort == "exchanges" and direction == "desc" %}
+                                                <i 
+                                                class="fas fa-sort pointer js-sort text-success"
+                                                data-toggle="tooltip"
+                                                title="Sort Ascending"
+                                                data-url="{% url 'stats:quick_filter_conversion' %}"
+                                                data-sort="exchanges"
+                                                data-direction="asc"
+                                                >
+                                                </i>
+                                            {% elif sort == "exchanges" and direction == "asc" %}
+                                                <i 
+                                                class="fas fa-sort pointer js-sort text-success"
+                                                data-toggle="tooltip"
+                                                title="Sort Descending"
+                                                data-url="{% url 'stats:quick_filter_conversion' %}"
+                                                data-sort="exchanges"
+                                                data-direction="desc"
+                                                >
+                                                </i>
+                                            {% else %}
+                                                <i 
+                                                class="fas fa-sort pointer js-sort"
+                                                data-toggle="tooltip"
+                                                title="Sort Descending"
+                                                data-url="{% url 'stats:quick_filter_conversion' %}"
+                                                data-sort="exchanges"
+                                                data-direction="desc"
+                                                >
+                                                </i>
+                                            {% endif %}
+                                        </th>
+                                        <th class="text-center">
+                                            New Business
+                                            {% if sort == "new_business" and direction == "desc" %}
+                                                <i 
+                                                class="fas fa-sort pointer js-sort text-success"
+                                                data-toggle="tooltip"
+                                                title="Sort Ascending"
+                                                data-url="{% url 'stats:quick_filter_conversion' %}"
+                                                data-sort="new_business"
+                                                data-direction="asc"
+                                                >
+                                                </i>
+                                            {% elif sort == "new_business" and direction == "asc" %}
+                                                <i 
+                                                class="fas fa-sort pointer js-sort text-success"
+                                                data-toggle="tooltip"
+                                                title="Sort Descending"
+                                                data-url="{% url 'stats:quick_filter_conversion' %}"
+                                                data-sort="new_business"
+                                                data-direction="desc"
+                                                >
+                                                </i>
+                                            {% else %}
+                                                <i 
+                                                class="fas fa-sort pointer js-sort"
+                                                data-toggle="tooltip"
+                                                title="Sort Descending"
+                                                data-url="{% url 'stats:quick_filter_conversion' %}"
+                                                data-sort="new_business"
+                                                data-direction="desc"
+                                                >
+                                                </i>
+                                            {% endif %}
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td><a href="apps-ecommerce-orders-details.html" class="text-body font-weight-bold">#BM9708</a> </td>
-                                        <td>
-                                            August 05 2018 <small class="text-muted">10:29 PM</small>
-                                        </td>
-                                        <td>
-                                            <h5><span class="badge badge-success-lighten"><i class="mdi mdi-coin"></i> Paid</span></h5>
-                                        </td>
-                                        <td>
-                                            $176.41
-                                        </td>
-                                        <td>
-                                            Mastercard
-                                        </td>
-                                        <td>
-                                            <h5><span class="badge badge-info-lighten">Shipped</span></h5>
-                                        </td>
-                                        <td>
-                                            <a href="javascript:void(0);" class="action-icon"> <i class="mdi mdi-eye"></i></a>
-                                            <a href="javascript:void(0);" class="action-icon"> <i class="mdi mdi-square-edit-outline"></i></a>
-                                            <a href="javascript:void(0);" class="action-icon"> <i class="mdi mdi-delete"></i></a>
-                                        </td>
-                                    </tr>                               
+                                    {% for instance in stats %}
+                                        {% if instance.employee_targets %}
+                                            <tr>
+                                                <td>{{ instance.name }}</td>
+                                                <td class="text-center">{{ instance.valuation_count }} </td>
+                                                <td class="text-center">{{ instance.instruction_count }}</td>
+                                                <td class="text-center">{{ instance.reduction_count }}</td>
+                                                <td class="text-center">{{ instance.exchange_count }}</td>
+                                                <td class="text-center">£{{ instance.new_business_sum|floatformat:2|intcomma }}</td>
+                                            </tr>
+                                        {% else %}
+                                            {% if request.user.profile.director %}
+                                                <tr>
+                                                    <td>{{ instance.name }}</td>
+                                                    <td class="text-center">{{ instance.valuation_count }} </td>
+                                                    <td class="text-center">{{ instance.instruction_count }}</td>
+                                                    <td class="text-center">{{ instance.reduction_count }}</td>
+                                                    <td class="text-center">{{ instance.exchange_count }}</td>
+                                                    <td class="text-center">£{{ instance.new_business_sum|floatformat:2|intcomma }}</td>
+                                                </tr>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endfor %}
                                 </tbody>
                             </table>
                         </div>
