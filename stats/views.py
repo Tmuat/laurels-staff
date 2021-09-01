@@ -182,12 +182,26 @@ def overview(request):
                 ]
 
         for exchanges_sales_instance in exchanges_sales:
-            if instance["id"] == exchanges_sales_instance.exchange.propertyprocess.employee.id:
-                instance["exchange_sum"] += exchanges_sales_instance.exchange.propertyprocess.property_fees.last().new_business
+            if (
+                instance["id"]
+                == exchanges_sales_instance.exchange.propertyprocess.employee.id
+            ):
+                instance[
+                    "exchange_sum"
+                ] += (
+                    exchanges_sales_instance.exchange.propertyprocess.property_fees.last().new_business
+                )
 
         for exchanges_lettings_instance in exchanges_lettings:
-            if instance["id"] == exchanges_lettings_instance.exchange.propertyprocess.employee.id:
-                instance["exchange_sum"] += exchanges_lettings_instance.exchange.propertyprocess.property_fees.last().new_business
+            if (
+                instance["id"]
+                == exchanges_lettings_instance.exchange.propertyprocess.employee.id
+            ):
+                instance[
+                    "exchange_sum"
+                ] += (
+                    exchanges_lettings_instance.exchange.propertyprocess.property_fees.last().new_business
+                )
 
         if (
             instance["valuation_count"] == 0
@@ -294,12 +308,20 @@ def employee_exchanges(request, profile_id, start_date, end_date):
         exchange_dict["id"] = instance.id
         exchange_dict["address"] = instance.exchange.propertyprocess
         exchange_dict["sector"] = instance.exchange.propertyprocess.sector
-        exchange_dict["property_proccess"] = instance.exchange.propertyprocess.id
+        exchange_dict[
+            "property_proccess"
+        ] = instance.exchange.propertyprocess.id
         exchange_dict["date"] = instance.exchange_date
         exchange_dict["comp_date"] = instance.completion_date
-        exchange_dict["sum"] = instance.exchange.propertyprocess.property_fees.last().new_business
-        exchange_dict["fee"] = instance.exchange.propertyprocess.property_fees.last().fee
-        exchange_dict["final_price"] = instance.exchange.propertyprocess.property_fees.last().price
+        exchange_dict[
+            "sum"
+        ] = instance.exchange.propertyprocess.property_fees.last().new_business
+        exchange_dict[
+            "fee"
+        ] = instance.exchange.propertyprocess.property_fees.last().fee
+        exchange_dict[
+            "final_price"
+        ] = instance.exchange.propertyprocess.property_fees.last().price
 
         exchanges.append(exchange_dict)
 
@@ -308,19 +330,27 @@ def employee_exchanges(request, profile_id, start_date, end_date):
         exchange_dict["id"] = instance.id
         exchange_dict["address"] = instance.exchange.propertyprocess
         exchange_dict["sector"] = instance.exchange.propertyprocess.sector
-        exchange_dict["property_proccess"] = instance.exchange.propertyprocess.id
+        exchange_dict[
+            "property_proccess"
+        ] = instance.exchange.propertyprocess.id
         exchange_dict["date"] = instance.move_in_date
-        exchange_dict["sum"] = instance.exchange.propertyprocess.property_fees.last().new_business
-        exchange_dict["fee"] = instance.exchange.propertyprocess.property_fees.last().fee
-        exchange_dict["final_price"] = instance.exchange.propertyprocess.property_fees.last().price
+        exchange_dict[
+            "sum"
+        ] = instance.exchange.propertyprocess.property_fees.last().new_business
+        exchange_dict[
+            "fee"
+        ] = instance.exchange.propertyprocess.property_fees.last().fee
+        exchange_dict[
+            "final_price"
+        ] = instance.exchange.propertyprocess.property_fees.last().price
 
         exchanges.append(exchange_dict)
 
     exchanges = sorted(
-            exchanges,
-            key=lambda k: k["date"],
-            reverse=True,
-        )
+        exchanges,
+        key=lambda k: k["date"],
+        reverse=True,
+    )
 
     context = {"exchanges": exchanges, "user": user}
 
@@ -351,15 +381,12 @@ def employee_new_business(request, profile_id, start_date, end_date):
         "%Y-%m-%d"
     )
 
-    new_business = (
-        PropertyFees.objects.filter(
-            propertyprocess__employee__id=profile_id,
-            date__range=[start_date, end_date],
-            active=True,
-            show_all=True,
-        )
-        .order_by("-date")
-    )
+    new_business = PropertyFees.objects.filter(
+        propertyprocess__employee__id=profile_id,
+        date__range=[start_date, end_date],
+        active=True,
+        show_all=True,
+    ).order_by("-date")
 
     context = {"new_business": new_business, "user": user}
 
@@ -390,13 +417,10 @@ def employee_reductions(request, profile_id, start_date, end_date):
         "%Y-%m-%d"
     )
 
-    reductions = (
-        Reduction.objects.filter(
-            propertyprocess__employee__id=profile_id,
-            date__range=[start_date, end_date],
-        )
-        .order_by("-date")
-    )
+    reductions = Reduction.objects.filter(
+        propertyprocess__employee__id=profile_id,
+        date__range=[start_date, end_date],
+    ).order_by("-date")
 
     context = {"reductions": reductions, "user": user}
 
