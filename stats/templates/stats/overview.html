@@ -265,7 +265,14 @@
                                             <tr>
                                                 <td>{{ instance.name }}</td>
                                                 <td class="text-center">{{ instance.valuation_count }} </td>
-                                                <td class="text-center">{{ instance.instruction_count }}</td>
+                                                <td class="text-center">
+                                                    <span
+                                                        class="pointer js-scrollable-modal text-hover-underline"
+                                                        data-url="{% url 'stats:employee_instructions' instance.id start_date|date:'d-m-y' end_date|date:'d-m-y' %}"
+                                                    >
+                                                    {{ instance.instruction_count }}
+                                                    </span>
+                                                </td>
                                                 <td class="text-center">
                                                     <span
                                                         class="pointer js-scrollable-modal text-hover-underline"
@@ -296,7 +303,14 @@
                                                 <tr>
                                                     <td>{{ instance.name }}</td>
                                                     <td class="text-center">{{ instance.valuation_count }} </td>
-                                                    <td class="text-center">{{ instance.instruction_count }}</td>
+                                                    <td class="text-center">
+                                                        <span
+                                                            class="pointer js-scrollable-modal text-hover-underline"
+                                                            data-url="{% url 'stats:employee_instructions' instance.id start_date|date:'d-m-y' end_date|date:'d-m-y' %}"
+                                                        >
+                                                        {{ instance.instruction_count }}
+                                                        </span>
+                                                    </td>
                                                     <td class="text-center">
                                                         <span
                                                             class="pointer js-scrollable-modal text-hover-underline"

@@ -407,3 +407,41 @@ def employee_reductions(request, profile_id, start_date, end_date):
     )
 
     return JsonResponse(data)
+
+
+@otp_required
+@login_required
+def employee_instructions(request, profile_id, start_date, end_date):
+    """
+    An AJAX view to return all instructions in a given date range
+    """
+
+    data = dict()
+
+    user = Profile.objects.get(id=profile_id)
+
+    start_date = datetime.datetime.strptime(start_date, "%d-%m-%y").strftime(
+        "%Y-%m-%d"
+    )
+    end_date = datetime.datetime.strptime(end_date, "%d-%m-%y").strftime(
+        "%Y-%m-%d"
+    )
+
+    instructions = (
+        Instruction.objects.filter(
+            propertyprocess__employee__id=profile_id,
+            date__range=[start_date, end_date],
+        )
+        .exclude(active=False)
+        .order_by("-date")
+    )
+
+    context = {"instructions": instructions, "user": user}
+
+    data["html_modal"] = render_to_string(
+        "stats/includes/instructions.html",
+        context,
+        request=request,
+    )
+
+    return JsonResponse(data)
