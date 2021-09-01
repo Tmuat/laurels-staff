@@ -69,7 +69,7 @@
                             {% if request.user.profile.director %}
                             <div class="col-6 col-md-2">
                                 <div class="text-right">
-                                    <a href="{% url 'stats:export_users_xls' %}?filter={{ filter }}&start-date={{ start_date|date:'Y-m-d' }}&end-date={{ end_date|date:'Y-m-d' }}{% if sort %}&sort={{sort}}{% endif %}{% if direction %}&direction={{ direction }}{% endif %}{% if hub %}&hub={{ hub }}{% endif %}" class="btn btn-light mb-2">Export</a>
+                                    <a href="{% url 'stats:export_overview_xls' %}?filter={{ filter }}&start-date={{ start_date|date:'Y-m-d' }}&end-date={{ end_date|date:'Y-m-d' }}{% if sort %}&sort={{sort}}{% endif %}{% if direction %}&direction={{ direction }}{% endif %}{% if hub %}&hub={{ hub }}{% endif %}" class="btn btn-light mb-2">Export</a>
                                 </div>
                             </div>
                             {% endif %}

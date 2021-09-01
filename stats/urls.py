@@ -10,7 +10,7 @@ from stats.views import (
     employee_reductions,
     employee_instructions,
     employee_valuations,
-    export_users_xls
+    export_overview_xls
 )
 
 
@@ -51,7 +51,7 @@ urlpatterns = [
     ),
     path(
         "export/users/",
-        export_users_xls,
-        name="export_users_xls",
+        export_overview_xls,
+        name="export_overview_xls",
     ),
 ]

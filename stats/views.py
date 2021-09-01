@@ -530,7 +530,7 @@ def employee_valuations(request, profile_id, start_date, end_date):
 
 @otp_required
 @login_required
-def export_users_xls(request):
+def export_overview_xls(request):
     """
     Export to excel the stats overview
     """
