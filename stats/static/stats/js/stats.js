@@ -25,6 +25,7 @@ $(document).ready(function () {
 
     // Deals with sorting
     var setSort = function () {
+        $('#modal-overlay').fadeToggle(100);
         var currentUrl = new URL(window.location);
         var element = $(this);
         currentUrl.searchParams.set("sort", element.attr("data-sort"));
