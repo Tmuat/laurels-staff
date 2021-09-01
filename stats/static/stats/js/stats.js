@@ -35,6 +35,7 @@ $(document).ready(function () {
 
     // Deals with removing sorting
     var removeSort = function () {
+        $('#modal-overlay').fadeToggle(100);
         var currentUrl = new URL(window.location);
         var element = $(this);
         currentUrl.searchParams.delete("sort");

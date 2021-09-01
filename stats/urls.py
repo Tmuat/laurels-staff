@@ -7,7 +7,8 @@ from stats.views import (
     employee_exchanges,
     employee_new_business,
     employee_reductions,
-    employee_instructions
+    employee_instructions,
+    employee_valuations,
 )
 
 
@@ -39,5 +40,10 @@ urlpatterns = [
         "instructions/<profile_id>/<start_date>/<end_date>/",
         employee_instructions,
         name="employee_instructions",
+    ),
+    path(
+        "valuations/<profile_id>/<start_date>/<end_date>/",
+        employee_valuations,
+        name="employee_valuations",
     ),
 ]

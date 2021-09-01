@@ -264,7 +264,14 @@
                                         {% if instance.employee_targets and instance.active %}
                                             <tr>
                                                 <td>{{ instance.name }}</td>
-                                                <td class="text-center">{{ instance.valuation_count }} </td>
+                                                <td class="text-center">
+                                                    <span
+                                                        class="pointer js-scrollable-modal text-hover-underline"
+                                                        data-url="{% url 'stats:employee_valuations' instance.id start_date|date:'d-m-y' end_date|date:'d-m-y' %}"
+                                                    >
+                                                    {{ instance.valuation_count }}
+                                                    </span>
+                                                </td>
                                                 <td class="text-center">
                                                     <span
                                                         class="pointer js-scrollable-modal text-hover-underline"
@@ -302,7 +309,14 @@
                                             {% if request.user.profile.director %}
                                                 <tr>
                                                     <td>{{ instance.name }}</td>
-                                                    <td class="text-center">{{ instance.valuation_count }} </td>
+                                                    <td class="text-center">
+                                                        <span
+                                                            class="pointer js-scrollable-modal text-hover-underline"
+                                                            data-url="{% url 'stats:employee_valuations' instance.id start_date|date:'d-m-y' end_date|date:'d-m-y' %}"
+                                                        >
+                                                        {{ instance.valuation_count }}
+                                                        </span>
+                                                    </td>
                                                     <td class="text-center">
                                                         <span
                                                             class="pointer js-scrollable-modal text-hover-underline"

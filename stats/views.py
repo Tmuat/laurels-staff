@@ -445,3 +445,41 @@ def employee_instructions(request, profile_id, start_date, end_date):
     )
 
     return JsonResponse(data)
+
+
+@otp_required
+@login_required
+def employee_valuations(request, profile_id, start_date, end_date):
+    """
+    An AJAX view to return all valuations in a given date range
+    """
+
+    data = dict()
+
+    user = Profile.objects.get(id=profile_id)
+
+    start_date = datetime.datetime.strptime(start_date, "%d-%m-%y").strftime(
+        "%Y-%m-%d"
+    )
+    end_date = datetime.datetime.strptime(end_date, "%d-%m-%y").strftime(
+        "%Y-%m-%d"
+    )
+
+    valuations = (
+        Valuation.objects.filter(
+            valuer=profile_id,
+            date__range=[start_date, end_date],
+        )
+        .exclude(active=False)
+        .order_by("-date")
+    )
+
+    context = {"valuations": valuations, "user": user}
+
+    data["html_modal"] = render_to_string(
+        "stats/includes/valuations.html",
+        context,
+        request=request,
+    )
+
+    return JsonResponse(data)
