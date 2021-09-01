@@ -84,6 +84,11 @@
                     <li {% if request.resolver_match.url_name == 'overview' %}class="active"{% endif %}>
                         <a href="{% url 'stats:overview' %}">{% trans "Overview" %}</a>
                     </li>
+                    <li {% if request.resolver_match.url_name == 'hub_overview' %}class="active"{% endif %}>
+                        <a href="{% url 'stats:hub_overview' %}">
+                            Hub {% if request.user.profile.director %}& Company {% endif %}Overview
+                        </a>
+                    </li>
                 </ul>
             </li>
             {% if request.user.profile.director %}

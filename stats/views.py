@@ -235,6 +235,234 @@ def overview(request):
 
 @otp_required
 @login_required
+def hub_overview(request):
+    """
+    A view to return a hub overview & total company
+    """
+
+    filter = "current_quarter"
+    link_to_hub = "propertyprocess__hub"
+    hub = "propertyprocess__hub__id"
+    sort = None
+    direction = None
+
+    if "filter" in request.GET:
+        filter = request.GET.get("filter")
+
+    if "sort" in request.GET:
+        sort = request.GET.get("sort")
+
+    if "direction" in request.GET:
+        direction = request.GET.get("direction")
+
+    if filter == "current_quarter":
+        date_calc_data = date_calc(timezone.now(), filter)
+        start_date = date_calc_data["start_date"]
+        end_date = date_calc_data["end_date"]
+    else:
+        start_date = request.GET.get("start-date")
+        start_date = datetime.datetime.strptime(start_date, "%Y-%m-%d").date()
+
+        end_date = request.GET.get("end-date")
+        end_date = datetime.datetime.strptime(end_date, "%Y-%m-%d").date()
+
+    all_valuations = (
+        Valuation.objects
+        .exclude(active=False)
+        .filter(
+            date__range=[start_date, end_date],
+        )
+    )
+
+    valuations = (
+        all_valuations.values(hub)
+        .annotate(valuation_count=Count(link_to_hub))
+        .order_by("-valuation_count")
+    )
+
+    all_instructions = (
+        Instruction.objects
+        .exclude(active=False)
+        .filter(
+            date__range=[start_date, end_date],
+        )
+    )
+
+    instructions = (
+        all_instructions.values(hub)
+        .annotate(instruction_count=Count(link_to_hub))
+        .order_by("-instruction_count")
+    )
+
+    all_reductions = (
+        Reduction.objects
+        .filter(
+            date__range=[start_date, end_date],
+        )
+    )
+
+    reductions = (
+        all_reductions.values(hub)
+        .annotate(reduction_count=Count(link_to_hub))
+        .order_by("-reduction_count")
+    )
+
+    all_exchanges_sales = (
+        ExchangeMoveSales.objects
+        .filter(
+            exchange_date__range=[start_date, end_date],
+        )
+    )
+
+    exchanges_sales = all_exchanges_sales.order_by("-exchange_date")
+
+    all_exchanges_lettings = (
+        ExchangeMoveLettings.objects
+        .filter(
+            move_in_date__range=[start_date, end_date],
+        )
+    )
+
+    exchanges_lettings = all_exchanges_lettings.order_by("-move_in_date")
+
+    all_new_business = (
+        PropertyFees.objects
+        .exclude(active=False)
+        .exclude(show_all=False)
+        .filter(
+            date__range=[start_date, end_date],
+        )
+    )
+
+    new_business = (
+        all_new_business.values(hub)
+        .annotate(new_business_sum=Sum("new_business"))
+        .order_by("-new_business_sum")
+    )
+
+    for instance in valuations:
+        instance["hub_id"] = instance["propertyprocess__hub__id"]
+        del instance["propertyprocess__hub__id"]
+
+    for instance in instructions:
+        instance["hub_id"] = instance["propertyprocess__hub__id"]
+        del instance["propertyprocess__hub__id"]
+
+    for instance in reductions:
+        instance["hub_id"] = instance["propertyprocess__hub__id"]
+        del instance["propertyprocess__hub__id"]
+
+    for instance in new_business:
+        instance["hub_id"] = instance["propertyprocess__hub__id"]
+        del instance["propertyprocess__hub__id"]
+
+    hubs = Hub.objects.filter(is_active=True)
+
+    overview_list = []
+    stats = []
+    total = {
+        "valuation_count": len(all_valuations),
+        "instruction_count": len(all_instructions),
+        "reduction_count": len(all_reductions),
+        "new_business_sum": 0,
+        "exchange_sum": 0,
+    }
+
+    for instance in hubs:
+        hub_dict = {}
+        hub_dict["id"] = instance.id
+        hub_dict["hub_name"] = instance.hub_name
+
+        hub_dict["valuation_count"] = 0
+        hub_dict["instruction_count"] = 0
+        hub_dict["reduction_count"] = 0
+        hub_dict["new_business_sum"] = 0
+        hub_dict["exchange_sum"] = 0
+
+        overview_list.append(hub_dict)
+
+    for instance in overview_list:
+        for valuation_instance in valuations:
+            if instance["id"] == valuation_instance["hub_id"]:
+                instance["valuation_count"] = valuation_instance[
+                    "valuation_count"
+                ]
+        for instruction_instance in instructions:
+            if instance["id"] == instruction_instance["hub_id"]:
+                instance["instruction_count"] = instruction_instance[
+                    "instruction_count"
+                ]
+        for reduction_instance in reductions:
+            if instance["id"] == reduction_instance["hub_id"]:
+                instance["reduction_count"] = reduction_instance[
+                    "reduction_count"
+                ]
+        for new_business_instance in new_business:
+            if instance["id"] == new_business_instance["hub_id"]:
+                instance["new_business_sum"] = new_business_instance[
+                    "new_business_sum"
+                ]
+
+        for exchanges_sales_instance in exchanges_sales:
+            if instance["id"] == exchanges_sales_instance.exchange.propertyprocess.hub.id:
+                instance["exchange_sum"] += exchanges_sales_instance.exchange.propertyprocess.property_fees.last().new_business
+
+        for exchanges_lettings_instance in exchanges_lettings:
+            if instance["id"] == exchanges_lettings_instance.exchange.propertyprocess.hub.id:
+                instance["exchange_sum"] += exchanges_lettings_instance.exchange.propertyprocess.property_fees.last().new_business
+
+        if (
+            instance["valuation_count"] == 0
+            and instance["instruction_count"] == 0
+            and instance["reduction_count"] == 0
+            and instance["new_business_sum"] == 0
+            and instance["exchange_sum"] == 0
+        ):
+            pass
+        else:
+            stats.append(instance)
+
+    if sort is not None and direction is not None:
+        s_and_d = sort_and_direction(sort, direction)
+
+        stats = sorted(
+            stats,
+            key=lambda k: k[s_and_d["sort"]],
+            reverse=s_and_d["direction"],
+        )
+
+    for instance in all_new_business:
+        total["new_business_sum"] += instance.new_business
+
+    for instance in exchanges_sales:
+        total["exchange_sum"] += (
+            instance. \
+                exchange.propertyprocess.property_fees. \
+                    last().new_business
+        )
+
+    for instance in exchanges_lettings:
+        total["exchange_sum"] += (
+            instance. \
+                exchange.propertyprocess.property_fees. \
+                    last().new_business
+        )
+
+    context = {
+        "filter": filter,
+        "start_date": start_date,
+        "end_date": end_date,
+        "sort": sort,
+        "direction": direction,
+        "stats": stats,
+        "total": total,
+    }
+
+    return render(request, "stats/hub_overview.html", context)
+
+
+@otp_required
+@login_required
 def more_filters(request):
     """
     A view to return an ajax response with extra filters for dates
@@ -749,6 +977,235 @@ def export_overview_xls(request):
         col_num += 1
 
         ws.write(row_num, col_num, instance["active"], font_style)
+        col_num += 1
+
+        ws.write(row_num, col_num, instance["valuation_count"], font_style)
+        col_num += 1
+
+        ws.write(row_num, col_num, instance["instruction_count"], font_style)
+        col_num += 1
+
+        ws.write(row_num, col_num, instance["reduction_count"], font_style)
+        col_num += 1
+
+        ws.write(row_num, col_num, instance["new_business_sum"], money_font_style)
+        col_num += 1
+
+        ws.write(row_num, col_num, instance["exchange_sum"], money_font_style)
+        col_num += 1
+
+    wb.save(response)
+    return response
+
+
+@otp_required
+@login_required
+def export_hub_overview_xls(request):
+    """
+    Export to excel the stats overview for hubs
+    """
+
+    filter = "current_quarter"
+    link_to_hub = "propertyprocess__hub"
+    hub = "propertyprocess__hub__id"
+    sort = None
+    direction = None
+
+    if "filter" in request.GET:
+        filter = request.GET.get("filter")
+
+    if "sort" in request.GET:
+        sort = request.GET.get("sort")
+
+    if "direction" in request.GET:
+        direction = request.GET.get("direction")
+
+    if filter == "current_quarter":
+        date_calc_data = date_calc(timezone.now(), filter)
+        start_date = date_calc_data["start_date"]
+        end_date = date_calc_data["end_date"]
+    else:
+        start_date = request.GET.get("start-date")
+        start_date = datetime.datetime.strptime(start_date, "%Y-%m-%d").date()
+
+        end_date = request.GET.get("end-date")
+        end_date = datetime.datetime.strptime(end_date, "%Y-%m-%d").date()
+
+    valuations = (
+        Valuation.objects.values(hub)
+        .exclude(active=False)
+        .annotate(valuation_count=Count(link_to_hub))
+        .filter(
+            date__range=[start_date, end_date],
+        )
+        .order_by("-valuation_count")
+    )
+
+    instructions = (
+        Instruction.objects.values(hub)
+        .exclude(active=False)
+        .annotate(instruction_count=Count(link_to_hub))
+        .filter(
+            date__range=[start_date, end_date],
+        )
+        .order_by("-instruction_count")
+    )
+
+    reductions = (
+        Reduction.objects.values(hub)
+        .annotate(reduction_count=Count(link_to_hub))
+        .filter(
+            date__range=[start_date, end_date],
+        )
+        .order_by("-reduction_count")
+    )
+
+    exchanges_sales = ExchangeMoveSales.objects.filter(
+        exchange_date__range=[start_date, end_date],
+    ).order_by("-exchange_date")
+
+    exchanges_lettings = ExchangeMoveLettings.objects.filter(
+        move_in_date__range=[start_date, end_date],
+    ).order_by("-move_in_date")
+
+    new_business = (
+        PropertyFees.objects.values(hub)
+        .annotate(new_business_sum=Sum("new_business"))
+        .filter(
+            date__range=[start_date, end_date],
+            active=True,
+            show_all=True,
+        )
+        .order_by("-new_business_sum")
+    )
+
+    for instance in valuations:
+        instance["hub_id"] = instance["propertyprocess__hub__id"]
+        del instance["propertyprocess__hub__id"]
+
+    for instance in instructions:
+        instance["hub_id"] = instance["propertyprocess__hub__id"]
+        del instance["propertyprocess__hub__id"]
+
+    for instance in reductions:
+        instance["hub_id"] = instance["propertyprocess__hub__id"]
+        del instance["propertyprocess__hub__id"]
+
+    for instance in new_business:
+        instance["hub_id"] = instance["propertyprocess__hub__id"]
+        del instance["propertyprocess__hub__id"]
+
+    hubs = Hub.objects.filter(is_active=True)
+
+    overview_list = []
+    stats = []
+
+    for instance in hubs:
+        hub_dict = {}
+        hub_dict["id"] = instance.id
+        hub_dict["hub_name"] = instance.hub_name
+
+        hub_dict["valuation_count"] = 0
+        hub_dict["instruction_count"] = 0
+        hub_dict["reduction_count"] = 0
+        hub_dict["new_business_sum"] = 0
+        hub_dict["exchange_sum"] = 0
+
+        overview_list.append(hub_dict)
+
+    for instance in overview_list:
+        for valuation_instance in valuations:
+            if instance["id"] == valuation_instance["hub_id"]:
+                instance["valuation_count"] = valuation_instance[
+                    "valuation_count"
+                ]
+        for instruction_instance in instructions:
+            if instance["id"] == instruction_instance["hub_id"]:
+                instance["instruction_count"] = instruction_instance[
+                    "instruction_count"
+                ]
+        for reduction_instance in reductions:
+            if instance["id"] == reduction_instance["hub_id"]:
+                instance["reduction_count"] = reduction_instance[
+                    "reduction_count"
+                ]
+        for new_business_instance in new_business:
+            if instance["id"] == new_business_instance["hub_id"]:
+                instance["new_business_sum"] = new_business_instance[
+                    "new_business_sum"
+                ]
+
+        for exchanges_sales_instance in exchanges_sales:
+            if instance["id"] == exchanges_sales_instance.exchange.propertyprocess.hub.id:
+                instance["exchange_sum"] += exchanges_sales_instance.exchange.propertyprocess.property_fees.last().new_business
+
+        for exchanges_lettings_instance in exchanges_lettings:
+            if instance["id"] == exchanges_lettings_instance.exchange.propertyprocess.hub.id:
+                instance["exchange_sum"] += exchanges_lettings_instance.exchange.propertyprocess.property_fees.last().new_business
+
+        if (
+            instance["valuation_count"] == 0
+            and instance["instruction_count"] == 0
+            and instance["reduction_count"] == 0
+            and instance["new_business_sum"] == 0
+            and instance["exchange_sum"] == 0
+        ):
+            pass
+        else:
+            stats.append(instance)
+
+    if sort is not None and direction is not None:
+        s_and_d = sort_and_direction(sort, direction)
+
+        stats = sorted(
+            stats,
+            key=lambda k: k[s_and_d["sort"]],
+            reverse=s_and_d["direction"],
+        )
+
+    start_date = start_date.strftime("%d-%m-%Y")
+
+    end_date = end_date.strftime("%d-%m-%Y")
+
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = (
+        f'attachment; filename="Hub Stats Overview {start_date} to {end_date}.xls"'
+    )
+
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet('Overview')
+
+    # Add filters to first row of sheet
+    row_num = 0
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+    filter_columns = ['Date Range', start_date, end_date, ]
+
+    for col_num in range(len(filter_columns)):
+        ws.write(row_num, col_num, filter_columns[col_num], font_style)
+
+    # Table header, starting row 3
+    row_num += 2
+
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+
+    columns = ['Hub', 'Valuations', 'Instructions', 'Reductions', 'New Business', 'Exchanges']
+
+    for col_num in range(len(columns)):
+        ws.write(row_num, col_num, columns[col_num], font_style)
+
+    # Sheet body, remaining rows
+    font_style = xlwt.XFStyle()
+
+    money_font_style = xlwt.XFStyle()
+    money_font_style.num_format_str = '0.00'
+
+    for instance in stats:
+        row_num += 1
+        col_num = 0
+
+        ws.write(row_num, col_num, instance["hub_name"], font_style)
         col_num += 1
 
         ws.write(row_num, col_num, instance["valuation_count"], font_style)

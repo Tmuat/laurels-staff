@@ -2,6 +2,7 @@ from django.urls import path
 
 from stats.views import (
     overview,
+    hub_overview,
     more_filters,
     hub_filters,
     quick_filter_conversion,
@@ -10,13 +11,15 @@ from stats.views import (
     employee_reductions,
     employee_instructions,
     employee_valuations,
-    export_overview_xls
+    export_overview_xls,
+    export_hub_overview_xls,
 )
 
 
 app_name = "stats"
 urlpatterns = [
     path("overview/", overview, name="overview"),
+    path("hub-overview/", hub_overview, name="hub_overview"),
     path("more-filters/", more_filters, name="more_filters"),
     path("hub-filters/", hub_filters, name="hub_filters"),
     path(
@@ -53,5 +56,10 @@ urlpatterns = [
         "export/users/",
         export_overview_xls,
         name="export_overview_xls",
+    ),
+    path(
+        "export/hubs/",
+        export_hub_overview_xls,
+        name="export_hub_overview_xls",
     ),
 ]

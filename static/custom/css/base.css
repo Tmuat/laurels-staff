@@ -94,6 +94,10 @@ body.authentication-bg {
     text-decoration: underline;
 }
 
+.opacity-0 {
+    opacity: 0;
+}
+
 /* Property Detail */
 
 .expand {
