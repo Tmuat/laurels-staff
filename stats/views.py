@@ -17,7 +17,6 @@ from properties.models import (
     Valuation,
     ExchangeMoveSales,
     ExchangeMoveLettings,
-    PropertyFees,
 )
 from users.models import Profile
 
@@ -34,7 +33,7 @@ def sort_and_direction(sort, direction):
         "instructions": "instruction_count",
         "reductions": "reduction_count",
         "new_business": "new_business_sum",
-        "exchanges": "exchange_count",
+        "exchanges": "exchange_sum",
     }
 
     if direction == "desc":
@@ -57,8 +56,6 @@ def overview(request):
     filter = "current_quarter"
     link_to_employee = "propertyprocess__employee"
     employee = "propertyprocess__employee__id"
-    exchange_link_to_employee = "exchange__propertyprocess__employee"
-    exchange_employee = "exchange__propertyprocess__employee__id"
     sort = None
     direction = None
 
