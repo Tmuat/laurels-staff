@@ -1,10 +1,11 @@
 import datetime
+import xlwt
 
 from django_otp.decorators import otp_required
 
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Sum
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.utils import timezone
@@ -182,26 +183,12 @@ def overview(request):
                 ]
 
         for exchanges_sales_instance in exchanges_sales:
-            if (
-                instance["id"]
-                == exchanges_sales_instance.exchange.propertyprocess.employee.id
-            ):
-                instance[
-                    "exchange_sum"
-                ] += (
-                    exchanges_sales_instance.exchange.propertyprocess.property_fees.last().new_business
-                )
+            if instance["id"] == exchanges_sales_instance.exchange.propertyprocess.employee.id:
+                instance["exchange_sum"] += exchanges_sales_instance.exchange.propertyprocess.property_fees.last().new_business
 
         for exchanges_lettings_instance in exchanges_lettings:
-            if (
-                instance["id"]
-                == exchanges_lettings_instance.exchange.propertyprocess.employee.id
-            ):
-                instance[
-                    "exchange_sum"
-                ] += (
-                    exchanges_lettings_instance.exchange.propertyprocess.property_fees.last().new_business
-                )
+            if instance["id"] == exchanges_lettings_instance.exchange.propertyprocess.employee.id:
+                instance["exchange_sum"] += exchanges_lettings_instance.exchange.propertyprocess.property_fees.last().new_business
 
         if (
             instance["valuation_count"] == 0
@@ -308,20 +295,12 @@ def employee_exchanges(request, profile_id, start_date, end_date):
         exchange_dict["id"] = instance.id
         exchange_dict["address"] = instance.exchange.propertyprocess
         exchange_dict["sector"] = instance.exchange.propertyprocess.sector
-        exchange_dict[
-            "property_proccess"
-        ] = instance.exchange.propertyprocess.id
+        exchange_dict["property_proccess"] = instance.exchange.propertyprocess.id
         exchange_dict["date"] = instance.exchange_date
         exchange_dict["comp_date"] = instance.completion_date
-        exchange_dict[
-            "sum"
-        ] = instance.exchange.propertyprocess.property_fees.last().new_business
-        exchange_dict[
-            "fee"
-        ] = instance.exchange.propertyprocess.property_fees.last().fee
-        exchange_dict[
-            "final_price"
-        ] = instance.exchange.propertyprocess.property_fees.last().price
+        exchange_dict["sum"] = instance.exchange.propertyprocess.property_fees.last().new_business
+        exchange_dict["fee"] = instance.exchange.propertyprocess.property_fees.last().fee
+        exchange_dict["final_price"] = instance.exchange.propertyprocess.property_fees.last().price
 
         exchanges.append(exchange_dict)
 
@@ -330,27 +309,19 @@ def employee_exchanges(request, profile_id, start_date, end_date):
         exchange_dict["id"] = instance.id
         exchange_dict["address"] = instance.exchange.propertyprocess
         exchange_dict["sector"] = instance.exchange.propertyprocess.sector
-        exchange_dict[
-            "property_proccess"
-        ] = instance.exchange.propertyprocess.id
+        exchange_dict["property_proccess"] = instance.exchange.propertyprocess.id
         exchange_dict["date"] = instance.move_in_date
-        exchange_dict[
-            "sum"
-        ] = instance.exchange.propertyprocess.property_fees.last().new_business
-        exchange_dict[
-            "fee"
-        ] = instance.exchange.propertyprocess.property_fees.last().fee
-        exchange_dict[
-            "final_price"
-        ] = instance.exchange.propertyprocess.property_fees.last().price
+        exchange_dict["sum"] = instance.exchange.propertyprocess.property_fees.last().new_business
+        exchange_dict["fee"] = instance.exchange.propertyprocess.property_fees.last().fee
+        exchange_dict["final_price"] = instance.exchange.propertyprocess.property_fees.last().price
 
         exchanges.append(exchange_dict)
 
     exchanges = sorted(
-        exchanges,
-        key=lambda k: k["date"],
-        reverse=True,
-    )
+            exchanges,
+            key=lambda k: k["date"],
+            reverse=True,
+        )
 
     context = {"exchanges": exchanges, "user": user}
 
@@ -381,12 +352,15 @@ def employee_new_business(request, profile_id, start_date, end_date):
         "%Y-%m-%d"
     )
 
-    new_business = PropertyFees.objects.filter(
-        propertyprocess__employee__id=profile_id,
-        date__range=[start_date, end_date],
-        active=True,
-        show_all=True,
-    ).order_by("-date")
+    new_business = (
+        PropertyFees.objects.filter(
+            propertyprocess__employee__id=profile_id,
+            date__range=[start_date, end_date],
+            active=True,
+            show_all=True,
+        )
+        .order_by("-date")
+    )
 
     context = {"new_business": new_business, "user": user}
 
@@ -417,10 +391,13 @@ def employee_reductions(request, profile_id, start_date, end_date):
         "%Y-%m-%d"
     )
 
-    reductions = Reduction.objects.filter(
-        propertyprocess__employee__id=profile_id,
-        date__range=[start_date, end_date],
-    ).order_by("-date")
+    reductions = (
+        Reduction.objects.filter(
+            propertyprocess__employee__id=profile_id,
+            date__range=[start_date, end_date],
+        )
+        .order_by("-date")
+    )
 
     context = {"reductions": reductions, "user": user}
 
@@ -507,3 +484,239 @@ def employee_valuations(request, profile_id, start_date, end_date):
     )
 
     return JsonResponse(data)
+
+
+@otp_required
+@login_required
+def export_users_xls(request):
+    """
+    Export to excel the stats overview
+    """
+
+    filter = "current_quarter"
+    link_to_employee = "propertyprocess__employee"
+    employee = "propertyprocess__employee__id"
+    sort = None
+    direction = None
+
+    if "filter" in request.GET:
+        filter = request.GET.get("filter")
+
+    if "sort" in request.GET:
+        sort = request.GET.get("sort")
+
+    if "direction" in request.GET:
+        direction = request.GET.get("direction")
+
+    if filter == "current_quarter":
+        date_calc_data = date_calc(timezone.now(), filter)
+        start_date = date_calc_data["start_date"]
+        end_date = date_calc_data["end_date"]
+    else:
+        start_date = request.GET.get("start-date")
+        start_date = datetime.datetime.strptime(start_date, "%Y-%m-%d").date()
+
+        end_date = request.GET.get("end-date")
+        end_date = datetime.datetime.strptime(end_date, "%Y-%m-%d").date()
+
+    valuations = (
+        Valuation.objects.values("valuer")
+        .exclude(active=False)
+        .annotate(valuation_count=Count(link_to_employee))
+        .filter(
+            date__range=[start_date, end_date],
+        )
+        .order_by("-valuation_count")
+    )
+
+    instructions = (
+        Instruction.objects.values(employee)
+        .exclude(active=False)
+        .annotate(instruction_count=Count(link_to_employee))
+        .filter(
+            date__range=[start_date, end_date],
+        )
+        .order_by("-instruction_count")
+    )
+
+    reductions = (
+        Reduction.objects.values(employee)
+        .annotate(reduction_count=Count(link_to_employee))
+        .filter(
+            date__range=[start_date, end_date],
+        )
+        .order_by("-reduction_count")
+    )
+
+    exchanges_sales = ExchangeMoveSales.objects.filter(
+        exchange_date__range=[start_date, end_date],
+    ).order_by("-exchange_date")
+
+    exchanges_lettings = ExchangeMoveLettings.objects.filter(
+        move_in_date__range=[start_date, end_date],
+    ).order_by("-move_in_date")
+
+    new_business = (
+        PropertyFees.objects.values(employee)
+        .annotate(new_business_sum=Sum("new_business"))
+        .filter(
+            date__range=[start_date, end_date],
+            active=True,
+            show_all=True,
+        )
+        .order_by("-new_business_sum")
+    )
+
+    for instance in instructions:
+        instance["employee_id"] = instance["propertyprocess__employee__id"]
+        del instance["propertyprocess__employee__id"]
+
+    for instance in reductions:
+        instance["employee_id"] = instance["propertyprocess__employee__id"]
+        del instance["propertyprocess__employee__id"]
+
+    for instance in new_business:
+        instance["employee_id"] = instance["propertyprocess__employee__id"]
+        del instance["propertyprocess__employee__id"]
+
+    employees = Profile.objects.all()
+
+    overview_list = []
+    stats = []
+
+    for instance in employees:
+        employee_dict = {}
+        employee_dict["id"] = instance.id
+        employee_dict["name"] = instance.user.get_full_name()
+        employee_dict["employee_targets"] = instance.employee_targets
+        employee_dict["active"] = instance.user.is_active
+
+        employee_dict["valuation_count"] = 0
+        employee_dict["instruction_count"] = 0
+        employee_dict["reduction_count"] = 0
+        employee_dict["new_business_sum"] = 0
+        employee_dict["exchange_sum"] = 0
+
+        overview_list.append(employee_dict)
+
+    for instance in overview_list:
+        for valuation_instance in valuations:
+            if instance["id"] == valuation_instance["valuer"]:
+                instance["valuation_count"] = valuation_instance[
+                    "valuation_count"
+                ]
+        for instruction_instance in instructions:
+            if instance["id"] == instruction_instance["employee_id"]:
+                instance["instruction_count"] = instruction_instance[
+                    "instruction_count"
+                ]
+        for reduction_instance in reductions:
+            if instance["id"] == reduction_instance["employee_id"]:
+                instance["reduction_count"] = reduction_instance[
+                    "reduction_count"
+                ]
+        for new_business_instance in new_business:
+            if instance["id"] == new_business_instance["employee_id"]:
+                instance["new_business_sum"] = new_business_instance[
+                    "new_business_sum"
+                ]
+
+        for exchanges_sales_instance in exchanges_sales:
+            if instance["id"] == exchanges_sales_instance.exchange.propertyprocess.employee.id:
+                instance["exchange_sum"] += exchanges_sales_instance.exchange.propertyprocess.property_fees.last().new_business
+
+        for exchanges_lettings_instance in exchanges_lettings:
+            if instance["id"] == exchanges_lettings_instance.exchange.propertyprocess.employee.id:
+                instance["exchange_sum"] += exchanges_lettings_instance.exchange.propertyprocess.property_fees.last().new_business
+
+        if (
+            instance["valuation_count"] == 0
+            and instance["instruction_count"] == 0
+            and instance["reduction_count"] == 0
+            and instance["new_business_sum"] == 0
+            and instance["exchange_sum"] == 0
+        ):
+            pass
+        else:
+            stats.append(instance)
+
+    if sort is not None and direction is not None:
+        s_and_d = sort_and_direction(sort, direction)
+
+        stats = sorted(
+            stats,
+            key=lambda k: k[s_and_d["sort"]],
+            reverse=s_and_d["direction"],
+        )
+
+    context = {
+        "start_date": start_date,
+        "end_date": end_date,
+        "stats": stats,
+    }
+
+    start_date = start_date.strftime("%d-%m-%Y")
+
+    end_date = end_date.strftime("%d-%m-%Y")
+
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = (
+        f'attachment; filename="Stats Overview {start_date} to {end_date}.xls"'
+    )
+
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet('Overview')
+
+    # Add filters to first row of sheet
+    row_num = 0
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+    filter_columns = ['Date Range', start_date, end_date, ]
+
+    for col_num in range(len(filter_columns)):
+        ws.write(row_num, col_num, filter_columns[col_num], font_style)
+
+    # Table header, starting row 3
+    row_num += 2
+
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+
+    columns = ['Name', 'Active', 'Valuations', 'Instructions', 'Reductions', 'New Business', 'Exchanges']
+
+    for col_num in range(len(columns)):
+        ws.write(row_num, col_num, columns[col_num], font_style)
+
+    # Sheet body, remaining rows
+    font_style = xlwt.XFStyle()
+    
+    money_font_style = xlwt.XFStyle()
+    money_font_style.num_format_str = '0.00'
+
+    for instance in stats:
+        row_num += 1
+        col_num = 0
+
+        ws.write(row_num, col_num, instance["name"], font_style)
+        col_num += 1
+
+        ws.write(row_num, col_num, instance["active"], font_style)
+        col_num += 1
+
+        ws.write(row_num, col_num, instance["valuation_count"], font_style)
+        col_num += 1
+
+        ws.write(row_num, col_num, instance["instruction_count"], font_style)
+        col_num += 1
+
+        ws.write(row_num, col_num, instance["reduction_count"], font_style)
+        col_num += 1
+
+        ws.write(row_num, col_num, instance["new_business_sum"], money_font_style)
+        col_num += 1
+
+        ws.write(row_num, col_num, instance["exchange_sum"], money_font_style)
+        col_num += 1
+
+    wb.save(response)
+    return response

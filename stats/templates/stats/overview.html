@@ -65,11 +65,11 @@
                                 <span class="mx-2 d-none d-md-inline">Or </span>
                                 <button class="btn btn-info js-load-form" data-url="{% url 'stats:more_filters' %}">More Filters</button>
                             </div>
-                            <!-- <div class="col-6 col-md-2">
+                            <div class="col-6 col-md-2">
                                 <div class="text-right">
-                                    <button type="button" class="btn btn-light mb-2">Export</button>
+                                    <a href="{% url 'stats:export_users_xls' %}?filter={{ filter }}&start-date={{ start_date|date:'Y-m-d' }}&end-date={{ end_date|date:'Y-m-d' }}{% if sort %}&sort={{sort}}{% endif %}{% if direction %}&direction={{ direction }}{% endif %}" class="btn btn-light mb-2">Export</a>
                                 </div>
-                            </div> -->
+                            </div>
                         </div>
 
                         <div class="table-responsive">
