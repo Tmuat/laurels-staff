@@ -19,6 +19,7 @@ from properties.models import (
     ExchangeMoveSales,
     ExchangeMoveLettings,
 )
+from regionandhub.models import Hub
 from users.models import Profile
 
 
@@ -57,11 +58,15 @@ def overview(request):
     filter = "current_quarter"
     link_to_employee = "propertyprocess__employee"
     employee = "propertyprocess__employee__id"
+    hub = None
     sort = None
     direction = None
 
     if "filter" in request.GET:
         filter = request.GET.get("filter")
+
+    if "hub" in request.GET:
+        hub = request.GET.get("hub")
 
     if "sort" in request.GET:
         sort = request.GET.get("sort")
@@ -158,7 +163,12 @@ def overview(request):
         employee_dict["new_business_sum"] = 0
         employee_dict["exchange_sum"] = 0
 
-        overview_list.append(employee_dict)
+        if hub:
+            for hub_instance in instance.hub.all():
+                if hub == hub_instance.slug:
+                    overview_list.append(employee_dict)
+        else:
+            overview_list.append(employee_dict)
 
     for instance in overview_list:
         for valuation_instance in valuations:
@@ -214,6 +224,7 @@ def overview(request):
         "filter": filter,
         "start_date": start_date,
         "end_date": end_date,
+        "hub": hub,
         "sort": sort,
         "direction": direction,
         "stats": stats,
@@ -234,6 +245,37 @@ def more_filters(request):
     data["html_modal"] = render_to_string(
         "stats/includes/date_form_modal.html",
         request=request,
+    )
+    return JsonResponse(data)
+
+
+@otp_required
+@login_required
+def hub_filters(request):
+    """
+    A view to return an ajax response with hub filters
+    """
+
+    data = dict()
+
+    hub = None
+
+    if "hub" in request.GET:
+        hub = request.GET.get("hub")
+
+    hubs = Hub.objects.filter(
+        is_active=True
+    ).order_by("hub_name")
+
+    context = {
+        "hub": hub,
+        "hubs": hubs,
+    }
+
+    data["html_modal"] = render_to_string(
+        "stats/includes/hub_form_modal.html",
+        request=request,
+        context=context
     )
     return JsonResponse(data)
 
@@ -496,11 +538,15 @@ def export_users_xls(request):
     filter = "current_quarter"
     link_to_employee = "propertyprocess__employee"
     employee = "propertyprocess__employee__id"
+    hub = None
     sort = None
     direction = None
 
     if "filter" in request.GET:
         filter = request.GET.get("filter")
+
+    if "hub" in request.GET:
+        hub = request.GET.get("hub")
 
     if "sort" in request.GET:
         sort = request.GET.get("sort")
@@ -590,14 +636,19 @@ def export_users_xls(request):
         employee_dict["name"] = instance.user.get_full_name()
         employee_dict["employee_targets"] = instance.employee_targets
         employee_dict["active"] = instance.user.is_active
-
+        employee_dict["hub"] = instance.hub.first().hub_name
         employee_dict["valuation_count"] = 0
         employee_dict["instruction_count"] = 0
         employee_dict["reduction_count"] = 0
         employee_dict["new_business_sum"] = 0
         employee_dict["exchange_sum"] = 0
 
-        overview_list.append(employee_dict)
+        if hub:
+            for hub_instance in instance.hub.all():
+                if hub == hub_instance.slug:
+                    overview_list.append(employee_dict)
+        else:
+            overview_list.append(employee_dict)
 
     for instance in overview_list:
         for valuation_instance in valuations:
@@ -649,12 +700,6 @@ def export_users_xls(request):
             reverse=s_and_d["direction"],
         )
 
-    context = {
-        "start_date": start_date,
-        "end_date": end_date,
-        "stats": stats,
-    }
-
     start_date = start_date.strftime("%d-%m-%Y")
 
     end_date = end_date.strftime("%d-%m-%Y")
@@ -682,14 +727,14 @@ def export_users_xls(request):
     font_style = xlwt.XFStyle()
     font_style.font.bold = True
 
-    columns = ['Name', 'Active', 'Valuations', 'Instructions', 'Reductions', 'New Business', 'Exchanges']
+    columns = ['Name', 'Hub', 'Active', 'Valuations', 'Instructions', 'Reductions', 'New Business', 'Exchanges']
 
     for col_num in range(len(columns)):
         ws.write(row_num, col_num, columns[col_num], font_style)
 
     # Sheet body, remaining rows
     font_style = xlwt.XFStyle()
-    
+
     money_font_style = xlwt.XFStyle()
     money_font_style.num_format_str = '0.00'
 
@@ -698,6 +743,9 @@ def export_users_xls(request):
         col_num = 0
 
         ws.write(row_num, col_num, instance["name"], font_style)
+        col_num += 1
+
+        ws.write(row_num, col_num, instance["hub"], font_style)
         col_num += 1
 
         ws.write(row_num, col_num, instance["active"], font_style)

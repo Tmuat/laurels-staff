@@ -42,7 +42,7 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="row mb-2">
-                            <div class="col-12 col-md-6 col-xl-4 pr-md-0">
+                            <div class="col-12 col-md-4 col-xl-3 pr-md-0">
                                 <form method="GET" action="{% url 'stats:quick_filter_conversion' %}" class="js-filter-get-form">
                                     <div class="input-group mb-3">
                                         <select class="custom-select" id="quick-filter">
@@ -56,19 +56,20 @@
                                             {% endif %}
                                         </select>
                                         <div class="input-group-append">
-                                            <button class="btn btn-info" type="submit">Filter</button>
+                                            <button class="btn btn-info" type="submit">Go</button>
                                         </div>
                                     </div>
                                 </form>
                             </div>
-                            <div class="col-6 col-md-4 col-xl-6 pl-md-0">
+                            <div class="col-6 col-md-6 col-xl-7 pl-md-0">
                                 <span class="mx-2 d-none d-md-inline">Or </span>
-                                <button class="btn btn-info js-load-form" data-url="{% url 'stats:more_filters' %}">More Filters</button>
+                                <button class="btn btn-info js-load-form" data-url="{% url 'stats:more_filters' %}">Date Filters</button>
+                                <button class="btn btn-info ml-1 js-load-form" data-url="{% url 'stats:hub_filters' %}{% if hub %}?hub={{ hub }}{% endif %}">Hub Filters</button>
                             </div>
                             {% if request.user.profile.director %}
                             <div class="col-6 col-md-2">
                                 <div class="text-right">
-                                    <a href="{% url 'stats:export_users_xls' %}?filter={{ filter }}&start-date={{ start_date|date:'Y-m-d' }}&end-date={{ end_date|date:'Y-m-d' }}{% if sort %}&sort={{sort}}{% endif %}{% if direction %}&direction={{ direction }}{% endif %}" class="btn btn-light mb-2">Export</a>
+                                    <a href="{% url 'stats:export_users_xls' %}?filter={{ filter }}&start-date={{ start_date|date:'Y-m-d' }}&end-date={{ end_date|date:'Y-m-d' }}{% if sort %}&sort={{sort}}{% endif %}{% if direction %}&direction={{ direction }}{% endif %}{% if hub %}&hub={{ hub }}{% endif %}" class="btn btn-light mb-2">Export</a>
                                 </div>
                             </div>
                             {% endif %}

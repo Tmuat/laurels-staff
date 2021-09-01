@@ -37,10 +37,25 @@ $(document).ready(function () {
     var removeSort = function () {
         $('#modal-overlay').fadeToggle(100);
         var currentUrl = new URL(window.location);
-        var element = $(this);
         currentUrl.searchParams.delete("sort");
         currentUrl.searchParams.delete("direction");
         window.location.replace(currentUrl);
+    };
+
+    // Deals with hub filtering
+    var submitHubFiltering = function () {
+        $('#modal-overlay').fadeToggle(100);
+        var currentUrl = new URL(window.location);
+        var element = $("#base-modal").find("#hub-filter")
+        var selectedVal = element.val();
+        console.log(selectedVal)
+        if(selectedVal != "reset"){
+            currentUrl.searchParams.set("hub", selectedVal);
+            window.location.replace(currentUrl);
+        } else {
+            currentUrl.searchParams.delete("hub");
+            window.location.replace(currentUrl);
+        }
     };
 
     // Deals with rendering the base modal
@@ -63,6 +78,7 @@ $(document).ready(function () {
 
     $(".js-load-form").on("click", loadBaseModal);
     $(".js-filter-get-form").on("submit", submitFilterGetForm);
+    $("#base-modal").on("click", ".js-hub-filter-form", submitHubFiltering);
 
     $(".js-sort").on("click", setSort);
     $(".js-remove-sort").on("click", removeSort);

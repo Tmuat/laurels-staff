@@ -1,0 +1,31 @@
+{% load static i18n %}
+<div class="modal-content green-gradient">
+    <div class="modal-body">
+        <div class="text-center mt-2 mb-3">
+            <span><img src="{% static 'custom/images/logo.png' %}" alt="laurels" height="80"></span>
+        </div>
+        <div class="text-center text-white">
+            <h4 class="text-white">Hub Filters</h4>
+            <div class="text-center text-white px-2 custom-form-margin">
+                <select class="custom-select" id="hub-filter">
+                    {% if hub is None %}
+                        <option disabled selected>- - - - - - - - - - - - - - - -</option>
+                    {% else %}
+                        <option value="reset">- - - - - Reset - - - - -</option>
+                    {% endif %}
+                    {% for instance in hubs %}
+                        {% if instance.slug != "all-hubs" %}
+                            <option value="{{ instance.slug }}" {% if hub == instance.slug %}selected{% endif %}>{{ instance.hub_name }}</option>
+                        {% endif %}
+                    {% endfor %}
+
+                </select>
+
+                <div class="my-2 text-center">
+                    <button type="submit" class="btn btn-info js-hub-filter-form" id="add-button">{% trans "Filter" %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.modal-content -->
