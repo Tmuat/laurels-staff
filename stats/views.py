@@ -331,3 +331,42 @@ def employee_exchanges(request, profile_id, start_date, end_date):
     )
 
     return JsonResponse(data)
+
+
+@otp_required
+@login_required
+def employee_new_business(request, profile_id, start_date, end_date):
+    """
+    An AJAX view to return all new_business in a given date range
+    """
+
+    data = dict()
+
+    user = Profile.objects.get(id=profile_id)
+
+    start_date = datetime.datetime.strptime(start_date, "%d-%m-%y").strftime(
+        "%Y-%m-%d"
+    )
+    end_date = datetime.datetime.strptime(end_date, "%d-%m-%y").strftime(
+        "%Y-%m-%d"
+    )
+
+    new_business = (
+        PropertyFees.objects.filter(
+            propertyprocess__employee__id=profile_id,
+            date__range=[start_date, end_date],
+            active=True,
+            show_all=True,
+        )
+        .order_by("-date")
+    )
+
+    context = {"new_business": new_business, "user": user}
+
+    data["html_modal"] = render_to_string(
+        "stats/includes/new_business.html",
+        context,
+        request=request,
+    )
+
+    return JsonResponse(data)

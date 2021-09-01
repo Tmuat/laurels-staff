@@ -1,0 +1,61 @@
+{% load static i18n %}
+{% load humanize %}
+<div class="modal-content green-gradient">
+    <div class="modal-body">
+        <div class="text-center mt-2 mb-3">
+            <span><img src="{% static 'custom/images/logo.png' %}" alt="laurels" height="80"></span>
+        </div>
+        <div class="text-center text-white">
+            <h4 class="text-white">New Business</h4>
+            <p class="text-white text-center">All {{ user.user.get_full_name }} new business properties.</p>
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm table-centered mb-0 font-14">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th class="text-left">Address</th>
+                                    <th class="text-center">Type</th>
+                                    <th class="text-center">Deal Date</th>
+                                    <th class="text-center">Fee (%)</th>
+                                    <th class="text-center">Price</th>
+                                    <th class="text-center">New Business Amount</th>
+                                    <th class="text-center">Property Detail</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for instance in new_business %}
+                                <tr>
+                                    <td class="text-left">{{ instance.propertyprocess }}</td>
+                                    <td>
+                                        <span class="badge 
+                                            {% if instance.propertyprocess.sector == "sales" %}
+                                                badge-primary">Sales
+                                            {% elif instance.propertyprocess.sector == "lettings" %}
+                                                badge-info">Lettings
+                                            {% endif %}
+                                        </span>
+                                    </td>
+                                    <td>{{ instance.date }}</td>
+                                    <td>{{ instance.fee }}%</td>
+                                    <td>£{{ instance.price|floatformat:2|intcomma }}</td>
+                                    <td>£{{ instance.new_business|floatformat:2|intcomma }}</td>
+                                    <td>
+                                        <a href="{% url 'properties:property_detail' instance.propertyprocess.id %}" class="pointer">
+                                            <i class="mdi mdi-arrow-expand-all font-16 mr-1">
+                                            </i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- end table-responsive-->
+                </div>
+                <!-- end card-body-->
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.modal-content -->

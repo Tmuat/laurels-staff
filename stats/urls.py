@@ -5,6 +5,7 @@ from stats.views import (
     more_filters,
     quick_filter_conversion,
     employee_exchanges,
+    employee_new_business,
 )
 
 
@@ -21,5 +22,10 @@ urlpatterns = [
         "exchanges/<profile_id>/<start_date>/<end_date>/",
         employee_exchanges,
         name="employee_exchanges",
+    ),
+    path(
+        "new-business/<profile_id>/<start_date>/<end_date>/",
+        employee_new_business,
+        name="employee_new_business",
     ),
 ]
