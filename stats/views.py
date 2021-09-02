@@ -1268,7 +1268,7 @@ def export_hub_valuations_xls(request, hub_id):
 
     response = HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition'] = (
-        f'attachment; filename="Hub Valuations {start_date} to {end_date}.xls"'
+        f'attachment; filename="{selected_hub.hub_name} Valuations {start_date} to {end_date}.xls"'
     )
 
     wb = xlwt.Workbook(encoding='utf-8')
