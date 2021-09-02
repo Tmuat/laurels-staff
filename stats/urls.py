@@ -13,6 +13,7 @@ from stats.views import (
     employee_valuations,
     export_overview_xls,
     export_hub_overview_xls,
+    export_hub_valuations_xls,
 )
 
 
@@ -61,5 +62,10 @@ urlpatterns = [
         "export/hubs/",
         export_hub_overview_xls,
         name="export_hub_overview_xls",
+    ),
+    path(
+        "export/hub/valuations/<hub_id>/",
+        export_hub_valuations_xls,
+        name="export_hub_valuations_xls",
     ),
 ]

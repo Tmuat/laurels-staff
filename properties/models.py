@@ -158,6 +158,18 @@ class Property(UpdatedAndCreated):
             )
         return property_address
 
+    @property
+    def address(self):
+        if self.address_line_2 == "" or self.address_line_2 == None:
+            property_address = "%s, %s" % (self.postcode, self.address_line_1)
+        else:
+            property_address = "%s, %s, %s" % (
+                self.postcode,
+                self.address_line_1,
+                self.address_line_2,
+            )
+        return property_address
+
 
 class PropertyProcess(UpdatedAndCreated):
     class Meta:

@@ -313,7 +313,16 @@
                                         <tr>
                                             <td>{{ instance.hub_name }}</td>
                                             <td class="text-center">
-                                                {{ instance.valuation_count }}
+                                                {% if request.user.profile.director %}
+                                                    <a
+                                                        class="text-dark text-hover-underline"
+                                                        href="{% url 'stats:export_hub_valuations_xls' instance.id %}"
+                                                    >
+                                                        {{ instance.valuation_count }}
+                                                    </a>
+                                                {% else %}
+                                                    {{ instance.valuation_count }}
+                                                {% endif %}
                                             </td>
                                             <td class="text-center">
                                                 {{ instance.instruction_count }}
