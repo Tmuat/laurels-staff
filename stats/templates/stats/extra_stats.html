@@ -2,7 +2,7 @@
 {% load static i18n %}
 {% load humanize %}
 
-{% block head_title %}{% trans "Overview" %}{% endblock head_title %}
+{% block head_title %}{% trans "Extra Stats" %}{% endblock head_title %}
 
 {% block extra_css %}
 <link
@@ -25,11 +25,11 @@
                         <ol class="breadcrumb m-0 p-0">
                             <li class="breadcrumb-item"><a href="{% url 'home:home' %}"><i class="uil-home-alt"></i> Home</a></li>
                             <li class="breadcrumb-item active"><i class="mdi mdi-graph-outline"></i> Statistics</li>
-                            <li class="breadcrumb-item active"><i class="mdi mdi-teach"></i> Overview</li>
+                            <li class="breadcrumb-item active"><i class="mdi mdi-head-flash-outline"></i> Extra Stats</li>
                         </ol>
                     </div>
                     <div class="text-center text-sm-left">
-                        <h4 class="page-title">Overview</h4>
+                        <h4 class="page-title">Extra Stats</h4>
                     </div>
                 </div>
                 <!-- end page title -->
@@ -90,38 +90,7 @@
                                             {% endif %}
                                         </th>
                                         <th class="text-center">
-                                            Valuations
-                                            {% if sort == "valuations" and direction == "desc" %}
-                                                <i 
-                                                class="fas fa-sort pointer js-sort text-success"
-                                                data-toggle="tooltip"
-                                                title="Sort Ascending"
-                                                data-sort="valuations"
-                                                data-direction="asc"
-                                                >
-                                                </i>
-                                            {% elif sort == "valuations" and direction == "asc" %}
-                                                <i 
-                                                class="fas fa-sort pointer js-sort text-success"
-                                                data-toggle="tooltip"
-                                                title="Sort Descending"
-                                                data-sort="valuations"
-                                                data-direction="desc"
-                                                >
-                                                </i>
-                                            {% else %}
-                                                <i 
-                                                class="fas fa-sort pointer js-sort"
-                                                data-toggle="tooltip"
-                                                title="Sort Descending"
-                                                data-sort="valuations"
-                                                data-direction="desc"
-                                                >
-                                                </i>
-                                            {% endif %}
-                                        </th>
-                                        <th class="text-center">
-                                            Instructions
+                                            Sales Inst's
                                             {% if sort == "instructions" and direction == "desc" %}
                                                 <i 
                                                 class="fas fa-sort pointer js-sort text-success"
@@ -152,22 +121,22 @@
                                             {% endif %}
                                         </th>
                                         <th class="text-center">
-                                            Reductions
-                                            {% if sort == "reductions" and direction == "desc" %}
+                                            Av. Sales Inst Fee
+                                            {% if sort == "inst_fee" and direction == "desc" %}
                                                 <i 
                                                 class="fas fa-sort pointer js-sort text-success"
                                                 data-toggle="tooltip"
                                                 title="Sort Ascending"
-                                                data-sort="reductions"
+                                                data-sort="inst_fee"
                                                 data-direction="asc"
                                                 >
                                                 </i>
-                                            {% elif sort == "reductions" and direction == "asc" %}
+                                            {% elif sort == "inst_fee" and direction == "asc" %}
                                                 <i 
                                                 class="fas fa-sort pointer js-sort text-success"
                                                 data-toggle="tooltip"
                                                 title="Sort Descending"
-                                                data-sort="reductions"
+                                                data-sort="inst_fee"
                                                 data-direction="desc"
                                                 >
                                                 </i>
@@ -176,29 +145,29 @@
                                                 class="fas fa-sort pointer js-sort"
                                                 data-toggle="tooltip"
                                                 title="Sort Descending"
-                                                data-sort="reductions"
+                                                data-sort="inst_fee"
                                                 data-direction="desc"
                                                 >
                                                 </i>
                                             {% endif %}
                                         </th>
                                         <th class="text-center">
-                                            New Business
-                                            {% if sort == "new_business" and direction == "desc" %}
+                                            Av. Sales Inst Price
+                                            {% if sort == "inst_price" and direction == "desc" %}
                                                 <i 
                                                 class="fas fa-sort pointer js-sort text-success"
                                                 data-toggle="tooltip"
                                                 title="Sort Ascending"
-                                                data-sort="new_business"
+                                                data-sort="inst_price"
                                                 data-direction="asc"
                                                 >
                                                 </i>
-                                            {% elif sort == "new_business" and direction == "asc" %}
+                                            {% elif sort == "inst_price" and direction == "asc" %}
                                                 <i 
                                                 class="fas fa-sort pointer js-sort text-success"
                                                 data-toggle="tooltip"
                                                 title="Sort Descending"
-                                                data-sort="new_business"
+                                                data-sort="inst_price"
                                                 data-direction="desc"
                                                 >
                                                 </i>
@@ -207,20 +176,82 @@
                                                 class="fas fa-sort pointer js-sort"
                                                 data-toggle="tooltip"
                                                 title="Sort Descending"
-                                                data-sort="new_business"
+                                                data-sort="inst_price"
                                                 data-direction="desc"
                                                 >
                                                 </i>
                                             {% endif %}
                                         </th>
                                         <th class="text-center">
-                                            Exchanges
-                                            {% if sort == "exchanges" and direction == "desc" %}
+                                            Lettings Inst's
+                                            {% if sort == "lettings_instructions" and direction == "desc" %}
                                                 <i 
                                                 class="fas fa-sort pointer js-sort text-success"
                                                 data-toggle="tooltip"
                                                 title="Sort Ascending"
-                                                data-sort="exchanges"
+                                                data-sort="lettings_instructions"
+                                                data-direction="asc"
+                                                >
+                                                </i>
+                                            {% elif sort == "lettings_instructions" and direction == "asc" %}
+                                                <i 
+                                                class="fas fa-sort pointer js-sort text-success"
+                                                data-toggle="tooltip"
+                                                title="Sort Descending"
+                                                data-sort="lettings_instructions"
+                                                data-direction="desc"
+                                                >
+                                                </i>
+                                            {% else %}
+                                                <i 
+                                                class="fas fa-sort pointer js-sort"
+                                                data-toggle="tooltip"
+                                                title="Sort Descending"
+                                                data-sort="lettings_instructions"
+                                                data-direction="desc"
+                                                >
+                                                </i>
+                                            {% endif %}
+                                        </th>
+                                        <th class="text-center">
+                                            Av. Lettings Inst Fee
+                                            {% if sort == "lettings_inst_fee" and direction == "desc" %}
+                                                <i 
+                                                class="fas fa-sort pointer js-sort text-success"
+                                                data-toggle="tooltip"
+                                                title="Sort Ascending"
+                                                data-sort="lettings_inst_fee"
+                                                data-direction="asc"
+                                                >
+                                                </i>
+                                            {% elif sort == "lettings_inst_fee" and direction == "asc" %}
+                                                <i 
+                                                class="fas fa-sort pointer js-sort text-success"
+                                                data-toggle="tooltip"
+                                                title="Sort Descending"
+                                                data-sort="lettings_inst_fee"
+                                                data-direction="desc"
+                                                >
+                                                </i>
+                                            {% else %}
+                                                <i 
+                                                class="fas fa-sort pointer js-sort"
+                                                data-toggle="tooltip"
+                                                title="Sort Descending"
+                                                data-sort="lettings_inst_fee"
+                                                data-direction="desc"
+                                                >
+                                                </i>
+                                            {% endif %}
+                                        </th>
+                                        <th class="text-center">
+                                            Av. Lettings Inst Price
+                                            {% if sort == "lettings_inst_price" and direction == "desc" %}
+                                                <i 
+                                                class="fas fa-sort pointer js-sort text-success"
+                                                data-toggle="tooltip"
+                                                title="Sort Ascending"
+                                                data-sort="lettings_inst_price"
                                                 data-direction="asc"
                                                 >
                                                 </i>
@@ -229,7 +260,7 @@
                                                 class="fas fa-sort pointer js-sort text-success"
                                                 data-toggle="tooltip"
                                                 title="Sort Descending"
-                                                data-sort="exchanges"
+                                                data-sort="lettings_inst_price"
                                                 data-direction="desc"
                                                 >
                                                 </i>
@@ -238,7 +269,7 @@
                                                 class="fas fa-sort pointer js-sort"
                                                 data-toggle="tooltip"
                                                 title="Sort Descending"
-                                                data-sort="exchanges"
+                                                data-sort="lettings_inst_price"
                                                 data-direction="desc"
                                                 >
                                                 </i>
@@ -251,44 +282,38 @@
                                         {% if instance.employee_targets and instance.active %}
                                             <tr>
                                                 <td>{{ instance.name }}</td>
+                                                <td class="text-center">{{ instance.instruction_count }}</td>
                                                 <td class="text-center">
                                                     <span
                                                         class="pointer js-scrollable-modal text-hover-underline"
-                                                        data-url="{% url 'stats:employee_valuations' instance.id start_date|date:'d-m-y' end_date|date:'d-m-y' %}"
+                                                        data-url=""
                                                     >
-                                                    {{ instance.valuation_count }}
+                                                    {{ instance.instruction_fee_avg|floatformat:2 }}%
                                                     </span>
                                                 </td>
                                                 <td class="text-center">
                                                     <span
                                                         class="pointer js-scrollable-modal text-hover-underline"
-                                                        data-url="{% url 'stats:employee_instructions' instance.id start_date|date:'d-m-y' end_date|date:'d-m-y' %}"
+                                                        data-url=""
                                                     >
-                                                    {{ instance.instruction_count }}
+                                                    £{{ instance.instruction_list_price_avg|floatformat:2|intcomma }}
+                                                    </span>
+                                                </td>
+                                                <td class="text-center">{{ instance.lettings_instruction_count }}</td>
+                                                <td class="text-center">
+                                                    <span
+                                                        class="pointer js-scrollable-modal text-hover-underline"
+                                                        data-url=""
+                                                    >
+                                                    {{ instance.lettings_instruction_fee_avg|floatformat:2 }}%
                                                     </span>
                                                 </td>
                                                 <td class="text-center">
                                                     <span
                                                         class="pointer js-scrollable-modal text-hover-underline"
-                                                        data-url="{% url 'stats:employee_reductions' instance.id start_date|date:'d-m-y' end_date|date:'d-m-y' %}"
+                                                        data-url=""
                                                     >
-                                                    {{ instance.reduction_count }}
-                                                    </span>
-                                                </td>
-                                                <td class="text-center">
-                                                    <span
-                                                        class="pointer js-scrollable-modal text-hover-underline"
-                                                        data-url="{% url 'stats:employee_new_business' instance.id start_date|date:'d-m-y' end_date|date:'d-m-y' %}"
-                                                    >
-                                                        £{{ instance.new_business_sum|floatformat:2|intcomma }}
-                                                    </span>
-                                                </td>
-                                                <td class="text-center">
-                                                    <span
-                                                        class="pointer js-scrollable-modal text-hover-underline"
-                                                        data-url="{% url 'stats:employee_exchanges' instance.id start_date|date:'d-m-y' end_date|date:'d-m-y' %}"
-                                                    >
-                                                        £{{ instance.exchange_sum|floatformat:2|intcomma }}
+                                                    £{{ instance.lettings_instruction_list_price_avg|floatformat:2|intcomma }}
                                                     </span>
                                                 </td>
                                             </tr>
@@ -296,44 +321,38 @@
                                             {% if request.user.profile.director %}
                                                 <tr>
                                                     <td>{{ instance.name }}</td>
+                                                    <td class="text-center">{{ instance.instruction_count }}</td>
                                                     <td class="text-center">
                                                         <span
-                                                            class="pointer js-scrollable-modal text-hover-underline"
-                                                            data-url="{% url 'stats:employee_valuations' instance.id start_date|date:'d-m-y' end_date|date:'d-m-y' %}"
+                                                        class="pointer js-scrollable-modal text-hover-underline"
+                                                        data-url=""
                                                         >
-                                                        {{ instance.valuation_count }}
+                                                        {{ instance.instruction_fee_avg|floatformat:2 }}%
                                                         </span>
                                                     </td>
                                                     <td class="text-center">
                                                         <span
                                                             class="pointer js-scrollable-modal text-hover-underline"
-                                                            data-url="{% url 'stats:employee_instructions' instance.id start_date|date:'d-m-y' end_date|date:'d-m-y' %}"
+                                                            data-url=""
                                                         >
-                                                        {{ instance.instruction_count }}
+                                                        £{{ instance.instruction_list_price_avg|floatformat:2|intcomma }}
+                                                        </span>
+                                                    </td>
+                                                    <td class="text-center">{{ instance.lettings_instruction_count }}</td>
+                                                    <td class="text-center">
+                                                        <span
+                                                        class="pointer js-scrollable-modal text-hover-underline"
+                                                        data-url=""
+                                                        >
+                                                        {{ instance.lettings_instruction_fee_avg|floatformat:2 }}%
                                                         </span>
                                                     </td>
                                                     <td class="text-center">
                                                         <span
-                                                            class="pointer js-scrollable-modal text-hover-underline"
-                                                            data-url="{% url 'stats:employee_reductions' instance.id start_date|date:'d-m-y' end_date|date:'d-m-y' %}"
+                                                        class="pointer js-scrollable-modal text-hover-underline"
+                                                        data-url=""
                                                         >
-                                                        {{ instance.reduction_count }}
-                                                        </span>
-                                                    </td>
-                                                    <td class="text-center">
-                                                        <span
-                                                            class="pointer js-scrollable-modal text-hover-underline"
-                                                            data-url="{% url 'stats:employee_new_business' instance.id start_date|date:'d-m-y' end_date|date:'d-m-y' %}"
-                                                        >
-                                                            £{{ instance.new_business_sum|floatformat:2|intcomma }}
-                                                        </span>
-                                                    </td>
-                                                    <td class="text-center">
-                                                        <span
-                                                            class="pointer js-scrollable-modal text-hover-underline"
-                                                            data-url="{% url 'stats:employee_exchanges' instance.id start_date|date:'d-m-y' end_date|date:'d-m-y' %}"
-                                                        >
-                                                            £{{ instance.exchange_sum|floatformat:2|intcomma }}
+                                                        £{{ instance.lettings_instruction_list_price_avg|floatformat:2|intcomma }}
                                                         </span>
                                                     </td>
                                                 </tr>

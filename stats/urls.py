@@ -3,6 +3,7 @@ from django.urls import path
 from stats.views import (
     overview,
     hub_overview,
+    extra_stats,
     more_filters,
     hub_filters,
     quick_filter_conversion,
@@ -25,6 +26,7 @@ app_name = "stats"
 urlpatterns = [
     path("overview/", overview, name="overview"),
     path("hub-overview/", hub_overview, name="hub_overview"),
+    path("extra-stats/", extra_stats, name="extra_stats"),
     path("more-filters/", more_filters, name="more_filters"),
     path("hub-filters/", hub_filters, name="hub_filters"),
     path(

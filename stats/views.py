@@ -4,7 +4,7 @@ import xlwt
 from django_otp.decorators import otp_required
 
 from django.contrib.auth.decorators import login_required
-from django.db.models import Count, Sum
+from django.db.models import Count, Sum, Avg
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
 from django.template.loader import render_to_string
@@ -12,6 +12,7 @@ from django.utils import timezone
 
 from common.functions import date_calc
 from properties.models import (
+    PropertyProcess,
     PropertyFees,
     Instruction,
     Reduction,
@@ -36,6 +37,11 @@ def sort_and_direction(sort, direction):
         "reductions": "reduction_count",
         "new_business": "new_business_sum",
         "exchanges": "exchange_sum",
+        "inst_fee": "instruction_fee_avg",
+        "lettings_inst_fee": "lettings_instruction_fee_avg",
+        "inst_price": "instruction_list_price_avg",
+        "lettings_instructions": "lettings_instruction_count",
+        "lettings_inst_price": "lettings_instruction_list_price_avg"
     }
 
     if direction == "desc":
@@ -469,6 +475,172 @@ def hub_overview(request):
     }
 
     return render(request, "stats/hub_overview.html", context)
+
+
+@otp_required
+@login_required
+def extra_stats(request):
+    """
+    A view to return extra stats
+    """
+
+    filter = "current_quarter"
+    link_to_employee = "propertyprocess__employee"
+    employee = "propertyprocess__employee__id"
+    hub = None
+    sort = None
+    direction = None
+
+    if "filter" in request.GET:
+        filter = request.GET.get("filter")
+
+    if "hub" in request.GET:
+        hub = request.GET.get("hub")
+
+    if "sort" in request.GET:
+        sort = request.GET.get("sort")
+
+    if "direction" in request.GET:
+        direction = request.GET.get("direction")
+
+    if filter == "current_quarter":
+        date_calc_data = date_calc(timezone.now(), filter)
+        start_date = date_calc_data["start_date"]
+        end_date = date_calc_data["end_date"]
+    else:
+        start_date = request.GET.get("start-date")
+        start_date = datetime.datetime.strptime(start_date, "%Y-%m-%d").date()
+
+        end_date = request.GET.get("end-date")
+        end_date = datetime.datetime.strptime(end_date, "%Y-%m-%d").date()
+
+    all_instructions = (
+        Instruction.objects
+        .exclude(active=False)
+        .filter(
+            date__range=[start_date, end_date],
+        )
+    )
+
+    sales_instructions = (
+        all_instructions
+        .filter(
+            propertyprocess__sector=PropertyProcess.SALES,
+        )
+        .values(employee)
+        .annotate(instruction_fee_avg=Avg("fee_agreed"))
+        .annotate(instruction_count=Count(link_to_employee))
+        .annotate(instruction_list_price_avg=Avg("listing_price"))
+        .order_by("-instruction_fee_avg")
+    )
+
+    lettings_instructions = (
+        all_instructions
+        .filter(
+            propertyprocess__sector=PropertyProcess.LETTINGS,
+        )
+        .values(employee)
+        .annotate(instruction_fee_avg=Avg("fee_agreed"))
+        .annotate(instruction_count=Count(link_to_employee))
+        .annotate(instruction_list_price_avg=Avg("listing_price"))
+        .order_by("-instruction_fee_avg")
+    )
+
+    for instance in sales_instructions:
+        instance["employee_id"] = instance["propertyprocess__employee__id"]
+        del instance["propertyprocess__employee__id"]
+
+    for instance in lettings_instructions:
+        instance["employee_id"] = instance["propertyprocess__employee__id"]
+        del instance["propertyprocess__employee__id"]
+
+    employees = Profile.objects.all()
+
+    overview_list = []
+    stats = []
+
+    for instance in employees:
+        employee_dict = {}
+        employee_dict["id"] = instance.id
+        employee_dict["name"] = instance.user.get_full_name()
+        employee_dict["employee_targets"] = instance.employee_targets
+        employee_dict["active"] = instance.user.is_active
+
+        employee_dict["valuation_count"] = 0
+        employee_dict["instruction_count"] = 0
+        employee_dict["instruction_fee_avg"] = 0
+        employee_dict["instruction_list_price_avg"] = 0
+        employee_dict["lettings_instruction_count"] = 0
+        employee_dict["lettings_instruction_fee_avg"] = 0
+        employee_dict["lettings_instruction_list_price_avg"] = 0
+        employee_dict["reduction_count"] = 0
+        employee_dict["new_business_sum"] = 0
+        employee_dict["exchange_sum"] = 0
+
+        if hub:
+            for hub_instance in instance.hub.all():
+                if hub == hub_instance.slug:
+                    overview_list.append(employee_dict)
+        else:
+            overview_list.append(employee_dict)
+
+    for instance in overview_list:
+        for instruction_instance in sales_instructions:
+            if instance["id"] == instruction_instance["employee_id"]:
+                instance["instruction_count"] = instruction_instance[
+                    "instruction_count"
+                ]
+                instance["instruction_fee_avg"] = instruction_instance[
+                    "instruction_fee_avg"
+                ]
+                instance["instruction_list_price_avg"] = instruction_instance[
+                    "instruction_list_price_avg"
+                ]
+
+        for instruction_instance in lettings_instructions:
+            if instance["id"] == instruction_instance["employee_id"]:
+                instance["lettings_instruction_count"] = instruction_instance[
+                    "instruction_count"
+                ]
+                instance["lettings_instruction_fee_avg"] = instruction_instance[
+                    "instruction_fee_avg"
+                ]
+                instance["lettings_instruction_list_price_avg"] = instruction_instance[
+                    "instruction_list_price_avg"
+                ]
+
+        if (
+            instance["valuation_count"] == 0
+            and instance["instruction_count"] == 0
+            and instance["lettings_instruction_count"] == 0
+            and instance["reduction_count"] == 0
+            and instance["new_business_sum"] == 0
+            and instance["exchange_sum"] == 0
+        ):
+            pass
+        else:
+            stats.append(instance)
+
+    if sort is not None and direction is not None:
+        s_and_d = sort_and_direction(sort, direction)
+
+        stats = sorted(
+            stats,
+            key=lambda k: k[s_and_d["sort"]],
+            reverse=s_and_d["direction"],
+        )
+
+    context = {
+        "filter": filter,
+        "start_date": start_date,
+        "end_date": end_date,
+        "hub": hub,
+        "sort": sort,
+        "direction": direction,
+        "stats": stats,
+    }
+
+    return render(request, "stats/extra_stats.html", context)
 
 
 @otp_required
