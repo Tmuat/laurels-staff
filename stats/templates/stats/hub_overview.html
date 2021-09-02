@@ -316,7 +316,7 @@
                                                 {% if request.user.profile.director %}
                                                     <a
                                                         class="text-dark text-hover-underline"
-                                                        href="{% url 'stats:export_hub_valuations_xls' instance.id %}"
+                                                        href="{% url 'stats:export_hub_valuations_xls' instance.id %}?filter={{ filter }}&start-date={{ start_date|date:'Y-m-d' }}&end-date={{ end_date|date:'Y-m-d' }}"
                                                     >
                                                         {{ instance.valuation_count }}
                                                     </a>
@@ -328,7 +328,7 @@
                                                 {% if request.user.profile.director %}
                                                     <a
                                                         class="text-dark text-hover-underline"
-                                                        href="{% url 'stats:export_hub_instructions_xls' instance.id %}"
+                                                        href="{% url 'stats:export_hub_instructions_xls' instance.id %}?filter={{ filter }}&start-date={{ start_date|date:'Y-m-d' }}&end-date={{ end_date|date:'Y-m-d' }}"
                                                     >
                                                     {{ instance.instruction_count }}
                                                     </a>
@@ -340,7 +340,7 @@
                                                 {% if request.user.profile.director %}
                                                     <a
                                                         class="text-dark text-hover-underline"
-                                                        href="{% url 'stats:export_hub_reductions_xls' instance.id %}"
+                                                        href="{% url 'stats:export_hub_reductions_xls' instance.id %}?filter={{ filter }}&start-date={{ start_date|date:'Y-m-d' }}&end-date={{ end_date|date:'Y-m-d' }}"
                                                     >
                                                     {{ instance.reduction_count }}
                                                     </a>
