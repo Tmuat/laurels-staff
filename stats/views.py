@@ -1419,3 +1419,142 @@ def export_hub_valuations_xls(request, hub_id):
     wb.save(response)
 
     return response
+
+
+@otp_required
+@login_required
+def export_hub_instructions_xls(request, hub_id):
+    """
+    Export to excel the instructions for a hub
+    """
+
+    filter = "current_quarter"
+
+    selected_hub = Hub.objects.get(id=hub_id)
+
+    if "filter" in request.GET:
+        filter = request.GET.get("filter")
+
+    if filter == "current_quarter":
+        date_calc_data = date_calc(timezone.now(), filter)
+        start_date = date_calc_data["start_date"]
+        end_date = date_calc_data["end_date"]
+    else:
+        start_date = request.GET.get("start-date")
+        start_date = datetime.datetime.strptime(start_date, "%Y-%m-%d").date()
+
+        end_date = request.GET.get("end-date")
+        end_date = datetime.datetime.strptime(end_date, "%Y-%m-%d").date()
+
+    Instruction.objects.exclude(active=False).filter(
+        date__range=[start_date, end_date],
+    )
+
+    instructions = (
+        Instruction.objects
+        .exclude(active=False)
+        .filter(
+            propertyprocess__hub=selected_hub.id,
+            date__range=[start_date, end_date],
+        )
+        .order_by("-date")
+    )
+
+    start_date = start_date.strftime("%d-%m-%Y")
+
+    end_date = end_date.strftime("%d-%m-%Y")
+
+    response = HttpResponse(content_type="application/ms-excel")
+    response[
+        "Content-Disposition"
+    ] = f'attachment; filename="{selected_hub.hub_name} Instructions {start_date} to {end_date}.xls"'
+
+    wb = xlwt.Workbook(encoding="utf-8")
+    ws = wb.add_sheet("Valuations")
+
+    # Add filters to first row of sheet
+    row_num = 0
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+    filter_columns = [
+        "Date Range",
+        start_date,
+        end_date,
+    ]
+
+    for col_num in range(len(filter_columns)):
+        ws.write(row_num, col_num, filter_columns[col_num], font_style)
+
+    # Table header, starting row 3
+    row_num += 2
+
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+
+    columns = [
+        "Address",
+        "Type",
+        "Employee",
+        "Instructed Date",
+        "Fee At Instruction (%)",
+        "Listing Price (£)",
+        "Agreement Type",
+        "Length of Contract"
+    ]
+
+    for col_num in range(len(columns)):
+        ws.write(row_num, col_num, columns[col_num], font_style)
+
+    # Sheet body, remaining rows
+    font_style = xlwt.XFStyle()
+
+    money_font_style = xlwt.XFStyle()
+    money_font_style.num_format_str = "0.00"
+
+    inst_list = []
+
+    for instance in instructions:
+        inst_instance = {}
+        inst_instance["address"] = instance.propertyprocess.property.address
+        inst_instance["sector"] = instance.propertyprocess.sector
+        inst_instance["name"] = (
+            instance.propertyprocess.employee.user.get_full_name()
+        )
+        inst_instance["date"] = instance.date.strftime("%d-%m-%Y")
+        inst_instance["fee"] = instance.fee_agreed
+        inst_instance["price"] = instance.listing_price
+        inst_instance["agreement_type"] = instance.agreement_type
+        inst_instance["length_of_contract"] = instance.length_of_contract
+        inst_list.append(inst_instance)
+
+    for instance in inst_list:
+        row_num += 1
+        col_num = 0
+
+        ws.write(row_num, col_num, instance["address"], font_style)
+        col_num += 1
+
+        ws.write(row_num, col_num, instance["sector"], font_style)
+        col_num += 1
+
+        ws.write(row_num, col_num, instance["name"], font_style)
+        col_num += 1
+
+        ws.write(row_num, col_num, instance["date"], font_style)
+        col_num += 1
+
+        ws.write(row_num, col_num, instance["fee"], font_style)
+        col_num += 1
+
+        ws.write(row_num, col_num, instance["price"], money_font_style)
+        col_num += 1
+
+        ws.write(row_num, col_num, instance["agreement_type"], font_style)
+        col_num += 1
+
+        ws.write(row_num, col_num, instance["length_of_contract"], font_style)
+        col_num += 1
+
+    wb.save(response)
+
+    return response

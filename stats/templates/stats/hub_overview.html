@@ -325,7 +325,16 @@
                                                 {% endif %}
                                             </td>
                                             <td class="text-center">
-                                                {{ instance.instruction_count }}
+                                                {% if request.user.profile.director %}
+                                                    <a
+                                                        class="text-dark text-hover-underline"
+                                                        href="{% url 'stats:export_hub_instructions_xls' instance.id %}"
+                                                    >
+                                                    {{ instance.instruction_count }}
+                                                    </a>
+                                                {% else %}
+                                                    {{ instance.instruction_count }}
+                                                {% endif %}
                                             </td>
                                             <td class="text-center">
                                                 {{ instance.reduction_count }}
