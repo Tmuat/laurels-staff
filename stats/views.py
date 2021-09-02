@@ -1672,3 +1672,141 @@ def export_hub_reductions_xls(request, hub_id):
     wb.save(response)
 
     return response
+
+
+@otp_required
+@login_required
+def export_hub_new_business_xls(request, hub_id):
+    """
+    Export to excel the new business for a hub
+    """
+
+    filter = "current_quarter"
+
+    selected_hub = Hub.objects.get(id=hub_id)
+
+    if "filter" in request.GET:
+        filter = request.GET.get("filter")
+
+    if filter == "current_quarter":
+        date_calc_data = date_calc(timezone.now(), filter)
+        start_date = date_calc_data["start_date"]
+        end_date = date_calc_data["end_date"]
+    else:
+        start_date = request.GET.get("start-date")
+        start_date = datetime.datetime.strptime(start_date, "%Y-%m-%d").date()
+
+        end_date = request.GET.get("end-date")
+        end_date = datetime.datetime.strptime(end_date, "%Y-%m-%d").date()
+
+    all_new_business = (
+        PropertyFees.objects.exclude(active=False)
+        .exclude(show_all=False)
+        .filter(
+            date__range=[start_date, end_date],
+        )
+    )
+
+    new_business = (
+        PropertyFees.objects
+        .exclude(active=False)
+        .exclude(show_all=False)
+        .filter(
+            date__range=[start_date, end_date],
+        )
+        .order_by("-date")
+    )
+
+    start_date = start_date.strftime("%d-%m-%Y")
+
+    end_date = end_date.strftime("%d-%m-%Y")
+
+    response = HttpResponse(content_type="application/ms-excel")
+    response[
+        "Content-Disposition"
+    ] = f'attachment; filename="{selected_hub.hub_name} New Business {start_date} to {end_date}.xls"'
+
+    wb = xlwt.Workbook(encoding="utf-8")
+    ws = wb.add_sheet("New Business")
+
+    # Add filters to first row of sheet
+    row_num = 0
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+    filter_columns = [
+        "Date Range",
+        start_date,
+        end_date,
+    ]
+
+    for col_num in range(len(filter_columns)):
+        ws.write(row_num, col_num, filter_columns[col_num], font_style)
+
+    # Table header, starting row 3
+    row_num += 2
+
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+
+    columns = [
+        "Address",
+        "Type",
+        "Employee",
+        "Deal Date",
+        "Fee (%)",
+        "Price (£)",
+        "New Business Amount (£)",
+    ]
+
+    for col_num in range(len(columns)):
+        ws.write(row_num, col_num, columns[col_num], font_style)
+
+    # Sheet body, remaining rows
+    font_style = xlwt.XFStyle()
+
+    money_font_style = xlwt.XFStyle()
+    money_font_style.num_format_str = "0.00"
+
+    new_business_list = []
+
+    for instance in new_business:
+        new_business_instance = {}
+        new_business_instance["address"] = instance.propertyprocess.property.address
+        new_business_instance["sector"] = instance.propertyprocess.sector
+        new_business_instance["name"] = (
+            instance.propertyprocess.employee.user.get_full_name()
+        )
+        new_business_instance["date"] = instance.date.strftime("%d-%m-%Y")
+        new_business_instance["fee"] = instance.fee
+        new_business_instance["price"] = instance.price
+        new_business_instance["new_business"] = instance.new_business
+        new_business_list.append(new_business_instance)
+
+    for instance in new_business_list:
+        row_num += 1
+        col_num = 0
+
+        ws.write(row_num, col_num, instance["address"], font_style)
+        col_num += 1
+
+        ws.write(row_num, col_num, instance["sector"], font_style)
+        col_num += 1
+
+        ws.write(row_num, col_num, instance["name"], font_style)
+        col_num += 1
+
+        ws.write(row_num, col_num, instance["date"], font_style)
+        col_num += 1
+
+        ws.write(row_num, col_num, instance["fee"], font_style)
+        col_num += 1
+
+        ws.write(row_num, col_num, instance["price"], money_font_style)
+        col_num += 1
+
+        ws.write(row_num, col_num, instance["new_business"], money_font_style)
+        col_num += 1
+
+    wb.save(response)
+
+    return response
