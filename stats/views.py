@@ -1584,6 +1584,7 @@ def export_hub_reductions_xls(request, hub_id):
     reductions = (
         Reduction.objects
         .filter(
+            propertyprocess__hub=selected_hub.id,
             date__range=[start_date, end_date],
         )
         .order_by("-date")
@@ -1699,19 +1700,12 @@ def export_hub_new_business_xls(request, hub_id):
         end_date = request.GET.get("end-date")
         end_date = datetime.datetime.strptime(end_date, "%Y-%m-%d").date()
 
-    all_new_business = (
-        PropertyFees.objects.exclude(active=False)
-        .exclude(show_all=False)
-        .filter(
-            date__range=[start_date, end_date],
-        )
-    )
-
     new_business = (
         PropertyFees.objects
         .exclude(active=False)
         .exclude(show_all=False)
         .filter(
+            propertyprocess__hub=selected_hub.id,
             date__range=[start_date, end_date],
         )
         .order_by("-date")
@@ -1805,6 +1799,185 @@ def export_hub_new_business_xls(request, hub_id):
         col_num += 1
 
         ws.write(row_num, col_num, instance["new_business"], money_font_style)
+        col_num += 1
+
+    wb.save(response)
+
+    return response
+
+
+@otp_required
+@login_required
+def export_hub_exchanges_xls(request, hub_id):
+    """
+    Export to excel the exchanges for a hub
+    """
+
+    filter = "current_quarter"
+
+    selected_hub = Hub.objects.get(id=hub_id)
+
+    if "filter" in request.GET:
+        filter = request.GET.get("filter")
+
+    if filter == "current_quarter":
+        date_calc_data = date_calc(timezone.now(), filter)
+        start_date = date_calc_data["start_date"]
+        end_date = date_calc_data["end_date"]
+    else:
+        start_date = request.GET.get("start-date")
+        start_date = datetime.datetime.strptime(start_date, "%Y-%m-%d").date()
+
+        end_date = request.GET.get("end-date")
+        end_date = datetime.datetime.strptime(end_date, "%Y-%m-%d").date()
+
+    exchanges_sales = (
+        ExchangeMoveSales.objects
+        .filter(
+            exchange__propertyprocess__hub=selected_hub.id,
+            exchange_date__range=[start_date, end_date],
+        )
+        .order_by("-exchange_date")
+    )
+
+    exchanges_lettings = (
+        ExchangeMoveLettings.objects
+        .filter(
+            exchange__propertyprocess__hub=selected_hub.id,
+            move_in_date__range=[start_date, end_date],
+        )
+        .order_by("-move_in_date")
+    )
+
+    exchanges = []
+
+    for instance in exchanges_sales:
+        exchange_instance = {}
+        exchange_instance["address"] = (
+            instance.exchange.propertyprocess.property.address
+        )
+        exchange_instance["sector"] = instance.exchange.propertyprocess.sector
+        exchange_instance["name"] = (
+            instance.exchange.propertyprocess.employee.user.get_full_name()
+        )
+        exchange_instance["new_business"] = (
+            instance.exchange.propertyprocess.property_fees.last().new_business
+        )
+        exchange_instance["fee"] = (
+            instance.exchange.propertyprocess.property_fees.last().fee
+        )
+        exchange_instance["date"] = instance.exchange_date.strftime("%d-%m-%Y")
+        exchange_instance["comp_date"] = instance.completion_date.strftime("%d-%m-%Y")
+        exchange_instance["price"] = (
+            instance.exchange.propertyprocess.property_fees.last().price
+        )
+        exchanges.append(exchange_instance)
+
+    for instance in exchanges_lettings:
+        exchange_instance = {}
+        exchange_instance["address"] = (
+            instance.exchange.propertyprocess.property.address
+        )
+        exchange_instance["sector"] = instance.exchange.propertyprocess.sector
+        exchange_instance["name"] = (
+            instance.exchange.propertyprocess.employee.user.get_full_name()
+        )
+        exchange_instance["new_business"] = (
+            instance.exchange.propertyprocess.property_fees.last().new_business
+        )
+        exchange_instance["fee"] = (
+            instance.exchange.propertyprocess.property_fees.last().fee
+        )
+        exchange_instance["date"] = instance.move_in_date.strftime("%d-%m-%Y")
+        exchange_instance["comp_date"] = ""
+        exchange_instance["price"] = (
+            instance.exchange.propertyprocess.property_fees.last().price
+        )
+        exchanges.append(exchange_instance)
+
+    exchanges = sorted(
+            exchanges,
+            key=lambda k: k["date"],
+            reverse=True,
+        )
+
+    start_date = start_date.strftime("%d-%m-%Y")
+
+    end_date = end_date.strftime("%d-%m-%Y")
+
+    response = HttpResponse(content_type="application/ms-excel")
+    response[
+        "Content-Disposition"
+    ] = f'attachment; filename="{selected_hub.hub_name} Exchanges {start_date} to {end_date}.xls"'
+
+    wb = xlwt.Workbook(encoding="utf-8")
+    ws = wb.add_sheet("Exchanges")
+
+    # Add filters to first row of sheet
+    row_num = 0
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+    filter_columns = [
+        "Date Range",
+        start_date,
+        end_date,
+    ]
+
+    for col_num in range(len(filter_columns)):
+        ws.write(row_num, col_num, filter_columns[col_num], font_style)
+
+    # Table header, starting row 3
+    row_num += 2
+
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+
+    columns = [
+        "Address",
+        "Type",
+        "Employee",
+        "Fee (£)",
+        "Fee (%)",
+        "Exchange/Move In Date",
+        "Completion Date",
+        "Final Price (£)"
+    ]
+
+    for col_num in range(len(columns)):
+        ws.write(row_num, col_num, columns[col_num], font_style)
+
+    # Sheet body, remaining rows
+    font_style = xlwt.XFStyle()
+
+    money_font_style = xlwt.XFStyle()
+    money_font_style.num_format_str = "0.00"
+
+    for instance in exchanges:
+        row_num += 1
+        col_num = 0
+
+        ws.write(row_num, col_num, instance["address"], font_style)
+        col_num += 1
+
+        ws.write(row_num, col_num, instance["sector"], font_style)
+        col_num += 1
+
+        ws.write(row_num, col_num, instance["name"], font_style)
+        col_num += 1
+
+        ws.write(row_num, col_num, instance["new_business"], money_font_style)
+        col_num += 1
+
+        ws.write(row_num, col_num, instance["fee"], font_style)
+        col_num += 1
+
+        ws.write(row_num, col_num, instance["date"], font_style)
+        col_num += 1
+
+        ws.write(row_num, col_num, instance["comp_date"], font_style)
+        col_num += 1
+
+        ws.write(row_num, col_num, instance["price"], money_font_style)
         col_num += 1
 
     wb.save(response)

@@ -361,7 +361,16 @@
                                                 {% endif %}
                                             </td>
                                             <td class="text-center">
-                                                £{{ instance.exchange_sum|floatformat:2|intcomma }}
+                                                {% if request.user.profile.director %}
+                                                    <a
+                                                        class="text-dark text-hover-underline"
+                                                        href="{% url 'stats:export_hub_exchanges_xls' instance.id %}?filter={{ filter }}&start-date={{ start_date|date:'Y-m-d' }}&end-date={{ end_date|date:'Y-m-d' }}"
+                                                    >
+                                                    £{{ instance.exchange_sum|floatformat:2|intcomma }}
+                                                    </a>
+                                                {% else %}
+                                                    £{{ instance.exchange_sum|floatformat:2|intcomma }}
+                                                {% endif %}
                                             </td>
                                         </tr>
                                     {% endfor %}
