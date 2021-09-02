@@ -1446,10 +1446,6 @@ def export_hub_instructions_xls(request, hub_id):
         end_date = request.GET.get("end-date")
         end_date = datetime.datetime.strptime(end_date, "%Y-%m-%d").date()
 
-    Instruction.objects.exclude(active=False).filter(
-        date__range=[start_date, end_date],
-    )
-
     instructions = (
         Instruction.objects
         .exclude(active=False)
@@ -1470,7 +1466,7 @@ def export_hub_instructions_xls(request, hub_id):
     ] = f'attachment; filename="{selected_hub.hub_name} Instructions {start_date} to {end_date}.xls"'
 
     wb = xlwt.Workbook(encoding="utf-8")
-    ws = wb.add_sheet("Valuations")
+    ws = wb.add_sheet("Instructions")
 
     # Add filters to first row of sheet
     row_num = 0
@@ -1553,6 +1549,124 @@ def export_hub_instructions_xls(request, hub_id):
         col_num += 1
 
         ws.write(row_num, col_num, instance["length_of_contract"], font_style)
+        col_num += 1
+
+    wb.save(response)
+
+    return response
+
+
+@otp_required
+@login_required
+def export_hub_reductions_xls(request, hub_id):
+    """
+    Export to excel the reductions for a hub
+    """
+
+    filter = "current_quarter"
+
+    selected_hub = Hub.objects.get(id=hub_id)
+
+    if "filter" in request.GET:
+        filter = request.GET.get("filter")
+
+    if filter == "current_quarter":
+        date_calc_data = date_calc(timezone.now(), filter)
+        start_date = date_calc_data["start_date"]
+        end_date = date_calc_data["end_date"]
+    else:
+        start_date = request.GET.get("start-date")
+        start_date = datetime.datetime.strptime(start_date, "%Y-%m-%d").date()
+
+        end_date = request.GET.get("end-date")
+        end_date = datetime.datetime.strptime(end_date, "%Y-%m-%d").date()
+
+    reductions = (
+        Reduction.objects
+        .filter(
+            date__range=[start_date, end_date],
+        )
+        .order_by("-date")
+    )
+
+    start_date = start_date.strftime("%d-%m-%Y")
+
+    end_date = end_date.strftime("%d-%m-%Y")
+
+    response = HttpResponse(content_type="application/ms-excel")
+    response[
+        "Content-Disposition"
+    ] = f'attachment; filename="{selected_hub.hub_name} Reductions {start_date} to {end_date}.xls"'
+
+    wb = xlwt.Workbook(encoding="utf-8")
+    ws = wb.add_sheet("Reductions")
+
+    # Add filters to first row of sheet
+    row_num = 0
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+    filter_columns = [
+        "Date Range",
+        start_date,
+        end_date,
+    ]
+
+    for col_num in range(len(filter_columns)):
+        ws.write(row_num, col_num, filter_columns[col_num], font_style)
+
+    # Table header, starting row 3
+    row_num += 2
+
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+
+    columns = [
+        "Address",
+        "Type",
+        "Employee",
+        "Reduction Date",
+        "New Price (£)",
+    ]
+
+    for col_num in range(len(columns)):
+        ws.write(row_num, col_num, columns[col_num], font_style)
+
+    # Sheet body, remaining rows
+    font_style = xlwt.XFStyle()
+
+    money_font_style = xlwt.XFStyle()
+    money_font_style.num_format_str = "0.00"
+
+    red_list = []
+
+    for instance in reductions:
+        red_instance = {}
+        red_instance["address"] = instance.propertyprocess.property.address
+        red_instance["sector"] = instance.propertyprocess.sector
+        red_instance["name"] = (
+            instance.propertyprocess.employee.user.get_full_name()
+        )
+        red_instance["date"] = instance.date.strftime("%d-%m-%Y")
+        red_instance["price"] = instance.price_change
+        red_list.append(red_instance)
+
+    for instance in red_list:
+        row_num += 1
+        col_num = 0
+
+        ws.write(row_num, col_num, instance["address"], font_style)
+        col_num += 1
+
+        ws.write(row_num, col_num, instance["sector"], font_style)
+        col_num += 1
+
+        ws.write(row_num, col_num, instance["name"], font_style)
+        col_num += 1
+
+        ws.write(row_num, col_num, instance["date"], font_style)
+        col_num += 1
+
+        ws.write(row_num, col_num, instance["price"], money_font_style)
         col_num += 1
 
     wb.save(response)

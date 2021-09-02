@@ -337,7 +337,16 @@
                                                 {% endif %}
                                             </td>
                                             <td class="text-center">
-                                                {{ instance.reduction_count }}
+                                                {% if request.user.profile.director %}
+                                                    <a
+                                                        class="text-dark text-hover-underline"
+                                                        href="{% url 'stats:export_hub_reductions_xls' instance.id %}"
+                                                    >
+                                                    {{ instance.reduction_count }}
+                                                    </a>
+                                                {% else %}
+                                                    {{ instance.reduction_count }}
+                                                {% endif %}
                                             </td>
                                             <td class="text-center">
                                                 £{{ instance.new_business_sum|floatformat:2|intcomma }}
