@@ -17,6 +17,7 @@ urlpatterns = [
     path("", include("home.urls")),
     path("", include("properties.urls")),
     path("", include("lettings.urls")),
+    path("", include("weekends.urls")),
     path("statistics/", include("stats.urls")),
 ]
 
