@@ -90,6 +90,37 @@
                                             {% endif %}
                                         </th>
                                         <th class="text-center text-nowrap">
+                                            Val To Inst %
+                                            {% if sort == "val_inst" and direction == "desc" %}
+                                                <i 
+                                                class="fas fa-sort pointer js-sort text-success"
+                                                data-toggle="tooltip"
+                                                title="Sort Ascending"
+                                                data-sort="val_inst"
+                                                data-direction="asc"
+                                                >
+                                                </i>
+                                            {% elif sort == "val_inst" and direction == "asc" %}
+                                                <i 
+                                                class="fas fa-sort pointer js-sort text-success"
+                                                data-toggle="tooltip"
+                                                title="Sort Descending"
+                                                data-sort="val_inst"
+                                                data-direction="desc"
+                                                >
+                                                </i>
+                                            {% else %}
+                                                <i 
+                                                class="fas fa-sort pointer js-sort"
+                                                data-toggle="tooltip"
+                                                title="Sort Descending"
+                                                data-sort="val_inst"
+                                                data-direction="desc"
+                                                >
+                                                </i>
+                                            {% endif %}
+                                        </th>
+                                        <th class="text-center text-nowrap">
                                             Sales Inst's
                                             {% if sort == "instructions" and direction == "desc" %}
                                                 <i 

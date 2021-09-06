@@ -41,7 +41,7 @@ def sort_and_direction(sort, direction):
         "lettings_inst_fee": "lettings_instruction_fee_avg",
         "inst_price": "instruction_list_price_avg",
         "lettings_instructions": "lettings_instruction_count",
-        "lettings_inst_price": "lettings_instruction_list_price_avg"
+        "lettings_inst_price": "lettings_instruction_list_price_avg",
     }
 
     if direction == "desc":
@@ -514,17 +514,12 @@ def extra_stats(request):
         end_date = request.GET.get("end-date")
         end_date = datetime.datetime.strptime(end_date, "%Y-%m-%d").date()
 
-    all_instructions = (
-        Instruction.objects
-        .exclude(active=False)
-        .filter(
-            date__range=[start_date, end_date],
-        )
+    all_instructions = Instruction.objects.exclude(active=False).filter(
+        date__range=[start_date, end_date],
     )
 
     sales_instructions = (
-        all_instructions
-        .filter(
+        all_instructions.filter(
             propertyprocess__sector=PropertyProcess.SALES,
         )
         .values(employee)
@@ -535,8 +530,7 @@ def extra_stats(request):
     )
 
     lettings_instructions = (
-        all_instructions
-        .filter(
+        all_instructions.filter(
             propertyprocess__sector=PropertyProcess.LETTINGS,
         )
         .values(employee)
@@ -602,12 +596,12 @@ def extra_stats(request):
                 instance["lettings_instruction_count"] = instruction_instance[
                     "instruction_count"
                 ]
-                instance["lettings_instruction_fee_avg"] = instruction_instance[
-                    "instruction_fee_avg"
-                ]
-                instance["lettings_instruction_list_price_avg"] = instruction_instance[
-                    "instruction_list_price_avg"
-                ]
+                instance[
+                    "lettings_instruction_fee_avg"
+                ] = instruction_instance["instruction_fee_avg"]
+                instance[
+                    "lettings_instruction_list_price_avg"
+                ] = instruction_instance["instruction_list_price_avg"]
 
         if (
             instance["valuation_count"] == 0
@@ -1619,8 +1613,7 @@ def export_hub_instructions_xls(request, hub_id):
         end_date = datetime.datetime.strptime(end_date, "%Y-%m-%d").date()
 
     instructions = (
-        Instruction.objects
-        .exclude(active=False)
+        Instruction.objects.exclude(active=False)
         .filter(
             propertyprocess__hub=selected_hub.id,
             date__range=[start_date, end_date],
@@ -1667,7 +1660,7 @@ def export_hub_instructions_xls(request, hub_id):
         "Fee At Instruction (%)",
         "Listing Price (£)",
         "Agreement Type",
-        "Length of Contract"
+        "Length of Contract",
     ]
 
     for col_num in range(len(columns)):
@@ -1685,9 +1678,9 @@ def export_hub_instructions_xls(request, hub_id):
         inst_instance = {}
         inst_instance["address"] = instance.propertyprocess.property.address
         inst_instance["sector"] = instance.propertyprocess.sector
-        inst_instance["name"] = (
-            instance.propertyprocess.employee.user.get_full_name()
-        )
+        inst_instance[
+            "name"
+        ] = instance.propertyprocess.employee.user.get_full_name()
         inst_instance["date"] = instance.date.strftime("%d-%m-%Y")
         inst_instance["fee"] = instance.fee_agreed
         inst_instance["price"] = instance.listing_price
@@ -1753,14 +1746,10 @@ def export_hub_reductions_xls(request, hub_id):
         end_date = request.GET.get("end-date")
         end_date = datetime.datetime.strptime(end_date, "%Y-%m-%d").date()
 
-    reductions = (
-        Reduction.objects
-        .filter(
-            propertyprocess__hub=selected_hub.id,
-            date__range=[start_date, end_date],
-        )
-        .order_by("-date")
-    )
+    reductions = Reduction.objects.filter(
+        propertyprocess__hub=selected_hub.id,
+        date__range=[start_date, end_date],
+    ).order_by("-date")
 
     start_date = start_date.strftime("%d-%m-%Y")
 
@@ -1816,9 +1805,9 @@ def export_hub_reductions_xls(request, hub_id):
         red_instance = {}
         red_instance["address"] = instance.propertyprocess.property.address
         red_instance["sector"] = instance.propertyprocess.sector
-        red_instance["name"] = (
-            instance.propertyprocess.employee.user.get_full_name()
-        )
+        red_instance[
+            "name"
+        ] = instance.propertyprocess.employee.user.get_full_name()
         red_instance["date"] = instance.date.strftime("%d-%m-%Y")
         red_instance["price"] = instance.price_change
         red_list.append(red_instance)
@@ -1873,8 +1862,7 @@ def export_hub_new_business_xls(request, hub_id):
         end_date = datetime.datetime.strptime(end_date, "%Y-%m-%d").date()
 
     new_business = (
-        PropertyFees.objects
-        .exclude(active=False)
+        PropertyFees.objects.exclude(active=False)
         .exclude(show_all=False)
         .filter(
             propertyprocess__hub=selected_hub.id,
@@ -1937,11 +1925,13 @@ def export_hub_new_business_xls(request, hub_id):
 
     for instance in new_business:
         new_business_instance = {}
-        new_business_instance["address"] = instance.propertyprocess.property.address
+        new_business_instance[
+            "address"
+        ] = instance.propertyprocess.property.address
         new_business_instance["sector"] = instance.propertyprocess.sector
-        new_business_instance["name"] = (
-            instance.propertyprocess.employee.user.get_full_name()
-        )
+        new_business_instance[
+            "name"
+        ] = instance.propertyprocess.employee.user.get_full_name()
         new_business_instance["date"] = instance.date.strftime("%d-%m-%Y")
         new_business_instance["fee"] = instance.fee
         new_business_instance["price"] = instance.price
@@ -2003,75 +1993,69 @@ def export_hub_exchanges_xls(request, hub_id):
         end_date = request.GET.get("end-date")
         end_date = datetime.datetime.strptime(end_date, "%Y-%m-%d").date()
 
-    exchanges_sales = (
-        ExchangeMoveSales.objects
-        .filter(
-            exchange__propertyprocess__hub=selected_hub.id,
-            exchange_date__range=[start_date, end_date],
-        )
-        .order_by("-exchange_date")
-    )
+    exchanges_sales = ExchangeMoveSales.objects.filter(
+        exchange__propertyprocess__hub=selected_hub.id,
+        exchange_date__range=[start_date, end_date],
+    ).order_by("-exchange_date")
 
-    exchanges_lettings = (
-        ExchangeMoveLettings.objects
-        .filter(
-            exchange__propertyprocess__hub=selected_hub.id,
-            move_in_date__range=[start_date, end_date],
-        )
-        .order_by("-move_in_date")
-    )
+    exchanges_lettings = ExchangeMoveLettings.objects.filter(
+        exchange__propertyprocess__hub=selected_hub.id,
+        move_in_date__range=[start_date, end_date],
+    ).order_by("-move_in_date")
 
     exchanges = []
 
     for instance in exchanges_sales:
         exchange_instance = {}
-        exchange_instance["address"] = (
-            instance.exchange.propertyprocess.property.address
-        )
+        exchange_instance[
+            "address"
+        ] = instance.exchange.propertyprocess.property.address
         exchange_instance["sector"] = instance.exchange.propertyprocess.sector
-        exchange_instance["name"] = (
-            instance.exchange.propertyprocess.employee.user.get_full_name()
-        )
-        exchange_instance["new_business"] = (
-            instance.exchange.propertyprocess.property_fees.last().new_business
-        )
-        exchange_instance["fee"] = (
-            instance.exchange.propertyprocess.property_fees.last().fee
-        )
+        exchange_instance[
+            "name"
+        ] = instance.exchange.propertyprocess.employee.user.get_full_name()
+        exchange_instance[
+            "new_business"
+        ] = instance.exchange.propertyprocess.property_fees.last().new_business
+        exchange_instance[
+            "fee"
+        ] = instance.exchange.propertyprocess.property_fees.last().fee
         exchange_instance["date"] = instance.exchange_date.strftime("%d-%m-%Y")
-        exchange_instance["comp_date"] = instance.completion_date.strftime("%d-%m-%Y")
-        exchange_instance["price"] = (
-            instance.exchange.propertyprocess.property_fees.last().price
+        exchange_instance["comp_date"] = instance.completion_date.strftime(
+            "%d-%m-%Y"
         )
+        exchange_instance[
+            "price"
+        ] = instance.exchange.propertyprocess.property_fees.last().price
         exchanges.append(exchange_instance)
 
     for instance in exchanges_lettings:
         exchange_instance = {}
-        exchange_instance["address"] = (
-            instance.exchange.propertyprocess.property.address
-        )
+        exchange_instance[
+            "address"
+        ] = instance.exchange.propertyprocess.property.address
         exchange_instance["sector"] = instance.exchange.propertyprocess.sector
-        exchange_instance["name"] = (
-            instance.exchange.propertyprocess.employee.user.get_full_name()
-        )
-        exchange_instance["new_business"] = (
-            instance.exchange.propertyprocess.property_fees.last().new_business
-        )
-        exchange_instance["fee"] = (
-            instance.exchange.propertyprocess.property_fees.last().fee
-        )
+        exchange_instance[
+            "name"
+        ] = instance.exchange.propertyprocess.employee.user.get_full_name()
+        exchange_instance[
+            "new_business"
+        ] = instance.exchange.propertyprocess.property_fees.last().new_business
+        exchange_instance[
+            "fee"
+        ] = instance.exchange.propertyprocess.property_fees.last().fee
         exchange_instance["date"] = instance.move_in_date.strftime("%d-%m-%Y")
         exchange_instance["comp_date"] = ""
-        exchange_instance["price"] = (
-            instance.exchange.propertyprocess.property_fees.last().price
-        )
+        exchange_instance[
+            "price"
+        ] = instance.exchange.propertyprocess.property_fees.last().price
         exchanges.append(exchange_instance)
 
     exchanges = sorted(
-            exchanges,
-            key=lambda k: k["date"],
-            reverse=True,
-        )
+        exchanges,
+        key=lambda k: k["date"],
+        reverse=True,
+    )
 
     start_date = start_date.strftime("%d-%m-%Y")
 
@@ -2112,7 +2096,7 @@ def export_hub_exchanges_xls(request, hub_id):
         "Fee (%)",
         "Exchange/Move In Date",
         "Completion Date",
-        "Final Price (£)"
+        "Final Price (£)",
     ]
 
     for col_num in range(len(columns)):
