@@ -7,7 +7,7 @@
         <i class="mdi mdi-clipboard-file-outline"></i>
 </button>
 <button 
-    {% if propertyprocess.sector == "sales" %}
+    {% if instance.sector == "sales" %}
         data-url="{% url 'properties:add_instruction' instance.id %}"
     {% else %}
         data-url="{% url 'properties:add_lettings_instruction' instance.id %}"

@@ -42,6 +42,9 @@ def sort_and_direction(sort, direction):
         "inst_price": "instruction_list_price_avg",
         "lettings_instructions": "lettings_instruction_count",
         "lettings_inst_price": "lettings_instruction_list_price_avg",
+        "val_inst": "val_to_inst",
+        "reduced": "reduction_val",
+        "inst_to_exch": "inst_to_exchange"
     }
 
     if direction == "desc":
@@ -514,8 +517,33 @@ def extra_stats(request):
         end_date = request.GET.get("end-date")
         end_date = datetime.datetime.strptime(end_date, "%Y-%m-%d").date()
 
-    all_instructions = Instruction.objects.exclude(active=False).filter(
+    all_valuations = Valuation.objects.exclude(active=False).filter(
         date__range=[start_date, end_date],
+    )
+
+    valuations = (
+        all_valuations.values(employee)
+        .annotate(valuation_count=Count(link_to_employee))
+        .order_by("-valuation_count")
+    )
+
+    all_instructions = (
+        Instruction.objects
+        .exclude(active=False)
+        .filter(
+            date__range=[start_date, end_date],
+        )
+    )
+
+    instruction_reductions = (
+        all_instructions.annotate(reduced=Count("propertyprocess__reduction"))
+    )
+
+    instructions = (
+        all_instructions
+        .values(employee)
+        .annotate(instruction_count=Count(link_to_employee))
+        .order_by("-instruction_count")
     )
 
     sales_instructions = (
@@ -540,11 +568,27 @@ def extra_stats(request):
         .order_by("-instruction_fee_avg")
     )
 
+    exchanges_sales = ExchangeMoveSales.objects.filter(
+        exchange_date__range=[start_date, end_date],
+    ).order_by("-exchange_date")
+
+    exchanges_lettings = ExchangeMoveLettings.objects.filter(
+        move_in_date__range=[start_date, end_date],
+    ).order_by("-move_in_date")
+
+    for instance in instructions:
+        instance["employee_id"] = instance["propertyprocess__employee__id"]
+        del instance["propertyprocess__employee__id"]
+
     for instance in sales_instructions:
         instance["employee_id"] = instance["propertyprocess__employee__id"]
         del instance["propertyprocess__employee__id"]
 
     for instance in lettings_instructions:
+        instance["employee_id"] = instance["propertyprocess__employee__id"]
+        del instance["propertyprocess__employee__id"]
+
+    for instance in valuations:
         instance["employee_id"] = instance["propertyprocess__employee__id"]
         del instance["propertyprocess__employee__id"]
 
@@ -561,7 +605,10 @@ def extra_stats(request):
         employee_dict["active"] = instance.user.is_active
 
         employee_dict["valuation_count"] = 0
+        employee_dict["val_to_inst"] = 0
+        employee_dict["reduction_val"] = 0
         employee_dict["instruction_count"] = 0
+        employee_dict["total_instruction_count"] = 0
         employee_dict["instruction_fee_avg"] = 0
         employee_dict["instruction_list_price_avg"] = 0
         employee_dict["lettings_instruction_count"] = 0
@@ -569,7 +616,8 @@ def extra_stats(request):
         employee_dict["lettings_instruction_list_price_avg"] = 0
         employee_dict["reduction_count"] = 0
         employee_dict["new_business_sum"] = 0
-        employee_dict["exchange_sum"] = 0
+        employee_dict["exchange_count"] = 0
+        employee_dict["inst_to_exchange"] = 0
 
         if hub:
             for hub_instance in instance.hub.all():
@@ -584,6 +632,9 @@ def extra_stats(request):
                 instance["instruction_count"] = instruction_instance[
                     "instruction_count"
                 ]
+                instance["total_instruction_count"] = instruction_instance[
+                    "instruction_count"
+                ]
                 instance["instruction_fee_avg"] = instruction_instance[
                     "instruction_fee_avg"
                 ]
@@ -596,6 +647,9 @@ def extra_stats(request):
                 instance["lettings_instruction_count"] = instruction_instance[
                     "instruction_count"
                 ]
+                instance["total_instruction_count"] += instruction_instance[
+                    "instruction_count"
+                ]
                 instance[
                     "lettings_instruction_fee_avg"
                 ] = instruction_instance["instruction_fee_avg"]
@@ -603,13 +657,72 @@ def extra_stats(request):
                     "lettings_instruction_list_price_avg"
                 ] = instruction_instance["instruction_list_price_avg"]
 
+        for valuation_instance in valuations:
+            if instance["id"] == valuation_instance["employee_id"]:
+                instance["valuation_count"] = valuation_instance[
+                    "valuation_count"
+                ]
+
+        for all_inst_instance in instruction_reductions:
+            if instance["id"] == all_inst_instance.propertyprocess.employee.id:
+                if all_inst_instance.reduced > 0:
+                    instance["reduction_val"] += 1
+
+        for exchange_inst in exchanges_sales:
+            if (
+                instance["id"]
+                == exchange_inst.exchange.propertyprocess.employee.id
+            ):
+                instance[
+                    "exchange_count"
+                ] += 1
+
+        for exchange_inst in exchanges_lettings:
+            if (
+                instance["id"]
+                == exchange_inst.exchange.propertyprocess.employee.id
+            ):
+                instance[
+                    "exchange_count"
+                ] += 1
+
+        try:
+            instance["val_to_inst"] = round(
+                instance["total_instruction_count"]
+                / instance["valuation_count"]
+                * 100,
+                2,
+            )
+        except ZeroDivisionError:
+            instance["val_to_inst"] = 0
+
+        try:
+            instance["reduction_val"] = round(
+                instance["reduction_val"]
+                / instance["total_instruction_count"]
+                * 100,
+                2,
+            )
+        except ZeroDivisionError:
+            instance["reduction_val"] = 0
+
+        try:
+            instance["inst_to_exchange"] = round(
+                instance["exchange_count"]
+                / instance["total_instruction_count"]
+                * 100,
+                2,
+            )
+        except ZeroDivisionError:
+            instance["inst_to_exchange"] = 0
+
         if (
             instance["valuation_count"] == 0
             and instance["instruction_count"] == 0
             and instance["lettings_instruction_count"] == 0
             and instance["reduction_count"] == 0
             and instance["new_business_sum"] == 0
-            and instance["exchange_sum"] == 0
+            and instance["exchange_count"] == 0
         ):
             pass
         else:

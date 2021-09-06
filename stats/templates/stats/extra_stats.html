@@ -66,13 +66,6 @@
                                 <button class="btn btn-info js-load-form" data-url="{% url 'stats:more_filters' %}">Date Filters</button>
                                 <button class="btn btn-info ml-1 js-load-form" data-url="{% url 'stats:hub_filters' %}{% if hub %}?hub={{ hub }}{% endif %}">Hub Filters</button>
                             </div>
-                            {% if request.user.profile.director %}
-                            <div class="col-6 col-md-2">
-                                <div class="text-right">
-                                    <a href="{% url 'stats:export_overview_xls' %}?filter={{ filter }}&start-date={{ start_date|date:'Y-m-d' }}&end-date={{ end_date|date:'Y-m-d' }}{% if sort %}&sort={{sort}}{% endif %}{% if direction %}&direction={{ direction }}{% endif %}{% if hub %}&hub={{ hub }}{% endif %}" class="btn btn-light mb-2">Export</a>
-                                </div>
-                            </div>
-                            {% endif %}
                         </div>
 
                         <div class="table-responsive">
@@ -115,6 +108,68 @@
                                                 data-toggle="tooltip"
                                                 title="Sort Descending"
                                                 data-sort="val_inst"
+                                                data-direction="desc"
+                                                >
+                                                </i>
+                                            {% endif %}
+                                        </th>
+                                        <th class="text-center text-nowrap">
+                                            Inst Reduced %
+                                            {% if sort == "reduced" and direction == "desc" %}
+                                                <i 
+                                                class="fas fa-sort pointer js-sort text-success"
+                                                data-toggle="tooltip"
+                                                title="Sort Ascending"
+                                                data-sort="reduced"
+                                                data-direction="asc"
+                                                >
+                                                </i>
+                                            {% elif sort == "reduced" and direction == "asc" %}
+                                                <i 
+                                                class="fas fa-sort pointer js-sort text-success"
+                                                data-toggle="tooltip"
+                                                title="Sort Descending"
+                                                data-sort="reduced"
+                                                data-direction="desc"
+                                                >
+                                                </i>
+                                            {% else %}
+                                                <i 
+                                                class="fas fa-sort pointer js-sort"
+                                                data-toggle="tooltip"
+                                                title="Sort Descending"
+                                                data-sort="reduced"
+                                                data-direction="desc"
+                                                >
+                                                </i>
+                                            {% endif %}
+                                        </th>
+                                        <th class="text-center text-nowrap">
+                                            Inst To Exch %
+                                            {% if sort == "inst_to_exch" and direction == "desc" %}
+                                                <i 
+                                                class="fas fa-sort pointer js-sort text-success"
+                                                data-toggle="tooltip"
+                                                title="Sort Ascending"
+                                                data-sort="inst_to_exch"
+                                                data-direction="asc"
+                                                >
+                                                </i>
+                                            {% elif sort == "inst_to_exch" and direction == "asc" %}
+                                                <i 
+                                                class="fas fa-sort pointer js-sort text-success"
+                                                data-toggle="tooltip"
+                                                title="Sort Descending"
+                                                data-sort="inst_to_exch"
+                                                data-direction="desc"
+                                                >
+                                                </i>
+                                            {% else %}
+                                                <i 
+                                                class="fas fa-sort pointer js-sort"
+                                                data-toggle="tooltip"
+                                                title="Sort Descending"
+                                                data-sort="inst_to_exch"
                                                 data-direction="desc"
                                                 >
                                                 </i>
@@ -313,6 +368,9 @@
                                         {% if instance.employee_targets and instance.active %}
                                             <tr>
                                                 <td>{{ instance.name }}</td>
+                                                <td class="text-center">{{ instance.val_to_inst|floatformat:2 }}%</td>
+                                                <td class="text-center">{{ instance.reduction_val|floatformat:2 }}%</td>
+                                                <td class="text-center">{{ instance.inst_to_exchange|floatformat:2 }}%</td>
                                                 <td class="text-center">{{ instance.instruction_count }}</td>
                                                 <td class="text-center">
                                                     {{ instance.instruction_fee_avg|floatformat:2 }}%
@@ -332,6 +390,9 @@
                                             {% if request.user.profile.director %}
                                                 <tr>
                                                     <td>{{ instance.name }}</td>
+                                                    <td class="text-center">{{ instance.val_to_inst|floatformat:2 }}%</td>
+                                                    <td class="text-center">{{ instance.reduction_val|floatformat:2 }}%</td>
+                                                    <td class="text-center">{{ instance.inst_to_exchange|floatformat:2 }}%</td>
                                                     <td class="text-center">{{ instance.instruction_count }}</td>
                                                     <td class="text-center">
                                                         {{ instance.instruction_fee_avg|floatformat:2 }}%
