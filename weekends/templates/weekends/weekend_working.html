@@ -1,0 +1,105 @@
+{% extends "vertical_base.html" %}
+{% load static i18n %}
+
+{% block head_title %}{% trans "Weekend Working" %}{% endblock head_title %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.9.0/main.min.css">
+    <link rel="stylesheet" href="{% static 'weekends/css/weekends.css' %}">
+{% endblock %}
+
+{% block content %}
+    <!-- Start Content-->
+    <div class="container-fluid">
+
+        <!-- start page title -->
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box">
+                    <div class="page-title-right">
+                        <ol class="breadcrumb m-0">
+                            <li class="breadcrumb-item"><a href="{% url 'home:home' %}"><i class="uil-home-alt"></i> Home</a></li>
+                            <li class="breadcrumb-item active">Weekend Working</li>
+                        </ol>
+                    </div>
+                    <h4 class="page-title">Weekend Working</h4>
+                </div>
+            </div>
+        </div>     
+        <!-- end page title --> 
+
+        <div class="row">
+            <div class="col-12">
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <div id="external-events" class="row">
+                                    {% if request.user.profile.director %}
+                                        {% for instance in employees %}
+                                            {% if instance.user.last_name != "Extra" %}
+                                                <div class="col-6 col-sm-4 col-md-3 col-lg-2 col-xl-1">
+                                                    <div 
+                                                        class="external-event bg-success text-center "
+                                                        data-class="bg-success"
+                                                        data-toggle="tooltip"
+                                                        data-placement="top"
+                                                        data-user="{{ instance.id }}"
+                                                        title="{{ instance.user.get_full_name }}">
+                                                            {{ instance.user.initials }}
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                            </div> <!-- end col-->
+                            <div class="col">
+                                <div id="calendar"></div>
+                            </div>
+                            <!-- end col -->
+                        </div>  <!-- end row -->
+                    </div> <!-- end card body-->
+                </div> <!-- end card -->
+
+                <!-- Delete MODAL -->
+                {% csrf_token %}
+                <div class="modal fade" id="event-modal" tabindex="-1" style="display: none;" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header py-3 px-4 border-bottom-0">
+                                <h5 class="modal-title" id="modal-title">Delete Weekend Day</h5>
+                            </div>
+                            <div class="modal-body px-4 pb-4 pt-0">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <p>Are you sure you wish to delete this employees weekend day?</p>
+                                    </div>
+                                    <div class="col-6">
+                                        <button type="button" class="btn btn-danger" id="btn-delete-event">Delete</button>
+                                        <button type="button" class="btn btn-light ml-2" data-bs-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> <!-- end modal-content-->
+                    </div> <!-- end modal dialog-->
+                </div>
+                <!-- end modal-->
+            </div>
+            <!-- end col-12 -->
+        </div> <!-- end row -->
+
+    </div>
+    <!-- container -->
+{% endblock %}
+
+{% block extra_javascript %}
+{{ hub.slug|json_script:"id_hub" }}
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.9.0/main.min.js"></script>
+{% if request.user.profile.director %}
+    <script src="{% static 'weekends/js/edit_calendar-v1.js' %}"></script>
+{% else %}
+    <script src="{% static 'weekends/js/view_calendar-v1.js' %}"></script>
+{% endif %}
+{% endblock %}

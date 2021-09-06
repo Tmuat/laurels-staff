@@ -96,6 +96,22 @@
                     </li>
                 </ul>
             </li>
+            <li class="side-nav-item">
+                <a href="javascript: void(0);" class="side-nav-link">
+                    <i class="mdi mdi-calendar-account"></i>
+                    <span> {% trans "Weekend Working" %} </span>
+                    <span class="menu-arrow"></span>
+                </a>
+                <ul class="side-nav-second-level" aria-expanded="false">
+                    {% for instance in hubs %}
+                        {% if instance.slug != "all-hubs" %}
+                            <li>
+                                <a href="{% url 'weekends:weekend_working' %}?hub={{ instance.slug }}">{{ instance }}</a>
+                            </li>
+                        {% endif %} 
+                    {% endfor %}
+                </ul>
+            </li>
             {% if request.user.profile.director %}
             <li class="side-nav-item">
                 <a href="javascript: void(0);" class="side-nav-link">

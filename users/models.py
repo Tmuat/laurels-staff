@@ -36,6 +36,11 @@ class CustomUser(AbstractUser):
         abbreviated_name = self.first_name[0] + "." + self.last_name
         return abbreviated_name
 
+    @property
+    def initials(self, **kwargs):
+        initials = self.first_name[0] + self.last_name[0]
+        return initials
+
     def __str__(self):
         return self.email
 
