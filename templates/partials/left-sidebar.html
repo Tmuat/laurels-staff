@@ -104,7 +104,11 @@
                 </a>
                 <ul class="side-nav-second-level" aria-expanded="false">
                     {% for instance in hubs %}
-                        {% if instance.slug != "all-hubs" %}
+                        {% if instance.slug == "all-hubs" %}
+                            <li>
+                                <a href="{% url 'weekends:weekend_working' %}?hub={{ instance.slug }}">Support Team</a>
+                            </li>
+                        {% else %}
                             <li>
                                 <a href="{% url 'weekends:weekend_working' %}?hub={{ instance.slug }}">{{ instance }}</a>
                             </li>

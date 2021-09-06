@@ -1,5 +1,3 @@
-import uuid
-
 from django_otp.decorators import otp_required
 
 from django.contrib.auth.decorators import login_required
