@@ -1162,7 +1162,7 @@ class LettingsProgressionPhaseOneForm(forms.ModelForm):
         labels = {
             "contact_touch_point_to_ll_and_tt": "Contact Touch Point To LL & TT:",
             "reference_forms_sent_to_tenant": "Referencing Forms Sent To Tenant:",
-            "compliance_form_sent_to_landlord": "Compliance Form Sent To Landlord:",
+            "compliance_form_sent_to_landlord": "Compliance Form Received:",
             "google_drive_and_email_inbox": "Google Drive & Email Inbox Created:",
             "tenancy_created_on_expert_agent": "Tenancy Created On Expert Agent:",
         }
