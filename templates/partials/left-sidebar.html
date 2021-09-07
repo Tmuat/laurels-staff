@@ -94,6 +94,11 @@
                             Extra Stats
                         </a>
                     </li>
+                    <li {% if request.resolver_match.url_name == 'hub_extra_stats' %}class="active"{% endif %}>
+                        <a href="{% url 'stats:hub_extra_stats' %}">
+                            Hub {% if request.user.profile.director %}& Company {% endif %} Extra Stats
+                        </a>
+                    </li>
                 </ul>
             </li>
             <li class="side-nav-item">

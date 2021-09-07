@@ -4,7 +4,7 @@ import xlwt
 from django_otp.decorators import otp_required
 
 from django.contrib.auth.decorators import login_required
-from django.db.models import Count, Sum, Avg
+from django.db.models import Count, Sum, Avg, F
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
 from django.template.loader import render_to_string
@@ -44,7 +44,9 @@ def sort_and_direction(sort, direction):
         "lettings_inst_price": "lettings_instruction_list_price_avg",
         "val_inst": "val_to_inst",
         "reduced": "reduction_val",
-        "inst_to_exch": "inst_to_exchange"
+        "inst_to_exch": "inst_to_exchange",
+        "sales_weeks": "sales_weeks",
+        "lettings_weeks": "lettings_weeks",
     }
 
     if direction == "desc":
@@ -748,6 +750,401 @@ def extra_stats(request):
     }
 
     return render(request, "stats/extra_stats.html", context)
+
+
+@otp_required
+@login_required
+def hub_extra_stats(request):
+    """
+    A view to return hub extra stats & total company
+    """
+
+    filter = "current_quarter"
+    link_to_hub = "propertyprocess__hub"
+    ex_link_to_hub = "exchange__propertyprocess__hub"
+    hub = "propertyprocess__hub__id"
+    ex_hub = "exchange__propertyprocess__hub__id"
+    sort = None
+    direction = None
+
+    if "filter" in request.GET:
+        filter = request.GET.get("filter")
+
+    if "sort" in request.GET:
+        sort = request.GET.get("sort")
+
+    if "direction" in request.GET:
+        direction = request.GET.get("direction")
+
+    if filter == "current_quarter":
+        date_calc_data = date_calc(timezone.now(), filter)
+        start_date = date_calc_data["start_date"]
+        end_date = date_calc_data["end_date"]
+    else:
+        start_date = request.GET.get("start-date")
+        start_date = datetime.datetime.strptime(start_date, "%Y-%m-%d").date()
+
+        end_date = request.GET.get("end-date")
+        end_date = datetime.datetime.strptime(end_date, "%Y-%m-%d").date()
+
+    all_valuations = Valuation.objects.exclude(active=False).filter(
+        date__range=[start_date, end_date],
+    )
+
+    valuations = (
+        all_valuations.values(hub)
+        .annotate(valuation_count=Count(link_to_hub))
+        .order_by("-valuation_count")
+    )
+
+    all_instructions = (
+        Instruction.objects
+        .exclude(active=False)
+        .filter(
+            date__range=[start_date, end_date],
+        )
+    )
+
+    instruction_reductions = (
+        all_instructions.annotate(reduced=Count("propertyprocess__reduction"))
+    )
+
+    instructions = (
+        all_instructions
+        .values(hub)
+        .annotate(instruction_count=Count(link_to_hub))
+        .order_by("-instruction_count")
+    )
+
+    sales_inst = (
+        all_instructions.filter(
+            propertyprocess__sector=PropertyProcess.SALES,
+        )
+    )
+
+    lettings_inst = (
+        all_instructions.filter(
+            propertyprocess__sector=PropertyProcess.LETTINGS,
+        )
+    )
+
+    sales_instructions = (
+        sales_inst
+        .values(hub)
+        .annotate(instruction_fee_avg=Avg("fee_agreed"))
+        .annotate(instruction_count=Count(link_to_hub))
+        .annotate(instruction_list_price_avg=Avg("listing_price"))
+        .order_by("-instruction_fee_avg")
+    )
+
+    lettings_instructions = (
+        lettings_inst
+        .values(hub)
+        .annotate(instruction_fee_avg=Avg("fee_agreed"))
+        .annotate(instruction_count=Count(link_to_hub))
+        .annotate(instruction_list_price_avg=Avg("listing_price"))
+        .order_by("-instruction_fee_avg")
+    )
+
+    exchanges_sales = ExchangeMoveSales.objects.filter(
+        exchange_date__range=[start_date, end_date],
+    ).order_by("-exchange_date")
+
+    exchanges_lettings = ExchangeMoveLettings.objects.filter(
+        move_in_date__range=[start_date, end_date],
+    ).order_by("-move_in_date")
+
+    for instance in instructions:
+        instance["hub_id"] = instance["propertyprocess__hub__id"]
+        del instance["propertyprocess__hub__id"]
+
+    for instance in sales_instructions:
+        instance["hub_id"] = instance["propertyprocess__hub__id"]
+        del instance["propertyprocess__hub__id"]
+
+    for instance in lettings_instructions:
+        instance["hub_id"] = instance["propertyprocess__hub__id"]
+        del instance["propertyprocess__hub__id"]
+
+    for instance in valuations:
+        instance["hub_id"] = instance["propertyprocess__hub__id"]
+        del instance["propertyprocess__hub__id"]
+
+    hubs = Hub.objects.filter(is_active=True)
+
+    sales_inst_fee = (
+        sales_inst
+        .aggregate(instruction_fee_avg=Avg("fee_agreed"))
+    )
+    sales_inst_price = (
+        sales_inst
+        .aggregate(instruction_list_price_avg=Avg("listing_price"))
+    )
+    lettings_inst_fee = (
+        lettings_inst
+        .aggregate(instruction_fee_avg=Avg("fee_agreed"))
+    )
+    lettings_inst_price = (
+        lettings_inst
+        .aggregate(instruction_list_price_avg=Avg("listing_price"))
+    )
+
+    reduction_val = 0
+    exchange_count = len(exchanges_sales) + len(exchanges_lettings)
+
+    sales_days = exchanges_sales.aggregate(
+        avg_days=Avg(F("exchange_date") - F("exchange__propertyprocess__deal__date"))
+    )
+    days_and_time = sales_days["avg_days"]
+    sales_weeks = days_and_time.days / 7
+
+    hub_sales_days = (
+        exchanges_sales
+        .values(ex_hub)
+        .annotate(exchange_count=Count(ex_link_to_hub))
+        .annotate(
+            avg_days=Avg(F("exchange_date") - F("exchange__propertyprocess__deal__date"))
+        )
+        .order_by("-exchange_count")
+    )
+
+    hub_lettings_days = (
+        exchanges_lettings
+        .values(ex_hub)
+        .annotate(exchange_count=Count(ex_link_to_hub))
+        .annotate(
+            avg_days=Avg(F("move_in_date") - F("exchange__propertyprocess__deal__date"))
+        )
+        .order_by("-exchange_count")
+    )
+
+    lettings_days = exchanges_lettings.aggregate(
+        avg_days=Avg(F("move_in_date") - F("exchange__propertyprocess__deal__date"))
+    )
+    days_and_time = lettings_days["avg_days"]
+    lettings_weeks = days_and_time.days / 7
+
+    for instance in instruction_reductions:
+        if instance.reduced > 0:
+            reduction_val += 1
+
+    try:
+        val_to_inst = round(
+            len(all_instructions)
+            / len(all_valuations)
+            * 100,
+            2,
+        )
+    except ZeroDivisionError:
+        val_to_inst = 0
+
+    try:
+        reduction_val = round(
+            reduction_val
+            / len(all_instructions)
+            * 100,
+            2,
+        )
+    except ZeroDivisionError:
+        reduction_val = 0
+
+    try:
+        inst_to_exchange = round(
+            exchange_count
+            / len(all_instructions)
+            * 100,
+            2,
+        )
+    except ZeroDivisionError:
+        inst_to_exchange = 0
+
+    overview_list = []
+    stats = []
+    total = {
+        "sales_instruction_count": len(sales_inst),
+        "lettings_instruction_count": len(lettings_inst),
+        "instruction_fee_avg": sales_inst_fee[
+            "instruction_fee_avg"
+        ],
+        "lettings_instruction_fee_avg": lettings_inst_fee[
+            "instruction_fee_avg"
+        ],
+        "instruction_price_avg": sales_inst_price[
+            "instruction_list_price_avg"
+        ],
+        "lettings_instruction_price_avg": lettings_inst_price[
+            "instruction_list_price_avg"
+        ],
+        "val_to_inst": val_to_inst,
+        "reduction_val": reduction_val,
+        "inst_to_exchange": inst_to_exchange,
+        "sales_weeks": sales_weeks,
+        "lettings_weeks": lettings_weeks,
+    }
+
+    for instance in hubs:
+        hub_dict = {}
+        hub_dict["id"] = instance.id
+        hub_dict["hub_name"] = instance.hub_name
+
+        hub_dict["valuation_count"] = 0
+        hub_dict["val_to_inst"] = 0
+        hub_dict["reduction_val"] = 0
+        hub_dict["instruction_count"] = 0
+        hub_dict["total_instruction_count"] = 0
+        hub_dict["instruction_fee_avg"] = 0
+        hub_dict["instruction_list_price_avg"] = 0
+        hub_dict["lettings_instruction_count"] = 0
+        hub_dict["lettings_instruction_fee_avg"] = 0
+        hub_dict["lettings_instruction_list_price_avg"] = 0
+        hub_dict["reduction_count"] = 0
+        hub_dict["new_business_sum"] = 0
+        hub_dict["exchange_count"] = 0
+        hub_dict["inst_to_exchange"] = 0
+        hub_dict["sales_weeks"] = 0
+        hub_dict["lettings_weeks"] = 0
+
+
+        overview_list.append(hub_dict)
+
+    for instance in overview_list:
+        for instruction_instance in sales_instructions:
+            if instance["id"] == instruction_instance["hub_id"]:
+                instance["instruction_count"] = instruction_instance[
+                    "instruction_count"
+                ]
+                instance["total_instruction_count"] = instruction_instance[
+                    "instruction_count"
+                ]
+                instance["instruction_fee_avg"] = instruction_instance[
+                    "instruction_fee_avg"
+                ]
+                instance["instruction_list_price_avg"] = instruction_instance[
+                    "instruction_list_price_avg"
+                ]
+
+        for instruction_instance in lettings_instructions:
+            if instance["id"] == instruction_instance["hub_id"]:
+                instance["lettings_instruction_count"] = instruction_instance[
+                    "instruction_count"
+                ]
+                instance["total_instruction_count"] += instruction_instance[
+                    "instruction_count"
+                ]
+                instance[
+                    "lettings_instruction_fee_avg"
+                ] = instruction_instance["instruction_fee_avg"]
+                instance[
+                    "lettings_instruction_list_price_avg"
+                ] = instruction_instance["instruction_list_price_avg"]
+
+        for valuation_instance in valuations:
+            if instance["id"] == valuation_instance["hub_id"]:
+                instance["valuation_count"] = valuation_instance[
+                    "valuation_count"
+                ]
+
+        for all_inst_instance in instruction_reductions:
+            if instance["id"] == all_inst_instance.propertyprocess.hub.id:
+                if all_inst_instance.reduced > 0:
+                    instance["reduction_val"] += 1
+
+        for exchange_inst in exchanges_sales:
+            if (
+                instance["id"]
+                == exchange_inst.exchange.propertyprocess.hub.id
+            ):
+                instance[
+                    "exchange_count"
+                ] += 1
+
+        for exchange_inst in exchanges_lettings:
+            if (
+                instance["id"]
+                == exchange_inst.exchange.propertyprocess.hub.id
+            ):
+                instance[
+                    "exchange_count"
+                ] += 1
+
+        for hub_exchange_inst in hub_sales_days:
+            if (
+                instance["id"]
+                == hub_exchange_inst["exchange__propertyprocess__hub__id"]
+            ):
+                instance["sales_weeks"] = hub_exchange_inst["avg_days"].days / 7
+
+        for hub_exchange_inst in hub_lettings_days:
+            if (
+                instance["id"]
+                == hub_exchange_inst["exchange__propertyprocess__hub__id"]
+            ):
+                instance["lettings_weeks"] = hub_exchange_inst["avg_days"].days / 7
+
+        try:
+            instance["val_to_inst"] = round(
+                instance["total_instruction_count"]
+                / instance["valuation_count"]
+                * 100,
+                2,
+            )
+        except ZeroDivisionError:
+            instance["val_to_inst"] = 0
+
+        try:
+            instance["reduction_val"] = round(
+                instance["reduction_val"]
+                / instance["total_instruction_count"]
+                * 100,
+                2,
+            )
+        except ZeroDivisionError:
+            instance["reduction_val"] = 0
+
+        try:
+            instance["inst_to_exchange"] = round(
+                instance["exchange_count"]
+                / instance["total_instruction_count"]
+                * 100,
+                2,
+            )
+        except ZeroDivisionError:
+            instance["inst_to_exchange"] = 0
+
+        if (
+            instance["valuation_count"] == 0
+            and instance["instruction_count"] == 0
+            and instance["lettings_instruction_count"] == 0
+            and instance["reduction_count"] == 0
+            and instance["new_business_sum"] == 0
+            and instance["exchange_count"] == 0
+        ):
+            pass
+        else:
+            stats.append(instance)
+
+    if sort is not None and direction is not None:
+        s_and_d = sort_and_direction(sort, direction)
+
+        stats = sorted(
+            stats,
+            key=lambda k: k[s_and_d["sort"]],
+            reverse=s_and_d["direction"],
+        )
+
+    context = {
+        "filter": filter,
+        "start_date": start_date,
+        "end_date": end_date,
+        "hub": hub,
+        "sort": sort,
+        "direction": direction,
+        "stats": stats,
+        "total": total,
+    }
+
+    return render(request, "stats/hub_extra_stats.html", context)
+
 
 
 @otp_required
