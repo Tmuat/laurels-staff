@@ -16,7 +16,7 @@ urlpatterns = [
     path("", index, name="home"),
     path("properties/offer-board/", offer_board, name="offer_board"),
     path(
-        "properties/progression-overview/",
+        "progression-overview/",
         progression_overview,
         name="progression_overview",
     ),
