@@ -659,7 +659,7 @@ def deal_progression_overview(request):
 
     page = request.GET.get("page", 1)
 
-    paginator = Paginator(properties_list, 12)
+    paginator = Paginator(properties_list, 10)
     last_page = paginator.num_pages
 
     try:
@@ -671,18 +671,18 @@ def deal_progression_overview(request):
 
     percentages = []
 
-    # for instance in properties:
-    #     percentage_instance = {}
-    #     percentage_instance["id"] = instance.id
+    for instance in properties:
+        percentage_instance = {}
+        percentage_instance["id"] = instance.id
 
-    #     if sector == PropertyProcess.SALES:
-    #         perc_calc = sales_progression_percentage(instance.id)
-    #         percentage_instance["progression"] = perc_calc
-    #     elif sector == PropertyProcess.LETTINGS:
-    #         perc_calc = lettings_progression_percentage(instance.id)
-    #         percentage_instance["progression"] = perc_calc
+        if sector == PropertyProcess.SALES:
+            perc_calc = sales_progression_percentage(instance.id)
+            percentage_instance["progression"] = perc_calc
+        elif sector == PropertyProcess.LETTINGS:
+            perc_calc = lettings_progression_percentage(instance.id)
+            percentage_instance["progression"] = perc_calc
 
-    #     percentages.append(percentage_instance)
+        percentages.append(percentage_instance)
 
     context = {
         "percentages": percentages,
