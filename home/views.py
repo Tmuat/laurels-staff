@@ -630,9 +630,9 @@ def deal_progression_overview(request):
         .select_related(
             "property",
         )
-        .prefetch_related(
-            "sales_progression",
-        )
+        # .prefetch_related(
+        #     "sales_progression",
+        # )
     )
     query = None
     sector = PropertyProcess.SALES
