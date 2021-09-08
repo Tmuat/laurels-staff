@@ -75,10 +75,7 @@ def add_weekend_working(request):
         start = request.POST.get("start")
 
         WeekendDays.objects.create(
-            title=title,
-            hub=hub,
-            start=start,
-            end=start
+            title=title, hub=hub, start=start, end=start
         )
 
         data["is_valid"] = True
@@ -92,9 +89,7 @@ def delete_weekend_working(request):
 
     if request.POST:
         selected_id = request.POST.get("id")
-        WeekendDays.objects.get(
-            id=selected_id
-        ).delete()
+        WeekendDays.objects.get(id=selected_id).delete()
 
         data["is_valid"] = True
 

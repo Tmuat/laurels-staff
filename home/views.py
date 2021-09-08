@@ -12,7 +12,7 @@ from common.functions import (
     sales_progression_percentage,
     lettings_progression_percentage,
     quarter_and_year_calc,
-    last_quarter_and_year_calc
+    last_quarter_and_year_calc,
 )
 from properties.models import (
     Offer,
@@ -626,10 +626,7 @@ def progression_overview(request):
     """
 
     properties_list = (
-        PropertyProcess.objects
-        .filter(
-            macro_status=4
-        )
+        PropertyProcess.objects.filter(macro_status=4)
         .select_related(
             "property",
         )

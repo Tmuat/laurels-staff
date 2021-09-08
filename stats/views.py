@@ -529,21 +529,16 @@ def extra_stats(request):
         .order_by("-valuation_count")
     )
 
-    all_instructions = (
-        Instruction.objects
-        .exclude(active=False)
-        .filter(
-            date__range=[start_date, end_date],
-        )
+    all_instructions = Instruction.objects.exclude(active=False).filter(
+        date__range=[start_date, end_date],
     )
 
-    instruction_reductions = (
-        all_instructions.annotate(reduced=Count("propertyprocess__reduction"))
+    instruction_reductions = all_instructions.annotate(
+        reduced=Count("propertyprocess__reduction")
     )
 
     instructions = (
-        all_instructions
-        .values(employee)
+        all_instructions.values(employee)
         .annotate(instruction_count=Count(link_to_employee))
         .order_by("-instruction_count")
     )
@@ -675,18 +670,14 @@ def extra_stats(request):
                 instance["id"]
                 == exchange_inst.exchange.propertyprocess.employee.id
             ):
-                instance[
-                    "exchange_count"
-                ] += 1
+                instance["exchange_count"] += 1
 
         for exchange_inst in exchanges_lettings:
             if (
                 instance["id"]
                 == exchange_inst.exchange.propertyprocess.employee.id
             ):
-                instance[
-                    "exchange_count"
-                ] += 1
+                instance["exchange_count"] += 1
 
         try:
             instance["val_to_inst"] = round(
@@ -797,40 +788,30 @@ def hub_extra_stats(request):
         .order_by("-valuation_count")
     )
 
-    all_instructions = (
-        Instruction.objects
-        .exclude(active=False)
-        .filter(
-            date__range=[start_date, end_date],
-        )
+    all_instructions = Instruction.objects.exclude(active=False).filter(
+        date__range=[start_date, end_date],
     )
 
-    instruction_reductions = (
-        all_instructions.annotate(reduced=Count("propertyprocess__reduction"))
+    instruction_reductions = all_instructions.annotate(
+        reduced=Count("propertyprocess__reduction")
     )
 
     instructions = (
-        all_instructions
-        .values(hub)
+        all_instructions.values(hub)
         .annotate(instruction_count=Count(link_to_hub))
         .order_by("-instruction_count")
     )
 
-    sales_inst = (
-        all_instructions.filter(
-            propertyprocess__sector=PropertyProcess.SALES,
-        )
+    sales_inst = all_instructions.filter(
+        propertyprocess__sector=PropertyProcess.SALES,
     )
 
-    lettings_inst = (
-        all_instructions.filter(
-            propertyprocess__sector=PropertyProcess.LETTINGS,
-        )
+    lettings_inst = all_instructions.filter(
+        propertyprocess__sector=PropertyProcess.LETTINGS,
     )
 
     sales_instructions = (
-        sales_inst
-        .values(hub)
+        sales_inst.values(hub)
         .annotate(instruction_fee_avg=Avg("fee_agreed"))
         .annotate(instruction_count=Count(link_to_hub))
         .annotate(instruction_list_price_avg=Avg("listing_price"))
@@ -838,8 +819,7 @@ def hub_extra_stats(request):
     )
 
     lettings_instructions = (
-        lettings_inst
-        .values(hub)
+        lettings_inst.values(hub)
         .annotate(instruction_fee_avg=Avg("fee_agreed"))
         .annotate(instruction_count=Count(link_to_hub))
         .annotate(instruction_list_price_avg=Avg("listing_price"))
@@ -872,54 +852,56 @@ def hub_extra_stats(request):
 
     hubs = Hub.objects.filter(is_active=True)
 
-    sales_inst_fee = (
-        sales_inst
-        .aggregate(instruction_fee_avg=Avg("fee_agreed"))
+    sales_inst_fee = sales_inst.aggregate(
+        instruction_fee_avg=Avg("fee_agreed")
     )
-    sales_inst_price = (
-        sales_inst
-        .aggregate(instruction_list_price_avg=Avg("listing_price"))
+    sales_inst_price = sales_inst.aggregate(
+        instruction_list_price_avg=Avg("listing_price")
     )
-    lettings_inst_fee = (
-        lettings_inst
-        .aggregate(instruction_fee_avg=Avg("fee_agreed"))
+    lettings_inst_fee = lettings_inst.aggregate(
+        instruction_fee_avg=Avg("fee_agreed")
     )
-    lettings_inst_price = (
-        lettings_inst
-        .aggregate(instruction_list_price_avg=Avg("listing_price"))
+    lettings_inst_price = lettings_inst.aggregate(
+        instruction_list_price_avg=Avg("listing_price")
     )
 
     reduction_val = 0
     exchange_count = len(exchanges_sales) + len(exchanges_lettings)
 
     sales_days = exchanges_sales.aggregate(
-        avg_days=Avg(F("exchange_date") - F("exchange__propertyprocess__deal__date"))
+        avg_days=Avg(
+            F("exchange_date") - F("exchange__propertyprocess__deal__date")
+        )
     )
     days_and_time = sales_days["avg_days"]
     sales_weeks = days_and_time.days / 7
 
     hub_sales_days = (
-        exchanges_sales
-        .values(ex_hub)
+        exchanges_sales.values(ex_hub)
         .annotate(exchange_count=Count(ex_link_to_hub))
         .annotate(
-            avg_days=Avg(F("exchange_date") - F("exchange__propertyprocess__deal__date"))
+            avg_days=Avg(
+                F("exchange_date") - F("exchange__propertyprocess__deal__date")
+            )
         )
         .order_by("-exchange_count")
     )
 
     hub_lettings_days = (
-        exchanges_lettings
-        .values(ex_hub)
+        exchanges_lettings.values(ex_hub)
         .annotate(exchange_count=Count(ex_link_to_hub))
         .annotate(
-            avg_days=Avg(F("move_in_date") - F("exchange__propertyprocess__deal__date"))
+            avg_days=Avg(
+                F("move_in_date") - F("exchange__propertyprocess__deal__date")
+            )
         )
         .order_by("-exchange_count")
     )
 
     lettings_days = exchanges_lettings.aggregate(
-        avg_days=Avg(F("move_in_date") - F("exchange__propertyprocess__deal__date"))
+        avg_days=Avg(
+            F("move_in_date") - F("exchange__propertyprocess__deal__date")
+        )
     )
     days_and_time = lettings_days["avg_days"]
     lettings_weeks = days_and_time.days / 7
@@ -930,9 +912,7 @@ def hub_extra_stats(request):
 
     try:
         val_to_inst = round(
-            len(all_instructions)
-            / len(all_valuations)
-            * 100,
+            len(all_instructions) / len(all_valuations) * 100,
             2,
         )
     except ZeroDivisionError:
@@ -940,9 +920,7 @@ def hub_extra_stats(request):
 
     try:
         reduction_val = round(
-            reduction_val
-            / len(all_instructions)
-            * 100,
+            reduction_val / len(all_instructions) * 100,
             2,
         )
     except ZeroDivisionError:
@@ -950,9 +928,7 @@ def hub_extra_stats(request):
 
     try:
         inst_to_exchange = round(
-            exchange_count
-            / len(all_instructions)
-            * 100,
+            exchange_count / len(all_instructions) * 100,
             2,
         )
     except ZeroDivisionError:
@@ -963,9 +939,7 @@ def hub_extra_stats(request):
     total = {
         "sales_instruction_count": len(sales_inst),
         "lettings_instruction_count": len(lettings_inst),
-        "instruction_fee_avg": sales_inst_fee[
-            "instruction_fee_avg"
-        ],
+        "instruction_fee_avg": sales_inst_fee["instruction_fee_avg"],
         "lettings_instruction_fee_avg": lettings_inst_fee[
             "instruction_fee_avg"
         ],
@@ -1003,7 +977,6 @@ def hub_extra_stats(request):
         hub_dict["inst_to_exchange"] = 0
         hub_dict["sales_weeks"] = 0
         hub_dict["lettings_weeks"] = 0
-
 
         overview_list.append(hub_dict)
 
@@ -1050,36 +1023,30 @@ def hub_extra_stats(request):
                     instance["reduction_val"] += 1
 
         for exchange_inst in exchanges_sales:
-            if (
-                instance["id"]
-                == exchange_inst.exchange.propertyprocess.hub.id
-            ):
-                instance[
-                    "exchange_count"
-                ] += 1
+            if instance["id"] == exchange_inst.exchange.propertyprocess.hub.id:
+                instance["exchange_count"] += 1
 
         for exchange_inst in exchanges_lettings:
-            if (
-                instance["id"]
-                == exchange_inst.exchange.propertyprocess.hub.id
-            ):
-                instance[
-                    "exchange_count"
-                ] += 1
+            if instance["id"] == exchange_inst.exchange.propertyprocess.hub.id:
+                instance["exchange_count"] += 1
 
         for hub_exchange_inst in hub_sales_days:
             if (
                 instance["id"]
                 == hub_exchange_inst["exchange__propertyprocess__hub__id"]
             ):
-                instance["sales_weeks"] = hub_exchange_inst["avg_days"].days / 7
+                instance["sales_weeks"] = (
+                    hub_exchange_inst["avg_days"].days / 7
+                )
 
         for hub_exchange_inst in hub_lettings_days:
             if (
                 instance["id"]
                 == hub_exchange_inst["exchange__propertyprocess__hub__id"]
             ):
-                instance["lettings_weeks"] = hub_exchange_inst["avg_days"].days / 7
+                instance["lettings_weeks"] = (
+                    hub_exchange_inst["avg_days"].days / 7
+                )
 
         try:
             instance["val_to_inst"] = round(
@@ -1144,7 +1111,6 @@ def hub_extra_stats(request):
     }
 
     return render(request, "stats/hub_extra_stats.html", context)
-
 
 
 @otp_required
