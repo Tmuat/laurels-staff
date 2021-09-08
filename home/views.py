@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Count, Sum, Q
 from django.http import JsonResponse
-from django.shortcuts import render, reverse, redirect
+from django.shortcuts import render, reverse, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.utils import timezone
 
@@ -14,6 +14,7 @@ from common.functions import (
     quarter_and_year_calc,
     last_quarter_and_year_calc,
 )
+from home.forms import LettingsProgressorForm, ProgressorForm
 from properties.models import (
     Offer,
     PropertyProcess,
@@ -21,6 +22,8 @@ from properties.models import (
     Instruction,
     Reduction,
     Valuation,
+    SalesProgression,
+    LettingsProgression,
 )
 from regionandhub.models import Hub
 from users.models import Profile, UserTargets
@@ -634,10 +637,20 @@ def deal_progression_overview(request):
             "sales_progression",
         )
     )
+
+    users = Profile.objects.filter(user__is_active=True)
+
     query = None
+    hub = None
+    user = None
     sector = PropertyProcess.SALES
 
     if request.GET:
+        if "hub" in request.GET:
+            hub = request.GET.get("hub")
+            hub = Hub.objects.get(slug=hub)
+            properties_list = properties_list.filter(hub=hub)
+
         if "sector" in request.GET:
             sector = request.GET["sector"]
 
@@ -654,6 +667,18 @@ def deal_progression_overview(request):
                 | Q(property__address_line_2__icontains=query)
             )
             properties_list = properties_list.filter(queries)
+
+        if "user" in request.GET:
+            user = request.GET.get("user")
+            user = Profile.objects.get(id=user)
+            if sector == PropertyProcess.SALES:
+                properties_list = properties_list.filter(
+                    sales_progression__primary_progressor=user
+                )
+            elif sector == PropertyProcess.LETTINGS:
+                properties_list = properties_list.filter(
+                    lettings_progression__primary_progressor=user
+                )
 
     properties_list_length = len(properties_list)
 
@@ -691,8 +716,97 @@ def deal_progression_overview(request):
         "properties_length": properties_list_length,
         "query": query,
         "sector": sector,
+        "hub": hub,
+        "users": users,
+        "user": user,
     }
 
     template = "home/progression_overview.html"
 
     return render(request, template, context)
+
+
+@otp_required
+@login_required
+def add_primary_processor(request, propertyprocess_id):
+    """
+    A view to return an ajax response with adding property processor
+    """
+
+    data = dict()
+
+    property_process = get_object_or_404(
+        PropertyProcess, id=propertyprocess_id
+    )
+
+    sales_progression = get_object_or_404(
+        SalesProgression, propertyprocess=property_process
+    )
+
+    if request.method == "POST":
+        form = ProgressorForm(request.POST, instance=sales_progression)
+        if form.is_valid():
+            instance = form.save(commit=False)
+
+            instance.updated_by = request.user.get_full_name()
+
+            instance.save()
+
+            data["form_is_valid"] = True
+    else:
+        form = ProgressorForm(instance=sales_progression)
+
+    context = {
+        "form": form,
+        "property_process": property_process,
+    }
+    data["html_modal"] = render_to_string(
+        "home/includes/progression/progressor_modal.html",
+        context,
+        request=request,
+    )
+    return JsonResponse(data)
+
+
+@otp_required
+@login_required
+def lettings_add_primary_processor(request, propertyprocess_id):
+    """
+    A view to return an ajax response with adding property processor
+    """
+
+    data = dict()
+
+    property_process = get_object_or_404(
+        PropertyProcess, id=propertyprocess_id
+    )
+
+    lettings_progression = get_object_or_404(
+        LettingsProgression, propertyprocess=property_process
+    )
+
+    if request.method == "POST":
+        form = LettingsProgressorForm(
+            request.POST, instance=lettings_progression
+        )
+        if form.is_valid():
+            instance = form.save(commit=False)
+
+            instance.updated_by = request.user.get_full_name()
+
+            instance.save()
+
+            data["form_is_valid"] = True
+    else:
+        form = ProgressorForm(instance=lettings_progression)
+
+    context = {
+        "form": form,
+        "property_process": property_process,
+    }
+    data["html_modal"] = render_to_string(
+        "home/includes/progression/lettings_progressor_modal.html",
+        context,
+        request=request,
+    )
+    return JsonResponse(data)

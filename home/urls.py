@@ -8,6 +8,8 @@ from home.views import (
     employee_instruction_list,
     employee_reduction_list,
     employee_new_business_list,
+    add_primary_processor,
+    lettings_add_primary_processor,
 )
 
 
@@ -39,5 +41,15 @@ urlpatterns = [
         "ajax/new-business/<profile_id>/",
         employee_new_business_list,
         name="employee_new_business_list",
+    ),
+    path(
+        "ajax/primary-progressor/<propertyprocess_id>/",
+        add_primary_processor,
+        name="add_primary_processor",
+    ),
+    path(
+        "ajax/lettings-primary-progressor/<propertyprocess_id>/",
+        lettings_add_primary_processor,
+        name="lettings_add_primary_processor",
     ),
 ]

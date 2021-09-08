@@ -3,7 +3,17 @@
 <div class="tab-pane show active" id="overview">
 
     <h5 class="text-uppercase"><i class="mdi mdi-home-analytics mr-1"></i>
-        Lettings Progression
+        Lettings Progression - 
+        <span 
+            data-url="{% url 'home:lettings_add_primary_processor' propertyprocess.id %}"
+            class="badge pointer js-load-form
+        {% if propertyprocess.lettings_progression.primary_progressor %}
+            badge-primary">
+            {{ propertyprocess.lettings_progression.primary_progressor.user.initials }}
+        {% else %}
+            badge-secondary">NA
+        {% endif %}
+        </span>
         {% if propertyprocess.macro_status > 3 %}
         <span
             data-url="{% url 'properties:edit_lettings_prog_settings' propertyprocess.id %}"

@@ -29,6 +29,45 @@ $(document).ready(function () {
         window.location.replace(currentUrl);
     })
 
+    $('#query-search').on("click", function() {
+        var currentUrl = new URL(window.location);
+
+        var selectedVal = $("#progression-query").val();
+
+        currentUrl.searchParams.delete("page");
+        currentUrl.searchParams.set("query", selectedVal);
+
+        window.location.replace(currentUrl);
+    })
+    
+    $('#hub-filter').on("click", function() {
+        var currentUrl = new URL(window.location);
+
+        var selectedVal = $("#hub-filter-select").val();
+
+        if(selectedVal == "reset"){
+            currentUrl.searchParams.delete("hub");
+        } else {
+            currentUrl.searchParams.set("hub", selectedVal);
+        }
+
+        window.location.replace(currentUrl);
+    })
+
+    $('#user-filter').on("click", function() {
+        var currentUrl = new URL(window.location);
+
+        var selectedVal = $("#user-filter-select").val();
+
+        if(selectedVal == "reset"){
+            currentUrl.searchParams.delete("user");
+        } else {
+            currentUrl.searchParams.set("user", selectedVal);
+        }
+
+        window.location.replace(currentUrl);
+    })
+
     // Deals with rendering a form with AJAX to the base modal
     var loadFormBaseModal = function () {
         var instance = $(this);
@@ -122,4 +161,5 @@ $(document).ready(function () {
 
     $("#base-modal").on("submit", ".js-submit-form-success", submitFormAndLoadSuccess);
     $("#base-static-modal").on("submit", ".js-submit-form", submitStaticForm);
+    $("#base-modal").on("submit", ".js-submit-form", submitStaticForm);
 });

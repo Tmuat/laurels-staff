@@ -32,25 +32,60 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="row mb-2">
-                            <div class="col-12 col-md-5 col-lg-4 col-xl-3">
-                                <form action="{% url 'home:deal_progression_overview' %}" method="GET">
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" placeholder="Search Progressions" name="query">
-                                        <div class="input-group-append">
-                                            <button class="btn btn-success" type="submit">Find</button>
-                                        </div>
+                            <div class="col-12 col-md-6 col-lg-4 offset-md-3 offset-lg-4">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="Search Progressions" name="query" id="progression-query">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-success" type="submit" id="query-search">Find</button>
                                     </div>
-                                </form>
+                                </div>
                             </div>
-                            <div class="col">
-                                <div class="text-center text-sm-right mt-2 mt-sm-0">
+                        </div>
+                        <div class="row">
+                            <div class="col-12 col-md order-1">
+                                <div class="input-group mb-2 mb-md-3">
+                                    <select class="custom-select" id="hub-filter-select">
+                                        {% if not hub %}
+                                            <option selected disabled>Hub Filter</option>
+                                        {% else %}
+                                            <option value="reset">Reset</option>
+                                        {% endif %}
+                                        {% for instance in hubs %}
+                                            {% if instance.slug != "all-hubs" %}
+                                                <option value="{{ instance.slug }}" {% if hub.slug == instance.slug %}selected{% endif %}>{{ instance.hub_name }}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                    <div class="input-group-append">
+                                        <button class="btn btn-success" type="submit" id="hub-filter">Go</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col order-3 order-md-2">
+                                <div class="text-center mb-2 mb-md-3">
                                     <div class="btn-group ml-1 mb-2">
                                         <a href="?{% if query %}query={{ query }}&{% endif %}sector=sales{% if status %}&status={{ status }}{% endif %}{% if archive %}&archive=true{% endif %}" class="btn btn-sm {% if sector == 'sales' %}btn-success text-white{% else %}btn-light text-dark{% endif %}">Sales</a>
                                         <a href="?{% if query %}query={{ query }}&{% endif %}sector=lettings{% if status %}&status={{ status }}{% endif %}{% if archive %}&archive=true{% endif %}" class="btn btn-sm {% if sector == 'lettings' %}btn-success text-white{% else %}btn-light text-dark{% endif %}">Lettings</a>
                                     </div>
                                 </div>
                             </div>
-
+                            <div class="col-12 col-md order-2 order-md-3">
+                                <div class="input-group mb-2 mb-md-3">
+                                    <select class="custom-select" id="user-filter-select">
+                                        {% if not user %}
+                                            <option selected disabled>User Filter</option>
+                                        {% else %}
+                                            <option value="reset">Reset</option>
+                                        {% endif %}
+                                        {% for instance in users %}
+                                            <option value="{{ instance.id }}" {% if instance == user %}selected{% endif %}>{{ instance.user.get_full_name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <div class="input-group-append">
+                                        <button class="btn btn-success" type="submit" id="user-filter">Go</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="table-responsive">
@@ -81,7 +116,19 @@
                                             {% if instance.id == perc_instance.id %}
                                                 {% if instance.sector == "sales" %}
                                                     <tr>
-                                                        <td style="width: 30%;">{{ instance }}</td>
+                                                        <td style="width: 30%;">
+                                                            {{ instance }} - 
+                                                            <span 
+                                                                data-url="{% url 'home:add_primary_processor' instance.id %}"
+                                                                class="badge pointer js-load-form
+                                                            {% if instance.sales_progression.primary_progressor %}
+                                                                badge-primary">
+                                                                {{ instance.sales_progression.primary_progressor.user.initials }}
+                                                            {% else %}
+                                                                badge-secondary">NA
+                                                            {% endif %}
+                                                            </span>
+                                                        </td>
                                                         <td style="width: 15%;" class="text-center">
                                                             {% if instance.sales_progression.sales_progression_phase.phase_1 %}
                                                                 <h6 class="text-white text-uppercase mt-0 badge badge-success">
@@ -176,7 +223,19 @@
                                                     </tr>
                                                 {% else %}
                                                     <tr>
-                                                        <td style="width: 30%;" >{{ instance }}</td>
+                                                        <td style="width: 30%;" >
+                                                            {{ instance }} - 
+                                                            <span 
+                                                                data-url="{% url 'home:lettings_add_primary_processor' instance.id %}"
+                                                                class="badge pointer js-load-form
+                                                            {% if instance.lettings_progression.primary_progressor %}
+                                                                badge-primary">
+                                                                {{ instance.lettings_progression.primary_progressor.user.initials }}
+                                                            {% else %}
+                                                                badge-secondary">NA
+                                                            {% endif %}
+                                                            </span>
+                                                        </td>
                                                         <td style="width: 15%;" class="text-center">
                                                             {% if instance.lettings_progression.lettings_progression_phase.phase_1 %}
                                                                 <h6 class="text-white text-uppercase mt-0 badge badge-success">

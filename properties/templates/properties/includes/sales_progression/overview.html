@@ -3,7 +3,17 @@
 <div class="tab-pane show active" id="overview">
 
     <h5 class="text-uppercase"><i class="mdi mdi-home-analytics mr-1"></i>
-        Sales Progression
+        Sales Progression - 
+        <span 
+            data-url="{% url 'home:add_primary_processor' propertyprocess.id %}"
+            class="badge pointer js-load-form
+        {% if propertyprocess.sales_progression.primary_progressor %}
+            badge-primary">
+            {{ propertyprocess.sales_progression.primary_progressor.user.initials }}
+        {% else %}
+            badge-secondary">NA
+        {% endif %}
+        </span>
         {% if propertyprocess.macro_status > 3 %}
         <span
             data-url="{% url 'properties:edit_sales_prog_settings' propertyprocess.id %}"

@@ -1224,6 +1224,13 @@ class SalesProgression(UpdatedAndCreated):
         related_name="sales_progression",
     )
 
+    primary_progressor = models.ForeignKey(
+        Profile,
+        null=True,
+        on_delete=models.CASCADE,
+        related_name="sales_progressor",
+    )
+
     buyers_aml_checks_and_sales_memo = models.BooleanField(
         null=True, blank=True, default=False, choices=TRUE_FALSE_CHOICES
     )
@@ -1810,6 +1817,13 @@ class LettingsProgression(UpdatedAndCreated):
         PropertyProcess,
         on_delete=models.CASCADE,
         related_name="lettings_progression",
+    )
+
+    primary_progressor = models.ForeignKey(
+        Profile,
+        null=True,
+        on_delete=models.CASCADE,
+        related_name="lettings_progressor",
     )
 
     contact_touch_point_to_ll_and_tt = models.BooleanField(
