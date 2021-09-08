@@ -1,15 +1,22 @@
 from django_otp.decorators import otp_required
 
 from django.contrib.auth.decorators import login_required
-from django.db.models import Count, Sum
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import Count, Sum, Q
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.utils import timezone
 
-from common.functions import quarter_and_year_calc, last_quarter_and_year_calc
+from common.functions import (
+    sales_progression_percentage,
+    lettings_progression_percentage,
+    quarter_and_year_calc,
+    last_quarter_and_year_calc
+)
 from properties.models import (
     Offer,
+    PropertyProcess,
     PropertyFees,
     Instruction,
     Reduction,
@@ -609,3 +616,86 @@ def employee_new_business_list(request, profile_id):
     )
 
     return JsonResponse(data)
+
+
+@otp_required
+@login_required
+def progression_overview(request):
+    """
+    A view to render the progression overview.
+    """
+
+    properties_list = (
+        PropertyProcess.objects
+        .filter(
+            macro_status=4
+        )
+        .select_related(
+            "property",
+        )
+        .prefetch_related(
+            "sales_progression",
+        )
+    )
+    query = None
+    sector = PropertyProcess.SALES
+
+    if request.GET:
+        if "sector" in request.GET:
+            sector = request.GET["sector"]
+
+        properties_list = properties_list.filter(sector=sector)
+
+        if "query" in request.GET:
+            query = request.GET["query"]
+            if not query:
+                return redirect(reverse("home:progression_overview"))
+
+            queries = (
+                Q(property__postcode__icontains=query)
+                | Q(property__address_line_1__icontains=query)
+                | Q(property__address_line_2__icontains=query)
+            )
+            properties_list = properties_list.filter(queries)
+
+    properties_list_length = len(properties_list)
+
+    page = request.GET.get("page", 1)
+
+    paginator = Paginator(properties_list, 12)
+    last_page = paginator.num_pages
+
+    try:
+        properties = paginator.page(page)
+    except PageNotAnInteger:
+        properties = paginator.page(1)
+    except EmptyPage:
+        properties = paginator.page(paginator.num_pages)
+
+    percentages = []
+
+    for instance in properties:
+        percentage_instance = {}
+        percentage_instance["id"] = instance.id
+
+        if sector == PropertyProcess.SALES:
+            perc_calc = sales_progression_percentage(instance.id)
+            percentage_instance["progression"] = perc_calc
+        elif sector == PropertyProcess.LETTINGS:
+            perc_calc = lettings_progression_percentage(instance.id)
+            percentage_instance["progression"] = perc_calc
+
+        percentages.append(percentage_instance)
+
+    context = {
+        "percentages": percentages,
+        "properties": properties,
+        "last_page": last_page,
+        "properties_length": properties_list_length,
+        "query": query,
+        "sector": sector,
+    }
+
+    template = "home/progression_overview.html"
+
+    return render(request, template, context)
