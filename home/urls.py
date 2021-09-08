@@ -3,7 +3,7 @@ from django.urls import path
 from home.views import (
     index,
     offer_board,
-    progression_overview,
+    deal_progression_overview,
     employee_valuation_list,
     employee_instruction_list,
     employee_reduction_list,
@@ -16,9 +16,9 @@ urlpatterns = [
     path("", index, name="home"),
     path("properties/offer-board/", offer_board, name="offer_board"),
     path(
-        "progression-overview/",
-        progression_overview,
-        name="progression_overview",
+        "progression/",
+        deal_progression_overview,
+        name="deal_progression_overview",
     ),
     path(
         "ajax/valuations/<profile_id>/",

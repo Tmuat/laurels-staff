@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Count, Sum, Q
 from django.http import JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, reverse, redirect
 from django.template.loader import render_to_string
 from django.utils import timezone
 
@@ -620,7 +620,7 @@ def employee_new_business_list(request, profile_id):
 
 @otp_required
 @login_required
-def progression_overview(request):
+def deal_progression_overview(request):
     """
     A view to render the progression overview.
     """
@@ -646,7 +646,7 @@ def progression_overview(request):
         if "query" in request.GET:
             query = request.GET["query"]
             if not query:
-                return redirect(reverse("home:progression_overview"))
+                return redirect(reverse("home:deal_progression_overview"))
 
             queries = (
                 Q(property__postcode__icontains=query)
