@@ -720,7 +720,7 @@ def deal_progression_overview(request):
         "sector": sector,
         "hub": hub,
         "users": users,
-        "user": user,
+        "selected_user": user,
     }
 
     template = "home/progression_overview.html"
