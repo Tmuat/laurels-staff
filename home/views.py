@@ -635,10 +635,7 @@ def deal_progression_overview(request):
             sector = request.GET["sector"]
 
     properties_list = (
-        PropertyProcess.objects.filter(
-            macro_status=4,
-            sector=sector
-        )
+        PropertyProcess.objects.filter(macro_status=4, sector=sector)
         .select_related(
             "property",
             "deal",
