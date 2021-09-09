@@ -1,0 +1,361 @@
+<!-- Marketing-Information -->
+<div class="card">
+    <div class="card-body">
+        <div class="mb-2">
+            <h4 class="header-title mt-0 mb-3 d-inline">Laurels or Landlord</h4>
+        </div>
+
+        <ul class="nav nav-pills bg-nav-pills nav-justified mb-3 flex-wrap">
+            <li class="nav-item">
+                <a href="#eicr" data-toggle="tab" aria-expanded="true" class="nav-link rounded-0 active">
+                    EICR
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#epc" data-toggle="tab" aria-expanded="false" class="nav-link rounded-0">
+                    EPC
+                </a>
+            </li>
+            {% if propertyprocess.lettings_progression.lettings_progression_settings.show_gas %}
+            <li class="nav-item">
+                <a href="#gsc" data-toggle="tab" aria-expanded="false" class="nav-link rounded-0">
+                    GSC
+                </a>
+            </li>
+            {% endif %}
+            <li class="nav-item">
+                <a href="#inventory" data-toggle="tab" aria-expanded="false" class="nav-link rounded-0">
+                    Inventory
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#cleaning" data-toggle="tab" aria-expanded="false" class="nav-link rounded-0">
+                    Cleaning
+                </a>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <!-- EICR section -->
+            <!-- tab pane -->
+            <div class="tab-pane show active" id="eicr">
+                <p class="text-muted mb-1">
+                    <strong>EICR Info</strong>
+                    <span class="ml-1">
+                        {% if propertyprocess.landlord_or_laurels.eicr_choice %}
+                            {{ propertyprocess.landlord_or_laurels.get_eicr_choice_display }}
+                        {% else %}
+                            - Not Specified
+                        {% endif %}
+                    </span>
+                    <span
+                        {% if propertyprocess.landlord_or_laurels %}
+                            data-url="{% url 'properties:edit_eicr_info' propertyprocess.id %}"
+                        {% else %}
+                            data-url="{% url 'properties:add_eicr_info' propertyprocess.id %}"
+                        {% endif %}
+                        class="mb-3 float-right mdi mdi-sticker-plus pointer text-success js-load-large-form js-large-scrollable-modal"
+                        data-toggle="tooltip"
+                        data-placement="top"
+                        title="Add/Edit Info"
+                    ></span>
+                </p>
+                <hr>
+                <p class="text-muted"><strong>Name/Firm:</strong> 
+                    <span
+                        class="ml-2">
+                            {% if propertyprocess.landlord_or_laurels.eicr_name %}
+                                {{ propertyprocess.landlord_or_laurels.eicr_name }}
+                            {% endif %}
+                    </span>
+                </p>
+                <p class="text-muted"><strong>Phone:</strong> 
+                    <span
+                        class="ml-2">
+                            {% if propertyprocess.landlord_or_laurels.eicr_phone %}
+                                {{ propertyprocess.landlord_or_laurels.eicr_phone }}
+                            {% endif %}
+                    </span>
+                </p>
+                <p class="text-muted"><strong>Email:</strong> 
+                    <span
+                        class="ml-2">
+                            {% if propertyprocess.landlord_or_laurels.eicr_email %}
+                                <a href="mailto:{{ propertyprocess.landlord_or_laurels.eicr_email }}">
+                                {{ propertyprocess.landlord_or_laurels.eicr_email }}
+                                </a>
+                            {% endif %}
+                    </span>
+                </p>
+                <p class="text-muted"><strong>Completed By Date:</strong> 
+                    <span
+                        class="ml-2">
+                            {% if propertyprocess.landlord_or_laurels.eicr_expected_completion %}
+                                {{ propertyprocess.landlord_or_laurels.eicr_expected_completion|date:"d-m-y" }}
+                            {% endif %}
+                    </span>
+                </p>
+            </div>
+            <!-- end tab-pane -->
+            <!-- end EICR section -->
+
+            <!-- EPC section -->
+            <!-- tab pane -->
+            <div class="tab-pane" id="epc">
+                <p class="text-muted mb-1">
+                    <strong>EPC Info</strong>
+                    <span class="ml-1">
+                        {% if propertyprocess.landlord_or_laurels.epc_choice %}
+                            {{ propertyprocess.landlord_or_laurels.get_epc_choice_display }}
+                        {% else %}
+                            - Not Specified
+                        {% endif %}
+                    </span>
+                    <span
+                        {% if propertyprocess.landlord_or_laurels %}
+                            data-url="{% url 'properties:edit_epc_info' propertyprocess.id %}"
+                        {% else %}
+                            data-url="{% url 'properties:add_epc_info' propertyprocess.id %}"
+                        {% endif %}
+                        class="mb-3 float-right mdi mdi-sticker-plus pointer text-success js-load-large-form js-large-scrollable-modal"
+                        data-toggle="tooltip"
+                        data-placement="top"
+                        title="Add/Edit Info"
+                    ></span>
+                </p>
+                <hr>
+                <p class="text-muted"><strong>Name/Firm:</strong> 
+                    <span
+                        class="ml-2">
+                            {% if propertyprocess.landlord_or_laurels.epc_name %}
+                                {{ propertyprocess.landlord_or_laurels.epc_name }}
+                            {% endif %}
+                    </span>
+                </p>
+                <p class="text-muted"><strong>Phone:</strong> 
+                    <span
+                        class="ml-2">
+                            {% if propertyprocess.landlord_or_laurels.epc_phone %}
+                                {{ propertyprocess.landlord_or_laurels.epc_phone }}
+                            {% endif %}
+                    </span>
+                </p>
+                <p class="text-muted"><strong>Email:</strong> 
+                    <span
+                        class="ml-2">
+                            {% if propertyprocess.landlord_or_laurels.epc_email %}
+                                <a href="mailto:{{ propertyprocess.landlord_or_laurels.epc_email }}">
+                                {{ propertyprocess.landlord_or_laurels.epc_email }}
+                                </a>
+                            {% endif %}
+                    </span>
+                </p>
+                <p class="text-muted"><strong>Completed By Date:</strong> 
+                    <span
+                        class="ml-2">
+                            {% if propertyprocess.landlord_or_laurels.epc_expected_completion %}
+                                {{ propertyprocess.landlord_or_laurels.epc_expected_completion|date:"d-m-y" }}
+                            {% endif %}
+                    </span>
+                </p>
+            </div>
+            <!-- end tab-pane -->
+            <!-- end EPC section -->
+        
+            {% if propertyprocess.lettings_progression.lettings_progression_settings.show_gas %}
+            <!-- GSC section -->
+            <!-- tab pane -->
+            <div class="tab-pane" id="gsc">
+                <p class="text-muted mb-1">
+                    <strong>GSC Info</strong>
+                    <span class="ml-1">
+                        {% if propertyprocess.landlord_or_laurels.gsc_choice %}
+                            {{ propertyprocess.landlord_or_laurels.get_gsc_choice_display }}
+                        {% else %}
+                            - Not Specified
+                        {% endif %}
+                    </span>
+                    <span
+                        {% if propertyprocess.landlord_or_laurels %}
+                            data-url="{% url 'properties:edit_gsc_info' propertyprocess.id %}"
+                        {% else %}
+                            data-url="{% url 'properties:add_gsc_info' propertyprocess.id %}"
+                        {% endif %}
+                        class="mb-3 float-right mdi mdi-sticker-plus pointer text-success js-load-large-form js-large-scrollable-modal"
+                        data-toggle="tooltip"
+                        data-placement="top"
+                        title="Add/Edit Info"
+                    ></span>
+                </p>
+                <hr>
+                <p class="text-muted"><strong>Name/Firm:</strong> 
+                    <span
+                        class="ml-2">
+                            {% if propertyprocess.landlord_or_laurels.gsc_name %}
+                                {{ propertyprocess.landlord_or_laurels.gsc_name }}
+                            {% endif %}
+                    </span>
+                </p>
+                <p class="text-muted"><strong>Phone:</strong> 
+                    <span
+                        class="ml-2">
+                            {% if propertyprocess.landlord_or_laurels.gsc_phone %}
+                                {{ propertyprocess.landlord_or_laurels.gsc_phone }}
+                            {% endif %}
+                    </span>
+                </p>
+                <p class="text-muted"><strong>Email:</strong> 
+                    <span
+                        class="ml-2">
+                            {% if propertyprocess.landlord_or_laurels.gsc_email %}
+                                <a href="mailto:{{ propertyprocess.landlord_or_laurels.gsc_email }}">
+                                {{ propertyprocess.landlord_or_laurels.gsc_email }}
+                                </a>
+                            {% endif %}
+                    </span>
+                </p>
+                <p class="text-muted"><strong>Completed By Date:</strong> 
+                    <span
+                        class="ml-2">
+                            {% if propertyprocess.landlord_or_laurels.gsc_expected_completion %}
+                                {{ propertyprocess.landlord_or_laurels.gsc_expected_completion|date:"d-m-y" }}
+                            {% endif %}
+                    </span>
+                </p>
+            </div>
+            <!-- end tab-pane -->
+            <!-- end GSC section -->
+            {% endif %}
+
+            <!-- Inventory section -->
+            <!-- tab pane -->
+            <div class="tab-pane" id="inventory">
+                <p class="text-muted mb-1">
+                    <strong>Inventory Info</strong>
+                    <span class="ml-1">
+                        {% if propertyprocess.landlord_or_laurels.inventory_choice %}
+                            {{ propertyprocess.landlord_or_laurels.get_inventory_choice_display }}
+                        {% else %}
+                            - Not Specified
+                        {% endif %}
+                    </span>
+                    <span
+                        {% if propertyprocess.landlord_or_laurels %}
+                            data-url="{% url 'properties:edit_inventory_info' propertyprocess.id %}"
+                        {% else %}
+                            data-url="{% url 'properties:add_inventory_info' propertyprocess.id %}"
+                        {% endif %}
+                        class="mb-3 float-right mdi mdi-sticker-plus pointer text-success js-load-large-form js-large-scrollable-modal"
+                        data-toggle="tooltip"
+                        data-placement="top"
+                        title="Add/Edit Info"
+                    ></span>
+                </p>
+                <hr>
+                <p class="text-muted"><strong>Name/Firm:</strong> 
+                    <span
+                        class="ml-2">
+                            {% if propertyprocess.landlord_or_laurels.inventory_name %}
+                                {{ propertyprocess.landlord_or_laurels.inventory_name }}
+                            {% endif %}
+                    </span>
+                </p>
+                <p class="text-muted"><strong>Phone:</strong> 
+                    <span
+                        class="ml-2">
+                            {% if propertyprocess.landlord_or_laurels.inventory_phone %}
+                                {{ propertyprocess.landlord_or_laurels.inventory_phone }}
+                            {% endif %}
+                    </span>
+                </p>
+                <p class="text-muted"><strong>Email:</strong> 
+                    <span
+                        class="ml-2">
+                            {% if propertyprocess.landlord_or_laurels.inventory_email %}
+                                <a href="mailto:{{ propertyprocess.landlord_or_laurels.inventory_email }}">
+                                {{ propertyprocess.landlord_or_laurels.inventory_email }}
+                                </a>
+                            {% endif %}
+                    </span>
+                </p>
+                <p class="text-muted"><strong>Completed By Date:</strong> 
+                    <span
+                        class="ml-2">
+                            {% if propertyprocess.landlord_or_laurels.inventory_expected_completion %}
+                                {{ propertyprocess.landlord_or_laurels.inventory_expected_completion|date:"d-m-y" }}
+                            {% endif %}
+                    </span>
+                </p>
+            </div>
+            <!-- end tab-pane -->
+            <!-- end Inventory section -->
+
+            <!-- Cleaning section -->
+            <!-- tab pane -->
+            <div class="tab-pane" id="cleaning">
+                <p class="text-muted mb-1">
+                    <strong>Cleaning Info</strong>
+                    <span class="ml-1">
+                        {% if propertyprocess.landlord_or_laurels.professional_clean_choice %}
+                            {{ propertyprocess.landlord_or_laurels.get_professional_clean_choice_display }}
+                        {% else %}
+                            - Not Specified
+                        {% endif %}
+                    </span>
+                    <span
+                        {% if propertyprocess.landlord_or_laurels %}
+                            data-url="{% url 'properties:edit_cleaning_info' propertyprocess.id %}"
+                        {% else %}
+                            data-url="{% url 'properties:add_cleaning_info' propertyprocess.id %}"
+                        {% endif %}
+                        class="mb-3 float-right mdi mdi-sticker-plus pointer text-success js-load-large-form js-large-scrollable-modal"
+                        data-toggle="tooltip"
+                        data-placement="top"
+                        title="Add/Edit Info"
+                    ></span>
+                </p>
+                <hr>
+                <p class="text-muted"><strong>Name/Firm:</strong> 
+                    <span
+                        class="ml-2">
+                            {% if propertyprocess.landlord_or_laurels.professional_clean_name %}
+                                {{ propertyprocess.landlord_or_laurels.professional_clean_name }}
+                            {% endif %}
+                    </span>
+                </p>
+                <p class="text-muted"><strong>Phone:</strong> 
+                    <span
+                        class="ml-2">
+                            {% if propertyprocess.landlord_or_laurels.professional_clean_phone %}
+                                {{ propertyprocess.landlord_or_laurels.professional_clean_phone }}
+                            {% endif %}
+                    </span>
+                </p>
+                <p class="text-muted"><strong>Email:</strong> 
+                    <span
+                        class="ml-2">
+                            {% if propertyprocess.landlord_or_laurels.professional_clean_email %}
+                                <a href="mailto:{{ propertyprocess.landlord_or_laurels.professional_clean_email }}">
+                                {{ propertyprocess.landlord_or_laurels.professional_clean_email }}
+                                </a>
+                            {% endif %}
+                    </span>
+                </p>
+                <p class="text-muted"><strong>Completed By Date:</strong> 
+                    <span
+                        class="ml-2">
+                            {% if propertyprocess.landlord_or_laurels.professional_clean_expected_completion %}
+                                {{ propertyprocess.landlord_or_laurels.professional_clean_expected_completion|date:"d-m-y" }}
+                            {% endif %}
+                    </span>
+                </p>
+            </div>
+            <!-- end tab-pane -->
+            <!-- end Cleaning section -->
+
+        </div>
+        <!-- end tab-content -->
+
+    </div>
+</div>
+<!-- End Marketing Information -->

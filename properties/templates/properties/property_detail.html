@@ -48,40 +48,37 @@
         <!-- end row -->
 
         {% if propertyprocess.furthest_status > 3 %}
-        {% if propertyprocess.sector == "sales" %}
-            <div class="row">
-                <div class="col-12">
-                    {% include 'properties/includes/detail/sale_progression.html' %}
+            {% if propertyprocess.sector == "sales" %}
+                <div class="row">
+                    <div class="col-12">
+                        {% include 'properties/includes/detail/sale_progression.html' %}
+                    </div>
+                    <!-- end col -->
                 </div>
-                <!-- end col -->
-            </div>
-            <!-- end row -->
-        {% endif %}
+                <!-- end row -->
+            {% endif %}
 
-        {% if propertyprocess.sector == "lettings" %}
-            <div class="row">
-                <div class="col-12">
-                    {% include 'properties/includes/detail/lettings_progression.html' %}
+            {% if propertyprocess.sector == "lettings" %}
+                <div class="row">
+                    <div class="col-12">
+                        {% include 'properties/includes/detail/lettings_progression.html' %}
+                    </div>
+                    <!-- end col -->
                 </div>
-                <!-- end col -->
-            </div>
-            <!-- end row -->
-        {% endif %}
+                <!-- end row -->
+            {% endif %}
 
             <div class="row">
                 {% if propertyprocess.sector == "sales" %}
-                <div class="col-lg-4">
-                    {% include 'properties/includes/detail/property_solicitor_info.html' %}
-                </div>
-                <!-- end col -->
+                    <div class="col-lg-4">
+                        {% include 'properties/includes/detail/property_solicitor_info.html' %}
+                    </div>
+                    <!-- end col -->
+                    <div class="col-lg-8" id="notes">
                 {% else %}
-                <div class="col-lg-4">
-                    {% include 'properties/includes/detail/property_marketing.html' %}
-                </div>
-                <!-- end col -->
+                    <div class="col-xl-8 offset-xl-2" id="notes">
                 {% endif %}
-                <div class="col-lg-8" id="notes">
-                    <!-- Notes -->
+                <!-- Notes -->
                     <div class="card">
                         <div class="card-body">
                             <h4 class="header-title mt-0 mb-3 d-inline">
@@ -120,24 +117,34 @@
             </div>
             <!-- end row -->
             
-                {% if propertyprocess.sector == "sales" %}
-                    <div class="row">
-                        <div class="col-lg-8">
-                            {% include 'properties/includes/detail/property_chain.html' %}
-                        </div>
-                        <!-- end col -->
-
-                        <div class="col-lg-4">
-                            {% include 'properties/includes/detail/property_marketing.html' %}
-                        </div>
-                        <!-- end col -->
+            {% if propertyprocess.sector == "sales" %}
+                <div class="row">
+                    <div class="col-lg-8">
+                        {% include 'properties/includes/detail/property_chain.html' %}
                     </div>
-                    <!-- end row -->
-                {% endif %}
-            {% endif %}
+                    <!-- end col -->
 
-        </div>
-        <!-- container -->
+                    <div class="col-lg-4">
+                        {% include 'properties/includes/detail/property_marketing.html' %}
+                    </div>
+                    <!-- end col -->
+                </div>
+                <!-- end row -->
+            {% else %}
+                <div class="row">
+                    <div class="col-lg-6">
+                        {% include 'properties/includes/detail/property_laurels_or_landlord.html' %}
+                    </div>
+                    <!-- end col -->
+                    <div class="col-lg-6">
+                        {% include 'properties/includes/detail/property_marketing.html' %}
+                    </div>
+                    <!-- end col -->
+                </div>
+            {% endif %}
+        {% endif %}
+    </div>
+    <!-- container -->
     {% include 'partials/base-large-modal.html' %}
     {% include 'partials/base-static-modal.html' %}
 {% endblock %}

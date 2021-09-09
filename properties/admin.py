@@ -27,6 +27,7 @@ from properties.models import (
     LettingsProgression,
     LettingsProgressionPhase,
     LettingsProgressionSettings,
+    LettingsLandlordOrLaurelsInformation,
 )
 
 
@@ -201,6 +202,16 @@ class LettingsProgressionAdminInline(admin.StackedInline):
     ]
 
 
+class LettingsProgressionLandlordAndLaurelsAdminInline(admin.StackedInline):
+    model = LettingsLandlordOrLaurelsInformation
+    readonly_fields = [
+        "created",
+        "created_by",
+        "updated",
+        "updated_by",
+    ]
+
+
 class MarketingAdminInline(admin.StackedInline):
     model = Marketing
     readonly_fields = [
@@ -267,6 +278,7 @@ class PropertyProcessAdmin(admin.ModelAdmin):
         ExchangeAdminInline,
         SalesProgressionAdminInline,
         LettingsProgressionAdminInline,
+        LettingsProgressionLandlordAndLaurelsAdminInline,
         ProgressionNotesAdminInline,
         PropertySellingInformationAdminInline,
         MarketingAdminInline,

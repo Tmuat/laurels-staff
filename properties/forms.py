@@ -27,6 +27,7 @@ from properties.models import (
     PropertySellingInformation,
     ProgressionNotes,
     PropertyChain,
+    LettingsLandlordOrLaurelsInformation,
 )
 from properties.widgets import DateInput, NumberInput
 from regionandhub.models import Hub
@@ -1288,6 +1289,171 @@ class LettingsProgressionPhaseFourForm(forms.ModelForm):
                 if model_field.name == field:
                     if getattr(instance, model_field.name) is True:
                         self.fields[field].disabled = True
+
+        for field in self.fields:
+            label = f"{labels[field]}"
+            self.fields[field].label = label
+
+
+class EICRForm(forms.ModelForm):
+    class Meta:
+        model = LettingsLandlordOrLaurelsInformation
+        fields = (
+            "eicr_choice",
+            "eicr_name",
+            "eicr_phone",
+            "eicr_email",
+            "eicr_expected_completion",
+        )
+
+    def __init__(self, *args, **kwargs):
+        """
+        Add new labels
+        """
+
+        super().__init__(*args, **kwargs)
+        labels = {
+            "eicr_choice": "Organiser",
+            "eicr_name": "Name or Firm",
+            "eicr_phone": "Phone Number",
+            "eicr_email": "Email",
+            "eicr_expected_completion": "Expected Completion Date",
+        }
+
+        self.fields["eicr_expected_completion"].widget = DateInput()
+        self.fields["eicr_phone"].widget = NumberInput()
+
+        for field in self.fields:
+            label = f"{labels[field]}"
+            self.fields[field].label = label
+
+
+class EPCForm(forms.ModelForm):
+    class Meta:
+        model = LettingsLandlordOrLaurelsInformation
+        fields = (
+            "epc_choice",
+            "epc_name",
+            "epc_phone",
+            "epc_email",
+            "epc_expected_completion",
+        )
+
+    def __init__(self, *args, **kwargs):
+        """
+        Add new labels
+        """
+
+        super().__init__(*args, **kwargs)
+        labels = {
+            "epc_choice": "Organiser",
+            "epc_name": "Name or Firm",
+            "epc_phone": "Phone Number",
+            "epc_email": "Email",
+            "epc_expected_completion": "Expected Completion Date",
+        }
+
+        self.fields["epc_expected_completion"].widget = DateInput()
+        self.fields["epc_phone"].widget = NumberInput()
+
+        for field in self.fields:
+            label = f"{labels[field]}"
+            self.fields[field].label = label
+
+
+class GSCForm(forms.ModelForm):
+    class Meta:
+        model = LettingsLandlordOrLaurelsInformation
+        fields = (
+            "gsc_choice",
+            "gsc_name",
+            "gsc_phone",
+            "gsc_email",
+            "gsc_expected_completion",
+        )
+
+    def __init__(self, *args, **kwargs):
+        """
+        Add new labels
+        """
+
+        super().__init__(*args, **kwargs)
+        labels = {
+            "gsc_choice": "Organiser",
+            "gsc_name": "Name or Firm",
+            "gsc_phone": "Phone Number",
+            "gsc_email": "Email",
+            "gsc_expected_completion": "Expected Completion Date",
+        }
+
+        self.fields["gsc_expected_completion"].widget = DateInput()
+        self.fields["gsc_phone"].widget = NumberInput()
+
+        for field in self.fields:
+            label = f"{labels[field]}"
+            self.fields[field].label = label
+
+
+class InventoryForm(forms.ModelForm):
+    class Meta:
+        model = LettingsLandlordOrLaurelsInformation
+        fields = (
+            "inventory_choice",
+            "inventory_name",
+            "inventory_phone",
+            "inventory_email",
+            "inventory_expected_completion",
+        )
+
+    def __init__(self, *args, **kwargs):
+        """
+        Add new labels
+        """
+
+        super().__init__(*args, **kwargs)
+        labels = {
+            "inventory_choice": "Organiser",
+            "inventory_name": "Name or Firm",
+            "inventory_phone": "Phone Number",
+            "inventory_email": "Email",
+            "inventory_expected_completion": "Expected Completion Date",
+        }
+
+        self.fields["inventory_expected_completion"].widget = DateInput()
+        self.fields["inventory_phone"].widget = NumberInput()
+
+        for field in self.fields:
+            label = f"{labels[field]}"
+            self.fields[field].label = label
+
+
+class CleaningForm(forms.ModelForm):
+    class Meta:
+        model = LettingsLandlordOrLaurelsInformation
+        fields = (
+            "professional_clean_choice",
+            "professional_clean_name",
+            "professional_clean_phone",
+            "professional_clean_email",
+            "professional_clean_expected_completion",
+        )
+
+    def __init__(self, *args, **kwargs):
+        """
+        Add new labels
+        """
+
+        super().__init__(*args, **kwargs)
+        labels = {
+            "professional_clean_choice": "Organiser",
+            "professional_clean_name": "Name or Firm",
+            "professional_clean_phone": "Phone Number",
+            "professional_clean_email": "Email",
+            "professional_clean_expected_completion": "Expected Completion Date",
+        }
+
+        self.fields["professional_clean_expected_completion"].widget = DateInput()
+        self.fields["professional_clean_phone"].widget = NumberInput()
 
         for field in self.fields:
             label = f"{labels[field]}"

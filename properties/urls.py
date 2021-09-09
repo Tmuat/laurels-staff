@@ -64,6 +64,16 @@ from properties.views import (
     lettings_phase_two,
     lettings_phase_three,
     lettings_phase_four,
+    add_eicr_info,
+    edit_eicr_info,
+    add_epc_info,
+    edit_epc_info,
+    add_gsc_info,
+    edit_gsc_info,
+    add_inventory_info,
+    edit_inventory_info,
+    add_cleaning_info,
+    edit_cleaning_info,
 )
 
 
@@ -379,5 +389,55 @@ urlpatterns = [
         "properties/manage/sales-progression/<propertyprocess_id>/",
         manage_sales_progression,
         name="manage_sales_progression",
+    ),
+    path(
+        "properties/add/lettings-progression/eicr-info/<propertyprocess_id>/",
+        add_eicr_info,
+        name="add_eicr_info",
+    ),
+    path(
+        "properties/edit/lettings-progression/eicr-info/<propertyprocess_id>/",
+        edit_eicr_info,
+        name="edit_eicr_info",
+    ),
+    path(
+        "properties/add/lettings-progression/epc-info/<propertyprocess_id>/",
+        add_epc_info,
+        name="add_epc_info",
+    ),
+    path(
+        "properties/edit/lettings-progression/epc-info/<propertyprocess_id>/",
+        edit_epc_info,
+        name="edit_epc_info",
+    ),
+    path(
+        "properties/add/lettings-progression/gsc-info/<propertyprocess_id>/",
+        add_gsc_info,
+        name="add_gsc_info",
+    ),
+    path(
+        "properties/edit/lettings-progression/gsc-info/<propertyprocess_id>/",
+        edit_gsc_info,
+        name="edit_gsc_info",
+    ),
+    path(
+        "properties/add/lettings-progression/inventory-info/<propertyprocess_id>/",
+        add_inventory_info,
+        name="add_inventory_info",
+    ),
+    path(
+        "properties/edit/lettings-progression/inventory-info/<propertyprocess_id>/",
+        edit_inventory_info,
+        name="edit_inventory_info",
+    ),
+    path(
+        "properties/add/lettings-progression/cleaning-info/<propertyprocess_id>/",
+        add_cleaning_info,
+        name="add_cleaning_info",
+    ),
+    path(
+        "properties/edit/lettings-progression/cleaning-info/<propertyprocess_id>/",
+        edit_cleaning_info,
+        name="edit_cleaning_info",
     ),
 ]

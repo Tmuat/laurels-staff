@@ -2055,3 +2055,92 @@ class LettingsProgressionPhase(UpdatedAndCreated):
                 self.lettings_progression.propertyprocess.property.address_line_2,
             )
         return property_address
+
+
+class LettingsLandlordOrLaurelsInformation(UpdatedAndCreated):
+    class Meta:
+        ordering = [
+            "propertyprocess__property__postcode",
+            "propertyprocess__property__address_line_1",
+        ]
+        verbose_name = "Selling Information"
+        verbose_name_plural = "Selling Information"
+
+    LAURELS = "laurels"
+    LANDLORD = "landlord"
+
+    CHOICE = [
+        (LAURELS, "Laurels"),
+        (LANDLORD, "Landlord"),
+    ]
+
+    propertyprocess = models.OneToOneField(
+        PropertyProcess,
+        on_delete=models.CASCADE,
+        related_name="landlord_or_laurels",
+    )
+
+    eicr_choice = models.CharField(
+        max_length=10, null=True, blank=False, choices=CHOICE
+    )
+    eicr_name = models.CharField(max_length=100, null=True, blank=True)
+    eicr_phone = models.CharField(max_length=15, null=True, blank=True)
+    eicr_email = models.EmailField(max_length=100, null=True, blank=True)
+    eicr_expected_completion = models.DateField(null=True, blank=False)
+
+    epc_choice = models.CharField(
+        max_length=10, null=True, blank=False, choices=CHOICE
+    )
+    epc_name = models.CharField(max_length=100, null=True, blank=True)
+    epc_phone = models.CharField(max_length=15, null=True, blank=True)
+    epc_email = models.EmailField(max_length=100, null=True, blank=True)
+    epc_expected_completion = models.DateField(null=True, blank=False)
+
+    gsc_choice = models.CharField(
+        max_length=10, null=True, blank=False, choices=CHOICE
+    )
+    gsc_name = models.CharField(max_length=100, null=True, blank=True)
+    gsc_phone = models.CharField(max_length=15, null=True, blank=True)
+    gsc_email = models.EmailField(max_length=100, null=True, blank=True)
+    gsc_expected_completion = models.DateField(null=True, blank=False)
+
+    inventory_choice = models.CharField(
+        max_length=10, null=True, blank=False, choices=CHOICE
+    )
+    inventory_name = models.CharField(max_length=100, null=True, blank=True)
+    inventory_phone = models.CharField(max_length=15, null=True, blank=True)
+    inventory_email = models.EmailField(max_length=100, null=True, blank=True)
+    inventory_expected_completion = models.DateField(null=True, blank=False)
+
+    professional_clean_choice = models.CharField(
+        max_length=10, null=True, blank=False, choices=CHOICE
+    )
+    professional_clean_name = models.CharField(
+        max_length=100, null=True, blank=True
+    )
+    professional_clean_phone = models.CharField(
+        max_length=15, null=True, blank=True
+    )
+    professional_clean_email = models.EmailField(
+        max_length=100, null=True, blank=True
+    )
+    professional_clean_expected_completion = models.DateField(
+        null=True, blank=False
+    )
+
+    def __str__(self):
+        if (
+            self.propertyprocess.property.address_line_2 == ""
+            or self.propertyprocess.property.address_line_2 is None
+        ):
+            property_address = "%s, %s" % (
+                self.propertyprocess.property.postcode,
+                self.propertyprocess.property.address_line_1,
+            )
+        else:
+            property_address = "%s, %s, %s" % (
+                self.propertyprocess.property.postcode,
+                self.propertyprocess.property.address_line_1,
+                self.propertyprocess.property.address_line_2,
+            )
+        return property_address

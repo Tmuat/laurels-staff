@@ -63,6 +63,11 @@ from properties.forms import (
     LettingsProgressionPhaseFourForm,
     HubAndEmployeeForm,
     ReInstructionForm,
+    EICRForm,
+    EPCForm,
+    GSCForm,
+    InventoryForm,
+    CleaningForm,
 )
 from properties.models import (
     Property,
@@ -5455,6 +5460,746 @@ def lettings_phase_four(request, propertyprocess_id):
     }
     data["html_modal"] = render_to_string(
         "properties/lettings_progression/phase_four_modal.html",
+        context,
+        request=request,
+    )
+
+    return JsonResponse(data)
+
+
+@otp_required
+@login_required
+def add_eicr_info(request, propertyprocess_id):
+    """
+    Ajax URL for adding EICR info
+    """
+    data = dict()
+
+    property_process = get_object_or_404(
+        PropertyProcess, id=propertyprocess_id
+    )
+
+    url = reverse(
+        "properties:add_eicr_info",
+        kwargs={
+            "propertyprocess_id": propertyprocess_id,
+        },
+    )
+
+    if request.method == "POST":
+        form = EICRForm(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+
+            instance.propertyprocess = property_process
+            instance.created_by = request.user.get_full_name()
+            instance.updated_by = request.user.get_full_name()
+
+            instance.save()
+
+            history_description = (
+                f"{request.user.get_full_name()} has added EICR info."
+            )
+
+            history = PropertyHistory.objects.create(
+                propertyprocess=property_process,
+                type=PropertyHistory.PROGRESSION,
+                description=history_description,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
+
+            data["form_is_valid"] = True
+
+            context = {
+                "property_process": property_process,
+                "history": history,
+            }
+            data["html_success"] = render_to_string(
+                "properties/stages/includes/form_success.html",
+                context,
+                request=request,
+            )
+
+        else:
+            data["form_is_valid"] = False
+    else:
+        form = EICRForm()
+
+    context = {
+        "form": form,
+        "url": url,
+    }
+    data["html_modal"] = render_to_string(
+        "properties/lettings_progression/eicr_modal.html",
+        context,
+        request=request,
+    )
+
+    return JsonResponse(data)
+
+
+@otp_required
+@login_required
+def edit_eicr_info(request, propertyprocess_id):
+    """
+    Ajax URL for edit EICR info
+    """
+    data = dict()
+
+    property_process = get_object_or_404(
+        PropertyProcess, id=propertyprocess_id
+    )
+
+    url = reverse(
+        "properties:edit_eicr_info",
+        kwargs={
+            "propertyprocess_id": propertyprocess_id,
+        },
+    )
+
+    if request.method == "POST":
+        form = EICRForm(
+            request.POST,
+            instance=property_process.landlord_or_laurels
+        )
+        if form.is_valid():
+            instance = form.save(commit=False)
+
+            instance.propertyprocess = property_process
+            instance.updated_by = request.user.get_full_name()
+
+            instance.save()
+
+            history_description = (
+                f"{request.user.get_full_name()} has added EICR info."
+            )
+
+            history = PropertyHistory.objects.create(
+                propertyprocess=property_process,
+                type=PropertyHistory.PROGRESSION,
+                description=history_description,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
+
+            data["form_is_valid"] = True
+
+            context = {
+                "property_process": property_process,
+                "history": history,
+            }
+            data["html_success"] = render_to_string(
+                "properties/stages/includes/form_success.html",
+                context,
+                request=request,
+            )
+
+        else:
+            data["form_is_valid"] = False
+    else:
+        form = EICRForm(
+            instance=property_process.landlord_or_laurels
+        )
+
+    context = {
+        "form": form,
+        "url": url,
+    }
+    data["html_modal"] = render_to_string(
+        "properties/lettings_progression/eicr_modal.html",
+        context,
+        request=request,
+    )
+
+    return JsonResponse(data)
+
+
+@otp_required
+@login_required
+def add_epc_info(request, propertyprocess_id):
+    """
+    Ajax URL for adding EPC info
+    """
+    data = dict()
+
+    property_process = get_object_or_404(
+        PropertyProcess, id=propertyprocess_id
+    )
+
+    url = reverse(
+        "properties:add_epc_info",
+        kwargs={
+            "propertyprocess_id": propertyprocess_id,
+        },
+    )
+
+    if request.method == "POST":
+        form = EPCForm(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+
+            instance.propertyprocess = property_process
+            instance.created_by = request.user.get_full_name()
+            instance.updated_by = request.user.get_full_name()
+
+            instance.save()
+
+            history_description = (
+                f"{request.user.get_full_name()} has added EPC info."
+            )
+
+            history = PropertyHistory.objects.create(
+                propertyprocess=property_process,
+                type=PropertyHistory.PROGRESSION,
+                description=history_description,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
+
+            data["form_is_valid"] = True
+
+            context = {
+                "property_process": property_process,
+                "history": history,
+            }
+            data["html_success"] = render_to_string(
+                "properties/stages/includes/form_success.html",
+                context,
+                request=request,
+            )
+
+        else:
+            data["form_is_valid"] = False
+    else:
+        form = EPCForm()
+
+    context = {
+        "form": form,
+        "url": url,
+    }
+    data["html_modal"] = render_to_string(
+        "properties/lettings_progression/epc_modal.html",
+        context,
+        request=request,
+    )
+
+    return JsonResponse(data)
+
+
+@otp_required
+@login_required
+def edit_epc_info(request, propertyprocess_id):
+    """
+    Ajax URL for edit EPC info
+    """
+    data = dict()
+
+    property_process = get_object_or_404(
+        PropertyProcess, id=propertyprocess_id
+    )
+
+    url = reverse(
+        "properties:edit_epc_info",
+        kwargs={
+            "propertyprocess_id": propertyprocess_id,
+        },
+    )
+
+    if request.method == "POST":
+        form = EPCForm(
+            request.POST,
+            instance=property_process.landlord_or_laurels
+        )
+        if form.is_valid():
+            instance = form.save(commit=False)
+
+            instance.propertyprocess = property_process
+            instance.updated_by = request.user.get_full_name()
+
+            instance.save()
+
+            history_description = (
+                f"{request.user.get_full_name()} has added EPC info."
+            )
+
+            history = PropertyHistory.objects.create(
+                propertyprocess=property_process,
+                type=PropertyHistory.PROGRESSION,
+                description=history_description,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
+
+            data["form_is_valid"] = True
+
+            context = {
+                "property_process": property_process,
+                "history": history,
+            }
+            data["html_success"] = render_to_string(
+                "properties/stages/includes/form_success.html",
+                context,
+                request=request,
+            )
+
+        else:
+            data["form_is_valid"] = False
+    else:
+        form = EPCForm(
+            instance=property_process.landlord_or_laurels
+        )
+
+    context = {
+        "form": form,
+        "url": url,
+    }
+    data["html_modal"] = render_to_string(
+        "properties/lettings_progression/epc_modal.html",
+        context,
+        request=request,
+    )
+
+    return JsonResponse(data)
+
+
+@otp_required
+@login_required
+def add_gsc_info(request, propertyprocess_id):
+    """
+    Ajax URL for adding GSC info
+    """
+    data = dict()
+
+    property_process = get_object_or_404(
+        PropertyProcess, id=propertyprocess_id
+    )
+
+    url = reverse(
+        "properties:add_gsc_info",
+        kwargs={
+            "propertyprocess_id": propertyprocess_id,
+        },
+    )
+
+    if request.method == "POST":
+        form = GSCForm(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+
+            instance.propertyprocess = property_process
+            instance.created_by = request.user.get_full_name()
+            instance.updated_by = request.user.get_full_name()
+
+            instance.save()
+
+            history_description = (
+                f"{request.user.get_full_name()} has added GSC info."
+            )
+
+            history = PropertyHistory.objects.create(
+                propertyprocess=property_process,
+                type=PropertyHistory.PROGRESSION,
+                description=history_description,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
+
+            data["form_is_valid"] = True
+
+            context = {
+                "property_process": property_process,
+                "history": history,
+            }
+            data["html_success"] = render_to_string(
+                "properties/stages/includes/form_success.html",
+                context,
+                request=request,
+            )
+
+        else:
+            data["form_is_valid"] = False
+    else:
+        form = GSCForm()
+
+    context = {
+        "form": form,
+        "url": url,
+    }
+    data["html_modal"] = render_to_string(
+        "properties/lettings_progression/gsc_modal.html",
+        context,
+        request=request,
+    )
+
+    return JsonResponse(data)
+
+
+@otp_required
+@login_required
+def edit_gsc_info(request, propertyprocess_id):
+    """
+    Ajax URL for edit GSC info
+    """
+    data = dict()
+
+    property_process = get_object_or_404(
+        PropertyProcess, id=propertyprocess_id
+    )
+
+    url = reverse(
+        "properties:edit_gsc_info",
+        kwargs={
+            "propertyprocess_id": propertyprocess_id,
+        },
+    )
+
+    if request.method == "POST":
+        form = GSCForm(
+            request.POST,
+            instance=property_process.landlord_or_laurels
+        )
+        if form.is_valid():
+            instance = form.save(commit=False)
+
+            instance.propertyprocess = property_process
+            instance.updated_by = request.user.get_full_name()
+
+            instance.save()
+
+            history_description = (
+                f"{request.user.get_full_name()} has added GSC info."
+            )
+
+            history = PropertyHistory.objects.create(
+                propertyprocess=property_process,
+                type=PropertyHistory.PROGRESSION,
+                description=history_description,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
+
+            data["form_is_valid"] = True
+
+            context = {
+                "property_process": property_process,
+                "history": history,
+            }
+            data["html_success"] = render_to_string(
+                "properties/stages/includes/form_success.html",
+                context,
+                request=request,
+            )
+
+        else:
+            data["form_is_valid"] = False
+    else:
+        form = GSCForm(
+            instance=property_process.landlord_or_laurels
+        )
+
+    context = {
+        "form": form,
+        "url": url,
+    }
+    data["html_modal"] = render_to_string(
+        "properties/lettings_progression/gsc_modal.html",
+        context,
+        request=request,
+    )
+
+    return JsonResponse(data)
+
+
+@otp_required
+@login_required
+def add_inventory_info(request, propertyprocess_id):
+    """
+    Ajax URL for adding Inventory info
+    """
+    data = dict()
+
+    property_process = get_object_or_404(
+        PropertyProcess, id=propertyprocess_id
+    )
+
+    url = reverse(
+        "properties:add_inventory_info",
+        kwargs={
+            "propertyprocess_id": propertyprocess_id,
+        },
+    )
+
+    if request.method == "POST":
+        form = InventoryForm(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+
+            instance.propertyprocess = property_process
+            instance.created_by = request.user.get_full_name()
+            instance.updated_by = request.user.get_full_name()
+
+            instance.save()
+
+            history_description = (
+                f"{request.user.get_full_name()} has added Inventory info."
+            )
+
+            history = PropertyHistory.objects.create(
+                propertyprocess=property_process,
+                type=PropertyHistory.PROGRESSION,
+                description=history_description,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
+
+            data["form_is_valid"] = True
+
+            context = {
+                "property_process": property_process,
+                "history": history,
+            }
+            data["html_success"] = render_to_string(
+                "properties/stages/includes/form_success.html",
+                context,
+                request=request,
+            )
+
+        else:
+            data["form_is_valid"] = False
+    else:
+        form = InventoryForm()
+
+    context = {
+        "form": form,
+        "url": url,
+    }
+    data["html_modal"] = render_to_string(
+        "properties/lettings_progression/inventory_modal.html",
+        context,
+        request=request,
+    )
+
+    return JsonResponse(data)
+
+
+@otp_required
+@login_required
+def edit_inventory_info(request, propertyprocess_id):
+    """
+    Ajax URL for edit Inventory info
+    """
+    data = dict()
+
+    property_process = get_object_or_404(
+        PropertyProcess, id=propertyprocess_id
+    )
+
+    url = reverse(
+        "properties:edit_inventory_info",
+        kwargs={
+            "propertyprocess_id": propertyprocess_id,
+        },
+    )
+
+    if request.method == "POST":
+        form = InventoryForm(
+            request.POST,
+            instance=property_process.landlord_or_laurels
+        )
+        if form.is_valid():
+            instance = form.save(commit=False)
+
+            instance.propertyprocess = property_process
+            instance.updated_by = request.user.get_full_name()
+
+            instance.save()
+
+            history_description = (
+                f"{request.user.get_full_name()} has added Inventory info."
+            )
+
+            history = PropertyHistory.objects.create(
+                propertyprocess=property_process,
+                type=PropertyHistory.PROGRESSION,
+                description=history_description,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
+
+            data["form_is_valid"] = True
+
+            context = {
+                "property_process": property_process,
+                "history": history,
+            }
+            data["html_success"] = render_to_string(
+                "properties/stages/includes/form_success.html",
+                context,
+                request=request,
+            )
+
+        else:
+            data["form_is_valid"] = False
+    else:
+        form = InventoryForm(
+            instance=property_process.landlord_or_laurels
+        )
+
+    context = {
+        "form": form,
+        "url": url,
+    }
+    data["html_modal"] = render_to_string(
+        "properties/lettings_progression/inventory_modal.html",
+        context,
+        request=request,
+    )
+
+    return JsonResponse(data)
+
+
+@otp_required
+@login_required
+def add_cleaning_info(request, propertyprocess_id):
+    """
+    Ajax URL for adding Clean info
+    """
+    data = dict()
+
+    property_process = get_object_or_404(
+        PropertyProcess, id=propertyprocess_id
+    )
+
+    url = reverse(
+        "properties:add_cleaning_info",
+        kwargs={
+            "propertyprocess_id": propertyprocess_id,
+        },
+    )
+
+    if request.method == "POST":
+        form = CleaningForm(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+
+            instance.propertyprocess = property_process
+            instance.created_by = request.user.get_full_name()
+            instance.updated_by = request.user.get_full_name()
+
+            instance.save()
+
+            history_description = (
+                f"{request.user.get_full_name()} has added Cleaning info."
+            )
+
+            history = PropertyHistory.objects.create(
+                propertyprocess=property_process,
+                type=PropertyHistory.PROGRESSION,
+                description=history_description,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
+
+            data["form_is_valid"] = True
+
+            context = {
+                "property_process": property_process,
+                "history": history,
+            }
+            data["html_success"] = render_to_string(
+                "properties/stages/includes/form_success.html",
+                context,
+                request=request,
+            )
+
+        else:
+            data["form_is_valid"] = False
+    else:
+        form = CleaningForm()
+
+    context = {
+        "form": form,
+        "url": url,
+    }
+    data["html_modal"] = render_to_string(
+        "properties/lettings_progression/clean_modal.html",
+        context,
+        request=request,
+    )
+
+    return JsonResponse(data)
+
+
+@otp_required
+@login_required
+def edit_cleaning_info(request, propertyprocess_id):
+    """
+    Ajax URL for edit Cleaning info
+    """
+    data = dict()
+
+    property_process = get_object_or_404(
+        PropertyProcess, id=propertyprocess_id
+    )
+
+    url = reverse(
+        "properties:edit_cleaning_info",
+        kwargs={
+            "propertyprocess_id": propertyprocess_id,
+        },
+    )
+
+    if request.method == "POST":
+        form = CleaningForm(
+            request.POST,
+            instance=property_process.landlord_or_laurels
+        )
+        if form.is_valid():
+            instance = form.save(commit=False)
+
+            instance.propertyprocess = property_process
+            instance.updated_by = request.user.get_full_name()
+
+            instance.save()
+
+            history_description = (
+                f"{request.user.get_full_name()} has added Cleaning info."
+            )
+
+            history = PropertyHistory.objects.create(
+                propertyprocess=property_process,
+                type=PropertyHistory.PROGRESSION,
+                description=history_description,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
+
+            data["form_is_valid"] = True
+
+            context = {
+                "property_process": property_process,
+                "history": history,
+            }
+            data["html_success"] = render_to_string(
+                "properties/stages/includes/form_success.html",
+                context,
+                request=request,
+            )
+
+        else:
+            data["form_is_valid"] = False
+    else:
+        form = CleaningForm(
+            instance=property_process.landlord_or_laurels
+        )
+
+    context = {
+        "form": form,
+        "url": url,
+    }
+    data["html_modal"] = render_to_string(
+        "properties/lettings_progression/clean_modal.html",
         context,
         request=request,
     )
