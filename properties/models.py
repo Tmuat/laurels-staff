@@ -436,7 +436,22 @@ class Instruction(UpdatedAndCreated):
     def send_mail(self, request, **kwargs):
         no_reply_email = settings.NO_REPLY_EMAIL
         admin_email = settings.ADMIN_EMAIL
-        address = str(self.__str__)
+
+        if (
+            self.propertyprocess.property.address_line_2 == ""
+            or self.propertyprocess.property.address_line_2 is None
+        ):
+            address = "%s, %s" % (
+                self.propertyprocess.property.postcode,
+                self.propertyprocess.property.address_line_1,
+            )
+        else:
+            address = "%s, %s, %s" % (
+                self.propertyprocess.property.postcode,
+                self.propertyprocess.property.address_line_1,
+                self.propertyprocess.property.address_line_2,
+            )
+
         context = kwargs
         context.update(
             {
@@ -446,7 +461,10 @@ class Instruction(UpdatedAndCreated):
                 "employee": self.propertyprocess.employee,
             }
         )
-        subject = f"Sales Instruction: {address}"
+        if self.propertyprocess.sector == PropertyProcess.SALES:
+            subject = f"Sales Instruction: {address}"
+        else:
+            subject = f"Lettings Instruction: {address}"
         body = render_to_string(
             "properties/emails/new_instruction.txt", context
         )
@@ -467,7 +485,7 @@ class Instruction(UpdatedAndCreated):
     def __str__(self):
         if (
             self.propertyprocess.property.address_line_2 == ""
-            or self.propertyprocess.property.address_line_2 == None
+            or self.propertyprocess.property.address_line_2 is None
         ):
             property_address = "%s, %s" % (
                 self.propertyprocess.property.postcode,
