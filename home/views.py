@@ -711,12 +711,6 @@ def deal_progression_overview(request):
 
         percentages.append(percentage_instance)
 
-    print("HELLO")
-    count = 0
-    for instance in properties:
-        count += 1
-        print(count, instance.deal.date)
-
     context = {
         "percentages": percentages,
         "properties": properties,
