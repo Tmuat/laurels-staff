@@ -64,8 +64,8 @@
                             <div class="col order-3 order-md-2">
                                 <div class="text-center mb-2 mb-md-3">
                                     <div class="btn-group ml-1 mb-2">
-                                        <a href="?{% if query %}query={{ query }}&{% endif %}sector=sales{% if status %}&status={{ status }}{% endif %}{% if archive %}&archive=true{% endif %}" class="btn btn-sm {% if sector == 'sales' %}btn-success text-white{% else %}btn-light text-dark{% endif %}">Sales</a>
-                                        <a href="?{% if query %}query={{ query }}&{% endif %}sector=lettings{% if status %}&status={{ status }}{% endif %}{% if archive %}&archive=true{% endif %}" class="btn btn-sm {% if sector == 'lettings' %}btn-success text-white{% else %}btn-light text-dark{% endif %}">Lettings</a>
+                                        <a href="?{% if query %}query={{ query }}&{% endif %}sector=sales" class="btn btn-sm {% if sector == 'sales' %}btn-success text-white{% else %}btn-light text-dark{% endif %}">Sales</a>
+                                        <a href="?{% if query %}query={{ query }}&{% endif %}sector=lettings" class="btn btn-sm {% if sector == 'lettings' %}btn-success text-white{% else %}btn-light text-dark{% endif %}">Lettings</a>
                                     </div>
                                 </div>
                             </div>
@@ -73,7 +73,7 @@
                                 <div class="input-group mb-2 mb-md-3">
                                     <select class="custom-select" id="user-filter-select">
                                         {% if not user %}
-                                            <option selected disabled>User Filter</option>
+                                            <option selected disabled>Progressor Filter</option>
                                         {% else %}
                                             <option value="reset">Reset</option>
                                         {% endif %}

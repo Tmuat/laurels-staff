@@ -628,14 +628,22 @@ def deal_progression_overview(request):
     A view to render the progression overview.
     """
 
+    sector = PropertyProcess.SALES
+
+    if request.GET:
+        if "sector" in request.GET:
+            sector = request.GET["sector"]
+
     properties_list = (
-        PropertyProcess.objects.filter(macro_status=4)
+        PropertyProcess.objects.filter(
+            macro_status=4,
+            sector=sector
+        )
         .select_related(
             "property",
+            "deal",
         )
-        .prefetch_related(
-            "sales_progression",
-        )
+        .order_by("deal__date")
     )
 
     users = Profile.objects.filter(user__is_active=True)
@@ -643,18 +651,12 @@ def deal_progression_overview(request):
     query = None
     hub = None
     user = None
-    sector = PropertyProcess.SALES
 
     if request.GET:
         if "hub" in request.GET:
             hub = request.GET.get("hub")
             hub = Hub.objects.get(slug=hub)
             properties_list = properties_list.filter(hub=hub)
-
-        if "sector" in request.GET:
-            sector = request.GET["sector"]
-
-        properties_list = properties_list.filter(sector=sector)
 
         if "query" in request.GET:
             query = request.GET["query"]
@@ -708,6 +710,12 @@ def deal_progression_overview(request):
             percentage_instance["progression"] = perc_calc
 
         percentages.append(percentage_instance)
+
+    print("HELLO")
+    count = 0
+    for instance in properties:
+        count += 1
+        print(count, instance.deal.date)
 
     context = {
         "percentages": percentages,
