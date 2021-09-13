@@ -1452,7 +1452,9 @@ class CleaningForm(forms.ModelForm):
             "professional_clean_expected_completion": "Expected Completion Date",
         }
 
-        self.fields["professional_clean_expected_completion"].widget = DateInput()
+        self.fields[
+            "professional_clean_expected_completion"
+        ].widget = DateInput()
         self.fields["professional_clean_phone"].widget = NumberInput()
 
         for field in self.fields:
