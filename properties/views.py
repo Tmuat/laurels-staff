@@ -15,7 +15,7 @@ from common.functions import (
     sales_progression_percentage,
     lettings_progression_percentage,
 )
-from lettings.models import LettingProperties
+from lettings.models import LettingProperties, Renewals
 from properties.forms import (
     PropertyForm,
     PropertyProcessForm,
@@ -1500,7 +1500,6 @@ def add_offerer_lettings(request, propertyprocess_id):
 
     else:
         form = OffererLettingsForm()
-        form_lettings = OfferLettingsExtraForm()
 
     context = {
         "form": form,
@@ -3681,12 +3680,20 @@ def add_exchange_lettings(request, propertyprocess_id):
 
             instance.save()
 
-            LettingProperties.objects.create(
+            lettings_props = LettingProperties.objects.create(
                 propertyprocess=property_process,
                 lettings_service_level=property_process.instruction_letting_extra.lettings_service_level,
                 is_active=True,
                 created_by=request.user.get_full_name(),
                 updated_by=request.user.get_full_name(),
+            )
+
+            Renewals.objects.create(
+                lettings_properties=lettings_props,
+                renewed_on=move_in_date,
+                renewal_date=first_renewal,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name()
             )
 
             instance.send_exchange_mail(request)
@@ -5106,86 +5113,102 @@ def lettings_phase_two(request, propertyprocess_id):
         if form.is_valid():
             instance = form.save(commit=False)
 
-            instance.updated_by = request.user.get_full_name()
+            if (
+                instance.gas_safety_certificate
+                and instance.gas_safety_certificate_expiry is None
+            ):
+                data["form_is_valid"] = False
+            elif (
+                instance.electrical_certificate
+                and instance.electrical_certificate_expiry is None
+            ):
+                data["form_is_valid"] = False
+            elif (
+                instance.epc_certificate
+                and instance.epc_certificate_expiry is None
+            ):
+                data["form_is_valid"] = False
+            else:
+                instance.updated_by = request.user.get_full_name()
 
-            history_description = (
-                f"{request.user.get_full_name()} has "
-                "updated lettings progression."
-            )
+                history_description = (
+                    f"{request.user.get_full_name()} has "
+                    "updated lettings progression."
+                )
 
-            notes_dict = []
+                notes_dict = []
 
-            if old_ref != instance.references_passed:
-                old_ref_notes = "References Passed"
-                notes_dict.append(old_ref_notes)
-                instance.references_passed_date = datetime.date.today()
+                if old_ref != instance.references_passed:
+                    old_ref_notes = "References Passed"
+                    notes_dict.append(old_ref_notes)
+                    instance.references_passed_date = datetime.date.today()
 
-            if old_gas != instance.gas_safety_certificate:
-                old_gas_notes = "Gas Safety Certificate"
-                notes_dict.append(old_gas_notes)
-                instance.gas_safety_certificate_date = datetime.date.today()
+                if old_gas != instance.gas_safety_certificate:
+                    old_gas_notes = "Gas Safety Certificate"
+                    notes_dict.append(old_gas_notes)
+                    instance.gas_safety_certificate_date = datetime.date.today()
 
-            if old_elec != instance.electrical_certificate:
-                old_elec_notes = "Electrical Installation Certificate"
-                notes_dict.append(old_elec_notes)
-                instance.electrical_certificate_date = datetime.date.today()
+                if old_elec != instance.electrical_certificate:
+                    old_elec_notes = "Electrical Installation Certificate"
+                    notes_dict.append(old_elec_notes)
+                    instance.electrical_certificate_date = datetime.date.today()
 
-            if old_epc != instance.epc_certificate:
-                old_epc_notes = "Energy Performance Certificate"
-                notes_dict.append(old_epc_notes)
-                instance.epc_certificate_date = datetime.date.today()
+                if old_epc != instance.epc_certificate:
+                    old_epc_notes = "Energy Performance Certificate"
+                    notes_dict.append(old_epc_notes)
+                    instance.epc_certificate_date = datetime.date.today()
 
-            if old_tenancy != instance.tenancy_certificate_sent:
-                old_tenancy_notes = "Tenancy Agreement Sent For Signature"
-                notes_dict.append(old_tenancy_notes)
-                instance.tenancy_certificate_sent_date = datetime.date.today()
+                if old_tenancy != instance.tenancy_certificate_sent:
+                    old_tenancy_notes = "Tenancy Agreement Sent For Signature"
+                    notes_dict.append(old_tenancy_notes)
+                    instance.tenancy_certificate_sent_date = datetime.date.today()
 
-            instance.save()
+                instance.save()
 
-            phases = lettings_progression_percentage(property_process.id)
+                phases = lettings_progression_percentage(property_process.id)
 
-            phase_two = phases.get("phase_2")
-            if phase_two > 99:
-                lettings_prog_phase.phase_2 = True
-                lettings_prog_phase.save()
+                phase_two = phases.get("phase_2")
+                if phase_two > 99:
+                    lettings_prog_phase.phase_2 = True
+                    lettings_prog_phase.save()
 
-            notes = "The following has been marked as complete, "
+                notes = "The following has been marked as complete, "
 
-            for i, note in enumerate(notes_dict):
-                if len(notes_dict) == 1:
-                    notes += note
-                    notes += "."
-                else:
-                    if i == len(notes_dict) - 1:
+                for i, note in enumerate(notes_dict):
+                    if len(notes_dict) == 1:
                         notes += note
                         notes += "."
-                    elif i == len(notes_dict) - 2:
-                        notes += note
-                        notes += " and "
                     else:
-                        notes += note
-                        notes += ", "
+                        if i == len(notes_dict) - 1:
+                            notes += note
+                            notes += "."
+                        elif i == len(notes_dict) - 2:
+                            notes += note
+                            notes += " and "
+                        else:
+                            notes += note
+                            notes += ", "
 
-            history = PropertyHistory.objects.create(
-                propertyprocess=property_process,
-                type=PropertyHistory.PROGRESSION,
-                description=history_description,
-                notes=notes,
-                created_by=request.user.get_full_name(),
-                updated_by=request.user.get_full_name(),
-            )
+                history = PropertyHistory.objects.create(
+                    propertyprocess=property_process,
+                    type=PropertyHistory.PROGRESSION,
+                    description=history_description,
+                    notes=notes,
+                    created_by=request.user.get_full_name(),
+                    updated_by=request.user.get_full_name(),
+                )
 
-            context = {
-                "property_process": property_process,
-                "history": history,
-            }
-            data["html_success"] = render_to_string(
-                "properties/stages/includes/form_success.html",
-                context,
-                request=request,
-            )
+                context = {
+                    "property_process": property_process,
+                    "history": history,
+                }
+                data["html_success"] = render_to_string(
+                    "properties/stages/includes/form_success.html",
+                    context,
+                    request=request,
+                )
 
-            data["form_is_valid"] = True
+                data["form_is_valid"] = True
 
         else:
             data["form_is_valid"] = False
