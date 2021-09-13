@@ -361,7 +361,7 @@ class OfferFormForm(forms.ModelForm):
 
 class OffererLettingsForm(forms.ModelForm):
 
-    completed_offer_form = forms.BooleanField()
+    completed_offer_form = forms.BooleanField(required=False)
 
     class Meta:
         model = OffererDetailsLettings
