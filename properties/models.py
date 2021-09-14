@@ -936,7 +936,7 @@ class Deal(UpdatedAndCreated):
         no_reply_email = settings.NO_REPLY_EMAIL
         admin_email = settings.ADMIN_EMAIL
         humanized_offer = humanize.intcomma(self.offer_accepted.offer)
-        address = str(self.__str__)
+        address = str(self.__str__())
         context = kwargs
         context.update(
             {
@@ -968,7 +968,7 @@ class Deal(UpdatedAndCreated):
         no_reply_email = settings.NO_REPLY_EMAIL
         admin_email = settings.ADMIN_EMAIL
         humanized_offer = humanize.intcomma(self.offer_accepted.offer)
-        address = str(self.__str__)
+        address = str(self.__str__())
         context = kwargs
         context.update(
             {
