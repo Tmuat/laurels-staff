@@ -1,5 +1,6 @@
 import datetime
 
+from lettings.models import Renewals, Gas, EPC, Electrical
 from regionandhub.models import Hub
 from properties.models import PropertyProcess
 
@@ -27,5 +28,104 @@ def recent_deals():
             print(instance)
 
 
+def lettings_deal_without_renewal():
+    lettings = (
+        PropertyProcess.objects.filter(sector="lettings")
+        .exclude(macro_status=0)
+        .exclude(macro_status=1)
+        .exclude(macro_status=2)
+        .exclude(macro_status=3)
+        .exclude(macro_status=4)
+    )
+
+    for instance in lettings:
+        if instance.lettings_properties.renewals.first() is None:
+            Renewals.objects.create(
+                lettings_properties=instance.lettings_properties,
+                renewed_on=instance.exchange_and_move.first().exchange_and_move_lettings.move_in_date,
+                renewal_date=instance.exchange_and_move.first().exchange_and_move_lettings.first_renewal,
+                created=instance.exchange_and_move.first().exchange_and_move_lettings.created,
+                created_by=instance.exchange_and_move.first().exchange_and_move_lettings.created_by,
+                updated=instance.exchange_and_move.first().exchange_and_move_lettings.updated,
+                updated_by=instance.exchange_and_move.first().exchange_and_move_lettings.updated_by,
+            )
+            # print(instance.exchange_and_move.first().exchange_and_move_lettings.move_in_date)
+
+
+def lettings_gas():
+    lettings = (
+        PropertyProcess.objects.filter(sector="lettings")
+        .exclude(macro_status=0)
+        .exclude(macro_status=1)
+        .exclude(macro_status=2)
+        .exclude(macro_status=3)
+        .exclude(macro_status=4)
+    )
+
+    for instance in lettings:
+        if (
+            instance.lettings_progression.lettings_progression_settings.show_gas
+        ):
+            if instance.lettings_progression.gas_safety_certificate:
+                if instance.lettings_properties.gas.first() is None:
+                    Gas.objects.create(
+                        lettings_properties=instance.lettings_properties,
+                        date=instance.lettings_progression.gas_safety_certificate_date,
+                        expiry=instance.lettings_progression.gas_safety_certificate_expiry,
+                        created_by=instance.lettings_progression.created_by,
+                        updated_by=instance.lettings_progression.updated_by
+                    )
+                    # print(instance)
+
+
+def lettings_epc():
+    lettings = (
+        PropertyProcess.objects.filter(sector="lettings")
+        .exclude(macro_status=0)
+        .exclude(macro_status=1)
+        .exclude(macro_status=2)
+        .exclude(macro_status=3)
+        .exclude(macro_status=4)
+    )
+
+    for instance in lettings:
+        if instance.lettings_progression.epc_certificate:
+            if instance.lettings_properties.epc.first() is None:
+                EPC.objects.create(
+                    lettings_properties=instance.lettings_properties,
+                    date=instance.lettings_progression.epc_certificate_date,
+                    expiry=instance.lettings_progression.epc_certificate_expiry,
+                    created_by=instance.lettings_progression.created_by,
+                    updated_by=instance.lettings_progression.updated_by
+                )
+                # print(instance)
+
+
+def lettings_electrical():
+    lettings = (
+        PropertyProcess.objects.filter(sector="lettings")
+        .exclude(macro_status=0)
+        .exclude(macro_status=1)
+        .exclude(macro_status=2)
+        .exclude(macro_status=3)
+        .exclude(macro_status=4)
+    )
+
+    for instance in lettings:
+        if instance.lettings_progression.electrical_certificate:
+            if instance.lettings_properties.electrical.first() is None:
+                Electrical.objects.create(
+                    lettings_properties=instance.lettings_properties,
+                    date=instance.lettings_progression.electrical_certificate_date,
+                    expiry=instance.lettings_progression.electrical_certificate_expiry,
+                    created_by=instance.lettings_progression.created_by,
+                    updated_by=instance.lettings_progression.updated_by
+                )
+
+
+# python manage.py shell
 # from common.data_adjust import *
-# delete_surrey()
+# lettings_deal_without_renewal()
+# lettings_gas()
+# lettings_epc()
+# lettings_electrical()
