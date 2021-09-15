@@ -15,7 +15,7 @@ from common.functions import (
     sales_progression_percentage,
     lettings_progression_percentage,
 )
-from lettings.models import LettingProperties, Renewals
+from lettings.models import LettingProperties, Renewals, Gas, EPC, Electrical
 from properties.forms import (
     PropertyForm,
     PropertyProcessForm,
@@ -3680,21 +3680,67 @@ def add_exchange_lettings(request, propertyprocess_id):
 
             instance.save()
 
-            lettings_props = LettingProperties.objects.create(
-                propertyprocess=property_process,
-                lettings_service_level=property_process.instruction_letting_extra.lettings_service_level,
-                is_active=True,
-                created_by=request.user.get_full_name(),
-                updated_by=request.user.get_full_name(),
-            )
+            try:
+                lettings_props = LettingProperties.objects.get(
+                    propertyprocess=property_process
+                )
+            except LettingProperties.DoesNotExist:
+                lettings_props = LettingProperties.objects.create(
+                    propertyprocess=property_process,
+                    lettings_service_level=property_process.instruction_letting_extra.lettings_service_level,
+                    is_active=True,
+                    created_by=request.user.get_full_name(),
+                    updated_by=request.user.get_full_name(),
+                )
 
-            Renewals.objects.create(
-                lettings_properties=lettings_props,
-                renewed_on=move_in_date,
-                renewal_date=first_renewal,
-                created_by=request.user.get_full_name(),
-                updated_by=request.user.get_full_name()
-            )
+            try:
+                Renewals.objects.get(
+                    lettings_properties=lettings_props,
+                    renewal_date=first_renewal,
+                )
+            except Renewals.DoesNotExist:
+                Renewals.objects.create(
+                    lettings_properties=lettings_props,
+                    renewed_on=move_in_date,
+                    renewal_date=first_renewal,
+                    created_by=request.user.get_full_name(),
+                    updated_by=request.user.get_full_name(),
+                )
+
+            if (
+                property_process.lettings_progression.lettings_progression_settings.show_gas
+            ):
+                if (
+                    property_process.lettings_progression.gas_safety_certificate
+                ):
+                    if (
+                        property_process.lettings_properties.gas.first()
+                        is None
+                    ):
+                        Gas.objects.create(
+                            lettings_properties=lettings_props,
+                            date=property_process.lettings_progression.gas_safety_certificate_date,
+                            expiry=property_process.lettings_progression.gas_safety_certificate_expiry,
+                        )
+
+            if property_process.lettings_progression.epc_certificate:
+                if property_process.lettings_properties.epc.first() is None:
+                    EPC.objects.create(
+                        lettings_properties=lettings_props,
+                        date=property_process.lettings_progression.epc_certificate_date,
+                        expiry=property_process.lettings_progression.epc_certificate_expiry,
+                    )
+
+            if property_process.lettings_progression.electrical_certificate:
+                if (
+                    property_process.lettings_properties.electrical.first()
+                    is None
+                ):
+                    Electrical.objects.create(
+                        lettings_properties=lettings_props,
+                        date=property_process.lettings_progression.electrical_certificate_date,
+                        expiry=property_process.lettings_progression.electrical_certificate_expiry,
+                    )
 
             instance.send_exchange_mail(request)
 
@@ -5144,16 +5190,62 @@ def lettings_phase_two(request, propertyprocess_id):
                     instance.references_passed_date = datetime.date.today()
 
                 if old_gas != instance.gas_safety_certificate:
+                    if property_process.macro_status == 5:
+                        try:
+                            Gas.objects.get(
+                                lettings_properties=property_process.lettings_properties,
+                                expiry=instance.gas_safety_certificate_expiry
+                            )
+                        except Gas.DoesNotExist:
+                            Gas.objects.create(
+                                lettings_properties=property_process.lettings_properties,
+                                date=property_process.lettings_progression.gas_safety_certificate_date,
+                                expiry=property_process.lettings_progression.gas_safety_certificate_expiry,
+                                created_by=request.user.get_full_name(),
+                                updated_by=request.user.get_full_name()
+                            )
                     old_gas_notes = "Gas Safety Certificate"
                     notes_dict.append(old_gas_notes)
-                    instance.gas_safety_certificate_date = datetime.date.today()
+                    instance.gas_safety_certificate_date = (
+                        datetime.date.today()
+                    )
 
                 if old_elec != instance.electrical_certificate:
+                    if property_process.macro_status == 5:
+                        try:
+                            Electrical.objects.get(
+                                lettings_properties=property_process.lettings_properties,
+                                expiry=instance.electrical_certificate_expiry
+                            )
+                        except Electrical.DoesNotExist:
+                            Electrical.objects.create(
+                                lettings_properties=property_process.lettings_properties,
+                                date=property_process.lettings_progression.electrical_certificate_date,
+                                expiry=property_process.lettings_progression.electrical_certificate_expiry,
+                                created_by=request.user.get_full_name(),
+                                updated_by=request.user.get_full_name()
+                            )
                     old_elec_notes = "Electrical Installation Certificate"
                     notes_dict.append(old_elec_notes)
-                    instance.electrical_certificate_date = datetime.date.today()
+                    instance.electrical_certificate_date = (
+                        datetime.date.today()
+                    )
 
                 if old_epc != instance.epc_certificate:
+                    if property_process.macro_status == 5:
+                        try:
+                            EPC.objects.get(
+                                lettings_properties=property_process.lettings_properties,
+                                expiry=instance.gas_safety_certificate_expiry
+                            )
+                        except EPC.DoesNotExist:
+                            EPC.objects.create(
+                                lettings_properties=property_process.lettings_properties,
+                                date=property_process.lettings_progression.epc_certificate_date,
+                                expiry=property_process.lettings_progression.epc_certificate_expiry,
+                                created_by=request.user.get_full_name(),
+                                updated_by=request.user.get_full_name()
+                            )
                     old_epc_notes = "Energy Performance Certificate"
                     notes_dict.append(old_epc_notes)
                     instance.epc_certificate_date = datetime.date.today()
@@ -5161,7 +5253,9 @@ def lettings_phase_two(request, propertyprocess_id):
                 if old_tenancy != instance.tenancy_certificate_sent:
                     old_tenancy_notes = "Tenancy Agreement Sent For Signature"
                     notes_dict.append(old_tenancy_notes)
-                    instance.tenancy_certificate_sent_date = datetime.date.today()
+                    instance.tenancy_certificate_sent_date = (
+                        datetime.date.today()
+                    )
 
                 instance.save()
 
@@ -5583,8 +5677,7 @@ def edit_eicr_info(request, propertyprocess_id):
 
     if request.method == "POST":
         form = EICRForm(
-            request.POST,
-            instance=property_process.landlord_or_laurels
+            request.POST, instance=property_process.landlord_or_laurels
         )
         if form.is_valid():
             instance = form.save(commit=False)
@@ -5621,9 +5714,7 @@ def edit_eicr_info(request, propertyprocess_id):
         else:
             data["form_is_valid"] = False
     else:
-        form = EICRForm(
-            instance=property_process.landlord_or_laurels
-        )
+        form = EICRForm(instance=property_process.landlord_or_laurels)
 
     context = {
         "form": form,
@@ -5731,8 +5822,7 @@ def edit_epc_info(request, propertyprocess_id):
 
     if request.method == "POST":
         form = EPCForm(
-            request.POST,
-            instance=property_process.landlord_or_laurels
+            request.POST, instance=property_process.landlord_or_laurels
         )
         if form.is_valid():
             instance = form.save(commit=False)
@@ -5769,9 +5859,7 @@ def edit_epc_info(request, propertyprocess_id):
         else:
             data["form_is_valid"] = False
     else:
-        form = EPCForm(
-            instance=property_process.landlord_or_laurels
-        )
+        form = EPCForm(instance=property_process.landlord_or_laurels)
 
     context = {
         "form": form,
@@ -5879,8 +5967,7 @@ def edit_gsc_info(request, propertyprocess_id):
 
     if request.method == "POST":
         form = GSCForm(
-            request.POST,
-            instance=property_process.landlord_or_laurels
+            request.POST, instance=property_process.landlord_or_laurels
         )
         if form.is_valid():
             instance = form.save(commit=False)
@@ -5917,9 +6004,7 @@ def edit_gsc_info(request, propertyprocess_id):
         else:
             data["form_is_valid"] = False
     else:
-        form = GSCForm(
-            instance=property_process.landlord_or_laurels
-        )
+        form = GSCForm(instance=property_process.landlord_or_laurels)
 
     context = {
         "form": form,
@@ -6027,8 +6112,7 @@ def edit_inventory_info(request, propertyprocess_id):
 
     if request.method == "POST":
         form = InventoryForm(
-            request.POST,
-            instance=property_process.landlord_or_laurels
+            request.POST, instance=property_process.landlord_or_laurels
         )
         if form.is_valid():
             instance = form.save(commit=False)
@@ -6065,9 +6149,7 @@ def edit_inventory_info(request, propertyprocess_id):
         else:
             data["form_is_valid"] = False
     else:
-        form = InventoryForm(
-            instance=property_process.landlord_or_laurels
-        )
+        form = InventoryForm(instance=property_process.landlord_or_laurels)
 
     context = {
         "form": form,
@@ -6175,8 +6257,7 @@ def edit_cleaning_info(request, propertyprocess_id):
 
     if request.method == "POST":
         form = CleaningForm(
-            request.POST,
-            instance=property_process.landlord_or_laurels
+            request.POST, instance=property_process.landlord_or_laurels
         )
         if form.is_valid():
             instance = form.save(commit=False)
@@ -6213,9 +6294,7 @@ def edit_cleaning_info(request, propertyprocess_id):
         else:
             data["form_is_valid"] = False
     else:
-        form = CleaningForm(
-            instance=property_process.landlord_or_laurels
-        )
+        form = CleaningForm(instance=property_process.landlord_or_laurels)
 
     context = {
         "form": form,
