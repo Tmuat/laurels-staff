@@ -236,7 +236,7 @@ class Maintenance(UpdatedAndCreated):
         ordering = [
             "lettings_properties__propertyprocess__property__postcode",
             "lettings_properties__propertyprocess__property__address_line_1",
-            "-created"
+            "-target_start_date"
         ]
         verbose_name = "Maintenance"
         verbose_name_plural = "Maintenance"
@@ -315,8 +315,8 @@ class Maintenance(UpdatedAndCreated):
     details = models.TextField(null=True, blank=True)
     contractor = models.CharField(
         max_length=80,
-        null=False,
-        blank=False,
+        null=True,
+        blank=True,
     )
 
     def __str__(self):
