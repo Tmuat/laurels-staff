@@ -94,6 +94,10 @@ body.authentication-bg {
     text-decoration: underline;
 }
 
+.link-hover:hover {
+    color: #2b3af0 !important;
+}
+
 .opacity-0 {
     opacity: 0;
 }
