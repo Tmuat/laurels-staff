@@ -1,0 +1,66 @@
+{% load static i18n %}
+<div class="modal-content green-gradient">
+    <div class="modal-body">
+        <div class="text-center mt-2 mb-3">
+            <span><img src="{% static 'custom/images/logo.png' %}" alt="laurels" height="80"></span>
+        </div>
+        <div class="text-center">
+            <h4 class="text-white">Add Maintenance</h4>
+        </div>
+        <div class="text-center text-white">
+            <form method="post" action="{{ url }}" class="text-center text-white px-2 js-submit-form custom-form-margin">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-12 col-md-4">
+                        {{ form.type|as_crispy_field }}
+                    </div>
+                    <div class="col-12 col-md-4">
+                        {{ form.status|as_crispy_field }}
+                    </div>
+                    <div class="col-12 col-md-4">
+                        {{ form.managed_by|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-4 offset-md-2">
+                        {{ form.billing_status|as_crispy_field }}
+                    </div>
+                    <div class="col-12 col-md-4">
+                        {{ form.reported_by|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6 col-md-3">
+                        {{ form.target_start_date|as_crispy_field }}
+                    </div>
+                    <div class="col-6 col-md-3">
+                        {{ form.actual_start_date|as_crispy_field }}
+                    </div>
+                    <div class="col-6 col-md-3">
+                        {{ form.target_completion_date|as_crispy_field }}
+                    </div>
+                    <div class="col-6 col-md-3">
+                        {{ form.actual_completion_date|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-6">
+                        {{ form.details|as_crispy_field }}
+                    </div>
+                    <div class="col-12 col-md-6">
+                        {{ form.summary|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6 offset-3">
+                        {{ form.contractor|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="my-2 text-center">
+                    <button type="submit" class="btn btn-info" id="add-button">{% trans "Save" %}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- /.modal-content -->

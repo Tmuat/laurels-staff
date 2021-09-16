@@ -1,0 +1,44 @@
+{% load static i18n %}
+<div class="modal-content green-gradient">
+    <div class="modal-body">
+        <div class="text-center mt-2 mb-3">
+            <span><img src="{% static 'custom/images/logo.png' %}" alt="laurels" height="80"></span>
+        </div>
+        <div class="text-center">
+            <h4 class="text-white">Maintenance</h4>
+        </div>
+        <p class="text-white text-center">Below are the maintenance reports listed for this property.</p>
+        <div class="text-center">
+            <button class="mx-auto mb-3 btn btn-primary js-hide-form js-load-large-form " data-url="{% url 'lettings:add_maintenance' managed_property.id %}">
+                Add New Maintenance
+            </button>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm table-centered mb-0 font-14">
+                        <thead class="thead-light">
+                            <tr>
+                                <th class="text-center">Type</th>
+                                <th class="text-center">Status</th>
+                                <th class="text-center">View</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for instance in maintenance_qs %}
+                            <tr>
+                                <td class="text-center">{{ instance.type }}</td>
+                                <td class="text-center">{{ instance.get_status_display }}</td>
+                                <td class="text-center"><a class="mdi mdi-arrow-expand-all" href="{% url 'lettings:view_maintenance' instance.id %}"></a></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <!-- end table-responsive-->
+            </div>
+            <!-- end card-body-->
+        </div>
+    </div>
+</div>
+<!-- /.modal-content -->
