@@ -7,6 +7,7 @@ from lettings.models import (
     EPC,
     Gas,
     Electrical,
+    Maintenance
 )
 
 
@@ -60,6 +61,16 @@ class RenewalsAdminInline(admin.TabularInline):
     ]
 
 
+class MaintenanceAdminInline(admin.TabularInline):
+    model = Maintenance
+    readonly_fields = [
+        "created",
+        "created_by",
+        "updated",
+        "updated_by",
+    ]
+
+
 class LettingPropertiesAdmin(admin.ModelAdmin):
     inlines = [
         RenewalsAdminInline,
@@ -67,6 +78,7 @@ class LettingPropertiesAdmin(admin.ModelAdmin):
         ElectricalAdminInline,
         EPCAdminInline,
         GasAdminInline,
+        MaintenanceAdminInline
     ]
 
     list_display = [
