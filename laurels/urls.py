@@ -16,7 +16,7 @@ urlpatterns = [
     path("region-hub/", include("regionandhub.urls")),
     path("", include("home.urls")),
     path("", include("properties.urls")),
-    path("", include("lettings.urls")),
+    path("lettings/", include("lettings.urls")),
     path("", include("weekends.urls")),
     path("statistics/", include("stats.urls")),
     path("support/", include("support.urls")),
