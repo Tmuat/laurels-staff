@@ -1,0 +1,66 @@
+<ul class="pagination pagination-sm mb-0 justify-content-center">
+    {% if managed_properties.has_previous %}
+        <li class="page-item">
+            <a class="page-link text-dark" href="{% url 'lettings:managed_properites' %}?{% if query %}query={{ query }}&{% endif %}{% if active %}active={{ active }}&{% endif %}page=1" aria-disabled="true"><span
+                    class="mdi mdi-page-first"></span></a>
+        </li>
+        {% if managed_properties.number == last_page %}
+            {% if managed_properties.number != 2 %}
+                <li class="page-item">
+                    <a class="page-link text-dark" href="{% url 'lettings:managed_properites' %}?{% if query %}query={{ query }}&{% endif %}{% if active %}active={{ active }}&{% endif %}page={{ managed_properties.previous_page_number|add:'-1' }}">{{ managed_properties.previous_page_number|add:"-1" }}</a>
+                </li>
+            {% endif %}
+    {% endif %}
+        <li class="page-item">
+            <a class="page-link text-dark" href="{% url 'lettings:managed_properites' %}?{% if query %}query={{ query }}&{% endif %}{% if active %}active={{ active }}&{% endif %}page={{ managed_properties.previous_page_number }}">{{ managed_properties.previous_page_number }}</a>
+        </li>
+    {% else %}
+        <li class="page-item disabled">
+            <a class="page-link text-dark" href="?page=1" aria-disabled="true"><span class="mdi mdi-page-first"></span></a>
+        </li>
+    {% endif %}
+    <li class="page-item active" aria-current="page">
+        <a class="page-link text-dark" href="{% url 'lettings:managed_properites' %}?{% if query %}query={{ query }}&{% endif %}{% if active %}active={{ active }}&{% endif %}page={{ managed_properties.number }}">{{ managed_properties.number }} <span
+                class="sr-only">(current)</span></a>
+    </li>
+    {% if managed_properties.has_next %}
+        <li class="page-item">
+            <a class="page-link text-dark" href="{% url 'lettings:managed_properites' %}?{% if query %}query={{ query }}&{% endif %}{% if active %}active={{ active }}&{% endif %}page={{ managed_properties.next_page_number }}">{{ managed_properties.next_page_number }}</a>
+        </li>
+        {% if managed_properties.number == 1 %}
+            {% if last_page == 2 %}
+                <li class="page-item disabled">
+                    <a class="page-link text-dark" href="?{% if query %}query={{ query }}&{% endif %}{% if active %}active={{ active }}&{% endif %}page=3">3</a>
+                </li>
+            {% else %}
+                <li class="page-item">
+                    <a class="page-link text-dark" href="{% url 'lettings:managed_properites' %}?{% if query %}query={{ query }}&{% endif %}{% if active %}active={{ active }}&{% endif %}page=3">3</a>
+                </li>
+            {% endif %}
+        {% endif %}
+        <li class="page-item">
+            <a class="page-link text-dark" href="{% url 'lettings:managed_properites' %}?{% if query %}query={{ query }}&{% endif %}{% if active %}active={{ active }}&{% endif %}page={{ last_page }}"><span
+                    class="mdi mdi-page-last"></span></a>
+        </li>
+    {% else %}
+        {% if managed_properties.number == 1 %}
+            <li class="page-item disabled">
+                <a class="page-link text-light"
+                        href="?{% if query %}query={{ query }}&{% endif %}{% if active %}active={{ active }}&{% endif %}page=2">2</a>
+            </li>
+            <li class="page-item disabled">
+                <a class="page-link text-light"
+                        href="?{% if query %}query={{ query }}&{% endif %}{% if active %}active={{ active }}&{% endif %}page=3">3</a>
+            </li>
+        {% elif last_page == 2 %}
+            <li class="page-item disabled">
+                <a class="page-link text-light"
+                        href="?{% if query %}query={{ query }}&{% endif %}{% if active %}active={{ active }}&{% endif %}page=3">3</a>
+            </li>
+        {% endif %}
+            <li class="page-item disabled">
+                <a class="page-link text-light"
+                        href="?{% if query %}query={{ query }}&{% endif %}{% if active %}active={{ active }}&{% endif %}page={{ last_page }}"><span class="mdi mdi-page-last"></span></a>
+            </li>
+    {% endif %}
+</ul>
