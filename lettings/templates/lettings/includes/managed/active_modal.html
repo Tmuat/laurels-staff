@@ -1,0 +1,21 @@
+{% load static i18n %}
+<div class="modal-content green-gradient">
+    <div class="modal-body">
+        <div class="text-center mt-2 mb-3">
+            <span><img src="{% static 'custom/images/logo.png' %}" alt="laurels" height="80"></span>
+        </div>
+        <div class="text-center text-white">
+            <h4 class="text-white">Change Managed Property Active/Inactive</h4>
+            <form method="post" action="{% url 'lettings:managed_inactive' managed_property.id %}" class="text-center text-white px-2 js-submit-form custom-form-margin">
+                {% csrf_token %}
+                <input type="hidden" name="active-selection" value="{{ active }}">
+                {% if active == "False" %}
+                    <button class="btn btn-danger mb-3 mt-1">Make Inactive</button>
+                {% else %}
+                    <button class="btn btn-danger mb-3 mt-1">Make Active</button>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+</div>
+<!-- /.modal-content -->
