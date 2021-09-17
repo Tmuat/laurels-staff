@@ -92,6 +92,11 @@ $(document).ready(function () {
         return false;
     };
 
+    // Deals with hiding the base modal
+    var hideBaseModal = function () {
+        $("#base-modal").modal("hide");
+    };
+
     // Deals with rendering a form with AJAX to the large modal
     var loadFormLargeModal = function () {
         var instance = $(this);
@@ -129,6 +134,8 @@ $(document).ready(function () {
     $(".js-load-form").on("click", loadBaseModal);
     $(".js-load-large-form").on("click", loadFormLargeModal);
 
+    $("#base-modal").on("click", ".js-load-large-form", loadFormLargeModal);
+    $("#base-modal").on("click", ".js-hide-form", hideBaseModal);
     $("#base-modal").on("submit", ".js-submit-form", submitForm);
     $("#base-large-modal").on("submit", ".js-submit-form", submitLargeForm);
     $("#base-static-modal").on("submit", ".js-submit-form", submitStaticForm);

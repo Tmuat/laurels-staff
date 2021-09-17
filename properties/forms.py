@@ -28,6 +28,7 @@ from properties.models import (
     ProgressionNotes,
     PropertyChain,
     LettingsLandlordOrLaurelsInformation,
+    PropertyFees,
 )
 from properties.widgets import DateInput, NumberInput
 from regionandhub.models import Hub
@@ -1456,6 +1457,34 @@ class CleaningForm(forms.ModelForm):
             "professional_clean_expected_completion"
         ].widget = DateInput()
         self.fields["professional_clean_phone"].widget = NumberInput()
+
+        for field in self.fields:
+            label = f"{labels[field]}"
+            self.fields[field].label = label
+
+
+class RenewalForm(forms.ModelForm):
+    class Meta:
+        model = PropertyFees
+        fields = (
+            "fee",
+            "price",
+            "date",
+        )
+
+    def __init__(self, *args, **kwargs):
+        """
+        Add new labels
+        """
+
+        super().__init__(*args, **kwargs)
+        labels = {
+            "fee": "Fee",
+            "price": "Price",
+            "date": "Renewal Date",
+        }
+
+        self.fields["date"].widget = DateInput()
 
         for field in self.fields:
             label = f"{labels[field]}"

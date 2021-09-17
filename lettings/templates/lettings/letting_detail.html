@@ -1,0 +1,308 @@
+{% extends "vertical_base.html" %}
+{% load static i18n %}
+{% load humanize %}
+
+{% block head_title %}{% trans "Letting Detail" %}{% endblock head_title %}
+
+{% block content %}
+    <!-- Start Content-->
+    <div class="container-fluid">
+
+        <!-- start page title -->
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box">
+                    <div class="page-title-right">
+                        <ol class="breadcrumb m-0 p-0">
+                            <li class="breadcrumb-item"><a href="{% url 'home:home' %}"><i class="uil-home-alt"></i> Home</a></li>
+                            <li class="breadcrumb-item active"><i class="mdi mdi-home-group"></i> Lettings</li>
+                            <li class="breadcrumb-item active"><i class="mdi mdi-home-lock"></i> Managed Properties</li>
+                            <li class="breadcrumb-item active"><i class="mdi mdi-home-lock"></i> Detail</li>
+                        </ol>
+                    </div>
+                    <h4 class="page-title">Letting Detail</h4>
+                </div>
+            </div>
+        </div>     
+        <!-- end page title --> 
+
+        <!-- header row -->
+        <div class="row">
+            <div class="col-sm-12">
+                <!-- Maintenance -->
+                <div class="card bg-success">
+                    <div class="card-body">
+
+                        <div class="row">
+                            <div class="col-sm-7">
+                                <div class="media">
+                                    <div class="media-body">
+
+                                        <h4 class="mt-1 mb-1 text-white">{{ letting }}</h4>
+
+                                        <ul class="mb-0 list-inline text-light">
+                                            <li class="list-inline-item mr-3">
+                                                <h5 class="mb-1">{{ letting.renewals.first.renewal_date }}</h5>
+                                                <p class="mb-0 font-13 text-white-50">Renewal Date</p>
+                                            </li>
+                                            {% if letting.epc.first %}
+                                            <li class="list-inline-item mr-3">
+                                                <h5 class="mb-1">{{ letting.epc.first.expiry }}</h5>
+                                                <p class="mb-0 font-13 text-white-50">EPC Expiry</p>
+                                            </li>
+                                            {% endif %}
+                                            {% if letting.electrical.first %}
+                                            <li class="list-inline-item mr-3">
+                                                <h5 class="mb-1">{{ letting.electrical.first.expiry }}</h5>
+                                                <p class="mb-0 font-13 text-white-50">Elec Expiry</p>
+                                            </li>
+                                            {% endif %}
+                                            {% if letting.gas.first %}
+                                            <li class="list-inline-item mr-3">
+                                                <h5 class="mb-1">{{ letting.gas.first.expiry }}</h5>
+                                                <p class="mb-0 font-13 text-white-50">Gas Expiry</p>
+                                            </li>
+                                            {% endif %}
+                                        </ul>
+                                    </div>
+                                    <!-- end media-body-->
+                                </div>
+                            </div>
+                            <div class="col-sm-5">
+                                <div class="media">
+                                    <div class="media-body">
+                                        <h4 class="mt-1 mb-1 font-15 text-white">Quick Actions</h4>
+                                        <div id="quick-actions">
+                                            <button 
+                                                data-url="{% url 'lettings:add_gas' letting.id %}" data-toggle="tooltip"
+                                                data-placement="top"
+                                                title="Add Gas"
+                                                class="btn mb-1 btn-info js-load-form">
+                                                    <i class="mdi mdi-gas-cylinder"></i>
+                                            </button>
+                                            <button 
+                                                data-url="{% url 'lettings:add_epc' letting.id %}" data-toggle="tooltip"
+                                                data-placement="top"
+                                                title="Add EPC"
+                                                class="btn mb-1 btn-info js-load-form">
+                                                    <i class="mdi mdi-clipboard-list"></i>
+                                            </button>
+                                            <button 
+                                                data-url="{% url 'lettings:add_electrical' letting.id %}"
+                                                data-toggle="tooltip"
+                                                data-placement="top"
+                                                title="Add Electrical"
+                                                class="btn mb-1 btn-info js-load-form">
+                                                    <i class="mdi mdi-lightbulb"></i>
+                                            </button>
+                                            <button 
+                                                data-url="{% url 'lettings:add_renewal' letting.id %}"
+                                                data-toggle="tooltip"
+                                                data-placement="top"
+                                                title="Add Renewal"
+                                                class="btn mb-1 btn-info js-load-form">
+                                                    <i class="mdi mdi-plus-circle"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <!-- end media-body-->
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end row -->
+                    </div>
+                    <!-- end card-body -->
+                </div>
+                <!--end property / card -->
+            </div>
+            <!-- end col-->
+        </div>
+        <!-- end row -->
+
+        <div class="row">
+            {% if letting.gas.first %}
+            <div class="col-lg-4">
+                <!-- Gas-Information -->
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="header-title mt-0 mb-3">Gas Information</h4>
+                        <div class="text-left">
+                            {% for instance in letting.gas.all %}
+                            <p class="text-muted">
+                                <strong>Added:</strong> 
+                                <span class="ml-1">
+                                    {{ instance.date }}
+                                </span>
+                                
+                                <strong class="ml-3">Expriry:</strong> 
+                                <span class="ml-1">
+                                    {{ instance.expiry }}
+                                </span>
+                            </p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <!-- End Gas-Information -->
+            </div>
+            <!-- end col -->
+            {% endif %}
+
+            {% if letting.epc.first %}
+            {% if letting.gas.first %}
+            <div class="col-lg-4">
+            {% else %}
+            <div class="col-lg-6">
+            {% endif %}
+                <!-- EPC-Information -->
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="header-title mt-0 mb-3">EPC Information</h4>
+                        <div class="text-left">
+                            {% for instance in letting.epc.all %}
+                            <p class="text-muted">
+                                <strong>Added:</strong> 
+                                <span class="ml-1">
+                                    {{ instance.date }}
+                                </span>
+                                
+                                <strong class="ml-3">Expriry:</strong> 
+                                <span class="ml-1">
+                                    {{ instance.expiry }}
+                                </span>
+                            </p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <!-- End EPC-Information -->
+            </div>
+            <!-- end col -->
+            {% endif %}
+
+            {% if letting.electrical.first %}
+            {% if letting.gas.first %}
+            <div class="col-lg-4">
+            {% else %}
+            <div class="col-lg-6">
+            {% endif %}
+                <!-- Electrical-Information -->
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="header-title mt-0 mb-3">Electrical Information</h4>
+                        <div class="text-left">
+                            {% for instance in letting.electrical.all %}
+                            <p class="text-muted">
+                                <strong>Added:</strong> 
+                                <span class="ml-1">
+                                    {{ instance.date }}
+                                </span>
+                                
+                                <strong class="ml-3">Expriry:</strong> 
+                                <span class="ml-1">
+                                    {{ instance.expiry }}
+                                </span>
+                            </p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <!-- End Electrical-Information -->
+            </div>
+            <!-- end col -->
+            {% endif %}
+
+        </div>
+        <!-- end row -->
+
+        <div class="row">
+            <div class="col-12 col-lg-8">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="header-title mt-0 mb-3">Maintenance History</h4>
+                        <div class="table-responsive">
+                            <table class="table table-centered mb-0">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th class="text-center">
+                                            Added
+                                        </th>
+                                        <th class="text-center">
+                                            Type
+                                        </th>
+                                        <th class="text-center">
+                                            Status
+                                        </th>
+                                        <th class="text-center">
+                                            billing_status
+                                        </th>
+                                        <th class="text-center">
+                                            More...
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for instance in letting.maintenance.all %}
+                                        <tr>
+                                            <td class="text-center">
+                                                {{ instance.created|date:"d-m-y" }}
+                                            </td>
+                                            <td class="text-center">
+                                                {{ instance.type }}
+                                            </td>
+                                            <td class="text-center">
+                                                {{ instance.get_status_display }}
+                                            </td>
+                                            
+                                            <td class="text-center">
+                                                {{ instance.get_billing_status_display }}
+                                            </td>
+                                            <td class="text-center">
+                                                <a href="{% url 'lettings:view_maintenance' instance.id %}"><span class="mdi mdi-arrow-expand-all font-16 mr-1"></span></a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <!-- Renewal-Information -->
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="header-title mt-0 mb-3">Renewal Information</h4>
+                        <div class="text-left">
+                            {% for instance in letting.renewals.all %}
+                            <p class="text-muted">
+                                <strong>Renewed On:</strong> 
+                                <span class="ml-1">
+                                    {{ instance.renewed_on }}
+                                </span>
+                                
+                                <strong class="ml-3">Renewal Date:</strong> 
+                                <span class="ml-1">
+                                    {{ instance.renewal_date }}
+                                </span>
+                            </p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <!-- End Renewal-Information -->
+            </div>
+            <!-- end col -->
+        </div>
+        <!-- end row -->
+
+    </div>
+    <!-- container -->
+    {% include 'partials/base-large-modal.html' %}
+    {% include 'partials/base-static-modal.html' %}
+{% endblock %}
+
+{% block extra_javascript %}
+{{ block.super }}
+    <script src="{% static 'lettings/js/lettings-v2.js' %}"></script>
+{% endblock %}

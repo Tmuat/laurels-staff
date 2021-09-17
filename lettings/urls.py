@@ -1,5 +1,81 @@
 from django.urls import path
 
+from lettings.views import (
+    managed_properites,
+    managed_inactive,
+    show_maintenance,
+    add_maintenance,
+    view_maintenance,
+    edit_maintenance,
+    add_maintenance_note,
+    show_letting,
+    add_epc,
+    add_gas,
+    add_electrical,
+    add_renewal
+)
+
 
 app_name = "lettings"
-urlpatterns = []
+urlpatterns = [
+    path(
+        "managed-properties/",
+        managed_properites,
+        name="managed_properites",
+    ),
+    path(
+        "ajax/managed-properties/<lettings_id>/",
+        managed_inactive,
+        name="managed_inactive",
+    ),
+    path(
+        "ajax/maintenance/<lettings_id>/",
+        show_maintenance,
+        name="show_maintenance",
+    ),
+    path(
+        "ajax/add-maintenance/<lettings_id>/",
+        add_maintenance,
+        name="add_maintenance",
+    ),
+    path(
+        "maintenance/<maintenance_id>/",
+        view_maintenance,
+        name="view_maintenance",
+    ),
+    path(
+        "ajax/edit-maintenance/<lettings_id>/<maintenance_id>/",
+        edit_maintenance,
+        name="edit_maintenance",
+    ),
+    path(
+        "ajax/add-maintenance-note/<maintenance_id>/",
+        add_maintenance_note,
+        name="add_maintenance_note",
+    ),
+    path(
+        "property/<lettings_id>/",
+        show_letting,
+        name="show_letting",
+    ),
+    path(
+        "ajax/add-epc/<lettings_id>/",
+        add_epc,
+        name="add_epc",
+    ),
+    path(
+        "ajax/add-gas/<lettings_id>/",
+        add_gas,
+        name="add_gas",
+    ),
+    path(
+        "ajax/add-electrical/<lettings_id>/",
+        add_electrical,
+        name="add_electrical",
+    ),
+    path(
+        "ajax/add-renewal/<lettings_id>/",
+        add_renewal,
+        name="add_renewal",
+    ),
+]

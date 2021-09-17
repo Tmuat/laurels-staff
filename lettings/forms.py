@@ -2,7 +2,11 @@ from django import forms
 
 from lettings.models import (
     Maintenance,
-    MaintenanceNotes
+    MaintenanceNotes,
+    Gas,
+    EPC,
+    Electrical,
+    Renewals
 )
 from properties.widgets import DateInput
 from users.models import Profile
@@ -74,6 +78,107 @@ class MaintenanceNotesForm(forms.ModelForm):
         labels = {
             "notes": "Notes",
         }
+
+        for field in self.fields:
+            label = f"{labels[field]}"
+            self.fields[field].label = label
+
+
+class EPCForm(forms.ModelForm):
+    class Meta:
+        model = EPC
+        fields = (
+            "date",
+            "expiry",
+        )
+
+    def __init__(self, *args, **kwargs):
+        """
+        Add new labels and order foreign key field
+        """
+        super().__init__(*args, **kwargs)
+        labels = {
+            "date": "Date Added",
+            "expiry": "Expiry",
+        }
+
+        self.fields["date"].widget = DateInput()
+        self.fields["expiry"].widget = DateInput()
+
+        for field in self.fields:
+            label = f"{labels[field]}"
+            self.fields[field].label = label
+
+
+class ElectricalForm(forms.ModelForm):
+    class Meta:
+        model = Electrical
+        fields = (
+            "date",
+            "expiry",
+        )
+
+    def __init__(self, *args, **kwargs):
+        """
+        Add new labels and order foreign key field
+        """
+        super().__init__(*args, **kwargs)
+        labels = {
+            "date": "Date Added",
+            "expiry": "Expiry",
+        }
+
+        self.fields["date"].widget = DateInput()
+        self.fields["expiry"].widget = DateInput()
+
+        for field in self.fields:
+            label = f"{labels[field]}"
+            self.fields[field].label = label
+
+
+class GasForm(forms.ModelForm):
+    class Meta:
+        model = Gas
+        fields = (
+            "date",
+            "expiry",
+        )
+
+    def __init__(self, *args, **kwargs):
+        """
+        Add new labels and order foreign key field
+        """
+        super().__init__(*args, **kwargs)
+        labels = {
+            "date": "Date Added",
+            "expiry": "Expiry",
+        }
+
+        self.fields["date"].widget = DateInput()
+        self.fields["expiry"].widget = DateInput()
+
+        for field in self.fields:
+            label = f"{labels[field]}"
+            self.fields[field].label = label
+
+
+class RenewalDateForm(forms.ModelForm):
+    class Meta:
+        model = Renewals
+        fields = (
+            "renewal_date",
+        )
+
+    def __init__(self, *args, **kwargs):
+        """
+        Add new labels and order foreign key field
+        """
+        super().__init__(*args, **kwargs)
+        labels = {
+            "renewal_date": "Next Renewal Date",
+        }
+
+        self.fields["renewal_date"].widget = DateInput()
 
         for field in self.fields:
             label = f"{labels[field]}"

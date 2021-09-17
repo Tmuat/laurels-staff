@@ -1,0 +1,123 @@
+{% extends "vertical_base.html" %}
+{% load static i18n %}
+{% load humanize %}
+
+{% block head_title %}{% trans "Managed Properties" %}{% endblock head_title %}
+
+{% block content %}
+    <!-- Start Content-->
+    <div class="container-fluid">
+
+        <div class="row">
+            <div class="col">
+                <!-- start page title -->
+                <div class="page-title-box">
+                    <div class="page-title-right">
+                        <ol class="breadcrumb m-0 p-0">
+                            <li class="breadcrumb-item"><a href="{% url 'home:home' %}"><i class="uil-home-alt"></i> Home</a></li>
+                            <li class="breadcrumb-item active"><i class="mdi mdi-home-group"></i> Lettings</li>
+                            <li class="breadcrumb-item active"><i class="mdi mdi-home-lock"></i> Managed Properties</li>
+                        </ol>
+                    </div>
+                    <div class="text-center text-sm-left">
+                        <h4 class="page-title">Managed Properties</h4>
+                    </div>
+                </div>
+                <!-- end page title -->
+            </div>
+        </div>
+        <!-- end row-->
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row mb-2">
+                            <div class="col col-md-6 col-lg-4">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="Search Managed Properties" name="query" id="progression-query">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-success" type="submit" id="query-search">Find</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="text-right mb-2 mb-md-3">
+                                    <div class="btn-group ml-1 mb-2">
+                                        <a href="?{% if query %}query={{ query }}&{% endif %}active=true" class="btn btn-sm {% if active %}btn-success text-white{% else %}btn-light text-dark{% endif %}">Active</a>
+                                        <a href="?{% if query %}query={{ query }}&{% endif %}active=false" class="btn btn-sm {% if not active %}btn-success text-white{% else %}btn-light text-dark{% endif %}">Inactive</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-centered mb-0">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>
+                                            {% if query %}Search - "{{ query }}"{% endif %}
+                                        </th>
+                                        <th class="text-center">
+                                            Service Level
+                                        </th>
+                                        <th class="text-center">
+                                            Renewal Date
+                                        </th>
+                                        <th style="width: 7%;" class="text-center">
+                                            Maintenance?
+                                        </th>
+                                        <th style="width: 7%;" class="text-center">
+                                            Active?
+                                        </th>
+                                        <th style="width: 7%;" class="text-center">
+                                            Expand
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for instance in managed_properties %}
+                                        <tr>
+                                            <td style="width: 30%;">
+                                                {{ instance }}
+                                            </td>
+                                            <td class="text-center">
+                                                {{ instance.get_lettings_service_level_display }}
+                                            </td>
+                                            <td class="text-center">
+                                                {{ instance.renewals.last.renewal_date }}
+                                            </td>
+                                            <td class="text-center">
+                                                <span class="pointer text-primary link-hover mdi mdi-hammer-wrench font-16 mr-1 js-load-form" data-url="{% url 'lettings:show_maintenance' instance.id %}"></span>
+                                            </td>
+                                            <td class="text-center">
+                                                <span class="pointer text-primary link-hover mdi mdi-home-export-outline font-16 mr-1 js-load-form" data-url="{% url 'lettings:managed_inactive' instance.id %}{% if active %}?active=False{% else %}?active=True{% endif %}"></span>
+                                            </td>
+                                            <td class="text-center">
+                                                <a href="{% url 'lettings:show_letting' instance.id %}"><span class="mdi mdi-arrow-expand-all font-16 mr-1"></span></a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row">
+                            <div class="col text-center mt-3 mt-sm-2">
+                                {% include 'lettings/includes/managed_pagination.html' %}
+                            </div>
+                        </div>
+                    </div> <!-- end card-body-->
+                </div> <!-- end card-->
+            </div> <!-- end col -->
+        </div>
+        <!-- end row -->         
+
+    </div>
+    <!-- container -->
+    {% include 'partials/base-static-modal.html' %}
+    {% include 'partials/base-large-modal.html' %}
+{% endblock %}
+
+{% block extra_javascript %}
+    <script src="{% static 'lettings/js/lettings-v2.js' %}"></script>
+{% endblock %}
