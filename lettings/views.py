@@ -501,6 +501,8 @@ def add_electrical(request, lettings_id):
     return JsonResponse(data)
 
 
+@otp_required
+@login_required
 def add_renewal(request, lettings_id):
     """
     Add a lettings renewal.
@@ -545,7 +547,7 @@ def add_renewal(request, lettings_id):
             initial={
                 "fee": float(property_process.property_fees.first().fee),
                 "price": float(property_process.property_fees.first().price),
-                "date": datetime.date.today,
+                "date": datetime.date.today(),
             }
         )
         renewal_form = RenewalDateForm()
@@ -561,3 +563,35 @@ def add_renewal(request, lettings_id):
         request=request,
     )
     return JsonResponse(data)
+
+
+@otp_required
+@login_required
+def maintenance_board(request):
+    """A view to return the maintenance page"""
+
+    maintenance = (
+        Maintenance.objects
+        .exclude(status="completed")
+        .exclude(status="cancelled")
+    )
+
+    today = datetime.date.today()
+
+    time_since = []
+
+    for instance in maintenance:
+        data = {}
+        data["id"] = instance.id
+        date_created = instance.created.date()
+        delta = today-date_created
+        data["time_since"] = delta.days
+        time_since.append(data)
+
+    context = {
+        "maintenance": maintenance,
+        "time_since": time_since,
+        "today": today
+    }
+
+    return render(request, "lettings/maintenance_board.html", context)

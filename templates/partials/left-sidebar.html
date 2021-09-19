@@ -69,16 +69,16 @@
                     <span class="menu-arrow"></span>
                 </a>
                 <ul class="side-nav-second-level" aria-expanded="false">
-                    <li {% if request.resolver_match.url_name == 'property_list' %}class="active"{% endif %}>
+                    <!-- <li {% if request.resolver_match.url_name == 'property_list' %}class="active"{% endif %}>
                         <a href="{% url 'properties:property_list' %}">{% trans "Lettings Home" %}</a>
-                    </li>
+                    </li> -->
                     <li {% if request.resolver_match.url_name == 'managed_properites' %}class="active"{% endif %}>
                         <a href="{% url 'lettings:managed_properites' %}">{% trans "Managed Properties" %}</a>
                     </li>
-                    <li {% if request.resolver_match.url_name == 'offer_board' %}class="active mm-active"{% endif %}>
+                    <li {% if request.resolver_match.url_name == 'maintenance_board' %}class="active mm-active"{% endif %}>
                         <a 
-                            href="{% url 'home:offer_board' %}?hub={{ request.user.profile.hub.first.slug }}"
-                            {% if request.resolver_match.url_name == 'offer_board' %}class="active"{% endif %}
+                            href="{% url 'lettings:maintenance_board' %}"
+                            {% if request.resolver_match.url_name == 'maintenance_board' %}class="active"{% endif %}
                         >{% trans "Maintenance Board" %}</a>
                     </li>
                 </ul>

@@ -12,7 +12,8 @@ from lettings.views import (
     add_epc,
     add_gas,
     add_electrical,
-    add_renewal
+    add_renewal,
+    maintenance_board
 )
 
 
@@ -77,5 +78,10 @@ urlpatterns = [
         "ajax/add-renewal/<lettings_id>/",
         add_renewal,
         name="add_renewal",
+    ),
+    path(
+        "maintenance-board/",
+        maintenance_board,
+        name="maintenance_board",
     ),
 ]

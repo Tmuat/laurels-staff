@@ -1,0 +1,259 @@
+{% extends "vertical_base.html" %}
+{% load static i18n %}
+{% load humanize %}
+
+{% block head_title %}{% trans "Maintenance Board" %}{% endblock head_title %}
+
+{% block content %}
+    <!-- Start Content-->
+    <div class="container-fluid">
+        
+        <!-- start page title -->
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box">
+                    <div class="page-title-right">
+                        <ol class="breadcrumb m-0 p-0">
+                            <li class="breadcrumb-item"><a href="{% url 'home:home' %}"><i class="uil-home-alt"></i> Home</a></li>
+                            <li class="breadcrumb-item active"><i class="mdi mdi-home-group"></i> Lettings</li>
+                            <li class="breadcrumb-item active"><i class="mdi mdi-home-lock"></i> Maintenance Board</li>
+                        </ol>
+                    </div>
+                    <h4 class="page-title">Maintenance Board</h4>
+                </div>
+            </div>
+        </div>     
+        <!-- end page title -->
+
+        <div class="row">
+            <div class="col-12">
+                <div class="row">
+                    <div class="col-12 col-lg-6 col-xl-3">
+                        <div class="custom-tasks" >
+                            <h5 class="mt-0 task-header text-uppercase">0-3</h5>
+                            
+                            <div class="custom-task-list-items row">
+                                {% for instance in maintenance %}
+                                    {% for time_instance in time_since %}
+                                        {% if instance.id == time_instance.id %}
+                                            {% if time_instance.time_since < 4 %}
+                                                <div class="col-12 mt-2">
+                                                    <!-- Maintenance Item -->
+                                                    <div class="card mb-0 h-100">
+                                                        <div class="card-body p-2">
+                                                            <small class="float-right text-muted">Days: {{ time_instance.time_since }}</small>
+                                                            <span class="badge badge-success">
+                                                                {{ instance.get_status_display }}
+                                                            </span>
+                                                            <h5 class="mt-2 mb-0">
+                                                                {{ instance.type }}
+                                                            </h5>
+                                                            <p class="mb-0">
+                                                                <span class="pr-2 d-inline-block text-muted">
+                                                                    <small>Managed By: {{ instance.managed_by.user.initials }}</small>
+                                                                </span>
+                                                            </p>
+                                                            <p class="mb-0">
+                                                                <span class="pr-2 d-inline-block text-muted">
+                                                                    <small>Billing: {{ instance.get_billing_status_display }}</small>
+                                                                </span>
+                                                            </p>
+
+                                                            <div class="dropdown float-right">
+                                                                <a href="#" class="dropdown-toggle text-muted arrow-none" data-toggle="dropdown" aria-expanded="false">
+                                                                    <i class="mdi mdi-dots-vertical font-18"></i>
+                                                                </a>
+                                                                <div class="dropdown-menu dropdown-menu-right">
+                                                                    <!-- item-->
+                                                                    <a href="{% url 'lettings:view_maintenance' instance.id %}" class="dropdown-item"><i class="mdi mdi-arrow-expand-all mr-1"></i>Go To Maintenance</a>
+                                                                    <!-- End item-->
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!-- end card-body -->
+                                                    </div>
+                                                    <!-- Maintenance Item End -->
+                                                </div>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endfor %}
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 col-xl-3">
+                        <div class="custom-tasks" >
+                            <h5 class="mt-0 task-header text-uppercase">4-7</h5>
+                            
+                            <div class="custom-task-list-items row">
+                                {% for instance in maintenance %}
+                                    {% for time_instance in time_since %}
+                                        {% if instance.id == time_instance.id %}
+                                            {% if time_instance.time_since > 3 and time_instance.time_since < 8 %}
+                                                <div class="col-12 mt-2">
+                                                    <!-- Maintenance Item -->
+                                                    <div class="card mb-0 h-100">
+                                                        <div class="card-body p-2">
+                                                            <small class="float-right text-muted">Days: {{ time_instance.time_since }}</small>
+                                                            <span class="badge badge-success">
+                                                                {{ instance.get_status_display }}
+                                                            </span>
+                                                            <h5 class="mt-2 mb-0">
+                                                                {{ instance.type }}
+                                                            </h5>
+                                                            <p class="mb-0">
+                                                                <span class="pr-2 d-inline-block text-muted">
+                                                                    <small>Managed By: {{ instance.managed_by.user.initials }}</small>
+                                                                </span>
+                                                            </p>
+                                                            <p class="mb-0">
+                                                                <span class="pr-2 d-inline-block text-muted">
+                                                                    <small>Billing: {{ instance.get_billing_status_display }}</small>
+                                                                </span>
+                                                            </p>
+
+                                                            <div class="dropdown float-right">
+                                                                <a href="#" class="dropdown-toggle text-muted arrow-none" data-toggle="dropdown" aria-expanded="false">
+                                                                    <i class="mdi mdi-dots-vertical font-18"></i>
+                                                                </a>
+                                                                <div class="dropdown-menu dropdown-menu-right">
+                                                                    <!-- item-->
+                                                                    <a href="{% url 'lettings:view_maintenance' instance.id %}" class="dropdown-item"><i class="mdi mdi-arrow-expand-all mr-1"></i>Go To Maintenance</a>
+                                                                    <!-- End item-->
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!-- end card-body -->
+                                                    </div>
+                                                    <!-- Maintenance Item End -->
+                                                </div>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endfor %}
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 col-xl-3">
+                        <div class="custom-tasks" >
+                            <h5 class="mt-0 task-header text-uppercase">8-14</h5>
+                            
+                            <div class="custom-task-list-items row">
+                                {% for instance in maintenance %}
+                                    {% for time_instance in time_since %}
+                                        {% if instance.id == time_instance.id %}
+                                            {% if time_instance.time_since > 7 and time_instance.time_since < 15 %}
+                                                <div class="col-12 mt-2">
+                                                    <!-- Maintenance Item -->
+                                                    <div class="card mb-0 h-100">
+                                                        <div class="card-body p-2">
+                                                            <small class="float-right text-muted">Days: {{ time_instance.time_since }}</small>
+                                                            <span class="badge badge-success">
+                                                                {{ instance.get_status_display }}
+                                                            </span>
+                                                            <h5 class="mt-2 mb-0">
+                                                                {{ instance.type }}
+                                                            </h5>
+                                                            <p class="mb-0">
+                                                                <span class="pr-2 d-inline-block text-muted">
+                                                                    <small>Managed By: {{ instance.managed_by.user.initials }}</small>
+                                                                </span>
+                                                            </p>
+                                                            <p class="mb-0">
+                                                                <span class="pr-2 d-inline-block text-muted">
+                                                                    <small>Billing: {{ instance.get_billing_status_display }}</small>
+                                                                </span>
+                                                            </p>
+
+                                                            <div class="dropdown float-right">
+                                                                <a href="#" class="dropdown-toggle text-muted arrow-none" data-toggle="dropdown" aria-expanded="false">
+                                                                    <i class="mdi mdi-dots-vertical font-18"></i>
+                                                                </a>
+                                                                <div class="dropdown-menu dropdown-menu-right">
+                                                                    <!-- item-->
+                                                                    <a href="{% url 'lettings:view_maintenance' instance.id %}" class="dropdown-item"><i class="mdi mdi-arrow-expand-all mr-1"></i>Go To Maintenance</a>
+                                                                    <!-- End item-->
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!-- end card-body -->
+                                                    </div>
+                                                    <!-- Maintenance Item End -->
+                                                </div>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endfor %}
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 col-xl-3">
+                        <div class="custom-tasks" >
+                            <h5 class="mt-0 task-header text-uppercase">14+</h5>
+                            
+                            <div class="custom-task-list-items row">
+                                {% for instance in maintenance %}
+                                    {% for time_instance in time_since %}
+                                        {% if instance.id == time_instance.id %}
+                                            {% if time_instance.time_since > 14 %}
+                                                <div class="col-12 mt-2">
+                                                    <!-- Maintenance Item -->
+                                                    <div class="card mb-0 h-100">
+                                                        <div class="card-body p-2">
+                                                            <small class="float-right text-muted">Days: {{ time_instance.time_since }}</small>
+                                                            <span class="badge badge-success">
+                                                                {{ instance.get_status_display }}
+                                                            </span>
+                                                            <h5 class="mt-2 mb-0">
+                                                                {{ instance.type }}
+                                                            </h5>
+                                                            <p class="mb-0">
+                                                                <span class="pr-2 d-inline-block text-muted">
+                                                                    <small>Managed By: {{ instance.managed_by.user.initials }}</small>
+                                                                </span>
+                                                            </p>
+                                                            <p class="mb-0">
+                                                                <span class="pr-2 d-inline-block text-muted">
+                                                                    <small>Billing: {{ instance.get_billing_status_display }}</small>
+                                                                </span>
+                                                            </p>
+
+                                                            <div class="dropdown float-right">
+                                                                <a href="#" class="dropdown-toggle text-muted arrow-none" data-toggle="dropdown" aria-expanded="false">
+                                                                    <i class="mdi mdi-dots-vertical font-18"></i>
+                                                                </a>
+                                                                <div class="dropdown-menu dropdown-menu-right">
+                                                                    <!-- item-->
+                                                                    <a href="{% url 'lettings:view_maintenance' instance.id %}" class="dropdown-item"><i class="mdi mdi-arrow-expand-all mr-1"></i>Go To Maintenance</a>
+                                                                    <!-- End item-->
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!-- end card-body -->
+                                                    </div>
+                                                    <!-- Maintenance Item End -->
+                                                </div>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endfor %}
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div> <!-- end .board-->
+            </div> <!-- end col -->
+        </div>
+        <!-- end row-->
+
+    </div> <!-- container --> 
+    {% include 'partials/base-large-modal.html' %}
+    {% include 'partials/base-static-modal.html' %}
+{% endblock %}
+
+{% block extra_javascript %}
+    <script src="{% static 'home/js/home-v2.js' %}"></script>
+{% endblock %}
