@@ -3012,6 +3012,15 @@ def re_let(request, propertyprocess_id):
             instance.save()
 
             if property_process.sector == PropertyProcess.LETTINGS:
+
+                lettings_management = get_object_or_404(
+                    LettingProperties, propertyprocess=property_process
+                )
+
+                lettings_management.propertyprocess = new_property_process
+                lettings_management.updated_by=request.user.get_full_name()
+                lettings_management.save()
+
                 lettings_extra_instance = instruction_lettings_extra_form.save(
                     commit=False
                 )

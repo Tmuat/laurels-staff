@@ -128,6 +128,17 @@ $(document).ready(function () {
         });
     };
 
+    $('#query-search').on("click", function() {
+        var currentUrl = new URL(window.location);
+
+        var selectedVal = $("#managed-query").val();
+
+        currentUrl.searchParams.delete("page");
+        currentUrl.searchParams.set("query", selectedVal);
+
+        window.location.replace(currentUrl);
+    })
+
     // Binding functions
     // Links
 
