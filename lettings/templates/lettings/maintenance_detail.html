@@ -140,11 +140,26 @@
                                 </span>
                             </p>
 
-                            <p class="text-muted mb-1"><strong>Details...</strong></p>
-                            <p class="text-muted">{{ maintenance.details }}</p>
+                            <p class="text-muted"><strong>Cost:</strong>
+                                {% if maintenance.cost %}
+                                    <span class="ml-2">
+                                        £{{ maintenance.cost }}
+                                    </span>
+                                {% endif %}
+                            </p>
+
+                            <p class="text-muted mb-1"><strong>Next Steps...</strong></p>
+                            {% if maintenance.next_steps %}
+                                <p class="text-muted">{{ maintenance.next_steps }}</p>
+                            {% endif %}
 
                             <p class="text-muted mb-1"><strong>Summary...</strong></p>
-                            <p class="text-muted">{{ maintenance.summary }}</p>
+                            {% if maintenance.summary %}
+                                <p class="text-muted mb-1">{{ maintenance.summary }}</p>
+                            {% endif %}
+
+                            <p class="text-muted mb-1"><strong>Details...</strong></p>
+                            <p class="text-muted">{{ maintenance.details }}</p>
 
                         </div>
                     </div>

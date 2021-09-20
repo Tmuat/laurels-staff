@@ -27,7 +27,9 @@ class MaintenanceForm(forms.ModelForm):
             "actual_completion_date",
             "summary",
             "details",
-            "contractor"
+            "contractor",
+            "cost",
+            "next_steps"
         )
 
     def __init__(self, *args, **kwargs):
@@ -51,6 +53,8 @@ class MaintenanceForm(forms.ModelForm):
             "summary": "Summary",
             "details": "Details",
             "contractor": "Contractor",
+            "cost": "Cost?",
+            "next_steps": "Next Steps",
         }
 
         self.fields["target_start_date"].widget = DateInput()
