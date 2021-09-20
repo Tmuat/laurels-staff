@@ -98,8 +98,8 @@
 {{ hub.slug|json_script:"id_hub" }}
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.9.0/main.min.js"></script>
 {% if request.user.profile.director %}
-    <script src="{% static 'weekends/js/edit_calendar-v2.js' %}"></script>
+    <script src="{% static 'weekends/js/edit_calendar-v3.js' %}"></script>
 {% else %}
-    <script src="{% static 'weekends/js/view_calendar-v2.js' %}"></script>
+    <script src="{% static 'weekends/js/view_calendar-v3.js' %}"></script>
 {% endif %}
 {% endblock %}
