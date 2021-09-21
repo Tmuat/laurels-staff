@@ -1178,7 +1178,7 @@ class ExchangeMoveLettings(UpdatedAndCreated):
     def send_exchange_mail(self, request, **kwargs):
         no_reply_email = settings.NO_REPLY_EMAIL
         admin_email = settings.ADMIN_EMAIL
-        address = str(self.exchange.propertyprocess.__str__)
+        address = str(self.exchange.propertyprocess.__str__())
         context = kwargs
         context.update(
             {
