@@ -159,6 +159,7 @@ $(document).ready(function () {
 
     $(".js-load-form").on("click", loadBaseModal);
     $(".js-load-large-form").on("click", loadFormLargeModal);
+    $(".js-load-large-scrollable-form").on("click", loadFormLargeScrollableModal);
 
     $("#base-modal").on("click", ".js-load-large-form", loadFormLargeModal);
     $("#base-modal").on("click", ".js-load-large-scrollable-form", loadFormLargeScrollableModal);
