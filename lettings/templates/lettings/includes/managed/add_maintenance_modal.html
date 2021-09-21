@@ -45,22 +45,19 @@
                 </div>
                 <div class="row">
                     <div class="col-12 col-md-6">
-                        {{ form.summary|as_crispy_field }}
+                        {{ form.cost|as_crispy_field }}
                     </div>
                     <div class="col-12 col-md-6">
                         {{ form.contractor|as_crispy_field }}
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-12 col-md-6">
-                        {{ form.cost|as_crispy_field }}
-                    </div>
-                    <div class="col-12 col-md-6">
-                        {{ form.next_steps|as_crispy_field }}
+                    <div class="col-12 col-md-8 offset-md-2">
+                        {{ form.summary|as_crispy_field }}
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-8 offset-2">
+                    <div class="col-md-8 offset-md-2">
                         {{ form.details|as_crispy_field }}
                     </div>
                 </div>

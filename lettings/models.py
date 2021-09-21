@@ -312,7 +312,6 @@ class Maintenance(UpdatedAndCreated):
         blank=True,
     )
     summary = models.CharField(max_length=200, null=True, blank=True)
-    next_steps = models.CharField(max_length=200, null=True, blank=True)
     cost = models.PositiveIntegerField(null=True, blank=True)
     details = models.TextField(null=True, blank=True)
     contractor = models.CharField(

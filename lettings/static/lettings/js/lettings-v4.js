@@ -111,6 +111,21 @@ $(document).ready(function () {
         });
         return false;
     };
+    // Deals with rendering a form with AJAX to the large modal thats scrollable
+    var loadFormLargeScrollableModal = function () {
+        var instance = $(this);
+        $.ajax({
+            url: instance.attr("data-url"),
+            type: 'get',
+            dataType: 'json',
+            success: function (data) {
+                $("#base-large-modal").modal("show");
+                $("#base-large-modal .modal-dialog").addClass("modal-dialog-scrollable");
+                $("#base-large-modal .modal-dialog").html(data.html_modal);
+            }
+        });
+        return false;
+    };
 
     // Deals with rendering a form with AJAX to the base static modal
     var loadFormBaseStaticModal = function () {
@@ -146,6 +161,7 @@ $(document).ready(function () {
     $(".js-load-large-form").on("click", loadFormLargeModal);
 
     $("#base-modal").on("click", ".js-load-large-form", loadFormLargeModal);
+    $("#base-modal").on("click", ".js-load-large-scrollable-form", loadFormLargeScrollableModal);
     $("#base-modal").on("click", ".js-hide-form", hideBaseModal);
     $("#base-modal").on("submit", ".js-submit-form", submitForm);
     $("#base-large-modal").on("submit", ".js-submit-form", submitLargeForm);
