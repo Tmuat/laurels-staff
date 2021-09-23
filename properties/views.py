@@ -5208,7 +5208,7 @@ def lettings_phase_two(request, propertyprocess_id):
                         except Gas.DoesNotExist:
                             Gas.objects.create(
                                 lettings_properties=property_process.lettings_properties,
-                                date=property_process.lettings_progression.gas_safety_certificate_date,
+                                date=datetime.date.today(),
                                 expiry=property_process.lettings_progression.gas_safety_certificate_expiry,
                                 created_by=request.user.get_full_name(),
                                 updated_by=request.user.get_full_name()
@@ -5229,7 +5229,7 @@ def lettings_phase_two(request, propertyprocess_id):
                         except Electrical.DoesNotExist:
                             Electrical.objects.create(
                                 lettings_properties=property_process.lettings_properties,
-                                date=property_process.lettings_progression.electrical_certificate_date,
+                                date=datetime.date.today(),
                                 expiry=property_process.lettings_progression.electrical_certificate_expiry,
                                 created_by=request.user.get_full_name(),
                                 updated_by=request.user.get_full_name()
@@ -5250,7 +5250,7 @@ def lettings_phase_two(request, propertyprocess_id):
                         except EPC.DoesNotExist:
                             EPC.objects.create(
                                 lettings_properties=property_process.lettings_properties,
-                                date=property_process.lettings_progression.epc_certificate_date,
+                                date=datetime.date.today(),
                                 expiry=property_process.lettings_progression.epc_certificate_expiry,
                                 created_by=request.user.get_full_name(),
                                 updated_by=request.user.get_full_name()
