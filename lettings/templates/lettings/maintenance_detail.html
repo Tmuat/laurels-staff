@@ -107,8 +107,26 @@
                 <!-- Maintenance-Information -->
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="header-title mt-0 mb-3">Maintenance Information</h4>
+                        <h4 class="header-title mt-0 mb-3">
+                            Maintenance Information
+                        </span>
+                        </h4>
                         <div class="text-left">
+                            
+                            <p class="text-muted"><strong>Priority:</strong> 
+                                <span class="ml-2">
+                                    {% if maintenance.priority == 1 %}
+                                        <span class="text-danger">Urgent
+                                    {% elif maintenance.priority == 2 %}
+                                        <span class="text-warning">High
+                                    {% elif maintenance.priority == 3 %}
+                                        <span class="text-success">Medium
+                                    {% elif maintenance.priority == 3 %}
+                                        <span class="text-info">Low
+                                    {% endif %}
+                                </span>
+                            </p>
+
                             <p class="text-muted"><strong>Target Start Date:</strong> 
                                 <span class="ml-2">
                                     {{ maintenance.target_start_date }}

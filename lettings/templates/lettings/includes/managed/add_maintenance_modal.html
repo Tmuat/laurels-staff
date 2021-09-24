@@ -18,11 +18,14 @@
                         {{ form.status|as_crispy_field }}
                     </div>
                     <div class="col-12 col-md-4">
-                        {{ form.managed_by|as_crispy_field }}
+                        {{ form.priority|as_crispy_field }}
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-12 col-md-4 offset-md-2">
+                    <div class="col-12 col-md-4">
+                        {{ form.managed_by|as_crispy_field }}
+                    </div>
+                    <div class="col-12 col-md-4">
                         {{ form.billing_status|as_crispy_field }}
                     </div>
                     <div class="col-12 col-md-4">

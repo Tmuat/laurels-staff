@@ -29,6 +29,7 @@ class MaintenanceForm(forms.ModelForm):
             "details",
             "contractor",
             "cost",
+            "priority"
         )
 
     def __init__(self, *args, **kwargs):
@@ -53,6 +54,7 @@ class MaintenanceForm(forms.ModelForm):
             "details": "Details",
             "contractor": "Contractor",
             "cost": "Cost",
+            "priority": "Priority",
         }
 
         self.fields["target_start_date"].widget = DateInput()

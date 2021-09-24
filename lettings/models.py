@@ -275,6 +275,13 @@ class Maintenance(UpdatedAndCreated):
         (CON_BILLS_US, "Contractor Bills Us"),
     ]
 
+    PRIORITY = [
+        (1, "Urgent"),
+        (2, "High"),
+        (3, "Medium"),
+        (4, "Low")
+    ]
+
     lettings_properties = models.ForeignKey(
         LettingProperties, on_delete=models.CASCADE, related_name="maintenance"
     )
@@ -294,6 +301,9 @@ class Maintenance(UpdatedAndCreated):
         max_length=50,
         null=False,
         blank=False,
+    )
+    priority = models.PositiveIntegerField(
+        null=True, blank=False, choices=PRIORITY
     )
     target_start_date = models.DateField(
         null=True,

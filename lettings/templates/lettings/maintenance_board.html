@@ -45,9 +45,32 @@
                                                             <span class="badge badge-success">
                                                                 {{ instance.get_status_display }}
                                                             </span>
+                                                            {% if instance.priority == 1 %}
+                                                                <span class="badge badge-danger">Urgent
+                                                            {% elif instance.priority == 2 %}
+                                                                <span class="badge badge-warning">High
+                                                            {% elif instance.priority == 3 %}
+                                                                <span class="badge badge-success">Medium
+                                                            {% elif instance.priority == 3 %}
+                                                                <span class="badge badge-info">Low
+                                                            {% endif %}
+                                                            </span>
                                                             <h5 class="mt-2 mb-0">
                                                                 {{ instance.type }}
                                                             </h5>
+                                                            <h6 class="mt-2">
+                                                                {% if instance.lettings_properties.propertyprocess.property.calculate_str_length > 25 %}
+                                                                    <span 
+                                                                        class="pointer"
+                                                                        data-toggle="tooltip"
+                                                                        data-placement="top"
+                                                                        title="{{ instance.lettings_properties.propertyprocess.property.address_lines }}">
+                                                                            {{ instance.lettings_properties.propertyprocess.property.address_lines|truncatechars:25 }}
+                                                                    </span>
+                                                                {% else %}
+                                                                    {{ instance.lettings_properties.propertyprocess.property.address_lines }}
+                                                                {% endif %}
+                                                            </h6>
                                                             <p class="mb-0">
                                                                 <span class="pr-2 d-inline-block text-muted">
                                                                     <small>Managed By: {{ instance.managed_by.user.initials }}</small>
