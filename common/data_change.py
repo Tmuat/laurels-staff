@@ -49,6 +49,8 @@ from users.models import UserTargets, UserTargetsByYear
 
 # python3 manage.py loaddata common/data_dump/master.json
 
+# python3 manage.py loaddata master.json
+
 # ------------------------------------------------------------------------------
 # FUNCITONS
 # ------------------------------------------------------------------------------
