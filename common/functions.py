@@ -289,9 +289,12 @@ def date_calc(date, filter):
             start_month = 10
             start_year = start_year - 1
     elif filter == "previous_year":
+        print(start_year)
         if start_month < 10:
             start_month = 10
             start_year = start_year - 2
+        else:
+            start_year = start_year - 1
 
     if start_month == 10:
         company_year += 1
@@ -313,6 +316,7 @@ def date_calc(date, filter):
         end_month = start_month + 2
 
     start_date = datetime.date(start_year, start_month, 1)
+    print(start_date)
 
     if filter == "year_to_date":
         end_date = (
