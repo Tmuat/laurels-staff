@@ -874,7 +874,10 @@ def hub_extra_stats(request):
         )
     )
     days_and_time = sales_days["avg_days"]
-    sales_weeks = days_and_time.days / 7
+    if days_and_time is None:
+        sales_weeks = 0
+    else:
+        sales_weeks = days_and_time.days / 7
 
     hub_sales_days = (
         exchanges_sales.values(ex_hub)
@@ -903,8 +906,11 @@ def hub_extra_stats(request):
             F("move_in_date") - F("exchange__propertyprocess__deal__date")
         )
     )
-    days_and_time = lettings_days["avg_days"]
-    lettings_weeks = days_and_time.days / 7
+    lettings_days_and_time = lettings_days["avg_days"]
+    if lettings_days_and_time is None:
+        lettings_weeks = 0
+    else:
+        lettings_weeks = lettings_days_and_time.days / 7
 
     for instance in instruction_reductions:
         if instance.reduced > 0:
