@@ -2,7 +2,7 @@ import datetime
 
 from lettings.models import Renewals, Gas, EPC, Electrical
 from regionandhub.models import Hub
-from properties.models import PropertyProcess
+from properties.models import PropertyProcess, Deal, PropertyHistory
 
 # python3 manage.py dumpdata > master.json --settings=laurels.settings.production
 
@@ -15,6 +15,16 @@ def delete_surrey():
         if str(instance.hub.id) == "e50a9d9c-80d8-4f06-a75e-14ba42a6af19":
             instance.hub = south_west
             instance.save()
+
+
+def delete_deal():
+    deal_instance = Deal.objects.get(id="be09cc82-776b-4327-8fe5-3e8138a73cfc")
+    deal_instance.delete()
+
+
+def delete_history():
+    history_instance = PropertyHistory.objects.get(id="ba866ad3-3631-4e62-a3db-0bb7ae9c610a")
+    history_instance.delete()
 
 
 def recent_deals():
@@ -129,3 +139,5 @@ def lettings_electrical():
 # lettings_gas()
 # lettings_epc()
 # lettings_electrical()
+# delete_deal()
+# delete_history()
