@@ -85,99 +85,6 @@
                                         </td>
                                     </tr>
                                     {% endfor %}
-                                    {% for instance in stats %}
-                                        {% if instance.employee_targets and instance.active %}
-                                            <tr>
-                                                <td>{{ instance.name }}</td>
-                                                <td class="text-center">
-                                                    <span
-                                                        class="pointer js-scrollable-modal text-hover-underline"
-                                                        data-url="{% url 'stats:employee_valuations' instance.id start_date|date:'d-m-y' end_date|date:'d-m-y' %}"
-                                                    >
-                                                    {{ instance.valuation_count }}
-                                                    </span>
-                                                </td>
-                                                <td class="text-center">
-                                                    <span
-                                                        class="pointer js-scrollable-modal text-hover-underline"
-                                                        data-url="{% url 'stats:employee_instructions' instance.id start_date|date:'d-m-y' end_date|date:'d-m-y' %}"
-                                                    >
-                                                    {{ instance.instruction_count }}
-                                                    </span>
-                                                </td>
-                                                <td class="text-center">
-                                                    <span
-                                                        class="pointer js-scrollable-modal text-hover-underline"
-                                                        data-url="{% url 'stats:employee_reductions' instance.id start_date|date:'d-m-y' end_date|date:'d-m-y' %}"
-                                                    >
-                                                    {{ instance.reduction_count }}
-                                                    </span>
-                                                </td>
-                                                <td class="text-center">
-                                                    <span
-                                                        class="pointer js-scrollable-modal text-hover-underline"
-                                                        data-url="{% url 'stats:employee_new_business' instance.id start_date|date:'d-m-y' end_date|date:'d-m-y' %}"
-                                                    >
-                                                        £{{ instance.new_business_sum|floatformat:2|intcomma }}
-                                                    </span>
-                                                </td>
-                                                <td class="text-center">
-                                                    <span
-                                                        class="pointer js-scrollable-modal text-hover-underline"
-                                                        data-url="{% url 'stats:employee_exchanges' instance.id start_date|date:'d-m-y' end_date|date:'d-m-y' %}"
-                                                    >
-                                                        £{{ instance.exchange_sum|floatformat:2|intcomma }}
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                        {% else %}
-                                            {% if request.user.profile.director %}
-                                                <tr>
-                                                    <td>{{ instance.name }}</td>
-                                                    <td class="text-center">
-                                                        <span
-                                                            class="pointer js-scrollable-modal text-hover-underline"
-                                                            data-url="{% url 'stats:employee_valuations' instance.id start_date|date:'d-m-y' end_date|date:'d-m-y' %}"
-                                                        >
-                                                        {{ instance.valuation_count }}
-                                                        </span>
-                                                    </td>
-                                                    <td class="text-center">
-                                                        <span
-                                                            class="pointer js-scrollable-modal text-hover-underline"
-                                                            data-url="{% url 'stats:employee_instructions' instance.id start_date|date:'d-m-y' end_date|date:'d-m-y' %}"
-                                                        >
-                                                        {{ instance.instruction_count }}
-                                                        </span>
-                                                    </td>
-                                                    <td class="text-center">
-                                                        <span
-                                                            class="pointer js-scrollable-modal text-hover-underline"
-                                                            data-url="{% url 'stats:employee_reductions' instance.id start_date|date:'d-m-y' end_date|date:'d-m-y' %}"
-                                                        >
-                                                        {{ instance.reduction_count }}
-                                                        </span>
-                                                    </td>
-                                                    <td class="text-center">
-                                                        <span
-                                                            class="pointer js-scrollable-modal text-hover-underline"
-                                                            data-url="{% url 'stats:employee_new_business' instance.id start_date|date:'d-m-y' end_date|date:'d-m-y' %}"
-                                                        >
-                                                            £{{ instance.new_business_sum|floatformat:2|intcomma }}
-                                                        </span>
-                                                    </td>
-                                                    <td class="text-center">
-                                                        <span
-                                                            class="pointer js-scrollable-modal text-hover-underline"
-                                                            data-url="{% url 'stats:employee_exchanges' instance.id start_date|date:'d-m-y' end_date|date:'d-m-y' %}"
-                                                        >
-                                                            £{{ instance.exchange_sum|floatformat:2|intcomma }}
-                                                        </span>
-                                                    </td>
-                                                </tr>
-                                            {% endif %}
-                                        {% endif %}
-                                    {% endfor %}
                                 </tbody>
                             </table>
                         </div>
@@ -190,12 +97,4 @@
     </div>
     <!-- container -->
     {% include 'partials/base-extra-large-modal.html' %}
-{% endblock %}
-
-{% block extra_javascript %}
-{{ block.super }}
-    <!-- Custom JS -->
-    <script src="{% static 'stats/js/stats-v3.js' %}"></script>
-    <script src="{% static 'stats/js/lists-v3.js' %}"></script>
-    <!-- End Custom JS -->
 {% endblock %}
