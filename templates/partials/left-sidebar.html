@@ -33,6 +33,12 @@
                 </a>
             </li>
             <li class="side-nav-item">
+                <a href="{% url 'stats:pipeline' %}" class="side-nav-link">
+                    <i class="mdi mdi-pipe"></i>
+                    <span> {% trans "Pipeline" %} </span>
+                </a>
+            </li>
+            <li class="side-nav-item">
                 <a href="{% url 'home:deal_progression_overview' %}" class="side-nav-link">
                     <i class="mdi mdi-home-import-outline"></i>
                     <span> {% trans "Progression Overview" %} </span>

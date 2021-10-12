@@ -20,12 +20,14 @@ from stats.views import (
     export_hub_reductions_xls,
     export_hub_new_business_xls,
     export_hub_exchanges_xls,
+    pipeline,
 )
 
 
 app_name = "stats"
 urlpatterns = [
     path("overview/", overview, name="overview"),
+    path("pipeline/", pipeline, name="pipeline"),
     path("hub-overview/", hub_overview, name="hub_overview"),
     path("extra-stats/", extra_stats, name="extra_stats"),
     path("hub-extra-stats/", hub_extra_stats, name="hub_extra_stats"),

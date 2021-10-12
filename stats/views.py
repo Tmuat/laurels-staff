@@ -2621,3 +2621,62 @@ def export_hub_exchanges_xls(request, hub_id):
     wb.save(response)
 
     return response
+
+
+def pipeline(request):
+
+    hubs = (
+        Hub.objects
+        .filter(
+            is_active=True
+        )
+        .exclude(
+            slug="all-hubs"
+        )
+    )
+
+    deal_properties = PropertyFees.objects.filter(
+        propertyprocess__macro_status=4,
+        active=True,
+        show_all=True
+    )
+
+    total_pipeline = deal_properties.aggregate(
+        total_pipeline=Sum(
+            "new_business"
+        )
+    )
+
+    pipeline = []
+
+    dict = {}
+    dict["id"] = 0
+    dict["name"] = "Total Pipeline"
+    dict["pipeline"] = total_pipeline["total_pipeline"]
+
+    pipeline.append(dict)
+
+    for instance in hubs:
+        hub_deal_properties = deal_properties.filter(
+            propertyprocess__hub=instance.id
+        )
+        hub_pipeline = hub_deal_properties.aggregate(
+            total_pipeline=Sum(
+                "new_business"
+            )
+        )
+
+        dict = {}
+        dict["id"] = instance.id
+        dict["name"] = instance.hub_name
+        dict["pipeline"] = hub_pipeline["total_pipeline"]
+
+        pipeline.append(dict)
+
+    template = "stats/pipeline.html"
+
+    context = {
+        "pipeline": pipeline,
+    }
+
+    return render(request, template, context)
