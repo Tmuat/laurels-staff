@@ -42,19 +42,22 @@
                                                     <div class="card mb-0 h-100">
                                                         <div class="card-body p-2">
                                                             <small class="float-right text-muted">Days: {{ time_instance.time_since }}</small>
-                                                            <span class="badge badge-success">
-                                                                {{ instance.get_status_display }}
-                                                            </span>
                                                             {% if instance.priority == 1 %}
+                                                                <span class="badge badge-danger">
+                                                                    {{ instance.get_status_display }}
+                                                                </span>
                                                                 <span class="badge badge-danger">Urgent
                                                             {% elif instance.priority == 2 %}
-                                                                <span class="badge badge-warning">High
+                                                                <span class="badge badge-danger">
+                                                                    {{ instance.get_status_display }}
                                                             {% elif instance.priority == 3 %}
-                                                                <span class="badge badge-success">Medium
+                                                                <span class="badge badge-warning">
+                                                                    {{ instance.get_status_display }}
                                                             {% elif instance.priority == 4 %}
-                                                                <span class="badge badge-info">Low
+                                                                <span class="badge badge-info">
+                                                                    {{ instance.get_status_display }}
                                                             {% endif %}
-                                                            </span>
+                                                                </span>
                                                             <h5 class="mt-2 mb-0">
                                                                 {{ instance.type }}
                                                             </h5>
@@ -119,9 +122,22 @@
                                                     <div class="card mb-0 h-100">
                                                         <div class="card-body p-2">
                                                             <small class="float-right text-muted">Days: {{ time_instance.time_since }}</small>
-                                                            <span class="badge badge-success">
-                                                                {{ instance.get_status_display }}
-                                                            </span>
+                                                            {% if instance.priority == 1 %}
+                                                                <span class="badge badge-danger">
+                                                                    {{ instance.get_status_display }}
+                                                                </span>
+                                                                <span class="badge badge-danger">Urgent
+                                                            {% elif instance.priority == 2 %}
+                                                                <span class="badge badge-danger">
+                                                                    {{ instance.get_status_display }}
+                                                            {% elif instance.priority == 3 %}
+                                                                <span class="badge badge-warning">
+                                                                    {{ instance.get_status_display }}
+                                                            {% elif instance.priority == 4 %}
+                                                                <span class="badge badge-info">
+                                                                    {{ instance.get_status_display }}
+                                                            {% endif %}
+                                                                </span>
                                                             <h5 class="mt-2 mb-0">
                                                                 {{ instance.type }}
                                                             </h5>
@@ -186,9 +202,22 @@
                                                     <div class="card mb-0 h-100">
                                                         <div class="card-body p-2">
                                                             <small class="float-right text-muted">Days: {{ time_instance.time_since }}</small>
-                                                            <span class="badge badge-success">
-                                                                {{ instance.get_status_display }}
-                                                            </span>
+                                                            {% if instance.priority == 1 %}
+                                                                <span class="badge badge-danger">
+                                                                    {{ instance.get_status_display }}
+                                                                </span>
+                                                                <span class="badge badge-danger">Urgent
+                                                            {% elif instance.priority == 2 %}
+                                                                <span class="badge badge-danger">
+                                                                    {{ instance.get_status_display }}
+                                                            {% elif instance.priority == 3 %}
+                                                                <span class="badge badge-warning">
+                                                                    {{ instance.get_status_display }}
+                                                            {% elif instance.priority == 4 %}
+                                                                <span class="badge badge-info">
+                                                                    {{ instance.get_status_display }}
+                                                            {% endif %}
+                                                                </span>
                                                             <h5 class="mt-2 mb-0">
                                                                 {{ instance.type }}
                                                             </h5>
@@ -253,9 +282,22 @@
                                                     <div class="card mb-0 h-100">
                                                         <div class="card-body p-2">
                                                             <small class="float-right text-muted">Days: {{ time_instance.time_since }}</small>
-                                                            <span class="badge badge-success">
-                                                                {{ instance.get_status_display }}
-                                                            </span>
+                                                            {% if instance.priority == 1 %}
+                                                                <span class="badge badge-danger">
+                                                                    {{ instance.get_status_display }}
+                                                                </span>
+                                                                <span class="badge badge-danger">Urgent
+                                                            {% elif instance.priority == 2 %}
+                                                                <span class="badge badge-danger">
+                                                                    {{ instance.get_status_display }}
+                                                            {% elif instance.priority == 3 %}
+                                                                <span class="badge badge-warning">
+                                                                    {{ instance.get_status_display }}
+                                                            {% elif instance.priority == 4 %}
+                                                                <span class="badge badge-info">
+                                                                    {{ instance.get_status_display }}
+                                                            {% endif %}
+                                                                </span>
                                                             <h5 class="mt-2 mb-0">
                                                                 {{ instance.type }}
                                                             </h5>
