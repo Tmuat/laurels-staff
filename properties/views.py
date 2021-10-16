@@ -3018,7 +3018,7 @@ def re_let(request, propertyprocess_id):
                 )
 
                 lettings_management.propertyprocess = new_property_process
-                lettings_management.updated_by=request.user.get_full_name()
+                lettings_management.updated_by = request.user.get_full_name()
                 lettings_management.save()
 
                 lettings_extra_instance = instruction_lettings_extra_form.save(
@@ -5203,7 +5203,7 @@ def lettings_phase_two(request, propertyprocess_id):
                         try:
                             Gas.objects.get(
                                 lettings_properties=property_process.lettings_properties,
-                                expiry=instance.gas_safety_certificate_expiry
+                                expiry=instance.gas_safety_certificate_expiry,
                             )
                         except Gas.DoesNotExist:
                             Gas.objects.create(
@@ -5211,7 +5211,7 @@ def lettings_phase_two(request, propertyprocess_id):
                                 date=datetime.date.today(),
                                 expiry=property_process.lettings_progression.gas_safety_certificate_expiry,
                                 created_by=request.user.get_full_name(),
-                                updated_by=request.user.get_full_name()
+                                updated_by=request.user.get_full_name(),
                             )
                     old_gas_notes = "Gas Safety Certificate"
                     notes_dict.append(old_gas_notes)
@@ -5224,7 +5224,7 @@ def lettings_phase_two(request, propertyprocess_id):
                         try:
                             Electrical.objects.get(
                                 lettings_properties=property_process.lettings_properties,
-                                expiry=instance.electrical_certificate_expiry
+                                expiry=instance.electrical_certificate_expiry,
                             )
                         except Electrical.DoesNotExist:
                             Electrical.objects.create(
@@ -5232,7 +5232,7 @@ def lettings_phase_two(request, propertyprocess_id):
                                 date=datetime.date.today(),
                                 expiry=property_process.lettings_progression.electrical_certificate_expiry,
                                 created_by=request.user.get_full_name(),
-                                updated_by=request.user.get_full_name()
+                                updated_by=request.user.get_full_name(),
                             )
                     old_elec_notes = "Electrical Installation Certificate"
                     notes_dict.append(old_elec_notes)
@@ -5245,7 +5245,7 @@ def lettings_phase_two(request, propertyprocess_id):
                         try:
                             EPC.objects.get(
                                 lettings_properties=property_process.lettings_properties,
-                                expiry=instance.gas_safety_certificate_expiry
+                                expiry=instance.gas_safety_certificate_expiry,
                             )
                         except EPC.DoesNotExist:
                             EPC.objects.create(
@@ -5253,7 +5253,7 @@ def lettings_phase_two(request, propertyprocess_id):
                                 date=datetime.date.today(),
                                 expiry=property_process.lettings_progression.epc_certificate_expiry,
                                 created_by=request.user.get_full_name(),
-                                updated_by=request.user.get_full_name()
+                                updated_by=request.user.get_full_name(),
                             )
                     old_epc_notes = "Energy Performance Certificate"
                     notes_dict.append(old_epc_notes)

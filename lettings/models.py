@@ -236,7 +236,7 @@ class Maintenance(UpdatedAndCreated):
         ordering = [
             "lettings_properties__propertyprocess__property__postcode",
             "lettings_properties__propertyprocess__property__address_line_1",
-            "-target_start_date"
+            "-target_start_date",
         ]
         verbose_name = "Maintenance"
         verbose_name_plural = "Maintenance"
@@ -275,12 +275,7 @@ class Maintenance(UpdatedAndCreated):
         (CON_BILLS_US, "Contractor Bills Us"),
     ]
 
-    PRIORITY = [
-        (1, "Urgent"),
-        (2, "High"),
-        (3, "Medium"),
-        (4, "Low")
-    ]
+    PRIORITY = [(1, "Urgent"), (2, "High"), (3, "Medium"), (4, "Low")]
 
     lettings_properties = models.ForeignKey(
         LettingProperties, on_delete=models.CASCADE, related_name="maintenance"

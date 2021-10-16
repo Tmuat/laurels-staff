@@ -7,7 +7,7 @@ from lettings.models import (
     EPC,
     Gas,
     Electrical,
-    Maintenance
+    Maintenance,
 )
 
 
@@ -78,7 +78,7 @@ class LettingPropertiesAdmin(admin.ModelAdmin):
         ElectricalAdminInline,
         EPCAdminInline,
         GasAdminInline,
-        MaintenanceAdminInline
+        MaintenanceAdminInline,
     ]
 
     list_display = [

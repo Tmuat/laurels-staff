@@ -23,7 +23,9 @@ def delete_deal():
 
 
 def delete_history():
-    history_instance = PropertyHistory.objects.get(id="ba866ad3-3631-4e62-a3db-0bb7ae9c610a")
+    history_instance = PropertyHistory.objects.get(
+        id="ba866ad3-3631-4e62-a3db-0bb7ae9c610a"
+    )
     history_instance.delete()
 
 
@@ -83,7 +85,7 @@ def lettings_gas():
                         date=instance.lettings_progression.gas_safety_certificate_date,
                         expiry=instance.lettings_progression.gas_safety_certificate_expiry,
                         created_by=instance.lettings_progression.created_by,
-                        updated_by=instance.lettings_progression.updated_by
+                        updated_by=instance.lettings_progression.updated_by,
                     )
                     # print(instance)
 
@@ -106,7 +108,7 @@ def lettings_epc():
                     date=instance.lettings_progression.epc_certificate_date,
                     expiry=instance.lettings_progression.epc_certificate_expiry,
                     created_by=instance.lettings_progression.created_by,
-                    updated_by=instance.lettings_progression.updated_by
+                    updated_by=instance.lettings_progression.updated_by,
                 )
                 # print(instance)
 
@@ -129,7 +131,7 @@ def lettings_electrical():
                     date=instance.lettings_progression.electrical_certificate_date,
                     expiry=instance.lettings_progression.electrical_certificate_expiry,
                     created_by=instance.lettings_progression.created_by,
-                    updated_by=instance.lettings_progression.updated_by
+                    updated_by=instance.lettings_progression.updated_by,
                 )
 
 

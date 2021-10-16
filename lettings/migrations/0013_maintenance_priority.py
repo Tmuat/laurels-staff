@@ -6,13 +6,21 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('lettings', '0012_remove_maintenance_next_steps'),
+        ("lettings", "0012_remove_maintenance_next_steps"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='maintenance',
-            name='priority',
-            field=models.PositiveIntegerField(choices=[(1, 'Urgent'), (2, 'High'), (3, 'Medium'), (4, 'Low')], null=True),
+            model_name="maintenance",
+            name="priority",
+            field=models.PositiveIntegerField(
+                choices=[
+                    (1, "Urgent"),
+                    (2, "High"),
+                    (3, "Medium"),
+                    (4, "Low"),
+                ],
+                null=True,
+            ),
         ),
     ]

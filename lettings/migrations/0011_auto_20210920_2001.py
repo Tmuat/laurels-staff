@@ -6,18 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('lettings', '0010_alter_maintenance_summary'),
+        ("lettings", "0010_alter_maintenance_summary"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='maintenance',
-            name='cost',
+            model_name="maintenance",
+            name="cost",
             field=models.PositiveIntegerField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='maintenance',
-            name='next_steps',
+            model_name="maintenance",
+            name="next_steps",
             field=models.CharField(blank=True, max_length=200, null=True),
         ),
     ]

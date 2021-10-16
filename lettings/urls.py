@@ -13,7 +13,7 @@ from lettings.views import (
     add_gas,
     add_electrical,
     add_renewal,
-    maintenance_board
+    maintenance_board,
 )
 
 

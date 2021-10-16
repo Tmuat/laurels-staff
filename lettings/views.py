@@ -9,7 +9,14 @@ from django.db.models import Q
 from django.shortcuts import render, reverse, redirect, get_object_or_404
 from django.template.loader import render_to_string
 
-from lettings.forms import MaintenanceForm, MaintenanceNotesForm, EPCForm, ElectricalForm, GasForm, RenewalDateForm
+from lettings.forms import (
+    MaintenanceForm,
+    MaintenanceNotesForm,
+    EPCForm,
+    ElectricalForm,
+    GasForm,
+    RenewalDateForm,
+)
 from lettings.models import LettingProperties, Maintenance, MaintenanceNotes
 from properties.forms import RenewalForm
 from properties.models import PropertyProcess
@@ -22,12 +29,10 @@ def managed_properites(request):
     A view to return all managed properties.
     """
 
-    managed_properties_list = (
-        LettingProperties.objects
-        .exclude(lettings_service_level="intro_only")
-        .order_by(
-            "propertyprocess__exchange_and_move__exchange_and_move_lettings__move_in_date"
-        )
+    managed_properties_list = LettingProperties.objects.exclude(
+        lettings_service_level="intro_only"
+    ).order_by(
+        "propertyprocess__exchange_and_move__exchange_and_move_lettings__move_in_date"
     )
 
     active = True
@@ -93,9 +98,7 @@ def managed_inactive(request, lettings_id):
 
     data = dict()
 
-    managed_property = get_object_or_404(
-        LettingProperties, id=lettings_id
-    )
+    managed_property = get_object_or_404(LettingProperties, id=lettings_id)
 
     if request.method == "POST":
         active = request.POST.get("active-selection")
@@ -127,9 +130,7 @@ def show_letting(request, lettings_id):
     """
     A view to display all information on a letting.
     """
-    letting = get_object_or_404(
-        LettingProperties, id=lettings_id
-    )
+    letting = get_object_or_404(LettingProperties, id=lettings_id)
 
     context = {
         "letting": letting,
@@ -149,9 +150,7 @@ def show_maintenance(request, lettings_id):
 
     data = dict()
 
-    managed_property = get_object_or_404(
-        LettingProperties, id=lettings_id
-    )
+    managed_property = get_object_or_404(LettingProperties, id=lettings_id)
 
     maintenance_qs = Maintenance.objects.filter(
         lettings_properties=managed_property
@@ -176,9 +175,7 @@ def view_maintenance(request, maintenance_id):
     A view to show all the detail of a maintenance object.
     """
 
-    maintenance = get_object_or_404(
-        Maintenance, id=maintenance_id
-    )
+    maintenance = get_object_or_404(Maintenance, id=maintenance_id)
 
     context = {
         "maintenance": maintenance,
@@ -198,9 +195,7 @@ def add_maintenance(request, lettings_id):
 
     data = dict()
 
-    managed_property = get_object_or_404(
-        LettingProperties, id=lettings_id
-    )
+    managed_property = get_object_or_404(LettingProperties, id=lettings_id)
 
     url = reverse(
         "lettings:add_maintenance",
@@ -230,7 +225,7 @@ def add_maintenance(request, lettings_id):
                 maintenance=instance,
                 notes=notes,
                 created_by=request.user.get_full_name(),
-                updated_by=request.user.get_full_name()
+                updated_by=request.user.get_full_name(),
             )
 
             data["form_is_valid"] = True
@@ -239,11 +234,7 @@ def add_maintenance(request, lettings_id):
     else:
         form = MaintenanceForm()
 
-    context = {
-        "form": form,
-        "managed_property": managed_property,
-        "url": url
-    }
+    context = {"form": form, "managed_property": managed_property, "url": url}
     data["html_modal"] = render_to_string(
         "lettings/includes/managed/add_maintenance_modal.html",
         context,
@@ -261,13 +252,9 @@ def edit_maintenance(request, lettings_id, maintenance_id):
 
     data = dict()
 
-    managed_property = get_object_or_404(
-        LettingProperties, id=lettings_id
-    )
+    managed_property = get_object_or_404(LettingProperties, id=lettings_id)
 
-    maintenance = get_object_or_404(
-        Maintenance, id=maintenance_id
-    )
+    maintenance = get_object_or_404(Maintenance, id=maintenance_id)
 
     url = reverse(
         "lettings:edit_maintenance",
@@ -292,11 +279,7 @@ def edit_maintenance(request, lettings_id, maintenance_id):
     else:
         form = MaintenanceForm(instance=maintenance)
 
-    context = {
-        "form": form,
-        "managed_property": managed_property,
-        "url": url
-    }
+    context = {"form": form, "managed_property": managed_property, "url": url}
     data["html_modal"] = render_to_string(
         "lettings/includes/managed/add_maintenance_modal.html",
         context,
@@ -314,9 +297,7 @@ def add_maintenance_note(request, maintenance_id):
 
     data = dict()
 
-    maintenance = get_object_or_404(
-        Maintenance, id=maintenance_id
-    )
+    maintenance = get_object_or_404(Maintenance, id=maintenance_id)
 
     if request.method == "POST":
         form = MaintenanceNotesForm(request.POST)
@@ -357,9 +338,7 @@ def add_epc(request, lettings_id):
 
     data = dict()
 
-    managed_property = get_object_or_404(
-        LettingProperties, id=lettings_id
-    )
+    managed_property = get_object_or_404(LettingProperties, id=lettings_id)
 
     url = reverse(
         "lettings:add_epc",
@@ -386,11 +365,7 @@ def add_epc(request, lettings_id):
     else:
         form = EPCForm()
 
-    context = {
-        "form": form,
-        "managed_property": managed_property,
-        "url": url
-    }
+    context = {"form": form, "managed_property": managed_property, "url": url}
     data["html_modal"] = render_to_string(
         "lettings/includes/managed/add_certificate_modal.html",
         context,
@@ -408,9 +383,7 @@ def add_gas(request, lettings_id):
 
     data = dict()
 
-    managed_property = get_object_or_404(
-        LettingProperties, id=lettings_id
-    )
+    managed_property = get_object_or_404(LettingProperties, id=lettings_id)
 
     url = reverse(
         "lettings:add_gas",
@@ -437,11 +410,7 @@ def add_gas(request, lettings_id):
     else:
         form = GasForm()
 
-    context = {
-        "form": form,
-        "managed_property": managed_property,
-        "url": url
-    }
+    context = {"form": form, "managed_property": managed_property, "url": url}
     data["html_modal"] = render_to_string(
         "lettings/includes/managed/add_certificate_modal.html",
         context,
@@ -459,9 +428,7 @@ def add_electrical(request, lettings_id):
 
     data = dict()
 
-    managed_property = get_object_or_404(
-        LettingProperties, id=lettings_id
-    )
+    managed_property = get_object_or_404(LettingProperties, id=lettings_id)
 
     url = reverse(
         "lettings:add_electrical",
@@ -488,11 +455,7 @@ def add_electrical(request, lettings_id):
     else:
         form = ElectricalForm()
 
-    context = {
-        "form": form,
-        "managed_property": managed_property,
-        "url": url
-    }
+    context = {"form": form, "managed_property": managed_property, "url": url}
     data["html_modal"] = render_to_string(
         "lettings/includes/managed/add_certificate_modal.html",
         context,
@@ -510,9 +473,7 @@ def add_renewal(request, lettings_id):
 
     data = dict()
 
-    managed_property = get_object_or_404(
-        LettingProperties, id=lettings_id
-    )
+    managed_property = get_object_or_404(LettingProperties, id=lettings_id)
 
     property_process = get_object_or_404(
         PropertyProcess, id=managed_property.propertyprocess.id
@@ -570,10 +531,8 @@ def add_renewal(request, lettings_id):
 def maintenance_board(request):
     """A view to return the maintenance page"""
 
-    maintenance = (
-        Maintenance.objects
-        .exclude(status="completed")
-        .exclude(status="cancelled")
+    maintenance = Maintenance.objects.exclude(status="completed").exclude(
+        status="cancelled"
     )
 
     today = datetime.date.today()
@@ -584,14 +543,14 @@ def maintenance_board(request):
         data = {}
         data["id"] = instance.id
         date_created = instance.created.date()
-        delta = today-date_created
+        delta = today - date_created
         data["time_since"] = delta.days
         time_since.append(data)
 
     context = {
         "maintenance": maintenance,
         "time_since": time_since,
-        "today": today
+        "today": today,
     }
 
     return render(request, "lettings/maintenance_board.html", context)

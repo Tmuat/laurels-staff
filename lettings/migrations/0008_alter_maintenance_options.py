@@ -6,12 +6,20 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('lettings', '0007_alter_maintenance_options'),
+        ("lettings", "0007_alter_maintenance_options"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='maintenance',
-            options={'ordering': ['lettings_properties__propertyprocess__property__postcode', 'lettings_properties__propertyprocess__property__address_line_1', '-target_start_date'], 'verbose_name': 'Maintenance', 'verbose_name_plural': 'Maintenance'},
+            name="maintenance",
+            options={
+                "ordering": [
+                    "lettings_properties__propertyprocess__property__postcode",
+                    "lettings_properties__propertyprocess__property__address_line_1",
+                    "-target_start_date",
+                ],
+                "verbose_name": "Maintenance",
+                "verbose_name_plural": "Maintenance",
+            },
         ),
     ]

@@ -439,8 +439,7 @@ def offer_board(request):
     )
 
     offers = (
-        Offer.objects
-        .exclude(propertyprocess__macro_status=-1)
+        Offer.objects.exclude(propertyprocess__macro_status=-1)
         .exclude(propertyprocess__macro_status=4)
         .exclude(propertyprocess__macro_status=5)
         .exclude(status=Offer.REJECTED)

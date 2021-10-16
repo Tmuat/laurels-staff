@@ -6,7 +6,7 @@ from lettings.models import (
     Gas,
     EPC,
     Electrical,
-    Renewals
+    Renewals,
 )
 from properties.widgets import DateInput
 from users.models import Profile
@@ -29,7 +29,7 @@ class MaintenanceForm(forms.ModelForm):
             "details",
             "contractor",
             "cost",
-            "priority"
+            "priority",
         )
 
     def __init__(self, *args, **kwargs):
@@ -70,9 +70,7 @@ class MaintenanceForm(forms.ModelForm):
 class MaintenanceNotesForm(forms.ModelForm):
     class Meta:
         model = MaintenanceNotes
-        fields = (
-            "notes",
-        )
+        fields = ("notes",)
 
     def __init__(self, *args, **kwargs):
         """
@@ -169,9 +167,7 @@ class GasForm(forms.ModelForm):
 class RenewalDateForm(forms.ModelForm):
     class Meta:
         model = Renewals
-        fields = (
-            "renewal_date",
-        )
+        fields = ("renewal_date",)
 
     def __init__(self, *args, **kwargs):
         """

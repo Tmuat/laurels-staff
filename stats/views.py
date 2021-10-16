@@ -2625,26 +2625,14 @@ def export_hub_exchanges_xls(request, hub_id):
 
 def pipeline(request):
 
-    hubs = (
-        Hub.objects
-        .filter(
-            is_active=True
-        )
-        .exclude(
-            slug="all-hubs"
-        )
-    )
+    hubs = Hub.objects.filter(is_active=True).exclude(slug="all-hubs")
 
     deal_properties = PropertyFees.objects.filter(
-        propertyprocess__macro_status=4,
-        active=True,
-        show_all=True
+        propertyprocess__macro_status=4, active=True, show_all=True
     )
 
     total_pipeline = deal_properties.aggregate(
-        total_pipeline=Sum(
-            "new_business"
-        )
+        total_pipeline=Sum("new_business")
     )
 
     pipeline = []
@@ -2661,9 +2649,7 @@ def pipeline(request):
             propertyprocess__hub=instance.id
         )
         hub_pipeline = hub_deal_properties.aggregate(
-            total_pipeline=Sum(
-                "new_business"
-            )
+            total_pipeline=Sum("new_business")
         )
 
         dict = {}
