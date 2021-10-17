@@ -20,6 +20,7 @@ urlpatterns = [
     path("", include("weekends.urls")),
     path("statistics/", include("stats.urls")),
     path("support/", include("support.urls")),
+    path("boards/", include("boards.urls")),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
