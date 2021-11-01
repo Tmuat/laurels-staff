@@ -517,7 +517,6 @@ $(document).ready(function () {
             success: function (data) {
                 if (data.form_is_valid) {
                     $("#base-static-modal").modal("hide");
-
                     $.ajax({
                         url: data.url,
                         type: 'get',
