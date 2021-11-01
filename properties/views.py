@@ -4811,14 +4811,11 @@ def manage_sales_progression(request, propertyprocess_id):
                 notes_dict.append(property_chain_notes)
 
             if property_notes:
-                try:
-                    progression_notes_instance = ProgressionNotes.objects.get(
+                progression_notes_qs = ProgressionNotes.objects.filter(
                         propertyprocess=property_process
                     )
-                except ProgressionNotes.DoesNotExist:
-                    progression_notes_instance = None
 
-                if progression_notes_instance:
+                for progression_notes_instance in progression_notes_qs:
                     progression_notes_instance.delete()
 
                 progression_notes_notes = "Progression Notes"
