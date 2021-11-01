@@ -852,6 +852,9 @@ class Offer(UpdatedAndCreated):
     status = models.CharField(
         max_length=50, null=False, blank=False, choices=STATUS
     )
+    waiting_on_chain = models.BooleanField(
+        null=True, blank=True, default=False
+    )
 
     @property
     def calculate_date(self, **kwargs):
