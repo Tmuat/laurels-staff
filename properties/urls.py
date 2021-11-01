@@ -74,6 +74,7 @@ from properties.views import (
     edit_inventory_info,
     add_cleaning_info,
     edit_cleaning_info,
+    waiting_on_chain,
 )
 
 
@@ -439,5 +440,10 @@ urlpatterns = [
         "properties/edit/lettings-progression/cleaning-info/<propertyprocess_id>/",
         edit_cleaning_info,
         name="edit_cleaning_info",
+    ),
+        path(
+        "properties/waiting-on-chain/<offer_id>/",
+        waiting_on_chain,
+        name="waiting_on_chain",
     ),
 ]

@@ -146,6 +146,20 @@ $(document).ready(function () {
         return false;
     };
 
+    // Deals with the re-ordering of property chain
+    $(".js-waiting-on-chain").click(function () {
+        var link = $(this);
+        $.ajax({
+            url: link.attr("data-url"),
+            type: "GET",
+            success: function (data) {
+                if (data.is_valid) {
+                    location.reload();
+                }
+            }
+        });
+    });
+
     // Reload the current page
     $("#base-static-modal").on("click", ".js-reload", function () {
         $('#modal-overlay').fadeToggle(100);

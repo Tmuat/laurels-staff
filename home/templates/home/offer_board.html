@@ -81,6 +81,16 @@
                                                         badge-info">Lettings
                                                     {% endif %}
                                                 </span>
+                                                {% if instance.waiting_on_chain %}
+                                                    <span 
+                                                        class="badge badge-warning"
+                                                        data-toggle="tooltip"
+                                                        data-placement="top"
+                                                        title="Waiting On Chain"
+                                                    >
+                                                        WOC
+                                                    </span>
+                                                {% endif %}
 
                                                 <h5 class="mt-2 mb-0">
                                                     {% if instance.propertyprocess.property.calculate_str_length > 25 %}
@@ -124,6 +134,13 @@
                                                             data-url="{% url 'properties:edit_offer_lettings_status' instance.id %}"
                                                         {% endif %}
                                                         class="dropdown-item js-load-form pointer"><i class="mdi mdi-file-edit-outline mr-1"></i>Change Offer Status</span>
+                                                        <!-- End item-->
+
+                                                        <!-- item-->
+                                                            <span
+                                                            data-url="{% url 'properties:waiting_on_chain' instance.id %}"
+                                                            class="dropdown-item js-waiting-on-chain pointer"><i class="mdi mdi-pause mr-1"></i>Waiting On Chain
+                                                        </span>
                                                         <!-- End item-->
                                                     </div>
                                                 </div>
@@ -198,6 +215,16 @@
                                                             badge-info">Lettings
                                                         {% endif %}
                                                     </span>
+                                                    {% if instance.waiting_on_chain %}
+                                                        <span 
+                                                            class="badge badge-warning"
+                                                            data-toggle="tooltip"
+                                                            data-placement="top"
+                                                            title="Waiting On Chain"
+                                                        >
+                                                            WOC
+                                                        </span>
+                                                    {% endif %}
 
                                                     <h5 class="mt-2 mb-0">
                                                         {% if instance.propertyprocess.property.calculate_str_length > 25 %}
@@ -252,6 +279,13 @@
                                                                 data-url="{% url 'properties:add_another_lettings_offer' instance.propertyprocess.id %}?id={{ instance.offerer_lettings_details.id }}"
                                                             {% endif %}
                                                             class="dropdown-item js-load-form pointer"><i class="mdi mdi-piggy-bank mr-1"></i>Change Offer</span>
+                                                            <!-- End item-->
+
+                                                            <!-- item-->
+                                                            <span
+                                                                data-url="{% url 'properties:waiting_on_chain' instance.id %}"
+                                                                class="dropdown-item js-waiting-on-chain pointer"><i class="mdi mdi-pause mr-1"></i>Waiting On Chain
+                                                            </span>
                                                             <!-- End item-->
                                                         </div>
                                                     </div>
@@ -327,6 +361,16 @@
                                                         badge-info">Lettings
                                                     {% endif %}
                                                 </span>
+                                                {% if instance.waiting_on_chain %}
+                                                    <span 
+                                                        class="badge badge-warning"
+                                                        data-toggle="tooltip"
+                                                        data-placement="top"
+                                                        title="Waiting On Chain"
+                                                    >
+                                                        WOC
+                                                    </span>
+                                                {% endif %}
 
                                                 <h5 class="mt-2 mb-0">
                                                     {% if instance.propertyprocess.property.calculate_str_length > 25 %}
@@ -381,6 +425,13 @@
                                                                 data-url="{% url 'properties:add_deal_lettings' instance.propertyprocess.id %}"
                                                             {% endif %}
                                                             class="dropdown-item js-load-form pointer"><i class="mdi mdi-handshake mr-1"></i>Add Deal</span>
+                                                        <!-- End item-->
+
+                                                        <!-- item-->
+                                                            <span
+                                                            data-url="{% url 'properties:waiting_on_chain' instance.id %}"
+                                                            class="dropdown-item js-waiting-on-chain pointer"><i class="mdi mdi-pause mr-1"></i>Waiting On Chain
+                                                        </span>
                                                         <!-- End item-->
                                                     </div>
                                                 </div>

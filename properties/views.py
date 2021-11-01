@@ -6313,3 +6313,29 @@ def edit_cleaning_info(request, propertyprocess_id):
     )
 
     return JsonResponse(data)
+
+
+@otp_required
+@login_required
+def waiting_on_chain(request, offer_id):
+    """
+    Ajax URL for changing the waiting on chain boolean.
+    """
+
+    data = dict()
+
+    offer = get_object_or_404(Offer, id=offer_id)
+    property_process = get_object_or_404(
+        PropertyProcess, id=offer.propertyprocess.id
+    )
+
+    if offer.waiting_on_chain:
+        offer.waiting_on_chain = False
+        offer.save()
+    else:
+        offer.waiting_on_chain = True
+        offer.save()
+
+    data["is_valid"] = True
+
+    return JsonResponse(data)
