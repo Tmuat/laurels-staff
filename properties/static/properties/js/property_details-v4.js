@@ -485,15 +485,13 @@ $(document).ready(function () {
             dataType: 'json',
             success: function (data) {
                 if (data.form_is_valid) {
-                    $("#base-static-modal").modal("hide");
                     $.ajax({
                         url: data.url,
                         type: 'get',
                         dataType: 'json',
                         success: function (data) {
-                            $("#base-static-modal").modal("show");
-                            $('#modal-overlay').fadeToggle(100);
                             $("#base-static-modal .modal-dialog").html(data.html_modal);
+                            $('#modal-overlay').fadeToggle(100);
                         }
                     });
                 } else {
@@ -516,15 +514,13 @@ $(document).ready(function () {
             dataType: 'json',
             success: function (data) {
                 if (data.form_is_valid) {
-                    $("#base-static-modal").modal("hide");
                     $.ajax({
                         url: data.url,
                         type: 'get',
                         dataType: 'json',
                         success: function (data) {
-                            $("#base-static-modal").modal("show");
-                            $('#modal-overlay').fadeToggle(100);
                             $("#base-static-modal .modal-dialog").html(data.html_modal);
+                            $('#modal-overlay').fadeToggle(100);
                         }
                     });
                 } else {
@@ -554,8 +550,8 @@ $(document).ready(function () {
                         dataType: 'json',
                         success: function (data) {
                             $("#base-static-modal").modal("show");
-                            $('#modal-overlay').fadeToggle(100);
                             $("#base-static-modal .modal-dialog").html(data.html_modal);
+                            $('#modal-overlay').fadeToggle(100);
                         }
                     });
                 } else {
