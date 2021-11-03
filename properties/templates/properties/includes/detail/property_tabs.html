@@ -61,6 +61,9 @@
                                 <th class="text-center">Latest Offer</th>
                                 <th class="text-center">Offer Status</th>
                                 <th class="text-center">Extra Info</th>
+                                {% if request.user.profile.director %}
+                                <th class="text-center">Delete</th>
+                                {% endif %}
                             </tr>
                         </thead>
                         <tbody id="tbody-offers">
@@ -93,6 +96,9 @@
                                 <th class="text-center">Proposed Move In</th>
                                 <th class="text-center">Proposed Term</th>
                                 <th class="text-center">Extra Info</th>
+                                {% if request.user.profile.director %}
+                                <th class="text-center">Delete</th>
+                                {% endif %}
                             </tr>
                         </thead>
                         <tbody id="tbody-offers">
