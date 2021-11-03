@@ -983,7 +983,7 @@ class Deal(UpdatedAndCreated):
                 "humanized_offer": humanized_offer,
             }
         )
-        subject = f"Sales Deal: {address}"
+        subject = f"Lettings Deal: {address}"
         body = render_to_string(
             "properties/emails/new_lettings_deal.txt", context
         )
