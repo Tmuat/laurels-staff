@@ -1,0 +1,19 @@
+{% load static i18n %}
+<div class="modal-content green-gradient">
+    <div class="modal-body">
+        <div class="text-center mt-2 mb-3">
+            <span><img src="{% static 'custom/images/logo.png' %}" alt="laurels" height="80"></span>
+        </div>
+        <div class="text-center text-white">
+            <h4 class="text-white">Confirm Delete Offerer</h4>
+            <form method="POST" action="{% url 'properties:delete_offerer_lettings' offerer_id %}" class="text-center text-white px-2 custom-form-margin js-submit-form-success">
+                {% csrf_token %}
+                <input type="hidden" name="offerer" id="id-offerer" value="{{ offerer_id }}">
+                <div class="my-2 text-center">
+                    <button type="submit" class="btn btn-danger" id="add-button">{% trans "Delete" %}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- /.modal-content -->

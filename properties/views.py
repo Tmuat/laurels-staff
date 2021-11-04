@@ -1391,6 +1391,110 @@ def add_offerer(request, propertyprocess_id):
 
 @otp_required
 @login_required
+def delete_offerer(request, offerer_id):
+    """
+    Ajax URL for deleting an offerer.
+    """
+    data = dict()
+
+    offerer = get_object_or_404(OffererDetails, id=offerer_id)
+
+    property_process = get_object_or_404(
+        PropertyProcess, id=offerer.propertyprocess.id
+    )
+
+    if request.method == "POST":
+        offerer.delete()
+
+        history_description = (
+            f"{request.user.get_full_name()} has deleted an offerer."
+        )
+
+        history = PropertyHistory.objects.create(
+            propertyprocess=property_process,
+            type=PropertyHistory.PROPERTY_EVENT,
+            description=history_description,
+            created_by=request.user.get_full_name(),
+            updated_by=request.user.get_full_name(),
+        )
+
+        context = {
+            "property_process": property_process,
+            "history": history,
+        }
+        data["html_success"] = render_to_string(
+            "properties/stages/includes/form_success.html",
+            context,
+            request=request,
+        )
+
+        data["form_is_valid"] = True
+    else:
+        context = {
+            "offerer_id": offerer_id,
+        }
+        data["html_modal"] = render_to_string(
+            "properties/stages/delete_offerer_form_modal.html",
+            context,
+            request=request,
+        )
+    return JsonResponse(data)
+
+
+@otp_required
+@login_required
+def delete_offerer_lettings(request, offerer_id):
+    """
+    Ajax URL for deleting an offerer for lettings.
+    """
+    data = dict()
+
+    offerer = get_object_or_404(OffererDetailsLettings, id=offerer_id)
+
+    property_process = get_object_or_404(
+        PropertyProcess, id=offerer.propertyprocess.id
+    )
+
+    if request.method == "POST":
+        offerer.delete()
+
+        history_description = (
+            f"{request.user.get_full_name()} has deleted an offerer."
+        )
+
+        history = PropertyHistory.objects.create(
+            propertyprocess=property_process,
+            type=PropertyHistory.PROPERTY_EVENT,
+            description=history_description,
+            created_by=request.user.get_full_name(),
+            updated_by=request.user.get_full_name(),
+        )
+
+        context = {
+            "property_process": property_process,
+            "history": history,
+        }
+        data["html_success"] = render_to_string(
+            "properties/stages/includes/form_success.html",
+            context,
+            request=request,
+        )
+
+        data["form_is_valid"] = True
+    else:
+        context = {
+            "offerer_id": offerer_id,
+        }
+        data["html_modal"] = render_to_string(
+            "properties/stages/delete_offerer_lettings_form_modal.html",
+            context,
+            request=request,
+        )
+    return JsonResponse(data)
+
+
+@otp_required
+@login_required
 def add_offer_form(request, propertyprocess_id, offerer_id):
     """
     Ajax URL for updating offer form status.

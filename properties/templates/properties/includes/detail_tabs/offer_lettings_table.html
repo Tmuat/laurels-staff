@@ -56,5 +56,8 @@
         {{ instance.offerdetailslettings.first.offer_extra.get_term_display }}
     </td>
     <td class="text-center"><span class="mdi mdi-view-list pointer js-load-form" data-url="{% url 'properties:offerer_offers_lettings' instance.pk %}"></span></td>
+    {% if request.user.profile.director %}
+    <td class="text-center"><span class="mdi mdi-trash-can-outline pointer js-load-form text-danger" data-url="{% url 'properties:delete_offerer_lettings' instance.pk %}"></span></td>
+    {% endif %}
 </tr>
 {% endfor %}

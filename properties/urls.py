@@ -75,6 +75,8 @@ from properties.views import (
     add_cleaning_info,
     edit_cleaning_info,
     waiting_on_chain,
+    delete_offerer,
+    delete_offerer_lettings,
 )
 
 
@@ -445,5 +447,15 @@ urlpatterns = [
         "properties/waiting-on-chain/<offer_id>/",
         waiting_on_chain,
         name="waiting_on_chain",
+    ),
+    path(
+        "properties/delete/offerer/<offerer_id>/",
+        delete_offerer,
+        name="delete_offerer",
+    ),
+    path(
+        "properties/delete/lettings-offerer/<offerer_id>/",
+        delete_offerer_lettings,
+        name="delete_offerer_lettings",
     ),
 ]
