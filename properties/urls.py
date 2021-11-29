@@ -77,6 +77,7 @@ from properties.views import (
     waiting_on_chain,
     delete_offerer,
     delete_offerer_lettings,
+    lettings_fall_through,
 )
 
 
@@ -387,6 +388,11 @@ urlpatterns = [
         "properties/add/sales-progression/fall-through/<propertyprocess_id>/",
         fall_through,
         name="fall_through",
+    ),
+    path(
+        "properties/add/lettings-progression/fall-through/<propertyprocess_id>/",
+        lettings_fall_through,
+        name="lettings_fall_through",
     ),
     path(
         "properties/manage/sales-progression/<propertyprocess_id>/",
