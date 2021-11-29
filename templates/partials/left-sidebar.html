@@ -156,6 +156,18 @@
                 </ul>
             </li>
             {% endif %}
+            <li class="side-nav-item">
+                <a href="javascript: void(0);" class="side-nav-link">
+                    <i class="mdi mdi-calculator"></i>
+                    <span> {% trans "Touting" %} </span>
+                    <span class="menu-arrow"></span>
+                </a>
+                <ul class="side-nav-second-level" aria-expanded="false">
+                    <li {% if request.resolver_match.url_name == 'touting' %}class="active"{% endif %}>
+                        <a href="">{% trans "So you wanna tout" %}</a>
+                    </li>
+                </ul>
+            </li>
         </ul>
         <!-- End Sidebar -->
         
