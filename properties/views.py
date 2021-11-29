@@ -4866,6 +4866,101 @@ def fall_through(request, propertyprocess_id):
 
 @otp_required
 @login_required
+def lettings_fall_through(request, propertyprocess_id):
+    """
+    Ajax URL for lettings fall through.
+    """
+    data = dict()
+
+    property_process = get_object_or_404(
+        PropertyProcess, id=propertyprocess_id
+    )
+
+    if request.method == "POST":
+        property_process.previously_fallen_through = True
+        property_process.macro_status = PropertyProcess.INSTRUCTION
+        property_process.updated_by = request.user.get_full_name()
+        property_process.save()
+
+        deal_instance = Deal.objects.get(propertyprocess=property_process.id)
+
+        offerer = deal_instance.offer_accepted.offerer_lettings_details.full_name
+
+        offer_amount = deal_instance.offer_accepted.offer
+
+        notes = (
+            "The deal fallen through was with "
+            f"{offerer} for £"
+            f"{humanize.intcomma(offer_amount)}."
+        )
+
+        deal_instance.delete()
+
+        property_fee_instance = PropertyFees.objects.filter(
+            propertyprocess=property_process.id
+        ).first()
+
+        minus_fee = property_fee_instance.fee * -1
+
+        PropertyFees.objects.create(
+            propertyprocess=property_process,
+            fee=minus_fee,
+            price=property_fee_instance.price,
+            date=datetime.date.today(),
+            active=True,
+            created_by=request.user.get_full_name(),
+            updated_by=request.user.get_full_name(),
+        )
+
+        history_description = (
+            f"{request.user.get_full_name()} has fallen through the property."
+        )
+
+        history = PropertyHistory.objects.create(
+            propertyprocess=property_process,
+            type=PropertyHistory.PROPERTY_EVENT,
+            description=history_description,
+            notes=notes,
+            created_by=request.user.get_full_name(),
+            updated_by=request.user.get_full_name(),
+        )
+
+        for offer_instance in property_process.offer.all():
+            if (
+                offer_instance.status == Offer.GETTINGVERIFIED
+                or offer_instance.status == Offer.NEGOTIATING
+                or offer_instance.status == Offer.ACCEPTED
+            ):
+                offer_instance.status = Offer.REJECTED
+                offer_instance.save()
+
+        data["form_is_valid"] = True
+
+        context = {
+            "property_process": property_process,
+            "history": history,
+        }
+        data["html_success"] = render_to_string(
+            "properties/stages/includes/form_success.html",
+            context,
+            request=request,
+        )
+
+    else:
+        context = {
+            "property_process": property_process,
+        }
+        data["html_modal"] = render_to_string(
+            "properties/lettings_progression/fall_through_modal.html",
+            context,
+            request=request,
+        )
+
+    return JsonResponse(data)
+
+
+@otp_required
+@login_required
 def manage_sales_progression(request, propertyprocess_id):
     """
     Ajax URL for editing sales progression after a fall through

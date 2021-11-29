@@ -92,7 +92,12 @@
         <i class="mdi mdi-home-lock icon-lg-size"></i>
 </button>
 <button 
-    data-url="{% url 'properties:fall_through' propertyprocess.id %}" data-toggle="tooltip"
+    {% if propertyprocess.sector == "sales" %}
+        data-url="{% url 'properties:fall_through' propertyprocess.id %}"
+    {% else %}
+        data-url="{% url 'properties:lettings_fall_through' propertyprocess.id %}"
+    {% endif %}
+    data-toggle="tooltip"
     data-placement="top"
     title="Fall Though Property"
     class="mb-1 btn px-2 py-1 {% if propertyprocess.macro_status != 4 %}btn-secondary" disabled{% else %}btn-info js-load-form"{% endif %}>
