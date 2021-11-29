@@ -114,6 +114,7 @@ LOCAL_APPS = [
     "lettings",
     "weekends",
     "boards",
+    "touts",
 ]
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps

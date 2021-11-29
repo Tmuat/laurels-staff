@@ -21,6 +21,7 @@ urlpatterns = [
     path("statistics/", include("stats.urls")),
     path("support/", include("support.urls")),
     path("boards/", include("boards.urls")),
+    path("touting/", include("touts.urls")),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
