@@ -64,10 +64,9 @@ class ToutProperty(UpdatedAndCreated):
 
 class Landlord(UpdatedAndCreated):
     class Meta:
-        ordering = ["postcode", "address_line_1", "landlord_name"]
+        ordering = ["landlord_property__postcode", "landlord_property__address_line_1", "landlord_name"]
         verbose_name = "Tout Landlord"
         verbose_name_plural = "Tout Landlords"
-        unique_together = ["postcode", "address_line_1", "address_line_2"]
 
     landlord_name = models.CharField(max_length=150, null=False, blank=False)
     address_line_1 = models.CharField(max_length=150, null=False)
