@@ -1,6 +1,7 @@
 from django.db import models
 
 from common.models import UpdatedAndCreated
+from users.models import Profile
 
 
 class ToutProperty(UpdatedAndCreated):
@@ -78,9 +79,10 @@ class Landlord(UpdatedAndCreated):
         on_delete=models.CASCADE,
         related_name="landlord_property",
     )
+    employee = models.ForeignKey(Profile, on_delete=models.CASCADE)
 
     def __str__(self):
-        if self.address_line_2 == "" or self.address_line_2 == None:
+        if self.address_line_2 == "" or self.address_line_2 is None:
             property_address = "%s, %s" % (self.postcode, self.address_line_1)
         else:
             property_address = "%s, %s, %s" % (
