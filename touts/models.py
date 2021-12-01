@@ -129,3 +129,38 @@ class Landlord(UpdatedAndCreated):
                 self.address_line_2,
             )
         return property_address
+
+
+class ToutLetter(UpdatedAndCreated):
+    class Meta:
+        ordering = [
+            "landlord__landlord_property__postcode",
+            "landlord__landlord_property__address_line_1",
+            "landlord__landlord_name"
+        ]
+        verbose_name = "Tout Letter"
+        verbose_name_plural = "Tout Letters"
+
+    landlord = models.ForeignKey(
+        Landlord,
+        on_delete=models.CASCADE,
+        related_name="landlord",
+    )
+
+    def __str__(self):
+        if (
+            self.landlord.landlord_property.address_line_2 == ""
+            or self.landlord.landlord_property.address_line_2 is None):
+            property_address_and_landlord = "%s, %s (%s)" % (
+                self.landlord.landlord_property.postcode,
+                self.landlord.landlord_property.address_line_1,
+                self.landlord.landlord_name
+            )
+        else:
+            property_address_and_landlord = "%s, %s, %s (%s)" % (
+                self.landlord.landlord_property.postcode,
+                self.landlord.landlord_property.address_line_1,
+                self.landlord.landlord_property.address_line_2,
+                self.landlord.landlord_name
+            )
+        return property_address_and_landlord
