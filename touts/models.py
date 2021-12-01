@@ -81,15 +81,20 @@ class Landlord(UpdatedAndCreated):
     employee = models.ForeignKey(Profile, on_delete=models.CASCADE)
 
     def __str__(self):
-        if self.address_line_2 == "" or self.address_line_2 is None:
-            property_address = "%s, %s" % (self.postcode, self.address_line_1)
-        else:
-            property_address = "%s, %s, %s" % (
-                self.postcode,
-                self.address_line_1,
-                self.address_line_2,
+        if self.landlord_property.address_line_2 == "" or self.landlord_property.address_line_2 is None:
+            property_address_and_landlord = "%s, %s (%s)" % (
+                self.landlord_property.postcode,
+                self.landlord_property.address_line_1,
+                self.landlord_name
             )
-        return property_address
+        else:
+            property_address_and_landlord = "%s, %s, %s (%s)" % (
+                self.landlord_property.postcode,
+                self.landlord_property.address_line_1,
+                self.landlord_property.address_line_2,
+                self.landlord_name
+            )
+        return property_address_and_landlord
 
     @property
     def calculate_str_length(self, **kwargs):
