@@ -73,6 +73,11 @@ class Landlord(UpdatedAndCreated):
     address_line_2 = models.CharField(max_length=150, null=True, blank=True)
     town = models.CharField(max_length=100, null=False)
     postcode = models.CharField(max_length=8, null=False)
+    landlord_property = models.ForeignKey(
+        ToutProperty,
+        on_delete=models.CASCADE,
+        related_name="landlord_property",
+    )
 
     def __str__(self):
         if self.address_line_2 == "" or self.address_line_2 == None:
