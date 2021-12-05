@@ -163,11 +163,13 @@
                     <span> {% trans "Touting (Beta)" %} </span>
                     <span class="menu-arrow"></span>
                 </a>
+                {% if request.user.profile.director %}
                 <ul class="side-nav-second-level" aria-expanded="false">
-                    <li {% if request.resolver_match.url_name == 'touting' %}class="active"{% endif %}>
-                        <a href="">{% trans "So you wanna tout" %}</a>
+                    <li {% if request.resolver_match.url_name == 'area_list' %}class="active"{% endif %}>
+                        <a href="{% url 'touts:area_list' %}">{% trans "Area List" %}</a>
                     </li>
                 </ul>
+                {% endif %}
             </li>
             {% endif %}
         </ul>
