@@ -4,6 +4,18 @@ from common.models import UpdatedAndCreated
 from users.models import Profile
 
 
+class Area(UpdatedAndCreated):
+    class Meta:
+        ordering = ["postcode"]
+        verbose_name = "Area"
+        verbose_name_plural = "Areas"
+
+    postcode = models.CharField(max_length=8, unique=True, null=False)
+
+    def __str__(self):
+        return self.postcode
+
+
 class ToutProperty(UpdatedAndCreated):
     class Meta:
         ordering = ["postcode", "address_line_1"]
