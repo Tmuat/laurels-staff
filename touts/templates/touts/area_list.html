@@ -42,7 +42,7 @@
                                     </div>
                                 </div>
                                 <div class="float-none float-sm-right">
-                                    <a href="" class="btn btn-success btn-sm">Add Area</a>
+                                    <a data-url="{% url 'touts:area_add' %}" class="btn btn-success text-white btn-sm js-load-form">Add Area</a>
                                 </div>
                             </div>
                             <div id="panel-div" class="w-100">
@@ -150,6 +150,5 @@
 {% block extra_javascript %}
 {{ block.super }}
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
-    <!-- <script src="{% static 'properties/js/property_details-v4.js' %}"></script> -->
+    <script src="{% static 'touting/js/touting_general-v1.js' %}"></script>
 {% endblock %}
-
