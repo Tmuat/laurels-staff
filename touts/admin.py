@@ -10,7 +10,7 @@ from touts.models import (
 
 class AreaAdmin(admin.ModelAdmin):
     list_display = [
-        "postcode",
+        "area_code",
         "is_active",
         "updated_by",
         "updated",
@@ -19,10 +19,10 @@ class AreaAdmin(admin.ModelAdmin):
     ]
 
     ordering = [
-        "postcode",
+        "area_code",
     ]
 
-    search_fields = ["postcode"]
+    search_fields = ["area_code"]
 
     readonly_fields = [
         "updated_by",
