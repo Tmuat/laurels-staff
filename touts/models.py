@@ -1,7 +1,6 @@
 from django.db import models
 
 from common.models import UpdatedAndCreated
-from users.models import Profile
 
 
 class Area(UpdatedAndCreated):
@@ -164,6 +163,15 @@ class ToutLetter(UpdatedAndCreated):
         on_delete=models.CASCADE,
         related_name="landlord",
     )
+    letter_one = models.BooleanField(default=False)
+    letter_two = models.BooleanField(default=False)
+    letter_three = models.BooleanField(default=False)
+    letter_four = models.BooleanField(default=False)
+    letter_five = models.BooleanField(default=False)
+    letter_six = models.BooleanField(default=False)
+    do_not_send = models.BooleanField(default=False)
+    success = models.BooleanField(default=False)
+    requested_no_contact = models.BooleanField(default=False)
 
     def __str__(self):
         if (
