@@ -156,10 +156,11 @@
                 </ul>
             </li>
             {% endif %}
+            {% if request.user.profile.director %}
             <li class="side-nav-item">
                 <a href="javascript: void(0);" class="side-nav-link">
                     <i class="mdi mdi-calculator"></i>
-                    <span> {% trans "Touting" %} </span>
+                    <span> {% trans "Touting (Beta)" %} </span>
                     <span class="menu-arrow"></span>
                 </a>
                 <ul class="side-nav-second-level" aria-expanded="false">
@@ -168,6 +169,7 @@
                     </li>
                 </ul>
             </li>
+            {% endif %}
         </ul>
         <!-- End Sidebar -->
         
