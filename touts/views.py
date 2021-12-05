@@ -1,9 +1,14 @@
 from django_otp.decorators import otp_required
 
 from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render
 
+from common.decorators import director_required
 
+
+@director_required
+@staff_member_required
 @otp_required
 @login_required
 def area_list(request):
