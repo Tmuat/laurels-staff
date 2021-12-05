@@ -27,9 +27,14 @@ class ToutProperty(UpdatedAndCreated):
     address_line_2 = models.CharField(max_length=150, null=True, blank=True)
     town = models.CharField(max_length=100, null=False)
     postcode = models.CharField(max_length=8, null=False)
+    area = models.ForeignKey(
+        Area,
+        on_delete=models.CASCADE,
+        related_name="area",
+    )
 
     def __str__(self):
-        if self.address_line_2 == "" or self.address_line_2 == None:
+        if self.address_line_2 == "" or self.address_line_2 is None:
             property_address = "%s, %s" % (self.postcode, self.address_line_1)
         else:
             property_address = "%s, %s, %s" % (
@@ -63,7 +68,7 @@ class ToutProperty(UpdatedAndCreated):
 
     @property
     def address(self):
-        if self.address_line_2 == "" or self.address_line_2 == None:
+        if self.address_line_2 == "" or self.address_line_2 is None:
             property_address = "%s, %s" % (self.postcode, self.address_line_1)
         else:
             property_address = "%s, %s, %s" % (
@@ -133,7 +138,7 @@ class Landlord(UpdatedAndCreated):
 
     @property
     def address(self):
-        if self.address_line_2 == "" or self.address_line_2 == None:
+        if self.address_line_2 == "" or self.address_line_2 is None:
             property_address = "%s, %s" % (self.postcode, self.address_line_1)
         else:
             property_address = "%s, %s, %s" % (
