@@ -48,6 +48,7 @@ def area_list(request):
 
     context = {
         "area_list": area_list,
+        "active": active,
         "last_page": last_page,
     }
 
