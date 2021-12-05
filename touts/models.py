@@ -158,7 +158,7 @@ class ToutLetter(UpdatedAndCreated):
         verbose_name = "Tout Letter"
         verbose_name_plural = "Tout Letters"
 
-    landlord = models.ForeignKey(
+    landlord = models.OneToOneField(
         Landlord,
         on_delete=models.CASCADE,
         related_name="landlord",
