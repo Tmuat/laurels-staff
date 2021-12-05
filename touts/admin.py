@@ -11,6 +11,7 @@ from touts.models import (
 class AreaAdmin(admin.ModelAdmin):
     list_display = [
         "postcode",
+        "is_active",
         "updated_by",
         "updated",
         "created_by",

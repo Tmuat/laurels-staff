@@ -8,8 +8,11 @@ class Area(UpdatedAndCreated):
         ordering = ["postcode"]
         verbose_name = "Area"
         verbose_name_plural = "Areas"
+    
+    BOOL_CHOICES = [(True, "Yes"), (False, "No")]
 
     postcode = models.CharField(max_length=8, unique=True, null=False)
+    is_active = models.BooleanField(choices=BOOL_CHOICES, default=True)
 
     def __str__(self):
         return self.postcode
