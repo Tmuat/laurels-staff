@@ -7,7 +7,7 @@ There has been a deal put through for:
 
 The offer details are:
 
-Name - {{ offer.offerer_details }}
+Name - {{ offer.offerer_lettings_details }}
 Offer - £{{ humanized_offer }}
 
 The property consultant and hub are: 
