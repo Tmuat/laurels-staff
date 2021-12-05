@@ -80,7 +80,6 @@ class Landlord(UpdatedAndCreated):
         on_delete=models.CASCADE,
         related_name="landlord_property",
     )
-    employee = models.ForeignKey(Profile, on_delete=models.CASCADE)
 
     def __str__(self):
         if self.landlord_property.address_line_2 == "" or self.landlord_property.address_line_2 is None:
