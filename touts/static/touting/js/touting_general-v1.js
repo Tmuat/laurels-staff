@@ -1,7 +1,30 @@
 $(document).ready(function () {
     $(function () {
         $('[data-toggle="tooltip"]').tooltip()
-      });
+    });
+
+    // Checks the uniqueness of the area code
+    $("#base-modal").on("change", "#id_area_code", function () {
+        var areaCode = $(this).val();
+        $.ajax({
+            url: '/touting/check/area/',
+            data: {
+                'area_code': areaCode
+            },
+            dataType: 'json',
+            success: function (data) {
+                if (data.is_taken) {
+                    $("#base-modal").find("#mdi-icon").removeClass("mdi-help-circle mdi-check-circle-outline").addClass("mdi-close-circle-outline");
+                    $("#base-modal").find("#unique_check").addClass("text-danger border-danger");
+                    $("#base-modal").find("#add-button").attr("disabled", true);
+                } else {
+                    $("#base-modal").find("#mdi-icon").removeClass("mdi-help-circle mdi-close-circle-outline").addClass("mdi-check-circle-outline");
+                    $("#base-modal").find("#unique_check").removeClass("text-danger border-danger").addClass("border-success text-success");
+                    $("#base-modal").find("#add-button").removeAttr("disabled");
+                };
+            }
+        });
+    });
 
     // Deals with the form submission only
     var submitForm = function () {
