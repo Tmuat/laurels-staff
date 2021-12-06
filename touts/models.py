@@ -9,10 +9,8 @@ class Area(UpdatedAndCreated):
         verbose_name = "Area"
         verbose_name_plural = "Areas"
 
-    BOOL_CHOICES = [(True, "Yes"), (False, "No")]
-
     area_code = models.CharField(max_length=8, unique=True, null=False)
-    is_active = models.BooleanField(choices=BOOL_CHOICES, default=True)
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.area_code
