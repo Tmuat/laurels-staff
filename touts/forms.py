@@ -18,7 +18,7 @@ class AreaForm(forms.ModelForm):
         """
         super().__init__(*args, **kwargs)
         labels = {
-            "area_code": "area_code",
+            "area_code": "Area Code (Press Enter To Check If Unique)",
         }
 
         for field in self.fields:
