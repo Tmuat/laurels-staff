@@ -1,70 +1,32 @@
-{% for instance in area_list %}
-    <!-- start panel -->
-    <div class="row justify-content-sm-between mt-2">
-        <div class="col-sm-3 mb-2 mb-sm-0">
-
-            <!-- start checkbox -->
-            <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" id="{{ hub_instance.id }}">
-                <label class="custom-control-label" for="{{ hub_instance.id }}">
-                    {{ instance }}
-                </label>
-            </div>
-            <!-- end checkbox -->
-
-        </div>
-        <!-- end col -->
-        <div class="col-sm-9">
-            <div class="row">
-                <div class="col-12 col-lg-6 text-center px-0 mx-auto">
-                    {% for hub_instance in instance.profile.hub.all %}
-                        {% if forloop.last %}
-                            {{ hub_instance }}
+<!-- start table -->
+<div class="table-responsive">
+    <table class="table table-hover table-centered mb-0">
+        <thead>
+            <tr>
+                <th style="width: 33%;" class="text-center">Area</th>
+                <th style="width: 34%;" class="text-center">Active</th>
+                <th style="width: 33%;" class="text-center">Edit</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for instance in area_list %}
+                <tr>
+                    <td class="text-center">{{ instance.area_code }}</td>
+                    <td class="text-center">
+                        <span class="badge 
+                        {% if instance.is_active %}
+                            badge-success">Active
                         {% else %}
-                            {{ hub_instance }},
+                            badge-danger">Inactive
                         {% endif %}
-                    {% endfor %}
-                </div>
-                <div class="col-12 col-lg-2 text-center px-0 mx-auto">
-                    {% if instance.is_active %}
-                        <p class="mb-0">Active</p>
-                    {% else %}
-                        <p class="mb-0">Inactive</p>
-                    {% endif %}
-                </div>
-                <div class="col-12 col-lg-3 text-center px-0 mx-auto">
-                    {% if instance.is_active %}
-                        {% if instance.profile.employee_targets %}
-                            {% for user_target_instance in targets_set %}
-                                {% if instance.pk == user_target_instance.pk %}
-                                    {% if user_target_instance.current_year %}
-                                        <p class="mb-0 text-success pointer text-hover-underline js-load-large-form" data-url="{% url 'users:edit_user_targets' instance.pk current_year %}">
-                                            {{ current_year }} Targets <span class="mdi mdi-check-circle-outline"></span>
-                                        </p>
-                                    {% else %}
-                                        <p class="mb-0 text-danger pointer text-hover-underline js-load-large-form" data-url="{% url 'users:add_user_targets' instance.pk current_year %}">
-                                            {{ current_year }} Targets <span class="mdi mdi-close-circle-outline"></span>
-                                        </p>
-                                    {% endif %}
-                                {% endif %}
-                            {% endfor %}
-                        {% else %}
-                            <p class="mb-0">-</p>
-                        {% endif %}
-                    {% else %}
-                        <p class="mb-0">-</p>
-                    {% endif %}
-                </div>
-                <div class="col-12 col-lg-1 px-0 mx-auto">
-                    <ul class="list-inline font-13 text-center text-md-right">
-                        <li class="list-inline-item">
-                            <p class="mb-0 d-inline text-primary pointer js-load-large-form"  data-url="{% url 'users:user_detail' instance.pk %}">
-                                <i class="mdi mdi-arrow-expand-all font-16 mr-1"></i>
-                            </p>
-                        </li>
-                    </ul>
-                </div>
-            </div> <!-- end .d-flex-->
-        </div> <!-- end col -->
-    </div>
-{% endfor %}
+                        </span>
+                    </td>
+                    <td class="text-center">
+                        <span class="mdi mdi-calendar-edit font-16 text-primary pointer js-load-form" data-url="{% url 'touts:area_edit' instance.area_code %}"></span>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<!-- end table responsive-->
