@@ -153,8 +153,6 @@ def validate_area_code(request):
     return JsonResponse(data)
 
 
-@director_required
-@staff_member_required
 @otp_required
 @login_required
 def tout_list(request):
