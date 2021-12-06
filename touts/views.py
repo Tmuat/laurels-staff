@@ -4,11 +4,11 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.template.loader import render_to_string
 
 from common.decorators import director_required
-from touts.forms import AreaForm
+from touts.forms import AreaForm, AreaEditForm
 from touts.models import Area
 
 
@@ -91,6 +91,46 @@ def area_add(request):
     context = {"form": form}
     data["html_modal"] = render_to_string(
         "touts/includes/forms/add_area.html",
+        context,
+        request=request,
+    )
+    return JsonResponse(data)
+
+
+@director_required
+@staff_member_required
+@otp_required
+@login_required
+def area_edit(request, area_code):
+    """
+    Ajax URL for editing an area.
+    """
+    data = dict()
+
+    area_code = get_object_or_404(Area, area_code=area_code)
+
+    if request.method == "POST":
+        form = AreaEditForm(request.POST, instance=area_code)
+        if form.is_valid():
+            instance = form.save(commit=False)
+
+            instance.updated_by = request.user.get_full_name()
+
+            instance.save()
+
+            data["form_is_valid"] = True
+        else:
+            data["form_is_valid"] = False
+
+    else:
+        form = AreaEditForm(instance=area_code)
+
+    context = {
+        "form": form,
+        "instance": area_code
+    }
+    data["html_modal"] = render_to_string(
+        "touts/includes/forms/edit_area.html",
         context,
         request=request,
     )
