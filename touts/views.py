@@ -116,3 +116,19 @@ def area_add(request):
         request=request,
     )
     return JsonResponse(data)
+
+
+@director_required
+@staff_member_required
+@otp_required
+@login_required
+def validate_area_code(request):
+    """
+    Check that the area code is unique prior to form submission
+    """
+    area_code = request.GET.get("area_code", None)
+    print(area_code)
+    data = {
+        "is_taken": Area.objects.filter(area_code__iexact=area_code).exists()
+    }
+    return JsonResponse(data)
