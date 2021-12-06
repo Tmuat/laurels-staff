@@ -35,12 +35,6 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-12 text-center">
-                                <div class="float-none float-sm-left">
-                                    <div class="btn-group mb-2">
-                                        <a href="?active=True" class="btn btn-sm {% if active == False %}btn-light text-dark{% else %}btn-success text-white{% endif %}">Active</a>
-                                        <a href="?active=False" class="btn btn-sm {% if active == False %}btn-success text-white{% else %}btn-light text-dark{% endif %}">All</a>
-                                    </div>
-                                </div>
                                 <div class="float-none float-sm-right">
                                     <a data-url="{% url 'touts:area_add' %}" class="btn btn-success text-white btn-sm js-load-form">Add Area</a>
                                 </div>
