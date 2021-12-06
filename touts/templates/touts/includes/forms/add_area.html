@@ -7,17 +7,17 @@
         <div class="text-center">
             <h4 class="text-white">Add New Area</h4>
         </div>
-        <!-- <p class="text-white text-center">{% blocktrans trimmed %}Please add a new hub. Hub names must be unique; the intranet will perform a uniqueness check.{% endblocktrans %}</p>
-        <form method="post" action="{% url 'regionandhub:add_hub' %}" class="text-center text-white js-add-hub-form">
+        <p class="text-white text-center">{% blocktrans trimmed %}Please add a new area for touting. Area names must be unique; the intranet will perform a uniqueness check.{% endblocktrans %}</p>
+        <form method="post" action="{% url 'touts:area_add' %}" class="text-center text-white js-add-area-form">
             {% csrf_token %}
             {{ form|crispy }}
             <div class="mb-2 alert alert-secondary w-50 mx-auto" role="alert" id="unique_check">
                 Unique: <span id="mdi-icon" class="mdi mdi-help-circle"></span>
             </div>
             <div class="mb-2 text-center">
-                <button type="submit" class="btn btn-info" id="add-button" disabled>{% trans "Add Hub" %}</button>
+                <button type="submit" class="btn btn-info" id="add-button" disabled>{% trans "Add New Area" %}</button>
             </div>
-        </form> -->
+        </form>
     </div>
 </div>
 <!-- /.modal-content -->
