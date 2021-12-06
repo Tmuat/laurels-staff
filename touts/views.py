@@ -151,3 +151,37 @@ def validate_area_code(request):
         "is_taken": Area.objects.filter(area_code__iexact=area_code).exists()
     }
     return JsonResponse(data)
+
+
+@director_required
+@staff_member_required
+@otp_required
+@login_required
+def tout_list(request):
+    """
+    A view to show paginated lists of all touting areas and the properties in the system; including filtering.
+    """
+
+    area_list = Area.objects.filter(is_active=True)
+
+    page = request.GET.get("page", 1)
+
+    paginator = Paginator(area_list, 16)
+    last_page = paginator.num_pages
+
+    try:
+        area_list = paginator.page(page)
+    except PageNotAnInteger:
+        area_list = paginator.page(1)
+    except EmptyPage:
+        area_list = paginator.page(paginator.num_pages)
+
+    context = {
+        "area_list": area_list,
+        "active": active,
+        "last_page": last_page,
+    }
+
+    template = "touts/tout_list.html"
+
+    return render(request, template, context)
