@@ -73,36 +73,15 @@ def area_add(request):
     if request.method == "POST":
         form = AreaForm(request.POST)
         if form.is_valid():
-            # instance = form.save(commit=False)
-            # region_name = request.POST.get("name")
+            instance = form.save(commit=False)
 
-            # instance.slug = slugify(region_name)
-            # instance.is_active = True
-            # instance.created_by = request.user.get_full_name()
-            # instance.updated_by = request.user.get_full_name()
+            instance.is_active = True
+            instance.created_by = request.user.get_full_name()
+            instance.updated_by = request.user.get_full_name()
 
-            # instance.save()
+            instance.save()
 
-            # data["form_is_valid"] = True
-
-            # current_year = quarter_year_calc()
-            # next_year = str(int(current_year) + 1)
-
-            # regions = Region.objects.filter(is_active=True).prefetch_related(
-            #     "region"
-            # )
-            # data["html_region_panels"] = render_to_string(
-            #     "regionandhub/includes/panel.html",
-            #     {
-            #         "regions": regions,
-            #         "current_year": current_year,
-            #         "next_year": next_year,
-            #     },
-            # )
-            # data["html_region_page_title"] = render_to_string(
-            #     "regionandhub/includes/page-title.html", {"regions": regions}
-            # )
-            pass
+            data["form_is_valid"] = True
         else:
             data["form_is_valid"] = False
 

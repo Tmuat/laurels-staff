@@ -8,7 +8,7 @@
             <h4 class="text-white">Add New Area</h4>
         </div>
         <p class="text-white text-center">{% blocktrans trimmed %}Please add a new area for touting. Area names must be unique; the intranet will perform a uniqueness check.{% endblocktrans %}</p>
-        <form method="post" action="{% url 'touts:area_add' %}" class="text-center text-white js-add-area-form">
+        <form method="post" action="{% url 'touts:area_add' %}" class="text-center text-white js-submit-form js-add-area-form">
             {% csrf_token %}
             {{ form|crispy }}
             <div class="mb-2 alert alert-secondary w-50 mx-auto" role="alert" id="unique_check">
