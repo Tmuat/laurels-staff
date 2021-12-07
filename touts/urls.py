@@ -8,6 +8,7 @@ from touts.views import (
     validate_area_code,
     loud_tout_menu,
     add_tout_property,
+    validate_tout_property_address
 )
 
 
@@ -19,5 +20,14 @@ urlpatterns = [
     path("area/edit/<area_code>/", area_edit, name="area_edit"),
     path("check/area/", validate_area_code, name="validate_area_code"),
     path("tout-list/menu/", loud_tout_menu, name="loud_tout_menu"),
-    path("tout-list/add/property", add_tout_property, name="add_tout_property"),
+    path(
+        "tout-list/add/property/",
+        add_tout_property,
+        name="add_tout_property"
+    ),
+    path(
+        "tout-list/validate/property/",
+        validate_tout_property_address,
+        name="validate_tout_property_address"
+    ),
 ]

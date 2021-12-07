@@ -10,7 +10,7 @@ from django.template.loader import render_to_string
 
 from common.decorators import director_required
 from touts.forms import AreaForm, AreaEditForm, AddPropertyForm
-from touts.models import Area
+from touts.models import Area, ToutProperty
 
 
 @director_required
@@ -240,4 +240,43 @@ def add_tout_property(request):
         context,
         request=request,
     )
+    return JsonResponse(data)
+
+
+@otp_required
+@login_required
+def validate_tout_property_address(request):
+    """
+    Check that the tout property is not already in the database
+    """
+    data = dict()
+    instance = None
+
+    address_line_1 = request.GET.get("address_line_1", None)
+    address_line_2 = request.GET.get("address_line_2", None)
+    postcode = request.GET.get("postcode", None)
+
+    if address_line_2 == "":
+        address_line_2 = None
+
+    data["is_taken"] = ToutProperty.objects.filter(
+        address_line_1__iexact=address_line_1,
+        address_line_2__iexact=address_line_2,
+        postcode__iexact=postcode,
+    ).exists()
+
+    if data["is_taken"] is True:
+        instance = ToutProperty.objects.get(
+            address_line_1__iexact=address_line_1,
+            address_line_2__iexact=address_line_2,
+            postcode__iexact=postcode,
+        )
+
+        context = {"instance": instance}
+        data["html_alert"] = render_to_string(
+            "touts/includes/alerts/property_in_system.html",
+            context,
+            request=request,
+        )
+
     return JsonResponse(data)
