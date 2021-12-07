@@ -57,29 +57,29 @@ $(document).ready(function () {
         var id = option.attr("value");
         $.get('https://api.getaddress.io/get/' + id, {
             'api-key': api_key
-        }, function (address, status) {
+        }, function (address) {
             $("#id_address_line_1").val(address["line_1"]);
             $("#id_address_line_2").val(address["line_2"]);
             $("#id_town").val(address["town_or_city"]);
             $("#id_county").val(address["county"]);
             $("#id_postcode").val(address["postcode"]);
-            // $.ajax({
-            //     url: '/properties/validate/address/',
-            //     data: {
-            //         'address_line_1': address["line_1"],
-            //         'address_line_2': address["line_2"],
-            //         'postcode': address["postcode"],
-            //     },
-            //     dataType: 'json',
-            //     success: function (data) {
-            //         if (data.is_taken) {
-            //             $("#alert-div").html(data.html_alert);
-            //             dataTaken()
-            //         } else {
-            //             dataNotTaken()
-            //         };
-            //     }
-            // });
+            $.ajax({
+                url: '/touting/tout-list/validate/property/',
+                data: {
+                    'address_line_1': address["line_1"],
+                    'address_line_2': address["line_2"],
+                    'postcode': address["postcode"],
+                },
+                dataType: 'json',
+                success: function (data) {
+                    if (data.is_taken) {
+                        $("#alert-div").html(data.html_alert);
+                        // dataTaken()
+                    } else {
+                        // dataNotTaken()
+                    };
+                }
+            });
         });
     });
 
