@@ -3,6 +3,86 @@ $(document).ready(function () {
         $('[data-toggle="tooltip"]').tooltip()
     });
 
+    function initialSelectTwo() {
+        var api_key = $('#base-large-modal #id_get_address_api_key').text().slice(1, -1);
+        $('.get-address-select2').select2({
+            dropdownParent: $("#base-large-modal"),
+            width: '100%',
+            minimumInputLength: 4,
+            placeholder: "Postcode or Address Line 1",
+            language: {
+                inputTooShort: function () {
+                    return '';
+                }
+            },
+            ajax: {
+                url: function (params) {
+                    if (params.term) return 'https://api.getaddress.io/suggest/' + params.term;
+                    return '';
+                },
+                dataType: 'json',
+                data: function (params) {
+                    var query = {
+                        'api-key': api_key
+                    };
+                    return query;
+                },
+                processResults: function (data) {
+                    var results = [];
+
+                    if (data.suggestions && data.suggestions.length > 0) {
+
+                        for (var i = 0; i < data.suggestions.length; i++) {
+                            var suggestion = data.suggestions[i];
+                            var result = {
+                                id: suggestion.id,
+                                text: suggestion.address
+                            }
+                            results.push(result);
+                        }
+                    }
+
+                    return {
+                        results: results
+                    };
+                }
+            }
+        });
+    };
+
+    // Deals with the get address request
+    $('#base-large-modal').on('change', 'select', function () {
+        var option = $(".get-address-select2 option:selected")
+        var api_key = $('#base-large-modal #id_get_address_api_key').text().slice(1, -1);
+        var id = option.attr("value");
+        $.get('https://api.getaddress.io/get/' + id, {
+            'api-key': api_key
+        }, function (address, status) {
+            $("#id_address_line_1").val(address["line_1"]);
+            $("#id_address_line_2").val(address["line_2"]);
+            $("#id_town").val(address["town_or_city"]);
+            $("#id_county").val(address["county"]);
+            $("#id_postcode").val(address["postcode"]);
+            // $.ajax({
+            //     url: '/properties/validate/address/',
+            //     data: {
+            //         'address_line_1': address["line_1"],
+            //         'address_line_2': address["line_2"],
+            //         'postcode': address["postcode"],
+            //     },
+            //     dataType: 'json',
+            //     success: function (data) {
+            //         if (data.is_taken) {
+            //             $("#alert-div").html(data.html_alert);
+            //             dataTaken()
+            //         } else {
+            //             dataNotTaken()
+            //         };
+            //     }
+            // });
+        });
+    });
+
     // Checks the uniqueness of the area code
     $("#base-modal").on("change", "#id_area_code", function () {
         var areaCode = $(this).val();
@@ -159,6 +239,8 @@ $(document).ready(function () {
                 $("#base-large-modal").modal("show");
                 $("#base-large-modal .modal-dialog").html(data.html_modal);
                 $('#modal-overlay').fadeToggle(100);
+
+                initialSelectTwo();
             }
         });
         return false;
@@ -169,12 +251,15 @@ $(document).ready(function () {
         $("#base-large-modal .modal-dialog").addClass("modal-dialog-scrollable");
     });
 
+    // Initialise Select Two
+
     // Binding functions
     // Links
     $("#base-modal").on("click", ".js-edit-offer-status", loadBaseModal);
 
     $("#base-modal").on("click", ".js-load-form", loadBaseModal);
     $("#base-modal").on("click", ".js-hide-base-load-large", hideBaseModalAndLoadLargeModal);
+
     $(".js-load-form").on("click", loadBaseModal);
     $(".js-load-large-form").on("click", loadFormLargeModal);
     $("#base-static-modal").on("click", ".js-load-static-form", loadFormBaseStaticModal);
