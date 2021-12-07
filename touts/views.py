@@ -1,5 +1,6 @@
 from django_otp.decorators import otp_required
 
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -209,6 +210,8 @@ def add_tout_property(request):
     """
     data = dict()
 
+    get_address_api_key = settings.GET_ADDRESS_KEY
+
     if request.method == "POST":
         form = AddPropertyForm(request.POST)
         if form.is_valid():
@@ -228,7 +231,10 @@ def add_tout_property(request):
     else:
         form = AddPropertyForm()
 
-    context = {"form": form}
+    context = {
+        "form": form,
+        "get_address_api_key": get_address_api_key,
+    }
     data["html_modal"] = render_to_string(
         "touts/includes/forms/add_tout_property.html",
         context,
