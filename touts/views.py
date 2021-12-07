@@ -8,7 +8,7 @@ from django.shortcuts import render, get_object_or_404
 from django.template.loader import render_to_string
 
 from common.decorators import director_required
-from touts.forms import AreaForm, AreaEditForm
+from touts.forms import AreaForm, AreaEditForm, AddPropertyForm
 from touts.models import Area
 
 
@@ -198,4 +198,40 @@ def loud_tout_menu(request):
         request=request,
     )
 
+    return JsonResponse(data)
+
+
+@otp_required
+@login_required
+def add_tout_property(request):
+    """
+    Ajax URL for adding a tout property.
+    """
+    data = dict()
+
+    if request.method == "POST":
+        form = AddPropertyForm(request.POST)
+        if form.is_valid():
+            # instance = form.save(commit=False)
+
+            # instance.is_active = True
+            # instance.created_by = request.user.get_full_name()
+            # instance.updated_by = request.user.get_full_name()
+
+            # instance.save()
+
+            # data["form_is_valid"] = True
+            pass
+        else:
+            data["form_is_valid"] = False
+
+    else:
+        form = AddPropertyForm()
+
+    context = {"form": form}
+    data["html_modal"] = render_to_string(
+        "touts/includes/forms/add_tout_property.html",
+        context,
+        request=request,
+    )
     return JsonResponse(data)
