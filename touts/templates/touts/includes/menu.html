@@ -1,0 +1,21 @@
+{% load static i18n %}
+<div class="modal-content green-gradient">
+    <div class="modal-body">
+        <div class="text-center mt-2 mb-3">
+            <span><img src="{% static 'custom/images/logo.png' %}" alt="laurels" height="80"></span>
+        </div>
+        <div class="text-center">
+            <h4 class="text-white">Tout Options</h4>
+        </div>
+        <p class="text-white text-center">{% blocktrans trimmed %}Please choose an option for touting.{% endblocktrans %}</p>
+        <div class="row">
+            <div class="col-6 text-center">
+                <button class="btn btn-info js-hide-base-load-large" data-url="">Add New Property</button>
+            </div>
+            <div class="col-6 text-center">
+                <button class="btn btn-info"  data-url="">Add New Landlord</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.modal-content -->
