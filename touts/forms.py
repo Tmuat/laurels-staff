@@ -79,7 +79,7 @@ class AddPropertyForm(forms.ModelForm):
         for field in self.fields:
             label = f"{labels[field]}"
             self.fields[field].label = label
-        
+
         """
         Filter to active areas only
         """
