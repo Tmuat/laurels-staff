@@ -146,6 +146,24 @@ $(document).ready(function () {
         });
     };
 
+    // Deals with hiding the base modal and loading a large modal
+    var hideBaseModalAndLoadLargeModal = function () {
+        $('#modal-overlay').fadeToggle(100);
+        $("#base-modal").modal("hide");
+        var instance = $(this);
+        $.ajax({
+            url: instance.attr("data-url"),
+            type: 'get',
+            dataType: 'json',
+            success: function (data) {
+                $("#base-large-modal").modal("show");
+                $("#base-large-modal .modal-dialog").html(data.html_modal);
+                $('#modal-overlay').fadeToggle(100);
+            }
+        });
+        return false;
+    };
+
     // Add scrollable to modal
     $(".js-large-scrollable-modal").on("click", function() {
         $("#base-large-modal .modal-dialog").addClass("modal-dialog-scrollable");
@@ -156,6 +174,7 @@ $(document).ready(function () {
     $("#base-modal").on("click", ".js-edit-offer-status", loadBaseModal);
 
     $("#base-modal").on("click", ".js-load-form", loadBaseModal);
+    $("#base-modal").on("click", ".js-hide-base-load-large", hideBaseModalAndLoadLargeModal);
     $(".js-load-form").on("click", loadBaseModal);
     $(".js-load-large-form").on("click", loadFormLargeModal);
     $("#base-static-modal").on("click", ".js-load-static-form", loadFormBaseStaticModal);
