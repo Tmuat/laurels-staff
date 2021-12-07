@@ -157,7 +157,7 @@ def validate_area_code(request):
 @login_required
 def tout_list(request):
     """
-    A view to show paginated lists of all touting areas and the properties in the system; including filtering.
+    A view to show paginated lists of all touting areas and the properties in the system.
     """
 
     area_list = Area.objects.filter(is_active=True)
@@ -182,3 +182,20 @@ def tout_list(request):
     template = "touts/tout_list.html"
 
     return render(request, template, context)
+
+
+@otp_required
+@login_required
+def loud_tout_menu(request):
+    """
+    A view to load the tout menu.
+    """
+
+    data = dict()
+
+    data["html_modal"] = render_to_string(
+        "touts/includes/menu.html",
+        request=request,
+    )
+
+    return JsonResponse(data)

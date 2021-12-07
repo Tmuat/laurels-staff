@@ -6,6 +6,7 @@ from touts.views import (
     area_add,
     area_edit,
     validate_area_code,
+    loud_tout_menu,
 )
 
 
@@ -16,4 +17,5 @@ urlpatterns = [
     path("area/add/", area_add, name="area_add"),
     path("area/edit/<area_code>/", area_edit, name="area_edit"),
     path("check/area/", validate_area_code, name="validate_area_code"),
+    path("tout-list/menu/", loud_tout_menu, name="loud_tout_menu"),
 ]
