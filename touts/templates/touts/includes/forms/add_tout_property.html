@@ -8,16 +8,44 @@
             <h4 class="text-white">Add New Area</h4>
         </div>
         <p class="text-white text-center">{% blocktrans trimmed %}Please add a tout property. This must be unique; the intranet will perform a uniqueness check.{% endblocktrans %}</p>
-        <form method="post" action="{% url 'touts:area_add' %}" class="text-center text-white js-submit-form js-add-area-form">
-            {% csrf_token %}
-            {{ form|crispy }}
-            <div class="mb-2 alert alert-secondary w-50 mx-auto" role="alert" id="unique_check">
-                Unique: <span id="mdi-icon" class="mdi mdi-help-circle"></span>
+        <div class="row px-2 py-0">
+            <div class="col-12 col-md-6 offset-md-3 mb-1">
+                <select class="get-address-select2 text-muted"></select>
             </div>
-            <div class="mb-2 text-center">
+        </div>
+        <form method="post" id="property-tout-form" action="" class="text-center text-white p-2 js-submit-form custom-form-margin">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-12 col-sm-6">
+                    {{ form.address_line_1|as_crispy_field }}
+                </div>
+                <div class="col-12 col-sm-6">
+                    {{ form.address_line_2|as_crispy_field }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 col-sm-6">
+                    {{ form.town|as_crispy_field }}
+                </div>
+                <div class="col-12 col-sm-6">
+                    {{ form.county|as_crispy_field }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 col-sm-6 offset-sm-3">
+                    {{ form.postcode|as_crispy_field }}
+                </div>
+            </div>
+            <div class="d-none mt-2" id="alert-info-div">
+                {% include 'properties/stages/includes/property_in_system_alert.html' %}
+            </div>
+            <div class="my-2 text-center" id="submit-section">
+                <div class="d-none" id="alert-div">
+                </div>
                 <button type="submit" class="btn btn-info" id="add-button" disabled>{% trans "Add Property" %}</button>
             </div>
         </form>
     </div>
 </div>
 <!-- /.modal-content -->
+{{ get_address_api_key|json_script:"id_get_address_api_key" }}
