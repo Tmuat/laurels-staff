@@ -10,7 +10,7 @@
         <p class="text-white text-center">{% blocktrans trimmed %}Please choose an option for touting.{% endblocktrans %}</p>
         <div class="row">
             <div class="col-6 text-center">
-                <button class="btn btn-info js-hide-base-load-large" data-url="">Add New Property</button>
+                <button class="btn btn-info js-hide-base-load-large" data-url="{% url 'touts:add_tout_property' %}">Add New Property</button>
             </div>
             <div class="col-6 text-center">
                 <button class="btn btn-info"  data-url="">Add New Landlord</button>
