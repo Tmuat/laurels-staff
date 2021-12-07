@@ -36,18 +36,12 @@
                         <div class="row">
                             <div class="col-12 text-center">
                                 <div class="float-none float-sm-right">
-                                    <a data-url="{% url 'touts:area_add' %}" class="btn btn-success text-white btn-sm js-load-form">Add Area</a>
+                                    <a data-url="{% url 'touts:loud_tout_menu' %}" class="btn btn-success text-white btn-sm js-load-form">Options</a>
                                 </div>
                             </div>
                             <div id="panel-div" class="w-100">
                                 <div class="col-12 mt-2">                                
-                                    <!-- start card -->
-                                    <div class="card mb-0">
-                                        <!-- start card-body-->
-                                        <div class="card-body">
-                                            {% include 'touts/includes/panel.html' %}
-                                        </div>
-                                    </div>
+                                    {% include 'touts/includes/tout_properties_panel.html' %}
                                 </div>
                             </div>
                         </div>
