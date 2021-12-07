@@ -83,7 +83,6 @@ $(document).ready(function () {
         $("#base-large-modal").find("#id_tenure").removeAttr("disabled");
     };
 
-      
     // Deals with the re-ordering of property chain
     $("#save-property-order").click(function () {
         var order = [];
