@@ -3,6 +3,31 @@ $(document).ready(function () {
         $('[data-toggle="tooltip"]').tooltip()
     });
 
+    function dataTaken() {
+        $("#base-large-modal").find("#add-button").addClass("d-none");
+        $("#base-large-modal").find("#alert-info-div").removeClass("d-none");
+        $("#base-large-modal").find("#alert-div").removeClass("d-none");
+
+        $("#base-large-modal").find("#id_address_line_1").attr("disabled", true).removeAttr("required");
+        $("#base-large-modal").find("#id_address_line_2").attr("disabled", true).removeAttr("required");
+        $("#base-large-modal").find("#id_town").attr("disabled", true).removeAttr("required");
+        $("#base-large-modal").find("#id_county").attr("disabled", true).removeAttr("required");
+        $("#base-large-modal").find("#id_postcode").attr("disabled", true).removeAttr("required");
+    };
+
+    function dataNotTaken() {
+        $("#base-large-modal").find("#add-button").removeAttr("disabled");
+        $("#base-large-modal").find("#alert-info-div").addClass("d-none");
+        $("#base-large-modal").find("#alert-div").addClass("d-none");
+        $("#base-large-modal").find("#add-button").removeClass("d-none");
+
+        $("#base-large-modal").find("#id_address_line_1").removeAttr("disabled");
+        $("#base-large-modal").find("#id_address_line_2").removeAttr("disabled");
+        $("#base-large-modal").find("#id_town").removeAttr("disabled");
+        $("#base-large-modal").find("#id_county").removeAttr("disabled");
+        $("#base-large-modal").find("#id_postcode").removeAttr("disabled");
+    };
+
     function initialSelectTwo() {
         var api_key = $('#base-large-modal #id_get_address_api_key').text().slice(1, -1);
         $('.get-address-select2').select2({
@@ -74,9 +99,9 @@ $(document).ready(function () {
                 success: function (data) {
                     if (data.is_taken) {
                         $("#alert-div").html(data.html_alert);
-                        // dataTaken()
+                        dataTaken()
                     } else {
-                        // dataNotTaken()
+                        dataNotTaken()
                     };
                 }
             });
