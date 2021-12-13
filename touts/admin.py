@@ -4,7 +4,8 @@ from touts.models import (
     Area,
     ToutProperty,
     Landlord,
-    ToutLetter
+    # MarketingInfo,
+    # ToutLetter
 )
 
 
@@ -81,19 +82,19 @@ class ToutPropertyAdmin(admin.ModelAdmin):
 admin.site.register(ToutProperty, ToutPropertyAdmin)
 
 
-class ToutLetterAdminInline(admin.TabularInline):
-    model = ToutLetter
-    readonly_fields = [
-        "created",
-        "created_by",
-        "updated",
-        "updated_by",
-    ]
+# class ToutLetterAdminInline(admin.TabularInline):
+#     model = ToutLetter
+#     readonly_fields = [
+#         "created",
+#         "created_by",
+#         "updated",
+#         "updated_by",
+#     ]
 
 
 class LandlordAdmin(admin.ModelAdmin):
     inlines = [
-        ToutLetterAdminInline
+        # ToutLetterAdminInline
     ]
 
     list_display = [
