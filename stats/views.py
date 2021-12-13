@@ -2623,6 +2623,8 @@ def export_hub_exchanges_xls(request, hub_id):
     return response
 
 
+@otp_required
+@login_required
 def pipeline(request):
 
     hubs = Hub.objects.filter(is_active=True).exclude(slug="all-hubs")
