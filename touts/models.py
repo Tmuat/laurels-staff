@@ -150,30 +150,94 @@ class Landlord(UpdatedAndCreated):
         return property_address
 
 
-class ToutLetter(UpdatedAndCreated):
+class MarketingInfo(UpdatedAndCreated):
     class Meta:
         ordering = [
             "landlord__landlord_property__postcode",
             "landlord__landlord_property__address_line_1",
             "landlord__landlord_name"
         ]
-        verbose_name = "Tout Letter"
-        verbose_name_plural = "Tout Letters"
+        verbose_name = "Marketing Information"
+        verbose_name_plural = "Marketing Information"
 
-    landlord = models.OneToOneField(
+    HOUSE_TERRACED = "house_terraced"
+    HOUSE_END_TERRACE = "house_end_terrace"
+    HOUSE_SEMI_DETACHED = "house_semi_detached"
+    HOUSE_DETACHED = "house_detached"
+    FLAT_MAISONETTE_GROUND = "maisonette_ground_floor"
+    FLAT_MAISONETTE_TOP = "maisonette_top_floor"
+    FLAT_GROUND_FLOOR = "flat_ground_floor"
+    FLAT_UPPER_FLOOR = "flat_upper_floor"
+    BUNGALOW_SEMI_DETACHED = "bungalow_semi_detached"
+    BUNGALOW_DETACHED = "bungalow_detached"
+    OTHER_COMMERCIAL = "commercial"
+    OTHER_LAND = "land"
+    OTHER_OTHER = "other"
+
+    PROPERTY_TYPE = [
+        (
+            "House",
+            (
+                (HOUSE_TERRACED, "House - Terraced"),
+                (HOUSE_END_TERRACE, "House - End of Terrace"),
+                (HOUSE_SEMI_DETACHED, "House - Semi-Detached"),
+                (HOUSE_DETACHED, "House - Detached"),
+            ),
+        ),
+        (
+            "Flat",
+            (
+                (FLAT_MAISONETTE_GROUND, "Maisonette - Ground Floor"),
+                (FLAT_MAISONETTE_TOP, "Maisonette - Top Floor"),
+                (FLAT_GROUND_FLOOR, "Flat - Ground Floor"),
+                (FLAT_UPPER_FLOOR, "Flat - Upper Floors"),
+            ),
+        ),
+        (
+            "Bungalow",
+            (
+                (BUNGALOW_SEMI_DETACHED, "Bungalow - Semi-Detached"),
+                (BUNGALOW_DETACHED, "Bungalow - Detached"),
+            ),
+        ),
+        (
+            "Other",
+            (
+                (OTHER_COMMERCIAL, "Commercial"),
+                (OTHER_LAND, "Land"),
+                (OTHER_OTHER, "Other"),
+            ),
+        ),
+    ]
+
+    NUMBER_BEDROOMS = [
+        (1, 1),
+        (2, 2),
+        (3, 3),
+        (4, 4),
+        (5, 5),
+        (6, 6),
+        (7, 7),
+        (8, 8),
+        (9, 9),
+        (10, 10),
+    ]
+
+    landlord = models.ForeignKey(
         Landlord,
         on_delete=models.CASCADE,
         related_name="landlord",
     )
-    letter_one = models.BooleanField(default=False)
-    letter_two = models.BooleanField(default=False)
-    letter_three = models.BooleanField(default=False)
-    letter_four = models.BooleanField(default=False)
-    letter_five = models.BooleanField(default=False)
-    letter_six = models.BooleanField(default=False)
-    do_not_send = models.BooleanField(default=False)
-    success = models.BooleanField(default=False)
-    requested_no_contact = models.BooleanField(default=False)
+    property_type = models.CharField(
+        max_length=25, null=False, choices=PROPERTY_TYPE
+    )
+    number_of_bedrooms = models.IntegerField(
+        null=False, choices=NUMBER_BEDROOMS
+    )
+    marketed_from_date = models.DateField()
+    offer = models.DecimalField(
+        max_digits=10, decimal_places=2, null=False, blank=False
+    )
 
     def __str__(self):
         if (
@@ -190,5 +254,47 @@ class ToutLetter(UpdatedAndCreated):
                 self.landlord.landlord_property.address_line_1,
                 self.landlord.landlord_property.address_line_2,
                 self.landlord.landlord_name
+            )
+        return property_address_and_landlord
+
+
+class ToutLetter(UpdatedAndCreated):
+    class Meta:
+        ordering = [
+            "marketing__landlord",
+        ]
+        verbose_name = "Tout Letter"
+        verbose_name_plural = "Tout Letters"
+
+    marketing = models.OneToOneField(
+        Landlord,
+        on_delete=models.CASCADE,
+        related_name="marketing_info",
+    )
+    letter_one = models.BooleanField(default=False)
+    letter_two = models.BooleanField(default=False)
+    letter_three = models.BooleanField(default=False)
+    letter_four = models.BooleanField(default=False)
+    letter_five = models.BooleanField(default=False)
+    letter_six = models.BooleanField(default=False)
+    do_not_send = models.BooleanField(default=False)
+    success = models.BooleanField(default=False)
+    requested_no_contact = models.BooleanField(default=False)
+
+    def __str__(self):
+        if (
+            self.marketing.landlord.landlord_property.address_line_2 == ""
+            or self.marketing.landlord.landlord_property.address_line_2 is None):
+            property_address_and_landlord = "%s, %s (%s)" % (
+                self.marketing.landlord.landlord_property.postcode,
+                self.marketing.landlord.landlord_property.address_line_1,
+                self.marketing.landlord.landlord_name
+            )
+        else:
+            property_address_and_landlord = "%s, %s, %s (%s)" % (
+                self.marketing.landlord.landlord_property.postcode,
+                self.marketing.landlord.landlord_property.address_line_1,
+                self.marketing.landlord.landlord_property.address_line_2,
+                self.marketing.landlord.landlord_name
             )
         return property_address_and_landlord
