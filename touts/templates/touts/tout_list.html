@@ -45,7 +45,7 @@
                             <div class="col-12 col-sm-6 col-md-6 offset-sm-3 offset-md-0 offset-lg-2 mt-2 mt-md-0 text-center">
                                 <div class="float-none float-md-right">
                                     <a 
-                                        href="?{% if query %}query={{ query }}&{% endif %}{% if active %}active=False{% endif %}{% if not active %}active=True{% endif %}"
+                                        href="?{% if query %}query={{ query }}&{% endif %}{% if active %}active=false{% endif %}{% if not active %}active=true{% endif %}"
                                         class="btn btn-sm mr-1 {% if active %}btn-success text-white{% else %}btn-light text-dark{% endif %}">
                                         Inc. Inactive
                                     </a>
