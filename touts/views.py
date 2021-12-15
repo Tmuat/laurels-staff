@@ -4,8 +4,9 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import Q
 from django.http import JsonResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, reverse, redirect, get_object_or_404
 from django.template.loader import render_to_string
 
 from common.decorators import director_required
@@ -19,8 +20,8 @@ from touts.models import Area, ToutProperty
 @login_required
 def area_list(request):
     """
-    A view to show paginated lists of all touting areas in the system; including
-    searching and filtering.
+    A view to show paginated lists of all touting areas in the system;
+    including searching and filtering.
     """
 
     area_list = Area.objects.all()
@@ -161,7 +162,34 @@ def tout_list(request):
     A view to show paginated lists of all touting areas and the properties in the system.
     """
 
-    area_list = Area.objects.filter(is_active=True)
+    area_list = Area.objects.filter(
+        is_active=True
+    )
+
+    query = None
+    active = None
+
+    if request.GET:
+        if "active" in request.GET:
+            active = request.GET["active"]
+            if active == "true":
+                active = True
+            else:
+                active = False
+            area_list = area_list.filter(
+                area__landlord_property__landlord__marketing_info__do_not_send=active
+            )
+        if "query" in request.GET:
+            query = request.GET["query"]
+            if not query:
+                return redirect(reverse("touts:tout_list"))
+
+            queries = (
+                Q(area__postcode__icontains=query)
+                | Q(area__address_line_1__icontains=query)
+                | Q(area__address_line_2__icontains=query)
+            )
+            area_list = area_list.filter(queries)
 
     page = request.GET.get("page", 1)
 
@@ -178,6 +206,8 @@ def tout_list(request):
     context = {
         "area_list": area_list,
         "last_page": last_page,
+        "query": query,
+        "active": active
     }
 
     template = "touts/tout_list.html"
