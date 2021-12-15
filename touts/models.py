@@ -267,7 +267,7 @@ class ToutLetter(UpdatedAndCreated):
         verbose_name_plural = "Tout Letters"
 
     marketing = models.OneToOneField(
-        Landlord,
+        MarketingInfo,
         on_delete=models.CASCADE,
         related_name="marketing_info",
     )
