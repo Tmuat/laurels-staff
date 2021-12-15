@@ -3,6 +3,17 @@ $(document).ready(function () {
         $('[data-toggle="tooltip"]').tooltip()
     });
 
+    $('#query-search').on("click", function() {
+        var currentUrl = new URL(window.location);
+
+        var selectedVal = $("#tout-query").val();
+
+        currentUrl.searchParams.delete("page");
+        currentUrl.searchParams.set("query", selectedVal);
+
+        window.location.replace(currentUrl);
+    })
+
     function dataTaken() {
         $("#base-large-modal").find("#add-button").addClass("d-none");
         $("#base-large-modal").find("#alert-info-div").removeClass("d-none");
