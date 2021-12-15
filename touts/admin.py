@@ -4,8 +4,8 @@ from touts.models import (
     Area,
     ToutProperty,
     Landlord,
-    # MarketingInfo,
-    # ToutLetter
+    MarketingInfo,
+    ToutLetter
 )
 
 
@@ -81,22 +81,7 @@ class ToutPropertyAdmin(admin.ModelAdmin):
 
 admin.site.register(ToutProperty, ToutPropertyAdmin)
 
-
-# class ToutLetterAdminInline(admin.TabularInline):
-#     model = ToutLetter
-#     readonly_fields = [
-#         "created",
-#         "created_by",
-#         "updated",
-#         "updated_by",
-#     ]
-
-
 class LandlordAdmin(admin.ModelAdmin):
-    inlines = [
-        # ToutLetterAdminInline
-    ]
-
     list_display = [
         "__str__",
         "address_line_1",
@@ -125,6 +110,51 @@ class LandlordAdmin(admin.ModelAdmin):
         obj.updated_by = request.user.get_full_name()
         super().save_model(request, obj, form, change)
 
+
+admin.site.register(Landlord, LandlordAdmin)
+
+
+class ToutLetterAdminInline(admin.TabularInline):
+    model = ToutLetter
+    readonly_fields = [
+        "created",
+        "created_by",
+        "updated",
+        "updated_by",
+    ]
+
+
+class MarketingAdmin(admin.ModelAdmin):
+    inlines = [
+        ToutLetterAdminInline
+    ]
+
+    list_display = [
+        "__str__",
+    ]
+
+    ordering = [
+        "landlord__landlord_property__postcode",
+    ]
+
+    search_fields = [
+        "landlord__landlord_property__postcode",
+        "landlord__landlord_property__address_line_1"
+    ]
+
+    readonly_fields = [
+        "updated_by",
+        "updated",
+        "created_by",
+        "created",
+    ]
+
+    def save_model(self, request, obj, form, change):
+        if not obj.pk:
+            obj.created_by = request.user.get_full_name()
+        obj.updated_by = request.user.get_full_name()
+        super().save_model(request, obj, form, change)
+
     def save_formset(self, request, form, formset, change):
         instances = formset.save(commit=False)
         for obj in instances:
@@ -134,4 +164,4 @@ class LandlordAdmin(admin.ModelAdmin):
             super().save_model(request, obj, form, change)
 
 
-admin.site.register(Landlord, LandlordAdmin)
+admin.site.register(MarketingInfo, MarketingAdmin)
