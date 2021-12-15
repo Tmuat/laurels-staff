@@ -5,7 +5,7 @@
             <span><img src="{% static 'custom/images/logo.png' %}" alt="laurels" height="80"></span>
         </div>
         <div class="text-center">
-            <h4 class="text-white">Add New Area</h4>
+            <h4 class="text-white">Add New Property</h4>
         </div>
         <p class="text-white text-center">{% blocktrans trimmed %}Please add a tout property. This must be unique; the intranet will perform a uniqueness check.{% endblocktrans %}</p>
         <div class="row px-2 py-0">
@@ -17,22 +17,25 @@
             {% csrf_token %}
             <div class="row">
                 <div class="col-12 col-sm-6">
+                    {{ form.area|as_crispy_field }}
+                </div>
+                <div class="col-12 col-sm-6">
                     {{ form.address_line_1|as_crispy_field }}
                 </div>
+            </div>
+            <div class="row">
                 <div class="col-12 col-sm-6">
                     {{ form.address_line_2|as_crispy_field }}
                 </div>
-            </div>
-            <div class="row">
                 <div class="col-12 col-sm-6">
                     {{ form.town|as_crispy_field }}
                 </div>
+            </div>
+            <div class="row">
                 <div class="col-12 col-sm-6">
                     {{ form.county|as_crispy_field }}
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-12 col-sm-6 offset-sm-3">
+                <div class="col-12 col-sm-6">
                     {{ form.postcode|as_crispy_field }}
                 </div>
             </div>

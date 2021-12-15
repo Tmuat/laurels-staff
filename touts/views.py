@@ -245,15 +245,13 @@ def add_tout_property(request):
     if request.method == "POST":
         form = AddPropertyForm(request.POST)
         if form.is_valid():
-            # instance = form.save(commit=False)
+            instance = form.save(commit=False)
+            instance.created_by = request.user.get_full_name()
+            instance.updated_by = request.user.get_full_name()
 
-            # instance.is_active = True
-            # instance.created_by = request.user.get_full_name()
-            # instance.updated_by = request.user.get_full_name()
+            instance.save()
 
-            # instance.save()
-
-            # data["form_is_valid"] = True
+            data["form_is_valid"] = True
             pass
         else:
             data["form_is_valid"] = False
