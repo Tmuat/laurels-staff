@@ -36,7 +36,7 @@
                         <div class="row">
                             <div class="col-12 col-sm-8 col-md-6 col-lg-4 offset-sm-2 offset-md-0">
                                 <div class="input-group">
-                                    <input type="text" class="form-control" placeholder="Search Tout Properties" name="query" id="tout-query">
+                                    <input type="text" class="form-control" placeholder="Search Tout Properties" name="query" id="tout-query" {% if query %}value="{{ query }}"{% endif %}>
                                     <div class="input-group-append">
                                         <button class="btn btn-success" type="submit" id="query-search">Find</button>
                                     </div>
@@ -44,11 +44,16 @@
                             </div>
                             <div class="col-12 col-sm-6 col-md-6 offset-sm-3 offset-md-0 offset-lg-2 mt-2 mt-md-0 text-center">
                                 <div class="float-none float-md-right">
+                                    <a 
+                                        href="?{% if query %}query={{ query }}&{% endif %}{% if active %}active=False{% endif %}{% if not active %}active=True{% endif %}"
+                                        class="btn btn-sm mr-1 {% if active %}btn-success text-white{% else %}btn-light text-dark{% endif %}">
+                                        Inc. Inactive
+                                    </a>
                                     <a data-url="{% url 'touts:loud_tout_menu' %}" class="btn btn-success text-white btn-sm js-load-form">Options</a>
                                 </div>
                             </div>
                             <div id="panel-div" class="w-100">
-                                <div class="col-12 mt-2">                                
+                                <div class="col-12 mt-2">
                                     {% include 'touts/includes/tout_properties_panel.html' %}
                                 </div>
                             </div>
