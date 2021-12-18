@@ -13,7 +13,7 @@
                 <select class="get-address-select2-large-static text-muted"></select>
             </div>
         </div>
-        <form method="post" id="property-tout-form" action="{% url 'touts:add_landord' tout_property.id %}" class="text-center text-white p-2 js-submit-form custom-form-margin">
+        <form method="post" action="{% url 'touts:add_landord' tout_property.id %}" class="text-center text-white p-2 js-submit-form custom-form-margin">
             {% csrf_token %}
             <div class="row">
                 <div class="col-12">
