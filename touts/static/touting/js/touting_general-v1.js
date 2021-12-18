@@ -197,6 +197,20 @@ $(document).ready(function () {
         });
     };
 
+    function initialPropertySelectTwo() {
+        $('#id_landlord_property').select2({
+            dropdownParent: $("#base-large-static-modal"),
+            width: '100%',
+            minimumInputLength: 3,
+            placeholder: "Search By Postcode",
+            language: {
+                inputTooShort: function () {
+                    return '';
+                }
+            },
+        });
+    };
+
     // Checks the uniqueness of the area code
     $("#base-modal").on("change", "#id_area_code", function () {
         var areaCode = $(this).val();
@@ -397,6 +411,11 @@ $(document).ready(function () {
         });
     };
 
+    // Deals with hiding a static modal
+    var hideBaseLargeStaticModal = function () {
+        $("#base-large-static-modal").modal("hide");
+    };
+
     // Deals with hiding the base modal and loading a large modal
     var hideBaseModalAndLoadLargeModal = function () {
         $('#modal-overlay').fadeToggle(100);
@@ -407,13 +426,22 @@ $(document).ready(function () {
             type: 'get',
             dataType: 'json',
             success: function (data) {
-                $("#base-large-modal").modal("show");
-                $("#base-large-modal .modal-dialog").html(data.html_modal);
+                if (data.modal == "large") {
+                    $("#base-large-modal").modal("show");
+                    $("#base-large-modal .modal-dialog").html(data.html_modal);
+                    if (data.selectTwo) {
+                        initialAddressSelectTwo();
+                        initialAreaSelectTwo();
+                    };
+                } else if (data.modal == "large-static") {
+                    $("#base-large-static-modal").modal("show");
+                    $("#base-large-static-modal .modal-dialog").html(data.html_modal);
+                    if (data.selectTwo) {
+                        initialLargeStaticAddressSelectTwo();
+                        initialPropertySelectTwo();
+                    };
+                }
                 $('#modal-overlay').fadeToggle(100);
-
-                initialAddressSelectTwo();
-                initialAreaSelectTwo();
-
             }
         });
         return false;
@@ -424,12 +452,13 @@ $(document).ready(function () {
         $("#base-large-modal .modal-dialog").addClass("modal-dialog-scrollable");
     });
 
-    // Binding functions
+    // Binding functions hideBaseStaticModal
     // Links
     $("#base-modal").on("click", ".js-edit-offer-status", loadBaseModal);
 
     $("#base-modal").on("click", ".js-load-form", loadBaseModal);
     $("#base-modal").on("click", ".js-hide-base-load-large", hideBaseModalAndLoadLargeModal);
+    $("#base-large-static-modal").on("click", ".js-hide-large-static-modal", hideBaseLargeStaticModal);
 
     $(".js-load-form").on("click", loadBaseModal);
     $(".js-load-large-form").on("click", loadFormLargeModal);
