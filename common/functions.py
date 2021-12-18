@@ -345,7 +345,7 @@ def date_calc(date, filter):
             )
             - datetime.timedelta(1)
         )
-        start_year = 2018
+        start_year = 2014
         start_month = 1
         start_date = datetime.date(start_year, start_month, 1)
     else:
