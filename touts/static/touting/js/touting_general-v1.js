@@ -39,7 +39,7 @@ $(document).ready(function () {
         $("#base-large-modal").find("#id_postcode").removeAttr("disabled");
     };
 
-    function initialSelectTwo() {
+    function initialAddressSelectTwo() {
         var api_key = $('#base-large-modal #id_get_address_api_key').text().slice(1, -1);
         $('.get-address-select2').select2({
             dropdownParent: $("#base-large-modal"),
@@ -83,6 +83,20 @@ $(document).ready(function () {
                     };
                 }
             }
+        });
+    };
+
+    function initialAreaSelectTwo() {
+        $('#id_area').select2({
+            dropdownParent: $("#base-large-modal"),
+            width: '100%',
+            minimumInputLength: 2,
+            placeholder: "Search Area Code",
+            language: {
+                inputTooShort: function () {
+                    return '';
+                }
+            },
         });
     };
 
@@ -276,7 +290,9 @@ $(document).ready(function () {
                 $("#base-large-modal .modal-dialog").html(data.html_modal);
                 $('#modal-overlay').fadeToggle(100);
 
-                initialSelectTwo();
+                initialAddressSelectTwo();
+                initialAreaSelectTwo();
+
             }
         });
         return false;
