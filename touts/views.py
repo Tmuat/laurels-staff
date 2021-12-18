@@ -14,7 +14,8 @@ from touts.forms import (
     AreaForm,
     AreaEditForm,
     AddPropertyForm,
-    AddLandlordForm
+    AddLandlordForm,
+    AddLandlordExistingPropertyForm
 )
 from touts.models import Area, ToutProperty
 
@@ -278,6 +279,9 @@ def add_tout_property(request):
         context,
         request=request,
     )
+    data["modal"] = "large"
+    data["selectTwo"] = True
+
     return JsonResponse(data)
 
 
@@ -368,4 +372,52 @@ def add_landord(request, tout_property):
         context,
         request=request,
     )
+    return JsonResponse(data)
+
+
+@otp_required
+@login_required
+def add_landord_existing_property(request):
+    """
+    Ajax URL for adding a landlord to a existing tout property.
+    """
+    data = dict()
+
+    get_address_api_key = settings.GET_ADDRESS_KEY
+
+    if request.method == "POST":
+        form = AddLandlordExistingPropertyForm(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.created_by = request.user.get_full_name()
+            instance.updated_by = request.user.get_full_name()
+            instance.save()
+
+            data["form_is_valid"] = True
+            # data["form_chain"] = True
+            # data["next"] = reverse(
+            #     "touts:add_landord",
+            #     kwargs={
+            #         "tout_property": instance.id,
+            #     },
+            # )
+        else:
+            data["form_is_valid"] = False
+
+    else:
+        form = AddLandlordExistingPropertyForm()
+        data["selectTwo"] = True
+
+    context = {
+        "form": form,
+        "get_address_api_key": get_address_api_key,
+    }
+    data["html_modal"] = render_to_string(
+        "touts/includes/forms/add_landlord_existing.html",
+        context,
+        request=request,
+    )
+    data["selectTwo"] = True
+    data["modal"] = "large-static"
+
     return JsonResponse(data)
