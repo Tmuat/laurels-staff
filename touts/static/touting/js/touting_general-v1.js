@@ -86,20 +86,6 @@ $(document).ready(function () {
         });
     };
 
-    function initialAreaSelectTwo() {
-        $('#id_area').select2({
-            dropdownParent: $("#base-large-modal"),
-            width: '100%',
-            minimumInputLength: 2,
-            placeholder: "Search Area Code",
-            language: {
-                inputTooShort: function () {
-                    return '';
-                }
-            },
-        });
-    };
-
     // Deals with the get address request
     $('#base-large-modal').on('change', 'select', function () {
         var option = $(".get-address-select2 option:selected")
@@ -132,6 +118,84 @@ $(document).ready(function () {
             });
         });
     });
+
+    function initialLargeStaticAddressSelectTwo() {
+        var api_key = $('#base-large-static-modal #id_get_address_api_key').text().slice(1, -1);
+        $('.get-address-select2-large-static').select2({
+            dropdownParent: $("#base-large-static-modal"),
+            width: '100%',
+            minimumInputLength: 4,
+            placeholder: "Postcode or Address Line 1",
+            language: {
+                inputTooShort: function () {
+                    return '';
+                }
+            },
+            ajax: {
+                url: function (params) {
+                    if (params.term) return 'https://api.getaddress.io/suggest/' + params.term;
+                    return '';
+                },
+                dataType: 'json',
+                data: function (params) {
+                    var query = {
+                        'api-key': api_key
+                    };
+                    return query;
+                },
+                processResults: function (data) {
+                    var results = [];
+
+                    if (data.suggestions && data.suggestions.length > 0) {
+
+                        for (var i = 0; i < data.suggestions.length; i++) {
+                            var suggestion = data.suggestions[i];
+                            var result = {
+                                id: suggestion.id,
+                                text: suggestion.address
+                            }
+                            results.push(result);
+                        }
+                    }
+
+                    return {
+                        results: results
+                    };
+                }
+            }
+        });
+    };
+
+    // Deals with the get address request - large static
+    $('#base-large-static-modal').on('change', '.get-address-select2-large-static', function () {
+        var option = $(".get-address-select2-large-static option:selected")
+        var api_key = $('#base-large-static-modal #id_get_address_api_key').text().slice(1, -1);
+        var id = option.attr("value");
+        $.get('https://api.getaddress.io/get/' + id, {
+            'api-key': api_key
+            }, function (address) {
+                $("#id_ll_address_line_1").val(address["line_1"]);
+                $("#id_ll_address_line_2").val(address["line_2"]);
+                $("#id_ll_town").val(address["town_or_city"]);
+                $("#id_ll_county").val(address["county"]);
+                $("#id_ll_postcode").val(address["postcode"]);
+            }
+        );
+    });
+
+    function initialAreaSelectTwo() {
+        $('#id_area').select2({
+            dropdownParent: $("#base-large-modal"),
+            width: '100%',
+            minimumInputLength: 2,
+            placeholder: "Search Area Code",
+            language: {
+                inputTooShort: function () {
+                    return '';
+                }
+            },
+        });
+    };
 
     // Checks the uniqueness of the area code
     $("#base-modal").on("change", "#id_area_code", function () {
@@ -190,12 +254,69 @@ $(document).ready(function () {
             dataType: 'json',
             success: function (data) {
                 if (data.form_is_valid) {
-                    $("#base-large-modal").modal("hide");
-                    location.reload();
-                    $('#modal-overlay').fadeToggle(100);
+                    if (data.form_chain ) {
+                        $("#base-large-modal").modal("hide");
+                        $.ajax({
+                            url: data.next,
+                            type: 'get',
+                            dataType: 'json',
+                            success: function (data) {
+                                $("#base-large-static-modal").modal("show");
+                                $("#base-large-static-modal .modal-dialog").html(data.html_modal);
+                                if (data.selectTwo) {
+                                    initialLargeStaticAddressSelectTwo()
+                                };
+                                $('#modal-overlay').fadeToggle(100);
+                            }
+                        });
+                    } else {
+                        $("#base-large-modal").modal("hide");
+                        location.reload();
+                        $('#modal-overlay').fadeToggle(100);
+                    }
                 } else {
                     $('#modal-overlay').fadeToggle(100);
                     $("#base-large-modal .modal-dialog").html(data.html_modal);
+                }
+            }
+        });
+        return false;
+    };
+
+    // Deals with the form submission only
+    var submitLargeStaticForm = function () {
+        $('#modal-overlay').fadeToggle(100);
+        var form = $(this);
+        $.ajax({
+            url: form.attr("action"),
+            data: form.serialize(),
+            type: form.attr("method"),
+            dataType: 'json',
+            success: function (data) {
+                if (data.form_is_valid) {
+                    if (data.form_chain ) {
+                        $("#base-large-static-modal").modal("hide");
+                        $.ajax({
+                            url: data.next,
+                            type: 'get',
+                            dataType: 'json',
+                            success: function (data) {
+                                $("#base-large-static-modal").modal("show");
+                                $("#base-large-static-modal .modal-dialog").html(data.html_modal);
+                                if (data.selectTwo) {
+                                    initialLargeStaticAddressSelectTwo()
+                                };
+                                $('#modal-overlay').fadeToggle(100);
+                            }
+                        });
+                    } else {
+                        $("#base-large-static-modal").modal("hide");
+                        location.reload();
+                        $('#modal-overlay').fadeToggle(100);
+                    }
+                } else {
+                    $('#modal-overlay').fadeToggle(100);
+                    $("#base-large-static-modal .modal-dialog").html(data.html_modal);
                 }
             }
         });
@@ -303,8 +424,6 @@ $(document).ready(function () {
         $("#base-large-modal .modal-dialog").addClass("modal-dialog-scrollable");
     });
 
-    // Initialise Select Two
-
     // Binding functions
     // Links
     $("#base-modal").on("click", ".js-edit-offer-status", loadBaseModal);
@@ -318,5 +437,6 @@ $(document).ready(function () {
 
     $("#base-modal").on("submit", ".js-submit-form", submitForm);
     $("#base-large-modal").on("submit", ".js-submit-form", submitLargeForm);
+    $("#base-large-static-modal").on("submit", ".js-submit-form", submitLargeStaticForm);
     $("#base-static-modal").on("submit", ".js-submit-form", submitStaticForm);
 });
