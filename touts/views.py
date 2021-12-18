@@ -10,7 +10,12 @@ from django.shortcuts import render, reverse, redirect, get_object_or_404
 from django.template.loader import render_to_string
 
 from common.decorators import director_required
-from touts.forms import AreaForm, AreaEditForm, AddPropertyForm
+from touts.forms import (
+    AreaForm,
+    AreaEditForm,
+    AddPropertyForm,
+    AddLandlordForm
+)
 from touts.models import Area, ToutProperty
 
 
@@ -248,11 +253,16 @@ def add_tout_property(request):
             instance = form.save(commit=False)
             instance.created_by = request.user.get_full_name()
             instance.updated_by = request.user.get_full_name()
-
             instance.save()
 
             data["form_is_valid"] = True
-            pass
+            data["form_chain"] = True
+            data["next"] = reverse(
+                "touts:add_landord",
+                kwargs={
+                    "tout_property": instance.id,
+                },
+            )
         else:
             data["form_is_valid"] = False
 
@@ -307,4 +317,55 @@ def validate_tout_property_address(request):
             request=request,
         )
 
+    return JsonResponse(data)
+
+
+@otp_required
+@login_required
+def add_landord(request, tout_property):
+    """
+    Ajax URL for adding a landlord to a tout property.
+    """
+    data = dict()
+
+    get_address_api_key = settings.GET_ADDRESS_KEY
+
+    tout_property = get_object_or_404(
+        ToutProperty, id=tout_property
+    )
+
+    if request.method == "POST":
+        form = AddLandlordForm(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.landlord_property = tout_property
+            instance.created_by = request.user.get_full_name()
+            instance.updated_by = request.user.get_full_name()
+            instance.save()
+
+            data["form_is_valid"] = True
+            # data["form_chain"] = True
+            # data["next"] = reverse(
+            #     "touts:add_landord",
+            #     kwargs={
+            #         "tout_property": instance.id,
+            #     },
+            # )
+        else:
+            data["form_is_valid"] = False
+
+    else:
+        form = AddLandlordForm()
+        data["selectTwo"] = True
+
+    context = {
+        "form": form,
+        "get_address_api_key": get_address_api_key,
+        "tout_property": tout_property,
+    }
+    data["html_modal"] = render_to_string(
+        "touts/includes/forms/add_landlord.html",
+        context,
+        request=request,
+    )
     return JsonResponse(data)
