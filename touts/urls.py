@@ -8,7 +8,8 @@ from touts.views import (
     validate_area_code,
     loud_tout_menu,
     add_tout_property,
-    validate_tout_property_address
+    validate_tout_property_address,
+    add_landord
 )
 
 
@@ -30,4 +31,8 @@ urlpatterns = [
         validate_tout_property_address,
         name="validate_tout_property_address"
     ),
+    path(
+        "tout-list/add/landlord/<tout_property>/",
+        add_landord,
+        name="add_landord"),
 ]
