@@ -1,0 +1,56 @@
+{% load static i18n %}
+<div class="modal-content green-gradient">
+    <div class="modal-body">
+        <div class="text-center mt-2 mb-3">
+            <span><img src="{% static 'custom/images/logo.png' %}" alt="laurels" height="80"></span>
+        </div>
+        <div class="text-center">
+            <h4 class="text-white">Add Landlord</h4>
+        </div>
+        <p class="text-white text-center">{% blocktrans trimmed %}Please add the Landlord/s information.{% endblocktrans %}</p>
+        <div class="row px-2 py-0">
+            <div class="col-12 col-md-6 offset-md-3 mb-1">
+                <select class="get-address-select2-large-static text-muted"></select>
+            </div>
+        </div>
+        <form method="post" id="property-tout-form" action="{% url 'touts:add_landord' tout_property.id %}" class="text-center text-white p-2 js-submit-form custom-form-margin">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-12">
+                    {{ form.landlord_name|as_crispy_field }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    {{ form.landlord_salutation|as_crispy_field }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 col-sm-6">
+                    {{ form.address_line_1|as_crispy_field }}
+                </div>
+                <div class="col-12 col-sm-6">
+                    {{ form.address_line_2|as_crispy_field }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 col-sm-6">
+                    {{ form.town|as_crispy_field }}
+                </div>
+                <div class="col-12 col-sm-6">
+                    {{ form.county|as_crispy_field }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 col-sm-6 offset-sm-3">
+                    {{ form.postcode|as_crispy_field }}
+                </div>
+            </div>
+            <div class="my-2 text-center" id="submit-section">
+                <button type="submit" class="btn btn-info" id="add-button">{% trans "Continue To Marketing Info" %}</button>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- /.modal-content -->
+{{ get_address_api_key|json_script:"id_get_address_api_key" }}
