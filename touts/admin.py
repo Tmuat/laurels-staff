@@ -81,11 +81,16 @@ class ToutPropertyAdmin(admin.ModelAdmin):
 
 admin.site.register(ToutProperty, ToutPropertyAdmin)
 
+
 class LandlordAdmin(admin.ModelAdmin):
     list_display = [
         "__str__",
         "address_line_1",
         "postcode",
+        "updated_by",
+        "updated",
+        "created_by",
+        "created",
     ]
 
     ordering = [
