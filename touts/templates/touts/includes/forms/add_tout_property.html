@@ -13,7 +13,7 @@
                 <select class="get-address-select2 text-muted"></select>
             </div>
         </div>
-        <form method="post" id="property-tout-form" action="" class="text-center text-white p-2 js-submit-form custom-form-margin">
+        <form method="post" id="property-tout-form" action="{% url 'touts:add_tout_property' %}" class="text-center text-white p-2 js-submit-form custom-form-margin">
             {% csrf_token %}
             <div class="row">
                 <div class="col-12 col-sm-6">
@@ -45,7 +45,7 @@
             <div class="my-2 text-center" id="submit-section">
                 <div class="d-none" id="alert-div">
                 </div>
-                <button type="submit" class="btn btn-info" id="add-button" disabled>{% trans "Add Property" %}</button>
+                <button type="submit" class="btn btn-info" id="add-button" disabled>{% trans "Continue To Landlord" %}</button>
             </div>
         </form>
     </div>
