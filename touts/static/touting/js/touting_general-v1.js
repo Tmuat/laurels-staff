@@ -211,6 +211,20 @@ $(document).ready(function () {
         });
     };
 
+    function initialLandlordSelectTwo() {
+        $('#id_landlord').select2({
+            dropdownParent: $("#base-large-static-modal"),
+            width: '100%',
+            minimumInputLength: 3,
+            placeholder: "Search By LL Name or LL Address",
+            language: {
+                inputTooShort: function () {
+                    return '';
+                }
+            },
+        });
+    };
+
     // Checks the uniqueness of the area code
     $("#base-modal").on("change", "#id_area_code", function () {
         var areaCode = $(this).val();
@@ -443,6 +457,7 @@ $(document).ready(function () {
                     if (data.selectTwo) {
                         initialAddressSelectTwo();
                         initialAreaSelectTwo();
+                        initialLandlordSelectTwo();
                     };
                 } else if (data.modal == "large-static") {
                     $("#base-large-static-modal").modal("show");
@@ -450,6 +465,7 @@ $(document).ready(function () {
                     if (data.selectTwo) {
                         initialLargeStaticAddressSelectTwo();
                         initialPropertySelectTwo();
+                        initialLandlordSelectTwo();
                     };
                 }
                 $('#modal-overlay').fadeToggle(100);
