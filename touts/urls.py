@@ -10,7 +10,8 @@ from touts.views import (
     add_tout_property,
     validate_tout_property_address,
     add_landord,
-    add_landord_existing_property
+    add_landord_existing_property,
+    add_marketing
 )
 
 
@@ -41,5 +42,10 @@ urlpatterns = [
         "tout-list/add/landlord/",
         add_landord_existing_property,
         name="add_landord_existing_property"
+    ),
+    path(
+        "tout-list/add/marketing/<landlord>/",
+        add_marketing,
+        name="add_marketing"
     ),
 ]

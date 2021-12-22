@@ -1,0 +1,35 @@
+{% load static i18n %}
+<div class="modal-content green-gradient">
+    <div class="modal-body">
+        <div class="text-center mt-2 mb-3">
+            <span><img src="{% static 'custom/images/logo.png' %}" alt="laurels" height="80"></span>
+        </div>
+        <div class="text-center">
+            <h4 class="text-white">Add Marketing Info</h4>
+        </div>
+        <p class="text-white text-center">{% blocktrans trimmed %}Please add the marketing information.{% endblocktrans %}</p>
+        <form method="post" action="{% url 'touts:add_marketing' landlord.id %}" class="text-center text-white p-2 js-submit-form custom-form-margin">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-12 col-sm-6">
+                    {{ form.property_type|as_crispy_field }}
+                </div>
+                <div class="col-12 col-sm-6">
+                    {{ form.number_of_bedrooms|as_crispy_field }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 col-sm-6">
+                    {{ form.marketed_from_date|as_crispy_field }}
+                </div>
+                <div class="col-12 col-sm-6">
+                    {{ form.price|as_crispy_field }}
+                </div>
+            </div>
+            <div class="my-2 text-center" id="submit-section">
+                <button type="submit" class="btn btn-info" id="add-button">{% trans "Add To Tout Letter List" %}</button>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- /.modal-content -->
