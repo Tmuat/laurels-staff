@@ -247,3 +247,37 @@ class AddMarketingForm(forms.ModelForm):
         for field in self.fields:
             label = f"{labels[field]}"
             self.fields[field].label = label
+
+
+class AddMarketingExistingLandlordForm(forms.ModelForm):
+    class Meta:
+        model = MarketingInfo
+        fields = (
+            "landlord",
+            "property_type",
+            "number_of_bedrooms",
+            "marketed_from_date",
+            "price",
+        )
+
+    def __init__(self, *args, **kwargs):
+        """
+        Add new labels
+        """
+        super().__init__(*args, **kwargs)
+        labels = {
+            "landlord": "Landlord",
+            "property_type": "Property Type",
+            "number_of_bedrooms": "Number of Bedrooms",
+            "marketed_from_date": "Marketed From Date",
+            "price": "Price",
+        }
+
+        self.fields["price"].widget.attrs["min"] = 0
+        self.fields["price"].widget.attrs["step"] = 1
+
+        self.fields["marketed_from_date"].widget = DateInput()
+
+        for field in self.fields:
+            label = f"{labels[field]}"
+            self.fields[field].label = label
