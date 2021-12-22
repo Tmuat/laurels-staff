@@ -235,7 +235,7 @@ class MarketingInfo(UpdatedAndCreated):
         null=False, choices=NUMBER_BEDROOMS
     )
     marketed_from_date = models.DateField()
-    offer = models.DecimalField(
+    price = models.DecimalField(
         max_digits=10, decimal_places=2, null=False, blank=False
     )
 
@@ -266,6 +266,16 @@ class ToutLetter(UpdatedAndCreated):
         verbose_name = "Tout Letter"
         verbose_name_plural = "Tout Letters"
 
+    LAURELS_SUCCESS = "laurels_success"
+    OFF_THE_MARKET = "off_the_market"
+    NO_CONTACT = "no_contact"
+
+    DO_NOT_SEND_REASONS = [
+        (LAURELS_SUCCESS, "Laurels Success"),
+        (OFF_THE_MARKET, "Off The Market"),
+        (NO_CONTACT, "Requested No Contact"),
+    ]
+
     marketing = models.OneToOneField(
         MarketingInfo,
         on_delete=models.CASCADE,
@@ -278,8 +288,9 @@ class ToutLetter(UpdatedAndCreated):
     letter_five = models.BooleanField(default=False)
     letter_six = models.BooleanField(default=False)
     do_not_send = models.BooleanField(default=False)
-    success = models.BooleanField(default=False)
-    requested_no_contact = models.BooleanField(default=False)
+    do_not_send_reason = models.CharField(
+        max_length=50, null=True, blank=False, choices=DO_NOT_SEND_REASONS
+    )
 
     def __str__(self):
         if (
