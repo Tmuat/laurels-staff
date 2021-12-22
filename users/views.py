@@ -170,15 +170,9 @@ def edit_user_targets(request, user, year):
             request.POST, request.FILES, instance=user
         )
         request_user = request.user.get_full_name()
-        profile = user.profile
         if formset.is_valid():
             instances = formset.save(commit=False)
             for count, instance in enumerate(instances):
-                instance.year = year
-                quarter = count + 1
-                instance.quarter = f"q{quarter}"
-                instance.profile_targets = profile
-                instance.created_by = request_user
                 instance.updated_by = request_user
                 instance.save()
             user_targets_by_year = get_object_or_404(
