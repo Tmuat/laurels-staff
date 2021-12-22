@@ -2,7 +2,7 @@ import datetime
 
 from lettings.models import Renewals, Gas, EPC, Electrical
 from regionandhub.models import Hub
-from properties.models import PropertyProcess, Deal, PropertyHistory, Offer
+from properties.models import PropertyProcess, Deal, PropertyHistory, Offer, Reduction, PropertyFees
 
 # python3 manage.py dumpdata > master.json --settings=laurels.settings.production
 
@@ -24,7 +24,7 @@ def delete_deal():
 
 def delete_history():
     history_instance = PropertyHistory.objects.get(
-        id="ba866ad3-3631-4e62-a3db-0bb7ae9c610a"
+        id="91bec0e3-2055-4034-9370-222dc0dfeeb4"
     )
     history_instance.delete()
 
@@ -144,6 +144,18 @@ def deal_agreed_change():
     print("Saved")
 
 
+def delete_reduction():
+    reduction_instance = Reduction.objects.get(id="4b7c0c30-884f-4f0f-a0ce-a217a7b7ebaa")
+    reduction_instance.delete()
+    print("Deleted")
+
+
+def delete_prop_fee():
+    fee_instance = PropertyFees.objects.get(id="698cb8fa-ccb7-4eb0-babe-cd2bf9fd26c0")
+    fee_instance.delete()
+    print("Deleted")
+
+
 # python manage.py shell --settings=laurels.settings.production
 # from common.data_adjust import *
 # lettings_deal_without_renewal()
@@ -153,3 +165,5 @@ def deal_agreed_change():
 # delete_deal()
 # delete_history()
 # deal_agreed_change()
+# delete_reduction()
+# delete_prop_fee()
