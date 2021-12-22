@@ -411,7 +411,18 @@ $(document).ready(function () {
         });
     };
 
-    // Deals with hiding a static modal
+
+    // Deals with hiding a modal
+    var hideBaseModal = function () {
+        $("#base-modal").modal("hide");
+    };
+
+    // Deals with hiding a large modal
+    var hideBaseLargeModal = function () {
+        $("#base-large-modal").modal("hide");
+    };
+
+    // Deals with hiding a large static modal
     var hideBaseLargeStaticModal = function () {
         $("#base-large-static-modal").modal("hide");
     };
@@ -458,6 +469,8 @@ $(document).ready(function () {
 
     $("#base-modal").on("click", ".js-load-form", loadBaseModal);
     $("#base-modal").on("click", ".js-hide-base-load-large", hideBaseModalAndLoadLargeModal);
+    $("#base-modal").on("click", ".js-hide-modal", hideBaseModal);
+    $("#base-large-modal").on("click", ".js-hide-large-modal", hideBaseLargeModal);
     $("#base-large-static-modal").on("click", ".js-hide-large-static-modal", hideBaseLargeStaticModal);
 
     $(".js-load-form").on("click", loadBaseModal);
