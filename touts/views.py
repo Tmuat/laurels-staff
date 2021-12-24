@@ -184,27 +184,30 @@ def tout_list(request):
     query = None
     active = None
 
-    if request.GET:
-        if "active" in request.GET:
-            active = request.GET["active"]
-            if active == "true":
-                active = True
-            else:
-                active = False
+    if "active" in request.GET:
+        active = request.GET["active"]
+        if active == "true":
+            active = True
+        else:
+            active = False
             area_list = area_list.filter(
-                area__landlord_property__landlord__do_not_send=active
+                area__landlord_property__landlord__do_not_send=False
             )
-        if "query" in request.GET:
-            query = request.GET["query"]
-            if not query:
-                return redirect(reverse("touts:tout_list"))
+    else:
+        area_list = area_list.filter(
+            area__landlord_property__landlord__do_not_send=False
+        )
+    if "query" in request.GET:
+        query = request.GET["query"]
+        if not query:
+            return redirect(reverse("touts:tout_list"))
 
-            queries = (
-                Q(area__postcode__icontains=query)
-                | Q(area__address_line_1__icontains=query)
-                | Q(area__address_line_2__icontains=query)
-            )
-            area_list = area_list.filter(queries)
+        queries = (
+            Q(area__postcode__icontains=query)
+            | Q(area__address_line_1__icontains=query)
+            | Q(area__address_line_2__icontains=query)
+        )
+        area_list = area_list.filter(queries)
 
     page = request.GET.get("page", 1)
 
