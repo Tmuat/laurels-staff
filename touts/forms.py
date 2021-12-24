@@ -1,4 +1,5 @@
 from django import forms
+from django.forms import formset_factory
 
 from properties.widgets import DateInput
 from touts.models import (
@@ -281,3 +282,37 @@ class AddMarketingExistingLandlordForm(forms.ModelForm):
         for field in self.fields:
             label = f"{labels[field]}"
             self.fields[field].label = label
+
+
+class ToutLetterForm(forms.Form):
+    SENT = True
+    NOT_SENT = False
+
+    SENT_CHOICES = [
+        (SENT, "Letter Sent"),
+        (NOT_SENT, "Not Sent"),
+    ]
+
+    sent = forms.ChoiceField(
+        choices=SENT_CHOICES,
+        label="",
+        initial=NOT_SENT,
+        widget=forms.Select()
+    )
+
+    date = forms.DateField(
+        label=(""),
+        widget=DateInput(
+            attrs={'disabled': True}
+        ),
+        required=False
+    )
+
+
+ToutLetterFormSet = formset_factory(
+    ToutLetterForm,
+    extra=6,
+    can_delete=False,
+    min_num=0,
+    validate_min=True,
+)
