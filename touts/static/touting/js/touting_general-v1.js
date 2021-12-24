@@ -225,6 +225,74 @@ $(document).ready(function () {
         });
     };
 
+    function toutDatesFalse(id) {
+        $("#base-large-static-modal").find(id).removeAttr("required").attr("disabled", true).val("");
+    };
+
+    function toutDatesTrue(id) {
+        $("#base-large-static-modal").find(id).attr("required", true).removeAttr("disabled");
+    };
+
+    // Change required on director tout letter form input 1
+    $("#base-large-static-modal").on("change", "#id_form-0-sent", function () {
+        var instance = $(this).val();
+        if (instance == "True") {
+            toutDatesTrue("#id_form-0-date")
+        } else {
+            toutDatesFalse("#id_form-0-date")
+        }
+    });
+
+    // Change required on director tout letter form input 2
+    $("#base-large-static-modal").on("change", "#id_form-1-sent", function () {
+        var instance = $(this).val();
+        if (instance == "True") {
+            toutDatesTrue("#id_form-1-date")
+        } else {
+            toutDatesFalse("#id_form-1-date")
+        }
+    });
+
+    // Change required on director tout letter form input 3
+    $("#base-large-static-modal").on("change", "#id_form-2-sent", function () {
+        var instance = $(this).val();
+        if (instance == "True") {
+            toutDatesTrue("#id_form-2-date")
+        } else {
+            toutDatesFalse("#id_form-2-date")
+        }
+    });
+
+    // Change required on director tout letter form input 4
+    $("#base-large-static-modal").on("change", "#id_form-3-sent", function () {
+        var instance = $(this).val();
+        if (instance == "True") {
+            toutDatesTrue("#id_form-3-date")
+        } else {
+            toutDatesFalse("#id_form-3-date")
+        }
+    });
+
+    // Change required on director tout letter form input 5
+    $("#base-large-static-modal").on("change", "#id_form-4-sent", function () {
+        var instance = $(this).val();
+        if (instance == "True") {
+            toutDatesTrue("#id_form-4-date")
+        } else {
+            toutDatesFalse("#id_form-4-date")
+        }
+    });
+
+    // Change required on director tout letter form input 6
+    $("#base-large-static-modal").on("change", "#id_form-5-sent", function () {
+        var instance = $(this).val();
+        if (instance == "True") {
+            toutDatesTrue("#id_form-5-date")
+        } else {
+            toutDatesFalse("#id_form-5-date")
+        }
+    });
+
     // Checks the uniqueness of the area code
     $("#base-modal").on("change", "#id_area_code", function () {
         var areaCode = $(this).val();
