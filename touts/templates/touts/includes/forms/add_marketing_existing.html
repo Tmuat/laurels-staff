@@ -31,6 +31,29 @@
                     {{ form.price|as_crispy_field }}
                 </div>
             </div>
+            {% if request.user.profile.director %}
+                <div class="text-center">
+                    <h4 class="text-white">If you would like to move a property to a specific letter, please use the below form.</h4>
+                </div>
+                {{ formset.non_form_errors }}
+                {% for form in formset %}
+                    {% for hidden in form.hidden_fields %}
+                        {{ hidden }}
+                    {% endfor %}
+                    <div class="row">
+                        <div class="col-12 col-sm-2">
+                            <h5 class="text-white text-center text-sm-left">Letter {{ forloop.counter }}</h5>
+                        </div>
+                        <div class="col-12 col-sm-5">
+                            {{ form.sent|as_crispy_field }}
+                        </div>
+                        <div class="col-12 col-sm-5">
+                            {{ form.date|as_crispy_field }}
+                        </div>
+                    </div>
+                {% endfor %}
+                {{ formset.management_form }}
+            {% endif %}
             <div class="my-2 text-center" id="submit-section">
                 <button type="submit" class="btn btn-info" id="add-button">{% trans "Add To Tout Letter List" %}</button>
                 <button type="button" class="btn btn-danger ml-1 js-hide-large-static-modal">Close</button>

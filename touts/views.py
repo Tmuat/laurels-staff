@@ -17,9 +17,16 @@ from touts.forms import (
     AddLandlordForm,
     AddLandlordExistingPropertyForm,
     AddMarketingForm,
-    AddMarketingExistingLandlordForm
+    AddMarketingExistingLandlordForm,
+    ToutLetterFormSet
 )
-from touts.models import Area, ToutProperty, Landlord, ToutLetter
+from touts.models import (
+    Area,
+    ToutProperty,
+    Landlord,
+    ToutLetter,
+    MarketingInfo
+)
 
 
 @director_required
@@ -438,26 +445,51 @@ def add_marketing(request, landlord):
     )
 
     if request.method == "POST":
-        form = AddMarketingForm(request.POST)
-        if form.is_valid():
-            instance = form.save(commit=False)
-            instance.landlord = landlord
-            instance.created_by = request.user.get_full_name()
-            instance.updated_by = request.user.get_full_name()
-            instance.save()
-            ToutLetter.objects.create(
-                marketing=instance.id,
-                created_by=request.user.get_full_name(),
-                updated_by=request.user.get_full_name(),
+        if request.user.profile.director:
+            form = AddMarketingForm(request.POST)
+            formset = ToutLetterFormSet(
+                request.POST, request.FILES
             )
-            data["form_is_valid"] = True
+            if form.is_valid() and formset.is_valid():
+                instance = form.save(commit=False)
+                instance.landlord = landlord
+                instance.created_by = request.user.get_full_name()
+                instance.updated_by = request.user.get_full_name()
+                instance.save()
+
+                for count, formset_instance in enumerate(formset):
+                    form_number = count + 1
+                    if formset_instance.cleaned_data["sent"] == "True":
+                        ToutLetter.objects.create(
+                            date=formset_instance.cleaned_data["date"],
+                            letter=form_number,
+                            marketing=instance,
+                            created_by=request.user.get_full_name(),
+                            updated_by=request.user.get_full_name()
+                        )
+                data["form_is_valid"] = True
+            else:
+                data["form_is_valid"] = False
         else:
-            data["form_is_valid"] = False
+            form = AddMarketingForm(request.POST)
+            formset = ToutLetterFormSet()
+            if form.is_valid():
+                instance = form.save(commit=False)
+                instance.landlord = landlord
+                instance.created_by = request.user.get_full_name()
+                instance.updated_by = request.user.get_full_name()
+                instance.save()
+
+                data["form_is_valid"] = True
+            else:
+                data["form_is_valid"] = False
     else:
         form = AddMarketingForm()
+        formset = ToutLetterFormSet()
 
     context = {
         "form": form,
+        "formset": formset,
         "landlord": landlord,
     }
     data["html_modal"] = render_to_string(
@@ -477,28 +509,48 @@ def add_marketing_existing_landlord(request):
     data = dict()
 
     if request.method == "POST":
-        form = AddMarketingExistingLandlordForm(request.POST)
-        if form.is_valid():
-            instance = form.save(commit=False)
-            instance.created_by = request.user.get_full_name()
-            instance.updated_by = request.user.get_full_name()
-            instance.save()
-
-            data["form_is_valid"] = True
-            data["form_chain"] = True
-            data["next"] = reverse(
-                "touts:add_marketing",
-                kwargs={
-                    "landlord": instance.id,
-                },
+        if request.user.profile.director:
+            form = AddMarketingExistingLandlordForm(request.POST)
+            formset = ToutLetterFormSet(
+                request.POST, request.FILES
             )
+            if form.is_valid() and formset.is_valid():
+                instance = form.save(commit=False)
+                instance.created_by = request.user.get_full_name()
+                instance.updated_by = request.user.get_full_name()
+                instance.save()
+
+                for count, formset_instance in enumerate(formset):
+                    form_number = count + 1
+                    if formset_instance.cleaned_data["sent"] == "True":
+                        ToutLetter.objects.create(
+                            date=formset_instance.cleaned_data["date"],
+                            letter=form_number,
+                            marketing=instance,
+                            created_by=request.user.get_full_name(),
+                            updated_by=request.user.get_full_name()
+                        )
+                data["form_is_valid"] = True
+            else:
+                data["form_is_valid"] = False
         else:
-            data["form_is_valid"] = False
+            form = AddMarketingExistingLandlordForm(request.POST)
+            formset = ToutLetterFormSet()
+            if form.is_valid():
+                instance = form.save(commit=False)
+                instance.created_by = request.user.get_full_name()
+                instance.updated_by = request.user.get_full_name()
+                instance.save()
+                data["form_is_valid"] = True
+            else:
+                data["form_is_valid"] = False
     else:
         form = AddMarketingExistingLandlordForm()
+        formset = ToutLetterFormSet()
 
     context = {
         "form": form,
+        "formset": formset
     }
     data["html_modal"] = render_to_string(
         "touts/includes/forms/add_marketing_existing.html",
@@ -509,46 +561,3 @@ def add_marketing_existing_landlord(request):
     data["modal"] = "large-static"
 
     return JsonResponse(data)
-
-
-# @otp_required
-# @login_required
-# def add_marketing(request, landlord):
-#     """
-#     Ajax URL for adding a marketing info to a landlord.
-#     """
-#     data = dict()
-
-#     landlord = get_object_or_404(
-#         Landlord, id=landlord
-#     )
-
-#     if request.method == "POST":
-#         form = AddMarketingForm(request.POST)
-#         if form.is_valid():
-#             instance = form.save(commit=False)
-#             instance.landlord = landlord
-#             instance.created_by = request.user.get_full_name()
-#             instance.updated_by = request.user.get_full_name()
-#             instance.save()
-#             ToutLetter.objects.create(
-#                 marketing=instance.id,
-#                 created_by=request.user.get_full_name(),
-#                 updated_by=request.user.get_full_name(),
-#             )
-#             data["form_is_valid"] = True
-#         else:
-#             data["form_is_valid"] = False
-#     else:
-#         form = AddMarketingForm()
-
-#     context = {
-#         "form": form,
-#         "landlord": landlord,
-#     }
-#     data["html_modal"] = render_to_string(
-#         "touts/includes/forms/add_marketing.html",
-#         context,
-#         request=request,
-#     )
-#     return JsonResponse(data)
