@@ -1,3 +1,4 @@
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
 from common.models import UpdatedAndCreated
@@ -174,6 +175,10 @@ class MarketingInfo(UpdatedAndCreated):
     OTHER_LAND = "land"
     OTHER_OTHER = "other"
 
+    LAURELS_SUCCESS = "laurels_success"
+    OFF_THE_MARKET = "off_the_market"
+    NO_CONTACT = "no_contact"
+
     PROPERTY_TYPE = [
         (
             "House",
@@ -223,6 +228,12 @@ class MarketingInfo(UpdatedAndCreated):
         (10, 10),
     ]
 
+    DO_NOT_SEND_REASONS = [
+        (LAURELS_SUCCESS, "Laurels Success"),
+        (OFF_THE_MARKET, "Off The Market"),
+        (NO_CONTACT, "Requested No Contact"),
+    ]
+
     landlord = models.ForeignKey(
         Landlord,
         on_delete=models.CASCADE,
@@ -237,6 +248,10 @@ class MarketingInfo(UpdatedAndCreated):
     marketed_from_date = models.DateField()
     price = models.DecimalField(
         max_digits=10, decimal_places=2, null=False, blank=False
+    )
+    do_not_send = models.BooleanField(default=False)
+    do_not_send_reason = models.CharField(
+        max_length=50, null=True, blank=False, choices=DO_NOT_SEND_REASONS
     )
 
     def __str__(self):
@@ -266,30 +281,17 @@ class ToutLetter(UpdatedAndCreated):
         verbose_name = "Tout Letter"
         verbose_name_plural = "Tout Letters"
 
-    LAURELS_SUCCESS = "laurels_success"
-    OFF_THE_MARKET = "off_the_market"
-    NO_CONTACT = "no_contact"
-
-    DO_NOT_SEND_REASONS = [
-        (LAURELS_SUCCESS, "Laurels Success"),
-        (OFF_THE_MARKET, "Off The Market"),
-        (NO_CONTACT, "Requested No Contact"),
-    ]
-
-    marketing = models.OneToOneField(
+    marketing = models.ForeignKey(
         MarketingInfo,
         on_delete=models.CASCADE,
         related_name="marketing_info",
     )
-    letter_one = models.BooleanField(default=False)
-    letter_two = models.BooleanField(default=False)
-    letter_three = models.BooleanField(default=False)
-    letter_four = models.BooleanField(default=False)
-    letter_five = models.BooleanField(default=False)
-    letter_six = models.BooleanField(default=False)
-    do_not_send = models.BooleanField(default=False)
-    do_not_send_reason = models.CharField(
-        max_length=50, null=True, blank=False, choices=DO_NOT_SEND_REASONS
+    letter = models.PositiveIntegerField(
+        null=False,
+        validators=[
+            MinValueValidator(1),
+            MaxValueValidator(6)
+        ]
     )
 
     def __str__(self):
