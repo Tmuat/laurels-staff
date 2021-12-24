@@ -245,7 +245,7 @@ class MarketingInfo(UpdatedAndCreated):
     number_of_bedrooms = models.IntegerField(
         null=False, choices=NUMBER_BEDROOMS
     )
-    marketed_from_date = models.DateField()
+    marketed_from_date = models.DateField(null=False, blank=False)
     price = models.DecimalField(
         max_digits=10, decimal_places=2, null=False, blank=False
     )
@@ -286,6 +286,7 @@ class ToutLetter(UpdatedAndCreated):
         on_delete=models.CASCADE,
         related_name="marketing_info",
     )
+    date = models.DateField(null=False, blank=False)
     letter = models.PositiveIntegerField(
         null=False,
         validators=[
