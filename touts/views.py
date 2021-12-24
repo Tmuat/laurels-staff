@@ -25,7 +25,6 @@ from touts.models import (
     ToutProperty,
     Landlord,
     ToutLetter,
-    MarketingInfo
 )
 
 
@@ -174,7 +173,8 @@ def validate_area_code(request):
 @login_required
 def tout_list(request):
     """
-    A view to show paginated lists of all touting areas and the properties in the system.
+    A view to show paginated lists of all touting areas and
+    the properties in the system.
     """
 
     area_list = Area.objects.filter(
@@ -192,7 +192,7 @@ def tout_list(request):
             else:
                 active = False
             area_list = area_list.filter(
-                area__landlord_property__landlord__marketing_info__do_not_send=active
+                area__landlord_property__landlord__do_not_send=active
             )
         if "query" in request.GET:
             query = request.GET["query"]
