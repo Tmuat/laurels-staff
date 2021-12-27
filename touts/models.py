@@ -253,6 +253,14 @@ class MarketingInfo(UpdatedAndCreated):
     do_not_send_reason = models.CharField(
         max_length=50, null=True, blank=False, choices=DO_NOT_SEND_REASONS
     )
+    furthest_letter = models.PositiveIntegerField(
+        null=False,
+        default=0,
+        validators=[
+            MinValueValidator(0),
+            MaxValueValidator(6)
+        ]
+    )
 
     def __str__(self):
         if (
