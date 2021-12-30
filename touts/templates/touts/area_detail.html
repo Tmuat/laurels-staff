@@ -1,0 +1,157 @@
+{% extends "vertical_base.html" %}
+{% load static i18n %}
+
+{% block head_title %}{% trans "Area Detail" %}{% endblock head_title %}
+
+{% block extra_css %}
+<link rel=stylesheet href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css"></link>
+{% endblock %}
+
+{% block content %}
+    <!-- Start Content-->
+    <div class="container-fluid">
+
+        <!-- start page title -->
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box">
+                    <div class="page-title-right">
+                        <ol class="breadcrumb m-0 p-0">
+                            <li class="breadcrumb-item"><a href="{% url 'home:home' %}"><i class="uil-home-alt"></i> Home</a></li>
+                            <li class="breadcrumb-item active">Touting</li>
+                            <li class="breadcrumb-item active">Tout List</li>
+                            <li class="breadcrumb-item active" aria-current="page">Area Detail</li>
+                        </ol>
+                    </div>
+                    <h4 class="page-title">{{ area }}</h4>
+                </div>
+            </div>
+        </div>     
+        <!-- end page title -->
+
+        <!-- start area list -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12 col-sm-8 col-md-6 col-lg-4 offset-sm-2 offset-md-0">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="Search By Postcode" name="query" id="tout-query" {% if query %}value="{{ query }}"{% endif %}>
+                                    <div class="input-group-append">
+                                        <button class="btn btn-success" type="submit" id="query-search">Find</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6 col-md-6 offset-sm-3 offset-md-0 offset-lg-2 mt-2 mt-md-0 text-center">
+                                <div class="float-none float-md-right">
+                                    <a 
+                                        href="?{% if query %}query={{ query }}&{% endif %}{% if active %}active=false{% endif %}{% if not active %}active=true{% endif %}"
+                                        class="btn btn-sm mr-1 {% if active %}btn-success text-white{% else %}btn-light text-dark{% endif %}">
+                                        Inc. Inactive/Completed Touts
+                                    </a>
+                                    <a data-url="{% url 'touts:loud_tout_menu' %}" class="btn btn-success text-white btn-sm js-load-form">Options</a>
+                                </div>
+                            </div>
+                            <div id="panel-div" class="w-100">
+                                <div class="col-12 mt-3">
+                                    {% include 'touts/includes/area_detail_panel.html' %}
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end card-body-->
+                        <div class="mt-2">
+                            <ul class="pagination pagination-sm mb-0 mb-md-2 justify-content-center">
+                                {% if properties_list.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link text-dark" href="?active={{ active }}&page=1" aria-disabled="true"><span class="mdi mdi-page-first"></span></a>
+                                </li>
+                                    {% if properties_list.number == last_page %}
+                                        {% if properties_list.number != 2 %}
+                                            <li class="page-item">
+                                                <a class="page-link text-dark"
+                                                    href="?active={{ active }}&page={{ properties_list.previous_page_number|add:'-1' }}">{{ properties_list.previous_page_number|add:"-1" }}</a>
+                                            </li>
+                                        {% endif %}
+                                    {% endif %}
+                                <li class="page-item">
+                                    <a class="page-link text-dark"
+                                        href="?active={{ active }}&page={{ properties_list.previous_page_number }}">{{ properties_list.previous_page_number }}</a>
+                                </li>
+                                {% else %}
+                                <li class="page-item disabled">
+                                    <a class="page-link text-light" href="?active={{ active }}&page=1" aria-disabled="true"><span class="mdi mdi-page-first"></span></a>
+                                </li>
+                                {% endif %}
+                                <li class="page-item active" aria-current="page">
+                                    <a class="page-link text-white" href="?active={{ active }}&page={{ properties_list.number }}">{{ properties_list.number }} <span
+                                            class="sr-only">(current)</span></a>
+                                </li>
+                                {% if properties_list.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link text-dark"
+                                        href="?active={{ active }}&page={{ properties_list.next_page_number }}">{{ properties_list.next_page_number }}</a>
+                                </li>
+                                    {% if properties_list.number == 1 %}
+                                        {% if last_page == 2 %}
+                                            <li class="page-item disabled">
+                                                <a class="page-link text-light"
+                                                    href="?active={{ active }}&page=3">3</a>
+                                            </li>
+                                        {% else %}
+                                            <li class="page-item">
+                                                <a class="page-link text-dark"
+                                                    href="?active={{ active }}&page=3">3</a>
+                                            </li>
+                                        {% endif %}
+                                    {% endif %}
+                                <li class="page-item">
+                                    <a class="page-link text-dark" href="?active={{ active }}&page={{ last_page }}"><span class="mdi mdi-page-last"></span></a>
+                                </li>
+                                {% else %}
+                                    {% if properties_list.number == 1 %}
+                                        <li class="page-item disabled">
+                                            <a class="page-link text-light"
+                                                href="?active={{ active }}&page=2">2</a>
+                                        </li>
+                                        <li class="page-item disabled">
+                                            <a class="page-link text-light"
+                                                href="?active={{ active }}&page=3">3</a>
+                                        </li>
+                                    {% elif last_page == 2 %}
+                                        <li class="page-item disabled">
+                                            <a class="page-link text-light"
+                                                href="?active={{ active }}&page=3">3</a>
+                                        </li>
+                                    {% endif %}
+                                <li class="page-item disabled">
+                                    <a class="page-link text-light" href="?active={{ active }}&page={{ last_page }}"><span class="mdi mdi-page-last"></span></a>
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </div>
+
+                    </div>
+                    <!-- end card-body-->
+
+                </div>
+                <!-- end card-->
+
+            </div>
+            <!-- end col-->
+
+        </div>
+        <!-- End row -->
+
+    </div>
+    <!-- container -->
+    {% include 'partials/base-large-modal.html' %}
+    {% include 'partials/base-static-modal.html' %}
+    {% include 'partials/base-large-static-modal.html' %}
+{% endblock %}
+
+{% block extra_javascript %}
+{{ block.super }}
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+    <script src="{% static 'touting/js/touting_general-v1.js' %}"></script>
+{% endblock %}
