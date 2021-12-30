@@ -169,14 +169,14 @@ def validate_area_code(request):
     return JsonResponse(data)
 
 
-def tout_list_extra_data(arealist):
+def tout_list_extra_data(area_list):
     """
     Used to get additional context to display the tout list correctly.
     """
 
     tout_list_data = []
 
-    for area_instance in arealist:
+    for area_instance in area_list:
         dict_instance = {}
 
         dict_instance["area_id"] = area_instance.id
@@ -186,7 +186,7 @@ def tout_list_extra_data(arealist):
         for property_instance in area_instance.area.all():
             for landlord_instance in property_instance.landlord_property.all():
                 for marketing_instance in landlord_instance.landlord.all():
-                    if marketing_instance.do_not_send is not True:
+                    if marketing_instance.is_active is True:
                         dict_instance["active_properties"] += 1
                     else:
                         dict_instance["inactive_properties"] += 1
@@ -253,6 +253,149 @@ def tout_list(request):
     }
 
     template = "touts/tout_list.html"
+
+    return render(request, template, context)
+
+
+def area_detail_extra_data(area_property_list):
+    """
+    Used to get additional context to display the area property
+    list data correctly.
+    """
+
+    property_list_data = []
+
+    for property_instance in area_property_list:
+        dict_instance = {}
+
+        dict_instance["property_id"] = property_instance.id
+        dict_instance["property_str"] = property_instance.address
+        dict_instance["landlords"] = []
+        dict_instance["active_touts"] = 0
+        dict_instance["inactive_touts"] = 0
+
+        for landlord_instance in property_instance.landlord_property.all():
+            landlord_dict_instance = {}
+            landlord_dict_instance["landlord_id"] = landlord_instance.id
+            landlord_dict_instance["landlord_name"] = landlord_instance.landlord_name
+            landlord_dict_instance["landlord_salutation"] = landlord_instance.landlord_salutation
+            landlord_dict_instance["active_touts"] = 0
+            landlord_dict_instance["inactive_touts"] = 0
+            landlord_dict_instance["touts"] = []
+            landlord_dict_instance["furthest_letter"] = 0
+
+            dict_instance["landlords"].append(landlord_dict_instance)
+
+            active_tout = False
+
+            for marketing_instance in landlord_instance.landlord.all():
+                marketing_dict_instance = {}
+                marketing_dict_instance["marketing_id"] = marketing_instance.id
+                marketing_dict_instance["marketing_furthest_letter"] = marketing_instance.furthest_letter
+                marketing_dict_instance["marketing_is_active"] = marketing_instance.is_active
+
+                if marketing_instance.is_active is True:
+                    dict_instance["active_touts"] += 1
+                    landlord_dict_instance["active_touts"] += 1
+                    active_tout = True
+                else:
+                    dict_instance["inactive_touts"] += 1
+                    landlord_dict_instance["inactive_touts"] += 1
+
+                landlord_dict_instance["touts"].append(marketing_dict_instance)
+
+            if active_tout:
+                for tout_instance in landlord_dict_instance["touts"]:
+                    if tout_instance["marketing_is_active"] is True:
+                        landlord_dict_instance["furthest_letter"] = tout_instance["marketing_furthest_letter"]
+
+        property_list_data.append(dict_instance)
+
+    return property_list_data
+
+
+def inactive_properties(area_properties):
+    """
+    Checks if all properties in an area are inactive.
+    """
+
+    active_sums = 0
+
+    for instance in area_properties:
+        active_sums += instance["active_touts"]
+
+    return active_sums
+
+
+@otp_required
+@login_required
+def area_detail(request, area_id):
+    """
+    A view to show paginated lists of all tout properties for
+    a specific area.
+    """
+
+    area = Area.objects.get(
+        id=area_id
+    )
+
+    properties = ToutProperty.objects.filter(
+        area=area.id
+    )
+
+    query = None
+    active = None
+
+    if "active" in request.GET:
+        active = request.GET["active"]
+        if active == "true":
+            active = True
+        else:
+            active = False
+
+    if "query" in request.GET:
+        query = request.GET["query"]
+        if not query:
+            return redirect(
+                reverse(
+                    "touts:area_detail",
+                    kwargs={
+                        "area_id": area.id,
+                    },
+                )
+            )
+
+        queries = (
+            Q(postcode__icontains=query)
+        )
+        properties = properties.filter(queries)
+
+    extra_info = area_detail_extra_data(properties)
+    active_count = inactive_properties(extra_info)
+    print(active_count)
+
+    page = request.GET.get("page", 1)
+
+    paginator = Paginator(extra_info, 16)
+    last_page = paginator.num_pages
+
+    try:
+        extra_info = paginator.page(page)
+    except PageNotAnInteger:
+        extra_info = paginator.page(1)
+    except EmptyPage:
+        extra_info = paginator.page(paginator.num_pages)
+
+    context = {
+        "area": area,
+        "properties_list": extra_info,
+        "last_page": last_page,
+        "query": query,
+        "active": active,
+        "active_count": active_count
+    }
+
+    template = "touts/area_detail.html"
 
     return render(request, template, context)
 
