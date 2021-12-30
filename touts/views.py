@@ -169,6 +169,33 @@ def validate_area_code(request):
     return JsonResponse(data)
 
 
+def tout_list_extra_data(arealist):
+    """
+    Used to get additional context to display the tout list correctly.
+    """
+
+    tout_list_data = []
+
+    for area_instance in arealist:
+        dict_instance = {}
+
+        dict_instance["area_id"] = area_instance.id
+        dict_instance["active_properties"] = 0
+        dict_instance["inactive_properties"] = 0
+
+        for property_instance in area_instance.area.all():
+            for landlord_instance in property_instance.landlord_property.all():
+                for marketing_instance in landlord_instance.landlord.all():
+                    if marketing_instance.do_not_send is not True:
+                        dict_instance["active_properties"] += 1
+                    else:
+                        dict_instance["inactive_properties"] += 1
+
+        tout_list_data.append(dict_instance)
+
+    return tout_list_data
+
+
 @otp_required
 @login_required
 def tout_list(request):
@@ -177,9 +204,7 @@ def tout_list(request):
     the properties in the system.
     """
 
-    area_list = Area.objects.filter(
-        is_active=True
-    )
+    area_list = Area.objects.all()
 
     query = None
     active = None
@@ -190,24 +215,22 @@ def tout_list(request):
             active = True
         else:
             active = False
-            area_list = area_list.filter(
-                area__landlord_property__landlord__do_not_send=False
-            )
     else:
-        area_list = area_list.filter(
-            area__landlord_property__landlord__do_not_send=False
+        area_list = Area.objects.filter(
+            is_active=True
         )
+
     if "query" in request.GET:
         query = request.GET["query"]
         if not query:
             return redirect(reverse("touts:tout_list"))
 
         queries = (
-            Q(area__postcode__icontains=query)
-            | Q(area__address_line_1__icontains=query)
-            | Q(area__address_line_2__icontains=query)
+            Q(area_code__icontains=query)
         )
         area_list = area_list.filter(queries)
+
+    extra_info = tout_list_extra_data(area_list)
 
     page = request.GET.get("page", 1)
 
@@ -223,6 +246,7 @@ def tout_list(request):
 
     context = {
         "area_list": area_list,
+        "extra_info": extra_info,
         "last_page": last_page,
         "query": query,
         "active": active
