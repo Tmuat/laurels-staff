@@ -18,14 +18,22 @@
                                     <td style="width: 30%;">{{ instance }}</td>
                                     <td class="text-center"><span class="badge badge-success">{{ info_instance.active_properties }}</span></td>
                                     <td class="text-center"><span class="badge badge-danger">{{ info_instance.inactive_properties }}</span></td>
-                                    <td class="text-center text-primary"><i class="mdi mdi-arrow-expand-all pointer font-16 mr-1"></i></td>
+                                    <td class="text-center text-primary">
+                                        <a href="{% url 'touts:area_detail' instance.id %}">
+                                            <i class="mdi mdi-arrow-expand-all font-16 mr-1"></i>
+                                        </a>
+                                    </td>
                                 </tr>
                             {% else %}
                                 <tr>
                                     <td style="width: 30%; opacity: 0.5;" class="text-muted">{{ instance }}</td>
                                     <td style="opacity: 0.5;" class="text-center text-muted"><span class="badge badge-success">{{ info_instance.active_properties }}</span></td>
                                     <td style="opacity: 0.5;" class="text-center text-muted"><span class="badge badge-danger">{{ info_instance.inactive_properties }}</span></td>
-                                    <td style="opacity: 0.5;" class="text-center text-muted text-primary"><i class="mdi mdi-arrow-expand-all pointer font-16 mr-1"></i></td>
+                                    <td style="opacity: 0.5;" class="text-center text-muted text-primary">
+                                        <a href="{% url 'touts:area_detail' instance.id %}">
+                                            <i class="mdi mdi-arrow-expand-all font-16 mr-1"></i>
+                                        </a>
+                                    </td>
                                 </tr>
                             {% endif %}
                         {% endif %}
