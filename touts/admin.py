@@ -137,7 +137,8 @@ class MarketingAdmin(admin.ModelAdmin):
     list_display = [
         "__str__",
         "do_not_send",
-        "furthest_letter"
+        "furthest_letter",
+        "is_active"
     ]
 
     ordering = [

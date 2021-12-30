@@ -251,7 +251,7 @@ class MarketingInfo(UpdatedAndCreated):
     )
     do_not_send = models.BooleanField(default=False)
     do_not_send_reason = models.CharField(
-        max_length=50, null=True, blank=False, choices=DO_NOT_SEND_REASONS
+        max_length=50, null=True, blank=True, choices=DO_NOT_SEND_REASONS
     )
     furthest_letter = models.PositiveIntegerField(
         null=False,
@@ -261,6 +261,7 @@ class MarketingInfo(UpdatedAndCreated):
             MaxValueValidator(6)
         ]
     )
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         if (
