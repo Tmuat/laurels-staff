@@ -105,6 +105,11 @@
                     <li {% if request.resolver_match.url_name == 'tout_list' %}class="active"{% endif %}>
                         <a href="{% url 'touts:tout_list' %}">{% trans "Tout List" %}</a>
                     </li>
+                    {% if request.resolver_match.url_name == 'area_detail' %}
+                    <li class="active">
+                        <a href="{% url 'touts:area_detail' area.id %}">Area Detail</a>
+                    </li>
+                    {% endif %}
                 </ul>
             </li>
             {% endif %}
