@@ -18,10 +18,12 @@ from touts.forms import (
     AddLandlordExistingPropertyForm,
     AddMarketingForm,
     AddMarketingExistingLandlordForm,
-    ToutLetterFormSet
+    ToutLetterFormSet,
+    DoNotSendForm
 )
 from touts.models import (
     Area,
+    MarketingInfo,
     ToutProperty,
     Landlord,
     ToutLetter,
@@ -398,6 +400,70 @@ def area_detail(request, area_id):
     template = "touts/area_detail.html"
 
     return render(request, template, context)
+
+
+@otp_required
+@login_required
+def tout_info(request, marketing_id):
+    """
+    A view to return a json response for the tout
+    info modal.
+    """
+
+    data = dict()
+
+    marketing = get_object_or_404(
+        MarketingInfo, id=marketing_id
+    )
+
+    context = {
+        "marketing": marketing,
+    }
+    data["html_modal"] = render_to_string(
+        "touts/includes/info/tout_info.html",
+        context,
+        request=request,
+    )
+    return JsonResponse(data)
+
+
+def do_not_send(request, marketing_id):
+    """
+    Ajax URL for marking a tout sheet as do
+    not send.
+    """
+    data = dict()
+
+    marketing = get_object_or_404(
+        MarketingInfo,
+        id=marketing_id
+    )
+
+    if request.method == "POST":
+        form = DoNotSendForm(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.created_by = request.user.get_full_name()
+            instance.updated_by = request.user.get_full_name()
+            instance.save()
+
+            data["form_is_valid"] = True
+        else:
+            data["form_is_valid"] = False
+    else:
+        form = DoNotSendForm()
+
+    context = {
+        "form": form,
+        "marketing": marketing
+    }
+    data["html_modal"] = render_to_string(
+        "touts/includes/forms/do_not_send.html",
+        context,
+        request=request,
+    )
+
+    return JsonResponse(data)
 
 
 @otp_required

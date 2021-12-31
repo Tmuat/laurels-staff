@@ -13,7 +13,9 @@ from touts.views import (
     add_landord,
     add_landord_existing_property,
     add_marketing,
-    add_marketing_existing_landlord
+    add_marketing_existing_landlord,
+    tout_info,
+    do_not_send
 )
 
 
@@ -26,6 +28,8 @@ urlpatterns = [
     path("area/edit/<area_code>/", area_edit, name="area_edit"),
     path("check/area/", validate_area_code, name="validate_area_code"),
     path("tout-list/menu/", loud_tout_menu, name="loud_tout_menu"),
+    path("tout-list/info/<marketing_id>/", tout_info, name="tout_info"),
+    path("tout-list/do-not-send/<marketing_id>/", do_not_send, name="do_not_send"),
     path(
         "tout-list/add/property/",
         add_tout_property,

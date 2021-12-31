@@ -316,3 +316,24 @@ ToutLetterFormSet = formset_factory(
     min_num=0,
     validate_min=True,
 )
+
+
+class DoNotSendForm(forms.ModelForm):
+    class Meta:
+        model = MarketingInfo
+        fields = (
+            "do_not_send_reason",
+        )
+
+    def __init__(self, *args, **kwargs):
+        """
+        Add new labels
+        """
+        super().__init__(*args, **kwargs)
+        labels = {
+            "do_not_send_reason": "",
+        }
+
+        for field in self.fields:
+            label = f"{labels[field]}"
+            self.fields[field].label = label
