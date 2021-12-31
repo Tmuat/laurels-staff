@@ -735,6 +735,8 @@ def add_marketing(request, landlord):
                             created_by=request.user.get_full_name(),
                             updated_by=request.user.get_full_name()
                         )
+                        instance.furthest_letter = form_number
+                        instance.save()
                 data["form_is_valid"] = True
             else:
                 data["form_is_valid"] = False
@@ -798,6 +800,8 @@ def add_marketing_existing_landlord(request):
                             created_by=request.user.get_full_name(),
                             updated_by=request.user.get_full_name()
                         )
+                        instance.furthest_letter = form_number
+                        instance.save()
                 data["form_is_valid"] = True
             else:
                 data["form_is_valid"] = False
