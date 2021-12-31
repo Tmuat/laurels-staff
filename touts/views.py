@@ -489,6 +489,7 @@ def do_not_send(request, marketing_id):
         "form": form,
         "marketing": marketing
     }
+    data["required"] = True
     data["html_modal"] = render_to_string(
         "touts/includes/forms/do_not_send.html",
         context,

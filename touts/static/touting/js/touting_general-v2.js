@@ -457,6 +457,9 @@ $(document).ready(function () {
             success: function (data) {
                 $("#base-modal").modal("show");
                 $("#base-modal .modal-dialog").html(data.html_modal);
+                if (data.required) {
+                    $("#base-modal").find("#id_do_not_send_reason").attr("required", true)
+                };
             }
         });
         return false;
@@ -492,7 +495,6 @@ $(document).ready(function () {
             }
         });
     };
-
 
     // Deals with hiding a modal
     var hideBaseModal = function () {
