@@ -542,6 +542,23 @@ $(document).ready(function () {
         return false;
     };
 
+    var hideBaseAndLoadLargeModal = function () {
+        $('#modal-overlay').fadeToggle(100);
+        $("#base-modal").modal("hide");
+        var instance = $(this);
+        $.ajax({
+            url: instance.attr("data-url"),
+            type: 'get',
+            dataType: 'json',
+            success: function (data) {
+                $("#base-large-modal").modal("show");
+                $("#base-large-modal .modal-dialog").html(data.html_modal);
+                $('#modal-overlay').fadeToggle(100);
+            }
+        });
+        return false;
+    };
+
     // Add scrollable to modal
     $(".js-large-scrollable-modal").on("click", function() {
         $("#base-large-modal .modal-dialog").addClass("modal-dialog-scrollable");
@@ -553,6 +570,7 @@ $(document).ready(function () {
 
     $("#base-modal").on("click", ".js-load-form", loadBaseModal);
     $("#base-modal").on("click", ".js-hide-base-load-large", hideBaseModalAndLoadLargeModal);
+    $("#base-modal").on("click", ".js-hide-base-load-large-modal", hideBaseAndLoadLargeModal);
     $("#base-modal").on("click", ".js-hide-modal", hideBaseModal);
     $("#base-large-modal").on("click", ".js-hide-large-modal", hideBaseLargeModal);
     $("#base-large-static-modal").on("click", ".js-hide-large-static-modal", hideBaseLargeStaticModal);

@@ -427,6 +427,31 @@ def tout_info(request, marketing_id):
     return JsonResponse(data)
 
 
+@otp_required
+@login_required
+def show_tout_instances(request, landlord_id):
+    """
+    A view to return a json response for all
+    tout instances.
+    """
+
+    data = dict()
+
+    landlord = get_object_or_404(
+        Landlord, id=landlord_id
+    )
+
+    context = {
+        "landlord": landlord,
+    }
+    data["html_modal"] = render_to_string(
+        "touts/includes/info/landlord_tout_instances.html",
+        context,
+        request=request,
+    )
+    return JsonResponse(data)
+
+
 def do_not_send(request, marketing_id):
     """
     Ajax URL for marking a tout sheet as do
@@ -440,9 +465,14 @@ def do_not_send(request, marketing_id):
     )
 
     if request.method == "POST":
-        form = DoNotSendForm(request.POST)
+        form = DoNotSendForm(
+            request.POST,
+            instance=marketing
+        )
         if form.is_valid():
             instance = form.save(commit=False)
+            instance.do_not_send = True
+            instance.is_active = False
             instance.created_by = request.user.get_full_name()
             instance.updated_by = request.user.get_full_name()
             instance.save()
@@ -451,7 +481,9 @@ def do_not_send(request, marketing_id):
         else:
             data["form_is_valid"] = False
     else:
-        form = DoNotSendForm()
+        form = DoNotSendForm(
+            instance=marketing
+        )
 
     context = {
         "form": form,

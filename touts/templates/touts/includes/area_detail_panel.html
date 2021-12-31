@@ -18,6 +18,7 @@
                     <th>Property Address</th>
                     <th class="text-center">Landlord</th>
                     <th class="text-center">Last Letter</th>
+                    <th class="text-center">Do Not Send</th>
                     <th class="text-center">View More</th>
                 {% endif %}
                 </tr>
@@ -45,7 +46,10 @@
                                     {% endif %}
                                 </td>
                                 <td class="text-center">
-                                    <i class="mdi mdi-arrow-expand-all font-16 pointer text-primary link-hover"></i>
+                                    <i 
+                                        class="mdi mdi-arrow-expand-all font-16 pointer text-primary link-hover js-load-form"
+                                        data-url="{% url 'touts:show_tout_instances' ll_instance.landlord_id %}"
+                                    ></i>
                                 </td>
                             </tr>
                         {% endfor %}
@@ -65,12 +69,25 @@
                                                 Letter {{ ll_instance.furthest_letter }} Sent
                                             {% endif %}
                                         </td>
-                                        <td class="text-center">
-                                            <i class="mdi mdi-arrow-expand-all font-16 pointer text-primary link-hover"></i>
-                                        </td>
-                                    </tr>
-                                {% endif %}
-                            {% endfor %}
+                                        {% for mk_instance in ll_instance.touts %}
+                                            {% if mk_instance.marketing_is_active %}
+                                                <td class="text-center">
+                                                    <i 
+                                                        class="mdi mdi-close-circle-outline font-16 pointer text-primary link-hover js-load-form"
+                                                        data-url="{% url 'touts:do_not_send' mk_instance.marketing_id %}"
+                                                    ></i>
+                                                </td>
+                                                <td class="text-center">
+                                                    <i 
+                                                        class="mdi mdi-arrow-expand-all font-16 pointer text-primary link-hover js-load-large-form"
+                                                        data-url="{% url 'touts:tout_info' mk_instance.marketing_id %}"
+                                                    ></i>
+                                                </td>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endfor %}
+                            </tr>
                         {% endif %}
                     {% endif %}
                 {% endfor %}
