@@ -114,6 +114,7 @@ LOCAL_APPS = [
     "lettings",
     "weekends",
     "boards",
+    "touts",
 ]
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -292,3 +293,12 @@ GET_ADDRESS_KEY = env("GET_ADDRESS_API_KEY")
 
 NO_REPLY_EMAIL = env("NO_REPLY_EMAIL")
 ADMIN_EMAIL = env("ADMIN_EMAIL")
+
+# ------------------------------------------------------------------------------
+# BOARDS
+# ------------------------------------------------------------------------------
+# http://signmaster.agencyexpress.net/api/v1/api-docs.pdf
+
+BOARDS_URL = env("BOARDS_URL")
+BOARDS_API_KEY = env("BOARDS_API_KEY")
+BOARDS_COMPANY_KEY = env("BOARDS_COMPANY_KEY")

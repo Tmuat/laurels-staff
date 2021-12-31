@@ -1,0 +1,21 @@
+{% load static i18n %}
+<div class="modal-content green-gradient">
+    <div class="modal-body">
+        <div class="text-center mt-2 mb-3">
+            <span><img src="{% static 'custom/images/logo.png' %}" alt="laurels" height="80"></span>
+        </div>
+        <div class="text-center">
+            <h4 class="text-white">Edit Area</h4>
+        </div>
+        <p class="text-white text-center">{% blocktrans trimmed %}Area names must be unique; the intranet will perform a uniqueness check.{% endblocktrans %}</p>
+        <form method="post" action="{% url 'touts:area_edit' instance.area_code %}" class="text-center text-white js-submit-form js-add-area-form">
+            {% csrf_token %}
+            {{ form.area_code | as_crispy_field }}
+            {{ form.is_active | as_crispy_field }}
+            <div class="mb-2 text-center">
+                <button type="submit" class="btn btn-info" id="add-button">{% trans "Edit Area" %}</button>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- /.modal-content -->

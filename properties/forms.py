@@ -28,7 +28,6 @@ from properties.models import (
     ProgressionNotes,
     PropertyChain,
     LettingsLandlordOrLaurelsInformation,
-    PropertyFees,
 )
 from properties.widgets import DateInput, NumberInput
 from regionandhub.models import Hub

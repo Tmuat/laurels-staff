@@ -1,0 +1,32 @@
+<!-- start table -->
+<div class="table-responsive">
+    <table class="table table-hover table-centered mb-0">
+        <thead>
+            <tr>
+                <th style="width: 33%;" class="text-center">Area</th>
+                <th style="width: 34%;" class="text-center">Active</th>
+                <th style="width: 33%;" class="text-center">Edit</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for instance in area_list %}
+                <tr>
+                    <td class="text-center">{{ instance.area_code }}</td>
+                    <td class="text-center">
+                        <span class="badge 
+                        {% if instance.is_active %}
+                            badge-success">Active
+                        {% else %}
+                            badge-danger">Inactive
+                        {% endif %}
+                        </span>
+                    </td>
+                    <td class="text-center">
+                        <span class="mdi mdi-calendar-edit font-16 text-primary pointer js-load-form" data-url="{% url 'touts:area_edit' instance.area_code %}"></span>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<!-- end table responsive-->

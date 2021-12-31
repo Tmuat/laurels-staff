@@ -89,6 +89,30 @@
                     </li>
                 </ul>
             </li>
+            {% if request.user.profile.director %}
+            <li class="side-nav-item">
+                <a href="javascript: void(0);" class="side-nav-link">
+                    <i class="mdi mdi-calculator"></i>
+                    <span> {% trans "Touting (Beta)" %} </span>
+                    <span class="menu-arrow"></span>
+                </a>
+                <ul class="side-nav-second-level" aria-expanded="false">
+                    {% if request.user.profile.director %}
+                    <li {% if request.resolver_match.url_name == 'area_list' %}class="active"{% endif %}>
+                        <a href="{% url 'touts:area_list' %}">{% trans "Area List" %}</a>
+                    </li>
+                    {% endif %}
+                    <li {% if request.resolver_match.url_name == 'tout_list' %}class="active"{% endif %}>
+                        <a href="{% url 'touts:tout_list' %}">{% trans "Tout List" %}</a>
+                    </li>
+                    {% if request.resolver_match.url_name == 'area_detail' %}
+                    <li class="active">
+                        <a href="{% url 'touts:area_detail' area.id %}">Area Detail</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </li>
+            {% endif %}
             <li class="side-nav-item">
                 <a href="javascript: void(0);" class="side-nav-link">
                     <i class="mdi mdi-graph-outline"></i>

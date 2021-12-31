@@ -526,6 +526,68 @@ def add_renewal(request, lettings_id):
     return JsonResponse(data)
 
 
+# @otp_required
+# @login_required
+# def add_second_twelve(request, lettings_id):
+#     """
+#     Add a lettings second twelve.
+#     """
+
+#     data = dict()
+
+#     managed_property = get_object_or_404(LettingProperties, id=lettings_id)
+
+#     property_process = get_object_or_404(
+#         PropertyProcess, id=managed_property.propertyprocess.id
+#     )
+
+#     if request.method == "POST":
+#         form = RenewalForm(request.POST)
+#         renewal_form = RenewalDateForm(request.POST)
+#         if form.is_valid() and renewal_form.is_valid():
+#             instance = form.save(commit=False)
+#             second_instance = renewal_form.save(commit=False)
+
+#             instance.propertyprocess = property_process
+#             instance.active = True
+#             instance.show_all = False
+#             instance.updated_by = request.user.get_full_name()
+
+#             second_instance.lettings_properties = managed_property
+#             second_instance.renewed_on = form.cleaned_data["date"]
+#             second_instance.created_by = request.user.get_full_name()
+#             second_instance.updated_by = request.user.get_full_name()
+
+#             instance.save()
+
+#             second_instance.save()
+
+#             data["form_is_valid"] = True
+#         else:
+#             data["form_is_valid"] = False
+#     else:
+#         form = RenewalForm(
+#             initial={
+#                 "fee": float(property_process.property_fees.first().fee),
+#                 "price": float(property_process.property_fees.first().price),
+#                 "date": datetime.date.today(),
+#             }
+#         )
+#         renewal_form = RenewalDateForm()
+
+#     context = {
+#         "form": form,
+#         "renewal_form": renewal_form,
+#         "managed_property": managed_property,
+#     }
+#     data["html_modal"] = render_to_string(
+#         "lettings/includes/managed/add_renewal_modal.html",
+#         context,
+#         request=request,
+#     )
+#     return JsonResponse(data)
+
+
 @otp_required
 @login_required
 def maintenance_board(request):

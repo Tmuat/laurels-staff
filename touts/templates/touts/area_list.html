@@ -1,0 +1,149 @@
+{% extends "vertical_base.html" %}
+{% load static i18n %}
+
+{% block head_title %}{% trans "Area List" %}{% endblock head_title %}
+
+{% block content %}
+    <!-- Start Content-->
+    <div class="container-fluid">
+
+        <!-- start page title -->
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box">
+                    <div class="page-title-right">
+                        <ol class="breadcrumb m-0 p-0">
+                            <li class="breadcrumb-item"><a href="{% url 'home:home' %}"><i class="uil-home-alt"></i> Home</a></li>
+                            <li class="breadcrumb-item active">Touting</li>
+                            <li class="breadcrumb-item active" aria-current="page">Area List</li>
+                        </ol>
+                    </div>
+                    <h4 class="page-title">Area List</h4>
+                </div>
+            </div>
+        </div>     
+        <!-- end page title -->
+
+        <!-- start area list -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12 text-center">
+                                <div class="float-none float-sm-left">
+                                    <div class="btn-group mb-2">
+                                        <a href="?active=True" class="btn btn-sm {% if active == False %}btn-light text-dark{% else %}btn-success text-white{% endif %}">Active</a>
+                                        <a href="?active=False" class="btn btn-sm {% if active == False %}btn-success text-white{% else %}btn-light text-dark{% endif %}">All</a>
+                                    </div>
+                                </div>
+                                <div class="float-none float-sm-right">
+                                    <a data-url="{% url 'touts:area_add' %}" class="btn btn-success text-white btn-sm js-load-form">Add Area</a>
+                                </div>
+                            </div>
+                            <div id="panel-div" class="w-100">
+                                <div class="col-12 mt-2">                                
+                                    <!-- start card -->
+                                    <div class="card mb-0">
+                                        <!-- start card-body-->
+                                        <div class="card-body">
+                                            {% include 'touts/includes/panel.html' %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end card-body-->
+                        <div class="mt-2">
+                            <ul class="pagination pagination-sm mb-0 mb-md-2 justify-content-center">
+                                {% if area_list.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link text-dark" href="?active={{ active }}&page=1" aria-disabled="true"><span class="mdi mdi-page-first"></span></a>
+                                </li>
+                                    {% if area_list.number == last_page %}
+                                        {% if area_list.number != 2 %}
+                                            <li class="page-item">
+                                                <a class="page-link text-dark"
+                                                    href="?active={{ active }}&page={{ area_list.previous_page_number|add:'-1' }}">{{ area_list.previous_page_number|add:"-1" }}</a>
+                                            </li>
+                                        {% endif %}
+                                    {% endif %}
+                                <li class="page-item">
+                                    <a class="page-link text-dark"
+                                        href="?active={{ active }}&page={{ area_list.previous_page_number }}">{{ area_list.previous_page_number }}</a>
+                                </li>
+                                {% else %}
+                                <li class="page-item disabled">
+                                    <a class="page-link text-light" href="?active={{ active }}&page=1" aria-disabled="true"><span class="mdi mdi-page-first"></span></a>
+                                </li>
+                                {% endif %}
+                                <li class="page-item active" aria-current="page">
+                                    <a class="page-link text-white" href="?active={{ active }}&page={{ area_list.number }}">{{ area_list.number }} <span
+                                            class="sr-only">(current)</span></a>
+                                </li>
+                                {% if area_list.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link text-dark"
+                                        href="?active={{ active }}&page={{ area_list.next_page_number }}">{{ area_list.next_page_number }}</a>
+                                </li>
+                                    {% if area_list.number == 1 %}
+                                        {% if last_page == 2 %}
+                                            <li class="page-item disabled">
+                                                <a class="page-link text-light"
+                                                    href="?active={{ active }}&page=3">3</a>
+                                            </li>
+                                        {% else %}
+                                            <li class="page-item">
+                                                <a class="page-link text-dark"
+                                                    href="?active={{ active }}&page=3">3</a>
+                                            </li>
+                                        {% endif %}
+                                    {% endif %}
+                                <li class="page-item">
+                                    <a class="page-link text-dark" href="?active={{ active }}&page={{ last_page }}"><span class="mdi mdi-page-last"></span></a>
+                                </li>
+                                {% else %}
+                                    {% if area_list.number == 1 %}
+                                        <li class="page-item disabled">
+                                            <a class="page-link text-light"
+                                                href="?active={{ active }}&page=2">2</a>
+                                        </li>
+                                        <li class="page-item disabled">
+                                            <a class="page-link text-light"
+                                                href="?active={{ active }}&page=3">3</a>
+                                        </li>
+                                    {% elif last_page == 2 %}
+                                        <li class="page-item disabled">
+                                            <a class="page-link text-light"
+                                                href="?active={{ active }}&page=3">3</a>
+                                        </li>
+                                    {% endif %}
+                                <li class="page-item disabled">
+                                    <a class="page-link text-light" href="?active={{ active }}&page={{ last_page }}"><span class="mdi mdi-page-last"></span></a>
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </div>
+
+                    </div>
+                    <!-- end card-body-->
+
+                </div>
+                <!-- end card-->
+
+            </div>
+            <!-- end col-->
+
+        </div>
+        <!-- End row -->
+
+    </div>
+    <!-- container -->
+    {% include 'partials/base-large-modal.html' %}
+    {% include 'partials/base-static-modal.html' %}
+{% endblock %}
+
+{% block extra_javascript %}
+{{ block.super }}
+    <script src="{% static 'touting/js/touting_general-v1.js' %}"></script>
+{% endblock %}

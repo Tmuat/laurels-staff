@@ -1,0 +1,58 @@
+{% load static i18n %}
+<div class="modal-content green-gradient">
+    <div class="modal-body">
+        <div class="text-center mt-2 mb-3">
+            <span><img src="{% static 'custom/images/logo.png' %}" alt="laurels" height="80"></span>
+        </div>
+        <div class="text-center">
+            <h4 class="text-white">Add Marketing Info</h4>
+        </div>
+        <p class="text-white text-center">{% blocktrans trimmed %}Please add the marketing information.{% endblocktrans %}</p>
+        <form method="post" action="{% url 'touts:add_marketing' landlord.id %}" class="text-center text-white p-2 js-submit-form custom-form-margin">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-12 col-sm-6">
+                    {{ form.property_type|as_crispy_field }}
+                </div>
+                <div class="col-12 col-sm-6">
+                    {{ form.number_of_bedrooms|as_crispy_field }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 col-sm-6">
+                    {{ form.marketed_from_date|as_crispy_field }}
+                </div>
+                <div class="col-12 col-sm-6">
+                    {{ form.price|as_crispy_field }}
+                </div>
+            </div>
+            {% if request.user.profile.director %}
+                <div class="text-center">
+                    <h4 class="text-white">If you would like to move a property to a specific letter, please use the below form.</h4>
+                </div>
+                {{ formset.non_form_errors }}
+                {% for form in formset %}
+                    {% for hidden in form.hidden_fields %}
+                        {{ hidden }}
+                    {% endfor %}
+                    <div class="row">
+                        <div class="col-12 col-sm-2">
+                            <h5 class="text-white text-center text-sm-left">Letter {{ forloop.counter }}</h5>
+                        </div>
+                        <div class="col-12 col-sm-5">
+                            {{ form.sent|as_crispy_field }}
+                        </div>
+                        <div class="col-12 col-sm-5">
+                            {{ form.date|as_crispy_field }}
+                        </div>
+                    </div>
+                {% endfor %}
+                {{ formset.management_form }}
+            {% endif %}
+            <div class="my-2 text-center" id="submit-section">
+                <button type="submit" class="btn btn-info" id="add-button">{% trans "Add To Tout Letter List" %}</button>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- /.modal-content -->
