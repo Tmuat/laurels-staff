@@ -70,6 +70,25 @@ class Profile(UpdatedAndCreated):
         return self.user.get_full_name()
 
 
+class FeatureToggles(UpdatedAndCreated):
+    class Meta:
+        ordering = [
+            "user__email",
+        ]
+        verbose_name = "Feature Toggle"
+        verbose_name_plural = "Feature Toggles"
+
+    user = models.OneToOneField(
+        CustomUser, on_delete=models.CASCADE, related_name="feature_toggle"
+    )
+    allow_boards = models.BooleanField(
+        default=False
+    )
+
+    def __str__(self):
+        return self.user.get_full_name()
+
+
 class UserTargetsByYear(UpdatedAndCreated):
     class Meta:
         ordering = ["user", "year"]
