@@ -11,6 +11,7 @@ from django.http import JsonResponse
 from django.shortcuts import render, reverse, redirect, get_object_or_404
 from django.template.loader import render_to_string
 
+from boards.models import Boards
 from common.functions import (
     sales_progression_percentage,
     lettings_progression_percentage,
@@ -752,6 +753,7 @@ def add_property(request):
 
             process_instance.property = instance
             process_instance.macro_status = PropertyProcess.AWAITINGVALUATION
+            process_instance.boards = True
             process_instance.furthest_status = (
                 PropertyProcess.AWAITINGVALUATION
             )
@@ -770,6 +772,12 @@ def add_property(request):
                 propertyprocess=process_instance,
                 type=PropertyHistory.PROPERTY_EVENT,
                 description=history_description,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
+
+            Boards.objects.create(
+                propertyprocess=process_instance,
                 created_by=request.user.get_full_name(),
                 updated_by=request.user.get_full_name(),
             )
@@ -814,6 +822,7 @@ def add_propertyprocess(request, property_id):
             instance.property = property_instance
             instance.macro_status = PropertyProcess.AWAITINGVALUATION
             instance.furthest_status = PropertyProcess.AWAITINGVALUATION
+            instance.boards = True
 
             instance.created_by = request.user.get_full_name()
             instance.updated_by = request.user.get_full_name()
@@ -829,6 +838,12 @@ def add_propertyprocess(request, property_id):
                 propertyprocess=instance,
                 type=PropertyHistory.PROPERTY_EVENT,
                 description=history_description,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
+
+            Boards.objects.create(
+                propertyprocess=instance,
                 created_by=request.user.get_full_name(),
                 updated_by=request.user.get_full_name(),
             )
