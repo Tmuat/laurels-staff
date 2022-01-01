@@ -21,6 +21,9 @@ class Boards(UpdatedAndCreated):
         unique=True,
         editable=False
     )
+    created_on_signmaster = models.BooleanField(
+        default=False
+    )
 
     def __str__(self):
         if (
