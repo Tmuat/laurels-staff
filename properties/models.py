@@ -217,6 +217,7 @@ class PropertyProcess(UpdatedAndCreated):
     )
     legacy_property = models.BooleanField(default=False, choices=LEGACY)
     previously_fallen_through = models.BooleanField(default=False)
+    boards = models.BooleanField(default=False)
 
     def __str__(self):
         if (
