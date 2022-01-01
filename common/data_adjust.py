@@ -2,7 +2,15 @@ import datetime
 
 from lettings.models import Renewals, Gas, EPC, Electrical
 from regionandhub.models import Hub
-from properties.models import PropertyProcess, Deal, PropertyHistory, Offer, Reduction, PropertyFees
+from properties.models import (
+    PropertyProcess,
+    Deal,
+    PropertyHistory,
+    Offer,
+    Reduction,
+    PropertyFees
+)
+from users.models import CustomUser, FeatureToggles
 
 # python3 manage.py dumpdata > master.json --settings=laurels.settings.production
 
@@ -156,6 +164,14 @@ def delete_prop_fee():
     print("Deleted")
 
 
+def feature_toggle_creation():
+    for instance in CustomUser.objects.all():
+        FeatureToggles.objects.create(
+            user=instance,
+            created_by="Admin User",
+            updated_by="Admin User"
+        )
+
 # python manage.py shell --settings=laurels.settings.production
 # from common.data_adjust import *
 # lettings_deal_without_renewal()
@@ -167,3 +183,4 @@ def delete_prop_fee():
 # deal_agreed_change()
 # delete_reduction()
 # delete_prop_fee()
+# feature_toggle_creation()
