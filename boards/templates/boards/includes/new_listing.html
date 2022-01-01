@@ -1,0 +1,20 @@
+{% load static i18n %}
+<div class="modal-content green-gradient">
+    <div class="modal-body">
+        <div class="text-center mt-2 mb-3">
+            <span><img src="{% static 'custom/images/logo.png' %}" alt="laurels" height="80"></span>
+        </div>
+        <div class="text-center">
+            <h4 class="text-white">Request New Board</h4>
+        </div>
+        <p class="text-white text-center">{% blocktrans trimmed %}Please complete the fields in this form to request a new board.{% endblocktrans %}</p>
+        <form method="post" action="" class="text-center text-white js-submit-form">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <div class="mb-2 text-center">
+                <button type="submit" class="btn btn-info" id="add-button" disabled>{% trans "Add New Board Request" %}</button>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- /.modal-content -->
