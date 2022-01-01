@@ -452,6 +452,8 @@ def show_tout_instances(request, landlord_id):
     return JsonResponse(data)
 
 
+@otp_required
+@login_required
 def do_not_send(request, marketing_id):
     """
     Ajax URL for marking a tout sheet as do
