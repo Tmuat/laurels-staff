@@ -1,11 +1,13 @@
+from django_otp.decorators import otp_required
 import requests
-
 from xml.etree.ElementTree import Element, SubElement, tostring
 
+from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 
+from boards.forms import AddNewBoardForm
 from boards.models import Boards
 from laurels.settings.base import (
     BOARDS_URL,
@@ -140,44 +142,87 @@ def new_board():
     return r
 
 
-# from boards.views import *
-# board_types()
+@otp_required
+@login_required
+def add_board(request, board_instance):
+    """
+    Ajax URL for adding a board to the signmaster api.
+    """
+    data = dict()
 
-def board_modal_selector(selector):
+    if request.method == "POST":
+        form = AddNewBoardForm(request.POST)
+        # if form.is_valid():
+        #     instance = form.save(commit=False)
+        #     instance.landlord_property = tout_property
+        #     instance.created_by = request.user.get_full_name()
+        #     instance.updated_by = request.user.get_full_name()
+        #     instance.save()
+
+        #     data["form_is_valid"] = True
+        #     data["form_chain"] = True
+        #     data["next"] = reverse(
+        #         "touts:add_marketing",
+        #         kwargs={
+        #             "landlord": instance.id,
+        #         },
+        #     )
+        # else:
+        #     data["form_is_valid"] = False
+
+    else:
+        form = AddNewBoardForm()
+
+    context = {
+        "form": form,
+        "board_instance": board_instance,
+    }
+    data["html_modal"] = render_to_string(
+        "boards/includes/new_listing.html",
+        context,
+        request=request,
+    )
+
+    return JsonResponse(data)
+
+
+def board_modal_selector(request, board_instance, selector):
     """
     A function to return the correct modal html
     template.
     """
 
     modals = {
-        "add_new_board": "new_listing.html",
+        "add_new_board": add_board(request, board_instance)
     }
 
-    modal = modals[selector]
+    data = modals[selector]
 
-    return modal
+    return data
 
 
+@otp_required
+@login_required
 def board_modal_controller(request, board_id):
     """
     Ajax URL for getting the board options modal.
     """
 
-    data = dict()
-
     board_instance = get_object_or_404(
         Boards, id=board_id
     )
 
-    modal = board_modal_selector("add_new_board")
+    if board_instance.created_on_signmaster:
+        data = board_modal_selector(
+            request,
+            board_instance,
+            "board_menu"
+        )
+    else:
+        data = board_modal_selector(
+            request,
+            board_instance,
+            "add_new_board"
+        )
 
-    context = {
-        "board_instance": board_instance,
-    }
-    data["html_modal"] = render_to_string(
-        f"touts/includes/forms/{modal}",
-        context,
-        request=request,
-    )
-
-    return JsonResponse(data)
+    return data
