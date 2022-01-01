@@ -22,7 +22,7 @@ from common.functions import quarter_year_calc
 from invitations.forms import UserInvitationsForm, UserTargetsFormset
 from invitations.models import UserInvitations
 from users.forms import CustomPasswordCreationForm
-from users.models import CustomUser, UserTargetsByYear, Profile
+from users.models import CustomUser, UserTargetsByYear, Profile, FeatureToggles
 
 
 @staff_member_required
@@ -211,6 +211,13 @@ def accept_invite(request, invitation_key):
             instance_form.last_name = invitation_instance.last_name
             instance_form.is_staff = invitation_instance.is_staff
             instance_form.save()
+
+            FeatureToggles.objects.create(
+                user=instance_form,
+                allow_boards=False,
+                created_by=invitation_instance.created_by,
+                updated_by=invitation_instance.created_by,
+            )
 
             instance_profile = Profile.objects.create(
                 user=instance_form,
