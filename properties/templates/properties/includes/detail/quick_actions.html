@@ -122,3 +122,13 @@
         <i class="mdi mdi-clipboard-play-outline icon-lg-size"></i>
 </button>
 {% endif %}
+{% if propertyprocess.boards and request.user.feature_toggle.allow_boards %}
+<button 
+    data-url="{% url 'boards:board_modal_controller' propertyprocess.board.id %}"
+    data-toggle="tooltip"
+    data-placement="top"
+    title="Manage Board"
+    class="mb-1 btn px-2 py-1 btn-info js-load-large-form">
+        <i class="mdi mdi-sign-real-estate icon-lg-size"></i>
+</button>
+{% endif %}
