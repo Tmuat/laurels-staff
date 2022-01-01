@@ -23,6 +23,7 @@ class BoardAdmin(admin.ModelAdmin):
     ]
 
     readonly_fields = [
+        "propertyref",
         "updated_by",
         "updated",
         "created_by",
