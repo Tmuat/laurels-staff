@@ -154,6 +154,19 @@ def new_board(board_instance, form):
     return board_request
 
 
+def board_information(board_instance):
+
+    payload = {
+        'key': BOARDS_API_KEY,
+        'branchcode': BOARDS_COMPANY_KEY,
+        'propertyref': board_instance.propertyref
+    }
+
+    board_request = requests.get(BOARDS_URL + "getListings", params=payload)
+
+    return board_request
+
+
 def parse_xml(request):
     """
     Parse the XML response for signmaster from string into XML
@@ -249,6 +262,32 @@ def add_board(request, board_id):
     }
     data["html_modal"] = render_to_string(
         "boards/includes/new_listing.html",
+        context,
+        request=request,
+    )
+
+    return JsonResponse(data)
+
+
+@otp_required
+@login_required
+def board_info(request, board_id):
+    """
+    Ajax URL for returning the info modal for a board.
+    """
+    data = dict()
+
+    board_instance = get_object_or_404(
+        Boards, id=board_id
+    )
+
+    board_info = parse_xml(board_information(board_instance))
+
+    context = {
+        "board_instance": board_instance,
+    }
+    data["html_modal"] = render_to_string(
+        "boards/includes/board_info.html",
         context,
         request=request,
     )

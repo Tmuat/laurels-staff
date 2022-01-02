@@ -2,7 +2,8 @@ from django.urls import path
 
 from boards.views import (
     add_board,
-    boards_menu
+    boards_menu,
+    board_info
 )
 
 
@@ -12,6 +13,11 @@ urlpatterns = [
         "boards/add/<board_id>/",
         add_board,
         name="add_board"
+    ),
+    path(
+        "boards/info/<board_id>/",
+        board_info,
+        name="board_info"
     ),
     path(
         "boards/menu/<board_id>/",
