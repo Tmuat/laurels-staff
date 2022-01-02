@@ -124,7 +124,11 @@
 {% endif %}
 {% if propertyprocess.boards and request.user.feature_toggle.allow_boards %}
 <button 
-    data-url="{% url 'boards:board_modal_controller' propertyprocess.board.id %}"
+    {% if propertyprocess.boards.created_on_signmaster %}
+        data-url="{% url 'boards:board_modal_controller' propertyprocess.board.id %}"
+    {% else %}
+        data-url="{% url 'boards:add_board' propertyprocess.board.id %}"
+    {% endif %}
     data-toggle="tooltip"
     data-placement="top"
     title="Manage Board"
