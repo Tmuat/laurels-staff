@@ -125,14 +125,15 @@
 {% if propertyprocess.boards and request.user.feature_toggle.allow_boards %}
 <button 
     {% if propertyprocess.board.created_on_signmaster %}
-        data-url=""
+        data-url="{% url 'boards:boards_menu' propertyprocess.board.id %}"
+        class="mb-1 btn px-2 py-1 btn-info js-load-form"
     {% else %}
         data-url="{% url 'boards:add_board' propertyprocess.board.id %}"
+        class="mb-1 btn px-2 py-1 btn-info js-load-large-form"
     {% endif %}
     data-toggle="tooltip"
     data-placement="top"
-    title="Manage Board"
-    class="mb-1 btn px-2 py-1 btn-info js-load-large-form">
+    title="Manage Board">
         <i class="mdi mdi-sign-real-estate icon-lg-size"></i>
 </button>
 {% endif %}

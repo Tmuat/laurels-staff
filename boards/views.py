@@ -21,46 +21,45 @@ from laurels.settings.base import (
 
 def board_types():
 
-    xml_payload = Element("movements")
+    # xml_payload = Element("movements")
 
-    movement = SubElement(xml_payload, "movement")
+    # movement = SubElement(xml_payload, "movement")
 
-    branchcode = SubElement(movement, "branchcode")
-    branchcode.text = "TEST172"
-    propertyref = SubElement(movement, "propertyref")
-    propertyref.text = ""
-    vendorname = SubElement(movement, "vendorname")
-    vendorname.text = "T Muat"
-    boardtypeid = SubElement(movement, "boardtypeid")
-    boardtypeid.text = "42462"
-    movementtypeid = SubElement(movement, "movementtypeid")
-    movementtypeid.text = "1"
-    boardstatusid = SubElement(movement, "boardstatusid")
-    boardstatusid.text = "1"
-    noofboards = SubElement(movement, "noofboards")
-    noofboards.text = "1"
-    houseno = SubElement(movement, "houseno")
-    houseno.text = "58"
-    address1 = SubElement(movement, "address1")
-    address1.text = "Fareham Avenue"
-    address2 = SubElement(movement, "address2")
-    address2.text = ""
-    locality = SubElement(movement, "locality")
-    locality.text = ""
-    town = SubElement(movement, "town")
-    town.text = "Rugby"
-    county = SubElement(movement, "county")
-    county.text = "Warwickshire"
-    postcode = SubElement(movement, "postcode")
-    postcode.text = "CV22 5HT"
-    agentnotes = SubElement(movement, "agentnotes")
-    agentnotes.text = "Please erect to the side of the house."
+    # branchcode = SubElement(movement, "branchcode")
+    # branchcode.text = "TEST172"
+    # propertyref = SubElement(movement, "propertyref")
+    # propertyref.text = ""
+    # vendorname = SubElement(movement, "vendorname")
+    # vendorname.text = "T Muat"
+    # boardtypeid = SubElement(movement, "boardtypeid")
+    # boardtypeid.text = "42462"
+    # movementtypeid = SubElement(movement, "movementtypeid")
+    # movementtypeid.text = "1"
+    # boardstatusid = SubElement(movement, "boardstatusid")
+    # boardstatusid.text = "1"
+    # noofboards = SubElement(movement, "noofboards")
+    # noofboards.text = "1"
+    # houseno = SubElement(movement, "houseno")
+    # houseno.text = "58"
+    # address1 = SubElement(movement, "address1")
+    # address1.text = "Fareham Avenue"
+    # address2 = SubElement(movement, "address2")
+    # address2.text = ""
+    # locality = SubElement(movement, "locality")
+    # locality.text = ""
+    # town = SubElement(movement, "town")
+    # town.text = "Rugby"
+    # county = SubElement(movement, "county")
+    # county.text = "Warwickshire"
+    # postcode = SubElement(movement, "postcode")
+    # postcode.text = "CV22 5HT"
+    # agentnotes = SubElement(movement, "agentnotes")
+    # agentnotes.text = "Please erect to the side of the house."
 
     payload = {
         'key': BOARDS_API_KEY,
         'branchcode': BOARDS_COMPANY_KEY,
-        'overwriteExisting': True,
-        'returnFullDetails': False,
+        'propertyref': "893954367"
     }
 
     # r = requests.get(BOARDS_URL + "getBoardTypes", params=payload)
@@ -69,15 +68,18 @@ def board_types():
 
     # r = requests.get(BOARDS_URL + "getBoardStatuses", params=payload)
 
-    r = requests.get(
-        BOARDS_URL + "addMovements",
-        data=tostring(xml_payload),
-        params=payload
-    )
+    r = requests.get(BOARDS_URL + "getListings", params=payload)
+
+    # r = requests.get(
+    #     BOARDS_URL + "addMovements",
+    #     data=tostring(xml_payload),
+    #     params=payload
+    # )
 
     print(r.text)
 
-    # print(tostring(xml_payload))
+    # from boards.views import board_types
+    # board_types()
 
     return r
 
@@ -143,7 +145,7 @@ def new_board(board_instance, form):
         'returnFullDetails': False,
     }
 
-    board_request = requests.get(
+    board_request = requests.post(
         BOARDS_URL + "addMovements",
         data=tostring(xml_payload),
         params=payload
@@ -159,6 +161,30 @@ def parse_xml(request):
     parsed_xml = fromstring(request.text)
 
     return parsed_xml
+
+
+@otp_required
+@login_required
+def boards_menu(request, board_id):
+    """
+    Ajax URL for adding a board to the signmaster api.
+    """
+    data = dict()
+
+    board_instance = get_object_or_404(
+        Boards, id=board_id
+    )
+
+    context = {
+        "board_instance": board_instance,
+    }
+    data["html_modal"] = render_to_string(
+        "boards/includes/board_menu.html",
+        context,
+        request=request,
+    )
+
+    return JsonResponse(data)
 
 
 @otp_required
