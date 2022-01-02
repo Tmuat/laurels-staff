@@ -1,13 +1,16 @@
 from django_otp.decorators import otp_required
 import requests
-from xml.etree.ElementTree import Element, SubElement, tostring
+from xml.etree.ElementTree import Element, SubElement, tostring, fromstring
 
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 
-from boards.forms import AddNewBoardForm
+from boards.forms import (
+    AddNewBoardSalesForm,
+    AddNewBoardLettingsForm,
+)
 from boards.models import Boards
 from laurels.settings.base import (
     BOARDS_URL,
@@ -79,50 +82,59 @@ def board_types():
     return r
 
 
-# def create_addMovements_xml(instance, form):
-#     """
-#     """
+def new_board(board_instance, form):
 
-#     xml_payload = Element("movements")
+    xml_payload = Element("movements")
+    movement = SubElement(xml_payload, "movement")
 
-#     movement = SubElement(xml_payload, "movement")
+    branchcode = SubElement(movement, "branchcode")
+    branchcode.text = BOARDS_COMPANY_KEY
 
-#     branchcode = SubElement(movement, "branchcode")
-#     branchcode.text = BOARDS_COMPANY_KEY
+    propertyref = SubElement(movement, "propertyref")
+    propertyref.text = str(board_instance.propertyref)
 
-#     propertyref = SubElement(movement, "propertyref")
-#     propertyref.text = ""
-#     vendorname = SubElement(movement, "vendorname")
-#     vendorname.text = "T Muat"
-#     boardtypeid = SubElement(movement, "boardtypeid")
-#     boardtypeid.text = "42462"
-#     movementtypeid = SubElement(movement, "movementtypeid")
-#     movementtypeid.text = "1"
-#     boardstatusid = SubElement(movement, "boardstatusid")
-#     boardstatusid.text = "1"
-#     noofboards = SubElement(movement, "noofboards")
-#     noofboards.text = "1"
-#     houseno = SubElement(movement, "houseno")
-#     houseno.text = "Flat 5"
-#     address1 = SubElement(movement, "address1")
-#     address1.text = "Woodfield Court"
-#     address2 = SubElement(movement, "address2")
-#     address2.text = "Woodfield Avenue"
-#     locality = SubElement(movement, "locality")
-#     locality.text = ""
-#     town = SubElement(movement, "town")
-#     town.text = "Rugby"
-#     county = SubElement(movement, "county")
-#     county.text = "Warwickshire"
-#     postcode = SubElement(movement, "postcode")
-#     postcode.text = "CV22 5HT"
-#     agentnotes = SubElement(movement, "agentnotes")
-#     agentnotes.text = "Please erect to the side of the house."
+    vendorname = SubElement(movement, "vendorname")
+    vendorname.text = form.cleaned_data["vendor_name"]
 
-#     return xml_payload
+    boardtypeid = SubElement(movement, "boardtypeid")
+    if board_instance.propertyprocess.sector == "sales":
+        boardtypeid.text = "42462"
+    else:
+        boardtypeid.text = "42463"
 
+    movementtypeid = SubElement(movement, "movementtypeid")
+    movementtypeid.text = "1"
 
-def new_board():
+    boardstatusid = SubElement(movement, "boardstatusid")
+    boardstatusid.text = form.cleaned_data["boardstatusid"]
+
+    noofboards = SubElement(movement, "noofboards")
+    noofboards.text = "1"
+
+    houseno = SubElement(movement, "houseno")
+    houseno.text = ""
+    houseno.text = form.cleaned_data["houseno"]
+
+    address1 = SubElement(movement, "address1")
+    address1.text = form.cleaned_data["address1"]
+
+    address2 = SubElement(movement, "address2")
+    address2.text = form.cleaned_data["address2"]
+
+    locality = SubElement(movement, "locality")
+    locality.text = ""
+
+    town = SubElement(movement, "town")
+    town.text = form.cleaned_data["town"]
+
+    county = SubElement(movement, "county")
+    county.text = form.cleaned_data["county"]
+
+    postcode = SubElement(movement, "postcode")
+    postcode.text = form.cleaned_data["postcode"]
+
+    agentnotes = SubElement(movement, "agentnotes")
+    agentnotes.text = form.cleaned_data["agentnotes"]
 
     payload = {
         'key': BOARDS_API_KEY,
@@ -131,47 +143,79 @@ def new_board():
         'returnFullDetails': False,
     }
 
-    r = requests.get(
+    board_request = requests.get(
         BOARDS_URL + "addMovements",
         data=tostring(xml_payload),
         params=payload
     )
 
-    print(r.text)
+    return board_request
 
-    return r
+
+def parse_xml(request):
+    """
+    Parse the XML response for signmaster from string into XML
+    """
+    parsed_xml = fromstring(request.text)
+
+    return parsed_xml
 
 
 @otp_required
 @login_required
-def add_board(request, board_instance):
+def add_board(request, board_id):
     """
     Ajax URL for adding a board to the signmaster api.
     """
     data = dict()
 
+    board_instance = get_object_or_404(
+        Boards, id=board_id
+    )
+
     if request.method == "POST":
-        form = AddNewBoardForm(request.POST)
-        # if form.is_valid():
-        #     instance = form.save(commit=False)
-        #     instance.landlord_property = tout_property
-        #     instance.created_by = request.user.get_full_name()
-        #     instance.updated_by = request.user.get_full_name()
-        #     instance.save()
-
-        #     data["form_is_valid"] = True
-        #     data["form_chain"] = True
-        #     data["next"] = reverse(
-        #         "touts:add_marketing",
-        #         kwargs={
-        #             "landlord": instance.id,
-        #         },
-        #     )
-        # else:
-        #     data["form_is_valid"] = False
-
+        if board_instance.propertyprocess.sector == "sales":
+            form = AddNewBoardSalesForm(request.POST)
+        else:
+            form = AddNewBoardLettingsForm(request.POST)
+        if form.is_valid():
+            new_board_request = new_board(board_instance, form)
+            parsed_xml = parse_xml(new_board_request)
+            if parsed_xml.find("statuscode").text == "0001":
+                data["html_board"] = render_to_string(
+                    "boards/includes/responses/new_board_success.html",
+                    request=request,
+                )
+                board_instance.created_on_signmaster = True
+                board_instance.updated_by = request.user.get_full_name()
+                board_instance.save()
+            else:
+                data["html_board"] = render_to_string(
+                    "boards/includes/responses/new_board_error.html",
+                    request=request,
+                )
+            data["form_is_valid"] = True
+        else:
+            data["form_is_valid"] = False
     else:
-        form = AddNewBoardForm()
+        if board_instance.propertyprocess.sector == "sales":
+            form = AddNewBoardSalesForm(
+                initial={
+                        "address1": board_instance.propertyprocess.property.address_line_1,
+                        "address2": board_instance.propertyprocess.property.address_line_2,
+                        "town": board_instance.propertyprocess.property.town,
+                        "postcode": board_instance.propertyprocess.property.postcode,
+                    }
+            )
+        else:
+            form = AddNewBoardLettingsForm(
+                initial={
+                        "address1": board_instance.propertyprocess.property.address_line_1,
+                        "address2": board_instance.propertyprocess.property.address_line_2,
+                        "town": board_instance.propertyprocess.property.town,
+                        "postcode": board_instance.propertyprocess.property.postcode,
+                    }
+            )
 
     context = {
         "form": form,
@@ -184,45 +228,3 @@ def add_board(request, board_instance):
     )
 
     return JsonResponse(data)
-
-
-def board_modal_selector(request, board_instance, selector):
-    """
-    A function to return the correct modal html
-    template.
-    """
-
-    modals = {
-        "add_new_board": add_board(request, board_instance)
-    }
-
-    data = modals[selector]
-
-    return data
-
-
-@otp_required
-@login_required
-def board_modal_controller(request, board_id):
-    """
-    Ajax URL for getting the board options modal.
-    """
-
-    board_instance = get_object_or_404(
-        Boards, id=board_id
-    )
-
-    if board_instance.created_on_signmaster:
-        data = board_modal_selector(
-            request,
-            board_instance,
-            "board_menu"
-        )
-    else:
-        data = board_modal_selector(
-            request,
-            board_instance,
-            "add_new_board"
-        )
-
-    return data
