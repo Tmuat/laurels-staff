@@ -124,8 +124,8 @@
 {% endif %}
 {% if propertyprocess.boards and request.user.feature_toggle.allow_boards %}
 <button 
-    {% if propertyprocess.boards.created_on_signmaster %}
-        data-url="{% url 'boards:board_modal_controller' propertyprocess.board.id %}"
+    {% if propertyprocess.board.created_on_signmaster %}
+        data-url=""
     {% else %}
         data-url="{% url 'boards:add_board' propertyprocess.board.id %}"
     {% endif %}
