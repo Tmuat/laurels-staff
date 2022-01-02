@@ -8,11 +8,47 @@
             <h4 class="text-white">Request New Board</h4>
         </div>
         <p class="text-white text-center">{% blocktrans trimmed %}Please complete the fields in this form to request a new board.{% endblocktrans %}</p>
-        <form method="post" action="" class="text-center text-white js-submit-form">
+        <form method="post" action="{% url 'boards:add_board' board_instance.id %}" class="text-center text-white js-submit-form-boards">
             {% csrf_token %}
-            {{ form|crispy }}
+            <div class="row">
+                <div class="col-12 col-sm-6 offset-sm-3">
+                    {{ form.boardstatusid|as_crispy_field }}
+                </div>
+                <div class="col-12 col-sm-6 offset-sm-3">
+                    {{ form.vendor_name|as_crispy_field }}
+                </div>
+                <div class="col-12 col-sm-10 offset-sm-1">
+                    <p class="text-white text-center mb-2">
+                        <strong>
+                            <span class="mdi mdi-alert-circle-outline"></span> 
+                            {% blocktrans trimmed %}Please adjust Address Line 1/2 to use the seperate 'House Number' field and delete the appropriate field from Address Line 1/2.{% endblocktrans %}
+                        </strong>
+                    </p>
+                </div>
+                <div class="col-3">
+                    {{ form.houseno|as_crispy_field }}
+                </div>
+                <div class="col-9">
+                    {{ form.address1|as_crispy_field }}
+                </div>
+                <div class="col-12 col-sm-8">
+                    {{ form.address2|as_crispy_field }}
+                </div>
+                <div class="col-12 col-sm-4">
+                    {{ form.town|as_crispy_field }}
+                </div>
+                <div class="col-12 col-sm-6">
+                    {{ form.county|as_crispy_field }}
+                </div>
+                <div class="col-12 col-sm-6">
+                    {{ form.postcode|as_crispy_field }}
+                </div>
+                <div class="col-12">
+                    {{ form.agentnotes|as_crispy_field }}
+                </div>
+            </div>
             <div class="mb-2 text-center">
-                <button type="submit" class="btn btn-info" id="add-button" disabled>{% trans "Add New Board Request" %}</button>
+                <button type="submit" class="btn btn-info" id="add-button">{% trans "Add New Board Request" %}</button>
             </div>
         </form>
     </div>
