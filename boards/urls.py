@@ -1,13 +1,13 @@
 from django.urls import path
 
-from boards.views import board_modal_controller
+from boards.views import add_board
 
 
 app_name = "boards"
 urlpatterns = [
     path(
-        "boards/controller/<board_id>/",
-        board_modal_controller,
-        name="board_modal_controller"
+        "boards/add/<board_id>/",
+        add_board,
+        name="add_board"
     ),
 ]
