@@ -7,7 +7,15 @@
         <div class="text-center">
             <h4 class="text-white">Board Menu</h4>
         </div>
-        <p class="text-white text-center">{% blocktrans trimmed %}{% endblocktrans %}</p>
+        <p class="text-white text-center">{% blocktrans trimmed %}Please select an option below.{% endblocktrans %}</p>
+
+        <div class="row">
+            <div class="col-6 text-center">
+                <button class="btn btn-info js-hide-base-load-large-modal" data-url="{% url 'boards:board_info' board_instance.id %}">Get Board Info</button>
+            </div>
+            <div class="col-6 text-center">
+                <button class="btn btn-info" data-url="">Add New Property</button>
+            </div>
     </div>
 </div>
 <!-- /.modal-content -->

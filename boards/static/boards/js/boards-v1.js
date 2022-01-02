@@ -27,6 +27,24 @@ $(document).ready(function () {
         return false;
     };
 
+    var hideBaseAndLoadLargeModal = function () {
+        $('#modal-overlay').fadeToggle(100);
+        $("#base-modal").modal("hide");
+        var instance = $(this);
+        $.ajax({
+            url: instance.attr("data-url"),
+            type: 'get',
+            dataType: 'json',
+            success: function (data) {
+                $("#base-large-modal").modal("show");
+                $("#base-large-modal .modal-dialog").html(data.html_modal);
+                $('#modal-overlay').fadeToggle(100);
+            }
+        });
+        return false;
+    };
+
     $("#base-large-modal").on("submit", ".js-submit-form-boards", submitLargeFormAndLoadBoards);
+    $("#base-modal").on("click", ".js-hide-base-load-large-modal", hideBaseAndLoadLargeModal);
 
 });
