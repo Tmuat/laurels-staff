@@ -67,9 +67,45 @@ class BoardsInfo(UpdatedAndCreated):
         verbose_name = "Board Info"
         verbose_name_plural = "Boards Info"
 
+    FOR_SALE = 1
+    TO_LET = 2
+    SOLD = 3
+    LET_BY = 4
+    SALE_AGREED = 5
+    UNDER_OFFER = 6
+    MANAGED_BY = 7
+
+    BOARD_STATUS = (
+        (FOR_SALE, "For Sale"),
+        (TO_LET, "To Let"),
+        (SOLD, "Sold"),
+        (LET_BY, "Let By"),
+        (SALE_AGREED, "Sale Agreed"),
+        (UNDER_OFFER, "Under Offer"),
+        (MANAGED_BY, "Let & Managed By"),
+    )
+
     boards = models.OneToOneField(
         Boards, on_delete=models.CASCADE, related_name="board_info"
     )
+
+    vendor_name = models.CharField(max_length=150, null=False, default="")
+
+    houseno = models.CharField(max_length=100, null=False, default="")
+
+    address1 = models.CharField(max_length=200, null=False, default="")
+
+    address2 = models.CharField(max_length=200, null=False, default="")
+
+    town = models.CharField(max_length=100, null=False, default="")
+
+    county = models.CharField(max_length=100, null=False, default="")
+
+    postcode = models.CharField(max_length=15, null=False, default="")
+
+    agentnotes = models.CharField(max_length=600, null=False, default="")
+
+    boardstatusid = models.IntegerField(choices=BOARD_STATUS)
 
     def __str__(self):
         if (
