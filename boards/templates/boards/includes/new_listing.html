@@ -8,7 +8,7 @@
             <h4 class="text-white">Request New Board</h4>
         </div>
         <p class="text-white text-center">{% blocktrans trimmed %}Please complete the fields in this form to request a new board.{% endblocktrans %}</p>
-        <form method="post" action="{% url 'boards:add_board' board_instance.id %}" class="text-center text-white js-submit-form-boards">
+        <form method="post" action="{% url 'boards:add_board' board_instance.id %}" class="text-center text-white js-submit-large-form-boards">
             {% csrf_token %}
             <div class="row">
                 <div class="col-12 col-sm-6 offset-sm-3">
