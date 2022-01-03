@@ -7,6 +7,8 @@ class BoardAdmin(admin.ModelAdmin):
     list_display = [
         "__str__",
         "propertyref",
+        "signmaster_id",
+        "created_on_signmaster",
         "updated_by",
         "updated",
         "created_by",
