@@ -26,6 +26,7 @@ class BoardAdmin(admin.ModelAdmin):
 
     readonly_fields = [
         "propertyref",
+        "signmaster_id",
         "updated_by",
         "updated",
         "created_by",
