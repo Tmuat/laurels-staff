@@ -8,7 +8,11 @@ from properties.models import PropertyProcess
 
 class Boards(UpdatedAndCreated):
     class Meta:
-        ordering = []
+        ordering = [
+            "propertyprocess__property__postcode",
+            "propertyprocess__property__address_line_1",
+            "-created",
+        ]
         verbose_name = "Board"
         verbose_name_plural = "Boards"
 
@@ -55,3 +59,31 @@ def pre_save_create_property_ref(sender, instance, *args, **kwargs):
 
 
 pre_save.connect(pre_save_create_property_ref, sender=Boards)
+
+
+class BoardsInfo(UpdatedAndCreated):
+    class Meta:
+        ordering = []
+        verbose_name = "Board Info"
+        verbose_name_plural = "Boards Info"
+
+    boards = models.OneToOneField(
+        Boards, on_delete=models.CASCADE, related_name="board_info"
+    )
+
+    def __str__(self):
+        if (
+            self.boards.propertyprocess.property.address_line_2 == ""
+            or self.boards.propertyprocess.property.address_line_2 is None
+        ):
+            property_address = "%s, %s" % (
+                self.boards.propertyprocess.property.postcode,
+                self.boards.propertyprocess.property.address_line_1,
+            )
+        else:
+            property_address = "%s, %s, %s" % (
+                self.boards.propertyprocess.property.postcode,
+                self.boards.propertyprocess.property.address_line_1,
+                self.boards.propertyprocess.property.address_line_2,
+            )
+        return property_address

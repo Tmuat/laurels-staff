@@ -11,7 +11,7 @@ from django.http import JsonResponse
 from django.shortcuts import render, reverse, redirect, get_object_or_404
 from django.template.loader import render_to_string
 
-from boards.models import Boards
+from boards.models import Boards, BoardsInfo
 from common.functions import (
     sales_progression_percentage,
     lettings_progression_percentage,
@@ -776,8 +776,14 @@ def add_property(request):
                 updated_by=request.user.get_full_name(),
             )
 
-            Boards.objects.create(
+            board_instance = Boards.objects.create(
                 propertyprocess=process_instance,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
+
+            BoardsInfo.objects.create(
+                boards=board_instance,
                 created_by=request.user.get_full_name(),
                 updated_by=request.user.get_full_name(),
             )
@@ -842,8 +848,14 @@ def add_propertyprocess(request, property_id):
                 updated_by=request.user.get_full_name(),
             )
 
-            Boards.objects.create(
+            board_instance = Boards.objects.create(
                 propertyprocess=instance,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
+
+            BoardsInfo.objects.create(
+                boards=board_instance,
                 created_by=request.user.get_full_name(),
                 updated_by=request.user.get_full_name(),
             )
