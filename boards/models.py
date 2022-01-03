@@ -21,6 +21,12 @@ class Boards(UpdatedAndCreated):
         unique=True,
         editable=False
     )
+    signmaster_id = models.CharField(
+        null=True,
+        blank=True,
+        editable=False,
+        max_length=200
+    )
     created_on_signmaster = models.BooleanField(
         default=False
     )
