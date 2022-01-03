@@ -1,49 +1,63 @@
 from django import forms
 
+from boards.models import BoardsInfo
 
-class AddNewBoardSalesForm(forms.Form):
+
+class AddNewBoardForm(forms.ModelForm):
+    class Meta:
+        model = BoardsInfo
+        fields = (
+            "vendor_name",
+            "houseno",
+            "address1",
+            "address2",
+            "town",
+            "county",
+            "postcode",
+            "agentnotes",
+            "boardstatusid",
+        )
+
     vendor_name = forms.CharField(
         strip=True,
         widget=forms.TextInput(),
-        label="Vendor Name"
+        required=True,
     )
 
     houseno = forms.CharField(
         strip=True,
         widget=forms.TextInput(),
-        label="House No."
+        required=True,
     )
 
     address1 = forms.CharField(
         strip=True,
         widget=forms.TextInput(),
-        label="Address Line 1"
+        required=True,
     )
 
     address2 = forms.CharField(
         strip=True,
         widget=forms.TextInput(),
         required=False,
-        label="Address Line 2"
     )
 
     town = forms.CharField(
         strip=True,
         widget=forms.TextInput(),
-        label="Town"
+        required=True,
     )
 
     county = forms.CharField(
         strip=True,
         widget=forms.TextInput(),
         required=False,
-        label="County"
     )
 
     postcode = forms.CharField(
         strip=True,
         widget=forms.TextInput(),
-        label="Postcode"
+        required=True,
     )
 
     agentnotes = forms.CharField(
@@ -54,94 +68,44 @@ class AddNewBoardSalesForm(forms.Form):
             }
         ),
         required=False,
-        label="Agent Notes"
     )
 
-    FOR_SALE = 1
-    SOLD = 3
-    SALE_AGREED = 5
-    UNDER_OFFER = 6
+    def __init__(self, *args, **kwargs):
+        """
+        Add new labels
+        """
+        instance = kwargs.get('instance')
+        super().__init__(*args, **kwargs)
 
-    BOARD_STATUS = (
-        (FOR_SALE, "For Sale"),
-        (SOLD, "Sold"),
-        (SALE_AGREED, "Sale Agreed"),
-        (UNDER_OFFER, "Under Offer"),
-    )
+        labels = {
+            "vendor_name": "Vendor Name",
+            "houseno": "House No.",
+            "address1": "Address 1",
+            "address2": "Address 2",
+            "town": "Town",
+            "county": "County",
+            "postcode": "Postcode",
+            "agentnotes": "Agent Notes",
+            "boardstatusid": "Board Status",
+        }
 
-    boardstatusid = forms.ChoiceField(
-        choices=BOARD_STATUS,
-        label="Board Status"
-    )
+        for field in self.fields:
+            label = f"{labels[field]}"
+            self.fields[field].label = label
 
-
-class AddNewBoardLettingsForm(forms.Form):
-    vendor_name = forms.CharField(
-        strip=True,
-        widget=forms.TextInput(),
-        label="Vendor Name"
-    )
-
-    houseno = forms.CharField(
-        strip=True,
-        widget=forms.TextInput(),
-        label="House No."
-    )
-
-    address1 = forms.CharField(
-        strip=True,
-        widget=forms.TextInput(),
-        label="Address Line 1"
-    )
-
-    address2 = forms.CharField(
-        strip=True,
-        widget=forms.TextInput(),
-        required=False,
-        label="Address Line 2"
-    )
-
-    town = forms.CharField(
-        strip=True,
-        widget=forms.TextInput(),
-        label="Town"
-    )
-
-    county = forms.CharField(
-        strip=True,
-        widget=forms.TextInput(),
-        required=False,
-        label="County"
-    )
-
-    postcode = forms.CharField(
-        strip=True,
-        widget=forms.TextInput(),
-        label="Postcode"
-    )
-
-    agentnotes = forms.CharField(
-        strip=True,
-        widget=forms.Textarea(
-            attrs={
-                "rows": 2,
-            }
-        ),
-        required=False,
-        label="Agent Notes"
-    )
-
-    TO_LET = 2
-    LET_BY = 4
-    MANAGED_BY = 7
-
-    BOARD_STATUS = (
-        (TO_LET, "To Let"),
-        (LET_BY, "Let By"),
-        (MANAGED_BY, "Let & Managed By"),
-    )
-
-    boardstatusid = forms.ChoiceField(
-        choices=BOARD_STATUS,
-        label="Board Status"
-    )
+        for field_name in self.fields:
+            field = self.fields.get(field_name)
+            if field and isinstance(field, forms.TypedChoiceField):
+                choices = self.fields["boardstatusid"].choices
+                if instance.boards.propertyprocess.sector == "sales":
+                    del choices[0]
+                    del choices[1]
+                    del choices[2]
+                    del choices[4]
+                else:
+                    del choices[0]
+                    del choices[0]
+                    del choices[1]
+                    del choices[2]
+                    del choices[2]
+                field.choices = choices
