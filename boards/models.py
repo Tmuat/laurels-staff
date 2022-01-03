@@ -63,7 +63,6 @@ pre_save.connect(pre_save_create_property_ref, sender=Boards)
 
 class BoardsInfo(UpdatedAndCreated):
     class Meta:
-        ordering = []
         verbose_name = "Board Info"
         verbose_name_plural = "Boards Info"
 

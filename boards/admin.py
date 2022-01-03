@@ -39,6 +39,7 @@ class BoardAdmin(admin.ModelAdmin):
     ]
 
     readonly_fields = [
+        "propertyprocess",
         "propertyref",
         "signmaster_id",
         "updated_by",
@@ -52,7 +53,7 @@ class BoardAdmin(admin.ModelAdmin):
             obj.created_by = request.user.get_full_name()
         obj.updated_by = request.user.get_full_name()
         super().save_model(request, obj, form, change)
-    
+
     def save_formset(self, request, form, formset, change):
         instances = formset.save(commit=False)
         for obj in instances:
