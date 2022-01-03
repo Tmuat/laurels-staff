@@ -89,23 +89,59 @@ class BoardsInfo(UpdatedAndCreated):
         Boards, on_delete=models.CASCADE, related_name="board_info"
     )
 
-    vendor_name = models.CharField(max_length=150, null=False, default="")
+    vendor_name = models.CharField(
+        max_length=150,
+        null=True,
+        blank=True
+    )
 
-    houseno = models.CharField(max_length=100, null=False, default="")
+    houseno = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True
+    )
 
-    address1 = models.CharField(max_length=200, null=False, default="")
+    address1 = models.CharField(
+        max_length=200,
+        null=True,
+        blank=True
+    )
 
-    address2 = models.CharField(max_length=200, null=False, default="")
+    address2 = models.CharField(
+        max_length=200,
+        null=True,
+        blank=True
+    )
 
-    town = models.CharField(max_length=100, null=False, default="")
+    town = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True
+    )
 
-    county = models.CharField(max_length=100, null=False, default="")
+    county = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True
+    )
 
-    postcode = models.CharField(max_length=15, null=False, default="")
+    postcode = models.CharField(
+        max_length=15,
+        null=True,
+        blank=True
+    )
 
-    agentnotes = models.CharField(max_length=600, null=False, default="")
+    agentnotes = models.CharField(
+        max_length=600,
+        null=True,
+        blank=True
+    )
 
-    boardstatusid = models.IntegerField(choices=BOARD_STATUS)
+    boardstatusid = models.IntegerField(
+        null=True,
+        blank=True,
+        choices=BOARD_STATUS
+    )
 
     def __str__(self):
         if (
