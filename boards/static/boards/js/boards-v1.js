@@ -15,8 +15,8 @@ $(document).ready(function () {
             success: function (data) {
                 if (data.form_is_valid) {
                     $("#base-large-modal").modal("hide");
-                    $("#base-modal").modal("show");
-                    $("#base-modal .modal-dialog").html(data.html_board);
+                    $("#base-static-modal").modal("show");
+                    $("#base-static-modal .modal-dialog").html(data.html_board);
                     $("#modal-overlay").fadeToggle(100);
                 } else {
                     $("#base-large-modal .modal-dialog").html(data.html_modal);
