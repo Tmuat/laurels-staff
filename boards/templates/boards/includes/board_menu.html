@@ -16,6 +16,12 @@
             <div class="col-6 text-center">
                 <button class="btn btn-info" data-url="">Add New Property</button>
             </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-6 text-center">
+                <button class="btn btn-info js-hide-base-load-modal" data-url="{% url 'boards:retrieve_board' board_instance.id %}">Retrieve Board</button>
+            </div>
+        </div>
     </div>
 </div>
 <!-- /.modal-content -->
