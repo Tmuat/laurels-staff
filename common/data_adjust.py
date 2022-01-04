@@ -23,7 +23,6 @@ def start_script():
     )
 
 
-
 def delete_surrey():
     property_process_objects = PropertyProcess.objects.all()
     south_west = Hub.objects.get(id="3728fafb-9f16-421a-a727-c494028126ba")
