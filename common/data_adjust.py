@@ -8,11 +8,20 @@ from properties.models import (
     PropertyHistory,
     Offer,
     Reduction,
-    PropertyFees
+    PropertyFees,
+    GlobalFeatureToggles
 )
 from users.models import CustomUser, FeatureToggles
 
 # python3 manage.py dumpdata > master.json --settings=laurels.settings.production
+
+
+def start_script():
+    GlobalFeatureToggles.objects.create(
+        created_by="Admin",
+        updated_by="Admin"
+    )
+
 
 
 def delete_surrey():
