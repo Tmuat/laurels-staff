@@ -84,6 +84,9 @@ class FeatureToggles(UpdatedAndCreated):
     allow_boards = models.BooleanField(
         default=False
     )
+    boards_superuser = models.BooleanField(
+        default=False
+    )
 
     def __str__(self):
         return self.user.get_full_name()
