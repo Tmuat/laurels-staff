@@ -1,0 +1,20 @@
+{% load static i18n %}
+<div class="modal-content green-gradient">
+    <div class="modal-body">
+        <div class="text-center mt-2 mb-3">
+            <span><img src="{% static 'custom/images/logo.png' %}" alt="laurels" height="80"></span>
+        </div>
+        <div class="text-center">
+            <h4 class="text-white">Create New Board Process</h4>
+        </div>
+        <p class="text-white text-center">{% blocktrans trimmed %}Please only create a new board process if it is not already in the signmaster system!{% endblocktrans %}</p>
+        <form method="post" action="{% url 'boards:create_board_instance_superuser' propertyprocess.id %}" class="text-center text-white js-submit-form-boards">
+            {% csrf_token %}
+            <input type="hidden" name="new_instance" value="True" id="id_new_instance">
+            <div class="mb-2 text-center">
+                <button type="submit" class="btn btn-info" id="add-button">{% trans "Create New Board Process" %}</button>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- /.modal-content -->

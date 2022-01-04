@@ -4,12 +4,18 @@ from boards.views import (
     add_board,
     boards_menu,
     board_info,
-    retrieve_board
+    retrieve_board,
+    create_board_instance_superuser
 )
 
 
 app_name = "boards"
 urlpatterns = [
+    path(
+        "boards/new-instance/<propertyprocess_id>/",
+        create_board_instance_superuser,
+        name="create_board_instance_superuser"
+    ),
     path(
         "boards/add/<board_id>/",
         add_board,

@@ -12,12 +12,13 @@ from boards.forms import (
     AddNewBoardForm,
     RetrieveBoardForm
 )
-from boards.models import Boards
+from boards.models import Boards, BoardsInfo
 from laurels.settings.base import (
     BOARDS_URL,
     BOARDS_API_KEY,
     BOARDS_COMPANY_KEY
 )
+from properties.models import PropertyProcess
 
 
 def new_board(board_instance, instance):
@@ -213,6 +214,56 @@ def boards_menu(request, board_id):
     }
     data["html_modal"] = render_to_string(
         "boards/includes/board_menu.html",
+        context,
+        request=request,
+    )
+
+    return JsonResponse(data)
+
+
+@otp_required
+@login_required
+def create_board_instance_superuser(request, propertyprocess_id):
+    """
+    A temporary view to allow a 'board superuser' to create the required
+    board instances until the Global Feature Toggle is enabled.
+    """
+
+    data = dict()
+
+    propertyprocess = get_object_or_404(
+        PropertyProcess,
+        id=propertyprocess_id
+    )
+
+    if request.method == "POST":
+        propertyprocess.boards = True
+        propertyprocess.updated_by = request.user.get_full_name()
+        propertyprocess.save()
+
+        board_instance = Boards.objects.create(
+            propertyprocess=propertyprocess,
+            created_by=request.user.get_full_name(),
+            updated_by=request.user.get_full_name(),
+        )
+
+        BoardsInfo.objects.create(
+            boards=board_instance,
+            created_by=request.user.get_full_name(),
+            updated_by=request.user.get_full_name(),
+        )
+
+        data["html_board"] = render_to_string(
+            "boards/includes/responses/new_board_process_success.html",
+            request=request,
+        )
+        data["form_is_valid"] = True
+
+    context = {
+        "propertyprocess": propertyprocess,
+    }
+    data["html_modal"] = render_to_string(
+        "boards/includes/new_board_instance.html",
         context,
         request=request,
     )
