@@ -28,7 +28,31 @@ from properties.models import (
     LettingsProgressionPhase,
     LettingsProgressionSettings,
     LettingsLandlordOrLaurelsInformation,
+    GlobalFeatureToggles
 )
+
+
+class GlobalFeatureTogglesAdmin(admin.ModelAdmin):
+    list_display = [
+        "__str__",
+        "boards"
+    ]
+
+    readonly_fields = [
+        "updated_by",
+        "updated",
+        "created_by",
+        "created",
+    ]
+
+    def save_model(self, request, obj, form, change):
+        if not obj.pk:
+            obj.created_by = request.user.get_full_name()
+        obj.updated_by = request.user.get_full_name()
+        super().save_model(request, obj, form, change)
+
+
+admin.site.register(GlobalFeatureToggles, GlobalFeatureTogglesAdmin)
 
 
 class PropertyAdmin(admin.ModelAdmin):
