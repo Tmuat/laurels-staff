@@ -1,5 +1,6 @@
 from django.db import models
 from django.db.models.signals import pre_save
+from django.utils.translation import activate
 
 from boards.functions import unique_property_ref_generator
 from common.models import UpdatedAndCreated
@@ -140,6 +141,11 @@ class BoardsInfo(UpdatedAndCreated):
         null=True,
         blank=True,
         choices=BOARD_STATUS
+    )
+
+    activate_date = models.DateField(
+        null=True,
+        blank=True,
     )
 
     def __str__(self):

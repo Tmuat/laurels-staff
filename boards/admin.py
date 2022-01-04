@@ -6,6 +6,7 @@ from boards.models import Boards, BoardsInfo
 class BoardsInfoAdminInline(admin.StackedInline):
     model = BoardsInfo
     readonly_fields = [
+        "activate_date",
         "created",
         "created_by",
         "updated",
