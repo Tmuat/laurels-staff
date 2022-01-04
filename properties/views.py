@@ -99,6 +99,7 @@ from properties.models import (
     LettingsProgressionSettings,
     LettingsProgressionPhase,
     Reduction,
+    GlobalFeatureToggles
 )
 from regionandhub.models import Hub
 from users.models import Profile
@@ -730,6 +731,12 @@ def validate_property_address(request):
     return JsonResponse(data)
 
 
+def get_global_feature_toggles():
+    GFT = GlobalFeatureToggles.objects.all().first()
+
+    return GFT
+
+
 @otp_required
 @login_required
 def add_property(request):
@@ -776,17 +783,20 @@ def add_property(request):
                 updated_by=request.user.get_full_name(),
             )
 
-            board_instance = Boards.objects.create(
-                propertyprocess=process_instance,
-                created_by=request.user.get_full_name(),
-                updated_by=request.user.get_full_name(),
-            )
+            GFT = get_global_feature_toggles()
 
-            BoardsInfo.objects.create(
-                boards=board_instance,
-                created_by=request.user.get_full_name(),
-                updated_by=request.user.get_full_name(),
-            )
+            if GFT.boards:
+                board_instance = Boards.objects.create(
+                    propertyprocess=process_instance,
+                    created_by=request.user.get_full_name(),
+                    updated_by=request.user.get_full_name(),
+                )
+
+                BoardsInfo.objects.create(
+                    boards=board_instance,
+                    created_by=request.user.get_full_name(),
+                    updated_by=request.user.get_full_name(),
+                )
 
             data["form_is_valid"] = True
             data["propertyprocess_id"] = process_instance.id
@@ -848,17 +858,20 @@ def add_propertyprocess(request, property_id):
                 updated_by=request.user.get_full_name(),
             )
 
-            board_instance = Boards.objects.create(
-                propertyprocess=instance,
-                created_by=request.user.get_full_name(),
-                updated_by=request.user.get_full_name(),
-            )
+            GFT = get_global_feature_toggles()
 
-            BoardsInfo.objects.create(
-                boards=board_instance,
-                created_by=request.user.get_full_name(),
-                updated_by=request.user.get_full_name(),
-            )
+            if GFT.boards:
+                board_instance = Boards.objects.create(
+                    propertyprocess=instance,
+                    created_by=request.user.get_full_name(),
+                    updated_by=request.user.get_full_name(),
+                )
+
+                BoardsInfo.objects.create(
+                    boards=board_instance,
+                    created_by=request.user.get_full_name(),
+                    updated_by=request.user.get_full_name(),
+                )
 
             data["form_is_valid"] = True
             data["propertyprocess_id"] = instance.id
