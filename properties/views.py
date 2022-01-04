@@ -749,6 +749,8 @@ def add_property(request):
         form = PropertyForm(request.POST)
         process_form = PropertyProcessForm(request.POST)
         if form.is_valid() and process_form.is_valid():
+            GFT = get_global_feature_toggles()
+
             instance = form.save(commit=False)
 
             instance.created_by = request.user.get_full_name()
@@ -760,10 +762,11 @@ def add_property(request):
 
             process_instance.property = instance
             process_instance.macro_status = PropertyProcess.AWAITINGVALUATION
-            process_instance.boards = True
             process_instance.furthest_status = (
                 PropertyProcess.AWAITINGVALUATION
             )
+            if GFT.boards:
+                process_instance.boards = True
 
             process_instance.created_by = request.user.get_full_name()
             process_instance.updated_by = request.user.get_full_name()
@@ -782,8 +785,6 @@ def add_property(request):
                 created_by=request.user.get_full_name(),
                 updated_by=request.user.get_full_name(),
             )
-
-            GFT = get_global_feature_toggles()
 
             if GFT.boards:
                 board_instance = Boards.objects.create(
@@ -833,12 +834,15 @@ def add_propertyprocess(request, property_id):
         process_form = PropertyProcessForm(request.POST)
         property_instance = get_object_or_404(Property, id=property_id)
         if process_form.is_valid():
+            GFT = get_global_feature_toggles()
+
             instance = process_form.save(commit=False)
 
             instance.property = property_instance
             instance.macro_status = PropertyProcess.AWAITINGVALUATION
             instance.furthest_status = PropertyProcess.AWAITINGVALUATION
-            instance.boards = True
+            if GFT.boards:
+                instance.boards = True
 
             instance.created_by = request.user.get_full_name()
             instance.updated_by = request.user.get_full_name()
@@ -857,8 +861,6 @@ def add_propertyprocess(request, property_id):
                 created_by=request.user.get_full_name(),
                 updated_by=request.user.get_full_name(),
             )
-
-            GFT = get_global_feature_toggles()
 
             if GFT.boards:
                 board_instance = Boards.objects.create(
