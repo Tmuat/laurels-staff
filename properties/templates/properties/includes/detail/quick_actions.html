@@ -137,3 +137,13 @@
         <i class="mdi mdi-sign-real-estate icon-lg-size"></i>
 </button>
 {% endif %}
+{% if gft.boards is False and request.user.feature_toggle.boards_superuser and propertyprocess.boards is False %}
+<button 
+    data-url=""
+    class="mb-1 btn px-2 py-1 btn-info js-load-form"
+    data-toggle="tooltip"
+    data-placement="top"
+    title="Add Board Management">
+        <i class="mdi mdi-sign-text icon-lg-size"></i>
+</button>
+{% endif %}
