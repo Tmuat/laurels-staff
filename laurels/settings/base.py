@@ -216,6 +216,7 @@ TEMPLATES = [
                 "django.template.context_processors.static",
                 "django_admin_env_notice.context_processors.from_settings",
                 "laurels.context_processors.active_hubs",
+                "laurels.context_processors.global_feature_toggles",
             ],
             "builtins": [
                 "crispy_forms.templatetags.crispy_forms_tags",

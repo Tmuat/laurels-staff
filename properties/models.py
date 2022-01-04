@@ -15,6 +15,17 @@ from regionandhub.models import Hub
 from users.models import Profile
 
 
+class GlobalFeatureToggles(UpdatedAndCreated):
+    class Meta:
+        verbose_name = "Feature Toggle"
+        verbose_name_plural = "Feature Toggles"
+
+    boards = models.BooleanField(
+        default=False,
+        null=True
+    )
+
+
 class Property(UpdatedAndCreated):
     class Meta:
         ordering = ["postcode", "address_line_1"]
@@ -217,6 +228,7 @@ class PropertyProcess(UpdatedAndCreated):
     )
     legacy_property = models.BooleanField(default=False, choices=LEGACY)
     previously_fallen_through = models.BooleanField(default=False)
+    boards = models.BooleanField(default=False)
 
     def __str__(self):
         if (

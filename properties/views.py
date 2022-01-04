@@ -11,6 +11,7 @@ from django.http import JsonResponse
 from django.shortcuts import render, reverse, redirect, get_object_or_404
 from django.template.loader import render_to_string
 
+from boards.models import Boards, BoardsInfo
 from common.functions import (
     sales_progression_percentage,
     lettings_progression_percentage,
@@ -98,6 +99,7 @@ from properties.models import (
     LettingsProgressionSettings,
     LettingsProgressionPhase,
     Reduction,
+    GlobalFeatureToggles
 )
 from regionandhub.models import Hub
 from users.models import Profile
@@ -729,6 +731,12 @@ def validate_property_address(request):
     return JsonResponse(data)
 
 
+def get_global_feature_toggles():
+    GFT = GlobalFeatureToggles.objects.all().first()
+
+    return GFT
+
+
 @otp_required
 @login_required
 def add_property(request):
@@ -741,6 +749,8 @@ def add_property(request):
         form = PropertyForm(request.POST)
         process_form = PropertyProcessForm(request.POST)
         if form.is_valid() and process_form.is_valid():
+            GFT = get_global_feature_toggles()
+
             instance = form.save(commit=False)
 
             instance.created_by = request.user.get_full_name()
@@ -755,6 +765,8 @@ def add_property(request):
             process_instance.furthest_status = (
                 PropertyProcess.AWAITINGVALUATION
             )
+            if GFT.boards:
+                process_instance.boards = True
 
             process_instance.created_by = request.user.get_full_name()
             process_instance.updated_by = request.user.get_full_name()
@@ -773,6 +785,19 @@ def add_property(request):
                 created_by=request.user.get_full_name(),
                 updated_by=request.user.get_full_name(),
             )
+
+            if GFT.boards:
+                board_instance = Boards.objects.create(
+                    propertyprocess=process_instance,
+                    created_by=request.user.get_full_name(),
+                    updated_by=request.user.get_full_name(),
+                )
+
+                BoardsInfo.objects.create(
+                    boards=board_instance,
+                    created_by=request.user.get_full_name(),
+                    updated_by=request.user.get_full_name(),
+                )
 
             data["form_is_valid"] = True
             data["propertyprocess_id"] = process_instance.id
@@ -809,11 +834,15 @@ def add_propertyprocess(request, property_id):
         process_form = PropertyProcessForm(request.POST)
         property_instance = get_object_or_404(Property, id=property_id)
         if process_form.is_valid():
+            GFT = get_global_feature_toggles()
+
             instance = process_form.save(commit=False)
 
             instance.property = property_instance
             instance.macro_status = PropertyProcess.AWAITINGVALUATION
             instance.furthest_status = PropertyProcess.AWAITINGVALUATION
+            if GFT.boards:
+                instance.boards = True
 
             instance.created_by = request.user.get_full_name()
             instance.updated_by = request.user.get_full_name()
@@ -832,6 +861,19 @@ def add_propertyprocess(request, property_id):
                 created_by=request.user.get_full_name(),
                 updated_by=request.user.get_full_name(),
             )
+
+            if GFT.boards:
+                board_instance = Boards.objects.create(
+                    propertyprocess=instance,
+                    created_by=request.user.get_full_name(),
+                    updated_by=request.user.get_full_name(),
+                )
+
+                BoardsInfo.objects.create(
+                    boards=board_instance,
+                    created_by=request.user.get_full_name(),
+                    updated_by=request.user.get_full_name(),
+                )
 
             data["form_is_valid"] = True
             data["propertyprocess_id"] = instance.id

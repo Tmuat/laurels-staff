@@ -122,3 +122,28 @@
         <i class="mdi mdi-clipboard-play-outline icon-lg-size"></i>
 </button>
 {% endif %}
+{% if propertyprocess.boards and request.user.feature_toggle.allow_boards %}
+<button 
+    {% if propertyprocess.board.created_on_signmaster %}
+        data-url="{% url 'boards:boards_menu' propertyprocess.board.id %}"
+        class="mb-1 btn px-2 py-1 btn-info js-load-form"
+    {% else %}
+        data-url="{% url 'boards:add_board' propertyprocess.board.id %}"
+        class="mb-1 btn px-2 py-1 btn-info js-load-large-form"
+    {% endif %}
+    data-toggle="tooltip"
+    data-placement="top"
+    title="Manage Board">
+        <i class="mdi mdi-sign-real-estate icon-lg-size"></i>
+</button>
+{% endif %}
+{% if gft.boards is False and request.user.feature_toggle.boards_superuser and propertyprocess.boards is False %}
+<button 
+    data-url="{% url 'boards:create_board_instance_superuser' propertyprocess.id %}"
+    class="mb-1 btn px-2 py-1 btn-info js-load-form"
+    data-toggle="tooltip"
+    data-placement="top"
+    title="Add Board Process">
+        <i class="mdi mdi-sign-text icon-lg-size"></i>
+</button>
+{% endif %}
