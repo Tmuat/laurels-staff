@@ -24,7 +24,7 @@ iniconfig==1.1.1
 jmespath==0.10.0
 pathspec==0.8.1
 phonenumbers==8.12.22
-Pillow==8.3.2
+Pillow==9.0.0
 pluggy==0.13.1
 psycopg2==2.8.6
 py==1.10.0
