@@ -7,6 +7,16 @@ from properties.models import PropertyProcess, Deal, PropertyHistory, Offer, Red
 # python3 manage.py dumpdata > master.json --settings=laurels.settings.production
 
 
+def check_pp_deal():
+    property_process_objects = PropertyProcess.objects.filter(
+        macro_status=3
+    )
+    for instance in property_process_objects:
+        pp = PropertyProcess.objects.get(id=instance.id)
+        if Deal.objects.filter(propertyprocess=pp).exists():
+            print(instance)
+
+
 def delete_surrey():
     property_process_objects = PropertyProcess.objects.all()
     south_west = Hub.objects.get(id="3728fafb-9f16-421a-a727-c494028126ba")
@@ -18,8 +28,22 @@ def delete_surrey():
 
 
 def delete_deal():
-    deal_instance = Deal.objects.get(id="be09cc82-776b-4327-8fe5-3e8138a73cfc")
+    deal_instance = Deal.objects.get(id="05405cfc-bef9-4249-a8a6-b08aa5812da5")
     deal_instance.delete()
+
+
+def create_deal():
+    pp = PropertyProcess.objects.get(id="f7d1f0e9-e437-4ef7-b99e-f0d48d6d89b8")
+    offer = Offer.objects.get(id="aa406fd0-fb42-42a1-8e46-a9f268faa5e0")
+    Deal.objects.create(
+        propertyprocess=pp,
+        date="2022-01-19",
+        target_move_date="2022-01-19",
+        offer_accepted=offer,
+        created_by="Matthew Gabre-Kristos",
+        updated_by="Matthew Gabre-Kristos"
+    )
+    print("Created")
 
 
 def delete_history():
