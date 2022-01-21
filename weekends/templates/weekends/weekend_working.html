@@ -47,7 +47,7 @@
                                                         data-placement="top"
                                                         data-user="{{ instance.id }}"
                                                         title="{{ instance.user.get_full_name }}">
-                                                            {{ instance.user.abbreviated_name }}
+                                                            {{ instance.user.abbreviated_name|truncatechars:9 }}
                                                     </div>
                                                 </div>
                                             {% endif %}
