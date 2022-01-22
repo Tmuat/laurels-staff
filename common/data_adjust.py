@@ -28,8 +28,9 @@ def delete_surrey():
 
 
 def delete_deal():
-    deal_instance = Deal.objects.get(id="05405cfc-bef9-4249-a8a6-b08aa5812da5")
+    deal_instance = Deal.objects.get(id="c3789d6b-0df7-4f8e-bd22-b68830a8caf6")
     deal_instance.delete()
+    print("Deleted")
 
 
 def create_deal():
