@@ -93,7 +93,7 @@
         <i class="mdi mdi-home-lock"></i>
 </button>
 <button 
-    {% if propertyprocess.sector == "sales" %}
+    {% if instance.sector == "sales" %}
         data-url="{% url 'properties:fall_through' instance.id %}"
     {% else %}
         data-url="{% url 'properties:lettings_fall_through' instance.id %}"
