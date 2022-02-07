@@ -2,9 +2,21 @@ import datetime
 
 from lettings.models import Renewals, Gas, EPC, Electrical
 from regionandhub.models import Hub
-from properties.models import PropertyProcess, Deal, PropertyHistory, Offer, Reduction, PropertyFees
+from properties.models import PropertyProcess, Deal, PropertyHistory, Offer, Reduction, PropertyFees, PropertyFeeMaster
 
 # python3 manage.py dumpdata > master.json --settings=laurels.settings.production
+
+
+def property_fee_master():
+    pp = PropertyProcess.objects.exclude(
+        macro_status=1
+    ).exclude(
+        macro_status=2
+    )
+
+    for p in pp:
+        if p.property_fees.exists():
+            print(p.property_fees.first().new_business)
 
 
 def check_pp_deal():
@@ -192,3 +204,4 @@ def delete_prop_fee():
 # deal_agreed_change()
 # delete_reduction()
 # delete_prop_fee()
+# property_fee_master()
