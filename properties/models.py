@@ -1706,7 +1706,6 @@ class PropertyFeeMaster(UpdatedAndCreated):
         ordering = [
             "propertyprocess__property__postcode",
             "propertyprocess__property__address_line_1",
-            "-date",
             "-created",
         ]
         verbose_name = "Property Fee Master"
