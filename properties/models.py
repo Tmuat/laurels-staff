@@ -1701,6 +1701,46 @@ def save_field(sender, instance, **kwargs):
             instance.new_business = new_business
 
 
+class PropertyFeeMaster(UpdatedAndCreated):
+    class Meta:
+        ordering = [
+            "propertyprocess__property__postcode",
+            "propertyprocess__property__address_line_1",
+            "-date",
+            "-created",
+        ]
+        verbose_name = "Property Fee Master"
+        verbose_name_plural = "Property Fees Master"
+
+    propertyprocess = models.ForeignKey(
+        PropertyProcess,
+        on_delete=models.CASCADE,
+        related_name="property_fees_master",
+    )
+    fee = models.DecimalField(
+        decimal_places=2, max_digits=5, null=True, blank=True
+    )
+    price = models.IntegerField(null=True, blank=True)
+    new_business = models.FloatField(null=True, blank=True)
+
+    def __str__(self):
+        if (
+            self.propertyprocess.property.address_line_2 == ""
+            or self.propertyprocess.property.address_line_2 == None
+        ):
+            property_address = "%s, %s" % (
+                self.propertyprocess.property.postcode,
+                self.propertyprocess.property.address_line_1,
+            )
+        else:
+            property_address = "%s, %s, %s" % (
+                self.propertyprocess.property.postcode,
+                self.propertyprocess.property.address_line_1,
+                self.propertyprocess.property.address_line_2,
+            )
+        return property_address
+
+
 class ProgressionNotes(UpdatedAndCreated):
     class Meta:
         ordering = [
