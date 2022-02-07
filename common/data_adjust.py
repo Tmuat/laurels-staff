@@ -16,7 +16,14 @@ def property_fee_master():
 
     for p in pp:
         if p.property_fees.exists():
-            print(p.property_fees.first().new_business)
+            PropertyFeeMaster.objects.create(
+                propertyprocess=p,
+                fee=p.property_fees.first().fee,
+                price=p.property_fees.first().price,
+                new_business=p.property_fees.first().new_business,
+                created_by="Automated",
+                updated_by="Automated",
+            )
 
 
 def check_pp_deal():
