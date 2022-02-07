@@ -1711,7 +1711,7 @@ class PropertyFeeMaster(UpdatedAndCreated):
         verbose_name = "Property Fee Master"
         verbose_name_plural = "Property Fees Master"
 
-    propertyprocess = models.ForeignKey(
+    propertyprocess = models.OneToOneField(
         PropertyProcess,
         on_delete=models.CASCADE,
         related_name="property_fees_master",
