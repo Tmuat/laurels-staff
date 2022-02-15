@@ -27,7 +27,11 @@
                 </a>
             </li>
             <li class="side-nav-item">
-                <a href="{% url 'home:offer_board' %}?hub={{ request.user.profile.hub.first.slug }}" class="side-nav-link">
+                {% if request.user.profile.hub.first.slug != "all-hubs" and request.user.profile.hub.first.slug != "weekend-directors" %}
+                    <a href="{% url 'home:offer_board' %}?hub={{ request.user.profile.hub.first.slug }}" class="side-nav-link">
+                {% else %}
+                    <a href="{% url 'home:offer_board' %}" class="side-nav-link">
+                {% endif %}
                     <i class="mdi mdi-monitor-dashboard"></i>
                     <span> {% trans "Offer Board" %} </span>
                 </a>
