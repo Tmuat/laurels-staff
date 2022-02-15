@@ -2818,7 +2818,7 @@ def withdraw_property(request, propertyprocess_id):
                     propertyprocess=property_process
                 ).first()
                 minus_fee = last_property_fee.fee * -1
-                PropertyFees.objects.create(
+                pf_instance = PropertyFees.objects.create(
                     propertyprocess=property_process,
                     fee=minus_fee,
                     price=last_property_fee.price,
@@ -2827,6 +2827,7 @@ def withdraw_property(request, propertyprocess_id):
                     created_by=request.user.get_full_name(),
                     updated_by=request.user.get_full_name(),
                 )
+                property_fees_master(property_process.id, pf_instance)
                 if property_process.sector == PropertyProcess.SALES:
                     Deal.objects.get(propertyprocess=property_process).delete()
                 else:
