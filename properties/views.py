@@ -3163,11 +3163,20 @@ def re_let(request, propertyprocess_id):
             instance.created_by = request.user.get_full_name()
             instance.updated_by = request.user.get_full_name()
 
-            PropertyFees.objects.create(
+            pf_instance = PropertyFees.objects.create(
                 propertyprocess=new_property_process,
                 fee=re_inst_form.cleaned_data["fee_agreed"],
                 price=re_inst_form.cleaned_data["listing_price"],
                 date=re_inst_form.cleaned_data["date"],
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
+
+            PropertyFeeMaster.objects.create(
+                propertyprocess=new_property_process,
+                fee=pf_instance.fee,
+                price=pf_instance.price,
+                new_business=pf_instance.new_business,
                 created_by=request.user.get_full_name(),
                 updated_by=request.user.get_full_name(),
             )
