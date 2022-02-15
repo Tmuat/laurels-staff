@@ -3019,7 +3019,15 @@ def back_on_the_market(request, propertyprocess_id):
                 created_by=request.user.get_full_name(),
                 updated_by=request.user.get_full_name(),
             )
-            property_fees_master(new_property_process.id, pf_instance)
+
+            PropertyFeeMaster.objects.create(
+                propertyprocess=new_property_process,
+                fee=pf_instance.fee,
+                price=pf_instance.price,
+                new_business=pf_instance.new_business,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
 
             instance.save()
 
