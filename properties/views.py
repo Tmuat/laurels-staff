@@ -3345,7 +3345,7 @@ def add_deal(request, propertyprocess_id):
                         offer_instance.status = Offer.ACCEPTED
                         offer_instance.save()
 
-            PropertyFees.objects.create(
+            pf_instance = PropertyFees.objects.create(
                 propertyprocess=property_process,
                 fee=abs(property_fee.fee),
                 price=offer.offer,
@@ -3354,6 +3354,7 @@ def add_deal(request, propertyprocess_id):
                 created_by=request.user.get_full_name(),
                 updated_by=request.user.get_full_name(),
             )
+            property_fees_master(property_process.id, pf_instance)
 
             if not SalesProgression.objects.filter(
                 propertyprocess=property_process
