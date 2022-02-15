@@ -73,6 +73,7 @@ from properties.models import (
     Property,
     PropertyProcess,
     PropertyFees,
+    PropertyFeeMaster,
     PropertyHistory,
     Instruction,
     InstructionLettingsExtra,
@@ -101,6 +102,14 @@ from properties.models import (
 )
 from regionandhub.models import Hub
 from users.models import Profile
+
+
+def property_fees_master(fees_instance):
+    """
+    This function takes in a property fees model instance
+    and changes the property_fees master.
+    """
+    pass
 
 
 @otp_required
@@ -1050,11 +1059,20 @@ def add_instruction(request, propertyprocess_id):
             property_process.furthest_status = PropertyProcess.INSTRUCTION
             property_process.save()
 
-            PropertyFees.objects.create(
+            pf_instance = PropertyFees.objects.create(
                 propertyprocess=property_process,
                 fee=form.cleaned_data["fee_agreed"],
                 price=form.cleaned_data["listing_price"],
                 date=instance.date,
+                created_by=request.user.get_full_name(),
+                updated_by=request.user.get_full_name(),
+            )
+
+            PropertyFeeMaster.objects.create(
+                propertyprocess=property_process,
+                fee=pf_instance.fee,
+                price=pf_instance.price,
+                new_business=pf_instance.new_business,
                 created_by=request.user.get_full_name(),
                 updated_by=request.user.get_full_name(),
             )
