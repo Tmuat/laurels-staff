@@ -3790,7 +3790,11 @@ def edit_deal(request, propertyprocess_id):
             data["form_is_valid"] = False
     else:
         form = PropertyFeesMasterForm(
-            instance=property_fee_master
+            instance=property_fee_master,
+            initial={
+                "price": abs(property_fee_master.price),
+                "fee": abs(property_fee_master.fee),
+            }
         )
 
     context = {
