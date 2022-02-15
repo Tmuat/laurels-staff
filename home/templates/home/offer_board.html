@@ -32,7 +32,7 @@
                         <select class="custom-select mr-2" id="hub-select">
                             <option value="reset">Hub...</option>
                             {% for hub in hubs %}
-                                {% if hub.hub_name != "All Hubs" %}
+                                {% if hub.hub_name != "All Hubs" and hub.hub_name != "Weekend Directors" %}
                                     <option value="{{ hub.slug }}" {% if selected_hub == hub %}selected{% endif %}>{{ hub.hub_name }}</option>
                                 {% endif %}
                             {% endfor %}

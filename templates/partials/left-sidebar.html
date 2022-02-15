@@ -27,7 +27,7 @@
                 </a>
             </li>
             <li class="side-nav-item">
-                {% if request.user.profile.hub.first.slug != "all-hubs" %}
+                {% if request.user.profile.hub.first.slug != "all-hubs" and request.user.profile.hub.first.slug != "weekend-directors" %}
                     <a href="{% url 'home:offer_board' %}?hub={{ request.user.profile.hub.first.slug }}" class="side-nav-link">
                 {% else %}
                     <a href="{% url 'home:offer_board' %}" class="side-nav-link">
