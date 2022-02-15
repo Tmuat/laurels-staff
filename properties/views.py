@@ -104,11 +104,29 @@ from regionandhub.models import Hub
 from users.models import Profile
 
 
-def property_fees_master(fees_instance):
+def property_fees_master(propertyprocess_id, fees_instance):
     """
     This function takes in a property fees model instance
     and changes the property_fees master.
     """
+
+    propertyprocess = get_object_or_404(
+        PropertyProcess,
+        id=propertyprocess_id
+    )
+
+    property_fee = get_object_or_404(
+        PropertyFeeMaster,
+        propertyprocess=propertyprocess
+    )
+
+    # property_fee.fee=
+    # property_fee.price=
+    # property_fee.new_business=
+    # property_fee.updated_by=
+
+    property_fee.save()
+
     pass
 
 
