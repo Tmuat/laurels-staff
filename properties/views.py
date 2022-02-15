@@ -115,19 +115,19 @@ def property_fees_master(propertyprocess_id, fees_instance):
         id=propertyprocess_id
     )
 
-    property_fee = get_object_or_404(
+    property_fee_master = get_object_or_404(
         PropertyFeeMaster,
         propertyprocess=propertyprocess
     )
 
-    # property_fee.fee=
-    # property_fee.price=
-    # property_fee.new_business=
-    # property_fee.updated_by=
+    property_fee_master.fee = fees_instance.fee
+    property_fee_master.price = fees_instance.price
+    property_fee_master.new_business = fees_instance.new_business
+    property_fee_master.updated_by = fees_instance.updated_by
 
-    property_fee.save()
+    property_fee_master.save()
 
-    pass
+    return property_fee_master
 
 
 @otp_required
@@ -1315,6 +1315,8 @@ def add_reduction(request, propertyprocess_id):
             new_price = form.cleaned_data["price"]
 
             instance.save()
+
+            property_fees_master(property_process.id, instance)
 
             Reduction.objects.create(
                 propertyprocess=property_process,
