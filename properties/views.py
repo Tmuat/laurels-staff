@@ -3011,7 +3011,7 @@ def back_on_the_market(request, propertyprocess_id):
             instance.created_by = request.user.get_full_name()
             instance.updated_by = request.user.get_full_name()
 
-            PropertyFees.objects.create(
+            pf_instance = PropertyFees.objects.create(
                 propertyprocess=new_property_process,
                 fee=re_inst_form.cleaned_data["fee_agreed"],
                 price=re_inst_form.cleaned_data["listing_price"],
@@ -3019,6 +3019,7 @@ def back_on_the_market(request, propertyprocess_id):
                 created_by=request.user.get_full_name(),
                 updated_by=request.user.get_full_name(),
             )
+            property_fees_master(new_property_process.id, pf_instance)
 
             instance.save()
 
