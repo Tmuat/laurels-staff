@@ -1,4 +1,5 @@
 import datetime
+from decimal import Decimal
 import humanize
 
 from django_otp.decorators import otp_required
@@ -45,6 +46,7 @@ from properties.forms import (
     BuyerMarketingForm,
     SoldMarketingBoardForm,
     PropertyFeesForm,
+    PropertyFeesMasterForm,
     ExchangeMoveSalesForm,
     ExchangeMoveLettingsForm,
     SalesProgressionSettingsForm,
@@ -3632,6 +3634,65 @@ def add_deal_lettings(request, propertyprocess_id):
     return JsonResponse(data)
 
 
+def property_fee_difference(
+    request,
+    propertyprocess_id,
+    property_fee_master,
+    old_fee,
+    old_price,
+    fee,
+    price
+):
+    """
+    A function to calculate the differences between two property fees.
+    """
+    property_process = get_object_or_404(
+        PropertyProcess, id=propertyprocess_id
+    )
+
+    if property_process.sector == PropertyProcess.SALES:
+        new_business = round(price * (fee / 100), 2)
+    else:
+        new_business = round((price * (fee / 100)) * 12)
+
+    new_business_difference = (
+        Decimal(property_fee_master.new_business) - new_business
+    )
+
+    new_new_business = (
+        Decimal(property_fee_master.new_business) - new_business_difference
+    )
+
+    property_fee_master.new_business = new_new_business
+    property_fee_master.save()
+
+    fee_difference = fee - old_fee
+
+    if fee_difference == 0:
+        fee_difference = old_fee
+
+    price_difference = price - old_price
+
+    if price_difference == 0:
+        price_difference = old_price
+
+    new_business_difference *= -1
+
+    PropertyFees.objects.create(
+        propertyprocess=property_process,
+        fee=fee_difference,
+        price=price_difference,
+        date=datetime.date.today(),
+        new_business=new_business_difference,
+        active=True,
+        manual=True,
+        created_by=request.user.get_full_name(),
+        updated_by=request.user.get_full_name(),
+    )
+
+    return True
+
+
 @otp_required
 @login_required
 def edit_deal(request, propertyprocess_id):
@@ -3643,12 +3704,20 @@ def edit_deal(request, propertyprocess_id):
     property_process = get_object_or_404(
         PropertyProcess, id=propertyprocess_id
     )
-    property_fee = PropertyFees.objects.filter(
-        propertyprocess=property_process.id
-    ).first()
+
+    property_fee_master = get_object_or_404(
+        PropertyFeeMaster,
+        propertyprocess=property_process
+    )
+
+    old_fee = property_fee_master.fee
+    old_price = property_fee_master.price
 
     if request.method == "POST":
-        form = PropertyFeesForm(request.POST)
+        form = PropertyFeesMasterForm(
+            request.POST,
+            instance=property_fee_master
+        )
         if form.is_valid():
             instance = form.save(commit=False)
 
@@ -3665,26 +3734,32 @@ def edit_deal(request, propertyprocess_id):
 
             instance.save()
 
-            property_fee.active = False
-
-            property_fee.save()
+            property_fee_difference(
+                request,
+                property_process.id,
+                property_fee_master,
+                old_fee,
+                old_price,
+                form.cleaned_data["fee"],
+                form.cleaned_data["price"],
+            )
 
             history_description = (
                 f"{request.user.get_full_name()} has changed a deal."
             )
 
             fee_notes = ""
-            if property_fee.fee != new_fee:
+            if property_fee_master.fee != new_fee:
                 fee_notes = (
-                    f"The fee has been changed from {property_fee.fee}%"
+                    f"The fee has been changed from {property_fee_master.fee}%"
                     f" to {new_fee}%. "
                 )
 
             price_notes = ""
-            if property_fee.price != new_price:
+            if property_fee_master.price != new_price:
                 price_notes = (
                     "The price has been changed from £"
-                    f"{humanize.intcomma(property_fee.price)}"
+                    f"{humanize.intcomma(property_fee_master.price)}"
                     f" to £{humanize.intcomma(new_price)}."
                 )
 
@@ -3714,11 +3789,8 @@ def edit_deal(request, propertyprocess_id):
         else:
             data["form_is_valid"] = False
     else:
-        form = PropertyFeesForm(
-            initial={
-                "price": property_fee.price,
-                "fee": property_fee.fee,
-            }
+        form = PropertyFeesMasterForm(
+            instance=property_fee_master
         )
 
     context = {
@@ -4863,7 +4935,9 @@ def fall_through(request, propertyprocess_id):
             property_process.updated_by = request.user.get_full_name()
             property_process.save()
 
-            deal_instance = Deal.objects.get(propertyprocess=property_process.id)
+            deal_instance = Deal.objects.get(
+                propertyprocess=property_process.id
+            )
 
             offerer = deal_instance.offer_accepted.offerer_details.full_name
 
@@ -4883,7 +4957,7 @@ def fall_through(request, propertyprocess_id):
 
             minus_fee = property_fee_instance.fee * -1
 
-            PropertyFees.objects.create(
+            pf_instance = PropertyFees.objects.create(
                 propertyprocess=property_process,
                 fee=minus_fee,
                 price=property_fee_instance.price,
@@ -4892,9 +4966,11 @@ def fall_through(request, propertyprocess_id):
                 created_by=request.user.get_full_name(),
                 updated_by=request.user.get_full_name(),
             )
+            property_fees_master(property_process.id, pf_instance)
 
             history_description = (
-                f"{request.user.get_full_name()} has fallen through the property."
+                f"{request.user.get_full_name()} "
+                "has fallen through the property."
             )
 
             history = PropertyHistory.objects.create(
