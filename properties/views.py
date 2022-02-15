@@ -4951,16 +4951,17 @@ def fall_through(request, propertyprocess_id):
 
             deal_instance.delete()
 
-            property_fee_instance = PropertyFees.objects.filter(
-                propertyprocess=property_process.id
-            ).first()
+            property_fee_master = get_object_or_404(
+                PropertyFeeMaster,
+                propertyprocess=property_process
+            )
 
-            minus_fee = property_fee_instance.fee * -1
+            minus_fee = property_fee_master.fee * -1
 
             pf_instance = PropertyFees.objects.create(
                 propertyprocess=property_process,
                 fee=minus_fee,
-                price=property_fee_instance.price,
+                price=property_fee_master.price,
                 date=datetime.date.today(),
                 active=True,
                 created_by=request.user.get_full_name(),
@@ -5053,21 +5054,24 @@ def lettings_fall_through(request, propertyprocess_id):
 
             deal_instance.delete()
 
-            property_fee_instance = PropertyFees.objects.filter(
-                propertyprocess=property_process.id
-            ).first()
+            property_fee_master = get_object_or_404(
+                PropertyFeeMaster,
+                propertyprocess=property_process
+            )
 
-            minus_fee = property_fee_instance.fee * -1
+            minus_fee = property_fee_master.fee * -1
 
-            PropertyFees.objects.create(
+            pf_instance = PropertyFees.objects.create(
                 propertyprocess=property_process,
                 fee=minus_fee,
-                price=property_fee_instance.price,
+                price=property_fee_master.price,
                 date=datetime.date.today(),
                 active=True,
                 created_by=request.user.get_full_name(),
                 updated_by=request.user.get_full_name(),
             )
+
+            property_fees_master(property_process.id, pf_instance)
 
             history_description = (
                 f"{request.user.get_full_name()} has fallen through the property."
