@@ -2578,7 +2578,7 @@ def edit_instruction(request, propertyprocess_id):
                     f" to {new_fee_agreed}%. "
                 )
                 instance.fee_agreed_bool = True
-                PropertyFees.objects.create(
+                pf_instance = PropertyFees.objects.create(
                     propertyprocess=property_process,
                     fee=new_fee_agreed,
                     price=property_fee.price,
@@ -2586,6 +2586,7 @@ def edit_instruction(request, propertyprocess_id):
                     created_by=request.user.get_full_name(),
                     updated_by=request.user.get_full_name(),
                 )
+                property_fees_master(property_process.id, pf_instance)
 
             length_of_contract_notes = ""
             if new_length_of_contract != old_length_of_contract:
