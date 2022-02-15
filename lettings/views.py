@@ -506,8 +506,8 @@ def add_renewal(request, lettings_id):
     else:
         form = RenewalForm(
             initial={
-                "fee": float(property_process.property_fees.first().fee),
-                "price": float(property_process.property_fees.first().price),
+                "fee": float(property_process.property_fees_master.fee),
+                "price": float(property_process.property_fees_master.price),
                 "date": datetime.date.today(),
             }
         )
