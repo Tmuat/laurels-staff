@@ -93,7 +93,11 @@ def property_fee_master():
             else:
                 if p.property_fees.first().fee < 0:
                     if p.previously_fallen_through is True:
+<<<<<<< Updated upstream
                         print(p)
+=======
+                        # print(p.macro_status)
+>>>>>>> Stashed changes
                         PropertyFeeMaster.objects.create(
                             propertyprocess=p,
                             fee=p.property_fees.first().fee,
@@ -104,6 +108,10 @@ def property_fee_master():
                         )
                         # pass
                     else:
+<<<<<<< Updated upstream
+=======
+                        # print(p.legacy_property)
+>>>>>>> Stashed changes
                         PropertyFeeMaster.objects.create(
                             propertyprocess=p,
                             fee=p.property_fees.first().fee,
