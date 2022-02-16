@@ -1224,7 +1224,6 @@ def employee_exchanges(request, profile_id, start_date, end_date):
         ] = instance.exchange.propertyprocess.id
         exchange_dict["date"] = instance.exchange_date
         exchange_dict["comp_date"] = instance.completion_date
-<<<<<<< Updated upstream
 
         property_fees = instance.exchange.propertyprocess.property_fees.all()
         filtered_property_fees = property_fees.filter(active=True)
@@ -1235,14 +1234,6 @@ def employee_exchanges(request, profile_id, start_date, end_date):
 
         exchange_dict["sum"] = sum
 
-=======
-        for pf in instance.exchange.propertyprocess.property_fees:
-            if 
-
-
-        exchange_dict["sum"] = 
-        
->>>>>>> Stashed changes
         instance.exchange.propertyprocess.property_fees.first().new_business
         exchange_dict[
             "fee"
