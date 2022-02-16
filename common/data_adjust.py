@@ -71,6 +71,15 @@ def adjust_property_fee_date():
     )
 
 
+def change_fee():
+    pf = PropertyFeeMaster.objects.get(
+        id="b36501d3-e1cb-42dc-a584-2f5d455e544b"
+    )
+    pf.price = 350000
+    pf.new_business = 2800
+    pf.save()
+
+
 def property_fee_master():
     pp = PropertyProcess.objects.exclude(
         macro_status=1
