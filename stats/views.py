@@ -211,7 +211,7 @@ def overview(request):
                 instance[
                     "exchange_sum"
                 ] += (
-                    exchanges_sales_instance.exchange.propertyprocess.property_fees.first().new_business
+                    exchanges_sales_instance.exchange.propertyprocess.property_fees_master.new_business
                 )
 
         for exchanges_lettings_instance in exchanges_lettings:
@@ -222,7 +222,7 @@ def overview(request):
                 instance[
                     "exchange_sum"
                 ] += (
-                    exchanges_lettings_instance.exchange.propertyprocess.property_fees.first().new_business
+                    exchanges_lettings_instance.exchange.propertyprocess.property_fees_master.new_business
                 )
 
         if (
@@ -418,7 +418,7 @@ def hub_overview(request):
                 instance[
                     "exchange_sum"
                 ] += (
-                    exchanges_sales_instance.exchange.propertyprocess.property_fees.first().new_business
+                    exchanges_sales_instance.exchange.propertyprocess.property_fees_master.new_business
                 )
 
         for exchanges_lettings_instance in exchanges_lettings:
@@ -429,7 +429,7 @@ def hub_overview(request):
                 instance[
                     "exchange_sum"
                 ] += (
-                    exchanges_lettings_instance.exchange.propertyprocess.property_fees.first().new_business
+                    exchanges_lettings_instance.exchange.propertyprocess.property_fees_master.new_business
                 )
 
         if (
@@ -459,14 +459,14 @@ def hub_overview(request):
         total[
             "exchange_sum"
         ] += (
-            instance.exchange.propertyprocess.property_fees.first().new_business
+            instance.exchange.propertyprocess.property_fees_master.new_business
         )
 
     for instance in exchanges_lettings:
         total[
             "exchange_sum"
         ] += (
-            instance.exchange.propertyprocess.property_fees.first().new_business
+            instance.exchange.propertyprocess.property_fees_master.new_business
         )
 
     context = {
@@ -1585,7 +1585,7 @@ def export_overview_xls(request):
                 instance[
                     "exchange_sum"
                 ] += (
-                    exchanges_sales_instance.exchange.propertyprocess.property_fees.first().new_business
+                    exchanges_sales_instance.exchange.propertyprocess.property_fees_master.new_business
                 )
 
         for exchanges_lettings_instance in exchanges_lettings:
@@ -1596,7 +1596,7 @@ def export_overview_xls(request):
                 instance[
                     "exchange_sum"
                 ] += (
-                    exchanges_lettings_instance.exchange.propertyprocess.property_fees.first().new_business
+                    exchanges_lettings_instance.exchange.propertyprocess.property_fees_master.new_business
                 )
 
         if (
@@ -1849,7 +1849,7 @@ def export_hub_overview_xls(request):
                 instance[
                     "exchange_sum"
                 ] += (
-                    exchanges_sales_instance.exchange.propertyprocess.property_fees.first().new_business
+                    exchanges_sales_instance.exchange.propertyprocess.property_fees_master.new_business
                 )
 
         for exchanges_lettings_instance in exchanges_lettings:
@@ -1860,7 +1860,7 @@ def export_hub_overview_xls(request):
                 instance[
                     "exchange_sum"
                 ] += (
-                    exchanges_lettings_instance.exchange.propertyprocess.property_fees.first().new_business
+                    exchanges_lettings_instance.exchange.propertyprocess.property_fees_master.new_business
                 )
 
         if (
