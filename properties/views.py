@@ -3763,6 +3763,20 @@ def edit_deal(request, propertyprocess_id):
                     f" to £{humanize.intcomma(new_price)}."
                 )
 
+            instance.propertyprocess = property_process
+
+            instance.created_by = request.user.get_full_name()
+            instance.updated_by = request.user.get_full_name()
+
+            instance.date = datetime.date.today()
+            instance.active = True
+
+            instance.save()
+
+            history_description = (
+                f"{request.user.get_full_name()} has changed a deal."
+            )
+
             notes = fee_notes + price_notes
 
             history = PropertyHistory.objects.create(
