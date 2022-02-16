@@ -1251,15 +1251,22 @@ def employee_exchanges(request, profile_id, start_date, end_date):
             "property_proccess"
         ] = instance.exchange.propertyprocess.id
         exchange_dict["date"] = instance.move_in_date
-        exchange_dict[
-            "sum"
-        ] = instance.exchange.propertyprocess.property_fees.first().new_business
+
+        property_fees = instance.exchange.propertyprocess.property_fees.all()
+        filtered_property_fees = property_fees.filter(active=True)
+
+        sum = 0
+        for filtered_property_fee in filtered_property_fees:
+            sum += filtered_property_fee.new_business
+
+        exchange_dict["sum"] = sum
+
         exchange_dict[
             "fee"
-        ] = instance.exchange.propertyprocess.property_fees.first().fee
+        ] = instance.exchange.propertyprocess.property_fees_master.fee
         exchange_dict[
             "final_price"
-        ] = instance.exchange.propertyprocess.property_fees.first().price
+        ] = instance.exchange.propertyprocess.property_fees_master.price
 
         exchanges.append(exchange_dict)
 
