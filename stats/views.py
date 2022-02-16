@@ -211,7 +211,7 @@ def overview(request):
                 instance[
                     "exchange_sum"
                 ] += (
-                    exchanges_sales_instance.exchange.propertyprocess.property_fees.first().new_business
+                    exchanges_sales_instance.exchange.propertyprocess.property_fees_master.new_business
                 )
 
         for exchanges_lettings_instance in exchanges_lettings:
@@ -222,7 +222,7 @@ def overview(request):
                 instance[
                     "exchange_sum"
                 ] += (
-                    exchanges_lettings_instance.exchange.propertyprocess.property_fees.first().new_business
+                    exchanges_lettings_instance.exchange.propertyprocess.property_fees_master.new_business
                 )
 
         if (
@@ -418,7 +418,7 @@ def hub_overview(request):
                 instance[
                     "exchange_sum"
                 ] += (
-                    exchanges_sales_instance.exchange.propertyprocess.property_fees.first().new_business
+                    exchanges_sales_instance.exchange.propertyprocess.property_fees_master.new_business
                 )
 
         for exchanges_lettings_instance in exchanges_lettings:
@@ -429,7 +429,7 @@ def hub_overview(request):
                 instance[
                     "exchange_sum"
                 ] += (
-                    exchanges_lettings_instance.exchange.propertyprocess.property_fees.first().new_business
+                    exchanges_lettings_instance.exchange.propertyprocess.property_fees_master.new_business
                 )
 
         if (
@@ -459,14 +459,14 @@ def hub_overview(request):
         total[
             "exchange_sum"
         ] += (
-            instance.exchange.propertyprocess.property_fees.first().new_business
+            instance.exchange.propertyprocess.property_fees_master.new_business
         )
 
     for instance in exchanges_lettings:
         total[
             "exchange_sum"
         ] += (
-            instance.exchange.propertyprocess.property_fees.first().new_business
+            instance.exchange.propertyprocess.property_fees_master.new_business
         )
 
     context = {
@@ -1224,15 +1224,21 @@ def employee_exchanges(request, profile_id, start_date, end_date):
         ] = instance.exchange.propertyprocess.id
         exchange_dict["date"] = instance.exchange_date
         exchange_dict["comp_date"] = instance.completion_date
-        exchange_dict[
-            "sum"
-        ] = instance.exchange.propertyprocess.property_fees.first().new_business
+
+        property_fees = instance.exchange.propertyprocess.property_fees.all()
+        filtered_property_fees = property_fees.filter(active=True)
+
+        sum = 0
+        for filtered_property_fee in filtered_property_fees:
+            sum += filtered_property_fee.new_business
+
+        exchange_dict["sum"] = sum
         exchange_dict[
             "fee"
-        ] = instance.exchange.propertyprocess.property_fees.first().fee
+        ] = instance.exchange.propertyprocess.property_fees_master.fee
         exchange_dict[
             "final_price"
-        ] = instance.exchange.propertyprocess.property_fees.first().price
+        ] = instance.exchange.propertyprocess.property_fees_master.price
 
         exchanges.append(exchange_dict)
 
@@ -1245,15 +1251,22 @@ def employee_exchanges(request, profile_id, start_date, end_date):
             "property_proccess"
         ] = instance.exchange.propertyprocess.id
         exchange_dict["date"] = instance.move_in_date
-        exchange_dict[
-            "sum"
-        ] = instance.exchange.propertyprocess.property_fees.first().new_business
+
+        property_fees = instance.exchange.propertyprocess.property_fees.all()
+        filtered_property_fees = property_fees.filter(active=True)
+
+        sum = 0
+        for filtered_property_fee in filtered_property_fees:
+            sum += filtered_property_fee.new_business
+
+        exchange_dict["sum"] = sum
+
         exchange_dict[
             "fee"
-        ] = instance.exchange.propertyprocess.property_fees.first().fee
+        ] = instance.exchange.propertyprocess.property_fees_master.fee
         exchange_dict[
             "final_price"
-        ] = instance.exchange.propertyprocess.property_fees.first().price
+        ] = instance.exchange.propertyprocess.property_fees_master.price
 
         exchanges.append(exchange_dict)
 
@@ -1572,7 +1585,7 @@ def export_overview_xls(request):
                 instance[
                     "exchange_sum"
                 ] += (
-                    exchanges_sales_instance.exchange.propertyprocess.property_fees.first().new_business
+                    exchanges_sales_instance.exchange.propertyprocess.property_fees_master.new_business
                 )
 
         for exchanges_lettings_instance in exchanges_lettings:
@@ -1583,7 +1596,7 @@ def export_overview_xls(request):
                 instance[
                     "exchange_sum"
                 ] += (
-                    exchanges_lettings_instance.exchange.propertyprocess.property_fees.first().new_business
+                    exchanges_lettings_instance.exchange.propertyprocess.property_fees_master.new_business
                 )
 
         if (
@@ -1836,7 +1849,7 @@ def export_hub_overview_xls(request):
                 instance[
                     "exchange_sum"
                 ] += (
-                    exchanges_sales_instance.exchange.propertyprocess.property_fees.first().new_business
+                    exchanges_sales_instance.exchange.propertyprocess.property_fees_master.new_business
                 )
 
         for exchanges_lettings_instance in exchanges_lettings:
@@ -1847,7 +1860,7 @@ def export_hub_overview_xls(request):
                 instance[
                     "exchange_sum"
                 ] += (
-                    exchanges_lettings_instance.exchange.propertyprocess.property_fees.first().new_business
+                    exchanges_lettings_instance.exchange.propertyprocess.property_fees_master.new_business
                 )
 
         if (
@@ -2496,19 +2509,25 @@ def export_hub_exchanges_xls(request, hub_id):
         exchange_instance[
             "name"
         ] = instance.exchange.propertyprocess.employee.user.get_full_name()
-        exchange_instance[
-            "new_business"
-        ] = instance.exchange.propertyprocess.property_fees.first().new_business
+
+        property_fees = instance.exchange.propertyprocess.property_fees.all()
+        filtered_property_fees = property_fees.filter(active=True)
+
+        sum = 0
+        for filtered_property_fee in filtered_property_fees:
+            sum += filtered_property_fee.new_business
+
+        exchange_instance["new_business"] = sum
         exchange_instance[
             "fee"
-        ] = instance.exchange.propertyprocess.property_fees.first().fee
+        ] = instance.exchange.propertyprocess.property_fees_master.fee
         exchange_instance["date"] = instance.exchange_date.strftime("%d-%m-%Y")
         exchange_instance["comp_date"] = instance.completion_date.strftime(
             "%d-%m-%Y"
         )
         exchange_instance[
             "price"
-        ] = instance.exchange.propertyprocess.property_fees.first().price
+        ] = instance.exchange.propertyprocess.property_fees_master.price
         exchanges.append(exchange_instance)
 
     for instance in exchanges_lettings:
@@ -2520,17 +2539,23 @@ def export_hub_exchanges_xls(request, hub_id):
         exchange_instance[
             "name"
         ] = instance.exchange.propertyprocess.employee.user.get_full_name()
-        exchange_instance[
-            "new_business"
-        ] = instance.exchange.propertyprocess.property_fees.first().new_business
+
+        property_fees = instance.exchange.propertyprocess.property_fees.all()
+        filtered_property_fees = property_fees.filter(active=True)
+
+        sum = 0
+        for filtered_property_fee in filtered_property_fees:
+            sum += filtered_property_fee.new_business
+
+        exchange_instance["new_business"] = sum
         exchange_instance[
             "fee"
-        ] = instance.exchange.propertyprocess.property_fees.first().fee
+        ] = instance.exchange.propertyprocess.property_fees_master.fee
         exchange_instance["date"] = instance.move_in_date.strftime("%d-%m-%Y")
         exchange_instance["comp_date"] = ""
         exchange_instance[
             "price"
-        ] = instance.exchange.propertyprocess.property_fees.first().price
+        ] = instance.exchange.propertyprocess.property_fees_master.price
         exchanges.append(exchange_instance)
 
     exchanges = sorted(

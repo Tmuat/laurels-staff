@@ -23,15 +23,15 @@
                             </li>
                             {% if propertyprocess.furthest_status > 2 %}
                             <li class="list-inline-item mr-3">
-                                <h5 class="mb-1">£{{ propertyprocess.property_fees.first.new_business|abs|intcomma }}0</h5>
+                                <h5 class="mb-1">£{{ propertyprocess.property_fees_master.new_business|abs|intcomma }}0</h5>
                                 <p class="mb-0 font-13 text-white-50">New Business</p>
                             </li>
                             <li class="list-inline-item mr-3">
-                                <h5 class="mb-1">{{ propertyprocess.property_fees.first.fee|abs }}%</h5>
+                                <h5 class="mb-1">{{ propertyprocess.property_fees_master.fee|abs }}%</h5>
                                 <p class="mb-0 font-13 text-white-50">Fee</p>
                             </li>
                             <li class="list-inline-item mr-3">
-                                <h5 class="mb-1">£{{ propertyprocess.property_fees.first.price|abs|intcomma }}</h5>
+                                <h5 class="mb-1">£{{ propertyprocess.property_fees_master.price|abs|intcomma }}</h5>
                                 {% if propertyprocess.furthest_status > 3 %}
                                     <p class="mb-0 font-13 text-white-50">Price Agreed</p>
                                 {% else %}

@@ -2,9 +2,127 @@ import datetime
 
 from lettings.models import Renewals, Gas, EPC, Electrical
 from regionandhub.models import Hub
-from properties.models import PropertyProcess, Deal, PropertyHistory, Offer, Reduction, PropertyFees
+from properties.models import PropertyProcess, Deal, PropertyHistory, Offer, Reduction, PropertyFees, PropertyFeeMaster
 
 # python3 manage.py dumpdata > master.json --settings=laurels.settings.production
+
+
+def adjust_property_fee_date():
+    property_fee = PropertyFees.objects.get(
+        id="ea626962-f0e5-40b4-b588-81ff729d266d"
+    )
+    property_fee.date = "2021-01-28"
+    property_fee.save()
+
+    property_fee = PropertyFees.objects.get(
+        id="ffd9af53-ba52-4f1b-b63e-ae6fa2eca5a9"
+    )
+    property_fee.date = "2021-02-26"
+    property_fee.save()
+
+    property_fee = PropertyFees.objects.get(
+        id="c6c6f8f1-3244-4389-a9cf-ceb0a3dccd1f"
+    )
+    property_fee.date = "2021-02-09"
+    property_fee.save()
+
+    property_fee = PropertyFees.objects.get(
+        id="4bbd94e2-bbd9-4ffe-a780-01d153095d91"
+    )
+    property_fee.date = "2021-02-12"
+    property_fee.save()
+
+    property_fee = PropertyFees.objects.get(
+        id="49d5affa-a079-434a-988e-df265ab69b78"
+    )
+    property_fee.date = "2021-04-29"
+    property_fee.save()
+
+    property_fee = PropertyFees.objects.get(
+        id="a99b8d6f-ee46-4df8-8b9c-8db9d1dcd3fe"
+    )
+    property_fee.date = "2021-04-17"
+    property_fee.save()
+
+    pp = PropertyProcess.objects.get(
+        id="efecdd4f-f2ea-45a9-b2b3-de56698d2430"
+    )
+
+    PropertyFees.objects.create(
+        propertyprocess=pp,
+        fee=6,
+        price=1350,
+        date="2021-03-17",
+        created_by="Automated",
+        updated_by="Automated"
+    )
+
+    pp = PropertyProcess.objects.get(
+        id="2b5512e6-0245-448b-ac26-bca72af04083"
+    )
+
+    PropertyFees.objects.create(
+        propertyprocess=pp,
+        fee=0.85,
+        price=375000,
+        date="2021-08-05",
+        created_by="Automated",
+        updated_by="Automated"
+    )
+
+
+def property_fee_master():
+    pp = PropertyProcess.objects.exclude(
+        macro_status=1
+    ).exclude(
+        macro_status=2
+    )
+    adjust_property_fee_date()
+    for p in pp:
+        if p.property_fees.exists():
+            if p.macro_status == 0:
+                PropertyFeeMaster.objects.create(
+                    propertyprocess=p,
+                    fee=p.property_fees.first().fee,
+                    price=p.property_fees.first().price,
+                    new_business=p.property_fees.first().new_business,
+                    created_by="Automated",
+                    updated_by="Automated",
+                )
+                # pass
+            else:
+                if p.property_fees.first().fee < 0:
+                    if p.previously_fallen_through is True:
+                        print(p)
+                        PropertyFeeMaster.objects.create(
+                            propertyprocess=p,
+                            fee=p.property_fees.first().fee,
+                            price=p.property_fees.first().price,
+                            new_business=p.property_fees.first().new_business,
+                            created_by="Automated",
+                            updated_by="Automated",
+                        )
+                        # pass
+                    else:
+                        PropertyFeeMaster.objects.create(
+                            propertyprocess=p,
+                            fee=p.property_fees.first().fee,
+                            price=p.property_fees.first().price,
+                            new_business=p.property_fees.first().new_business,
+                            created_by="Automated",
+                            updated_by="Automated",
+                        )
+                        # pass
+                else:
+                    PropertyFeeMaster.objects.create(
+                        propertyprocess=p,
+                        fee=p.property_fees.first().fee,
+                        price=p.property_fees.first().price,
+                        new_business=p.property_fees.first().new_business,
+                        created_by="Automated",
+                        updated_by="Automated",
+                    )
+                    # pass
 
 
 def check_pp_deal():
@@ -192,3 +310,4 @@ def delete_prop_fee():
 # deal_agreed_change()
 # delete_reduction()
 # delete_prop_fee()
+# property_fee_master()
