@@ -3666,12 +3666,12 @@ def property_fee_difference(
     property_fee_master.new_business = new_new_business
     property_fee_master.save()
 
-    fee_difference = fee - old_fee
+    fee_difference = fee - abs(old_fee)
 
     if fee_difference == 0:
         fee_difference = old_fee
 
-    price_difference = price - old_price
+    price_difference = price - abs(old_price)
 
     if price_difference == 0:
         price_difference = old_price
