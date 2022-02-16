@@ -39,7 +39,7 @@
                                     <td>{{ instance.date }}</td>
                                     <td>{{ instance.fee }}%</td>
                                     <td>£{{ instance.price|floatformat:2|intcomma }}</td>
-                                    <td>£{{ instance.new_business|floatformat:2|intcomma }}</td>
+                                    <td>£{{ instance.propertyprocess.property_fees_master.new_business|floatformat:2|intcomma }}</td>
                                     <td>
                                         <a href="{% url 'properties:property_detail' instance.propertyprocess.id %}" class="pointer">
                                             <i class="mdi mdi-arrow-expand-all font-16 mr-1">
