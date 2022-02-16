@@ -14,7 +14,7 @@
                         <option value="reset">- - - - - Reset - - - - -</option>
                     {% endif %}
                     {% for instance in hubs %}
-                        {% if instance.slug != "all-hubs" %}
+                        {% if instance.slug != "all-hubs" and instance.slug != "weekend-directors" %}
                             <option value="{{ instance.slug }}" {% if hub == instance.slug %}selected{% endif %}>{{ instance.hub_name }}</option>
                         {% endif %}
                     {% endfor %}
