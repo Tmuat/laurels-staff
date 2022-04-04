@@ -2652,7 +2652,7 @@ def export_hub_exchanges_xls(request, hub_id):
 @login_required
 def pipeline(request):
 
-    hubs = Hub.objects.filter(is_active=True).exclude(slug="all-hubs")
+    hubs = Hub.objects.filter(is_active=True).exclude(slug="all-hubs").exclude(slug="weekend-directors")
 
     deal_properties = PropertyFees.objects.filter(
         propertyprocess__macro_status=4, active=True, show_all=True
