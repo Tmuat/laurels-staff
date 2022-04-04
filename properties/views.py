@@ -1309,6 +1309,7 @@ def add_reduction(request, propertyprocess_id):
 
             instance.propertyprocess = property_process
             instance.fee = abs(property_fee.fee)
+            instance.show_all = property_fee.show_all
 
             instance.created_by = request.user.get_full_name()
             instance.updated_by = request.user.get_full_name()
@@ -2585,6 +2586,7 @@ def edit_instruction(request, propertyprocess_id):
                     fee=new_fee_agreed,
                     price=property_fee.price,
                     date=datetime.date.today(),
+                    show_all=property_fee.show_all,
                     created_by=request.user.get_full_name(),
                     updated_by=request.user.get_full_name(),
                 )
@@ -2734,6 +2736,7 @@ def edit_instruction_change(request, instruction_change_id):
                     fee=new_fee_agreed,
                     price=property_fee.price,
                     date=datetime.date.today(),
+                    show_all=property_fee.show_all,
                     created_by=request.user.get_full_name(),
                     updated_by=request.user.get_full_name(),
                 )
@@ -2826,6 +2829,7 @@ def withdraw_property(request, propertyprocess_id):
                     price=last_property_fee.price,
                     date=date,
                     active=True,
+                    show_all=last_property_fee.show_all,
                     created_by=request.user.get_full_name(),
                     updated_by=request.user.get_full_name(),
                 )
@@ -3353,6 +3357,7 @@ def add_deal(request, propertyprocess_id):
                 fee=abs(property_fee.fee),
                 price=offer.offer,
                 date=offer_accepted_date,
+                show_all=property_fee.show_all,
                 active=True,
                 created_by=request.user.get_full_name(),
                 updated_by=request.user.get_full_name(),
@@ -3532,6 +3537,7 @@ def add_deal_lettings(request, propertyprocess_id):
                 fee=abs(property_fee.fee),
                 price=offer.offer,
                 date=offer_accepted_date,
+                show_all=property_fee.show_all,
                 active=True,
                 created_by=request.user.get_full_name(),
                 updated_by=request.user.get_full_name(),
@@ -3651,6 +3657,10 @@ def property_fee_difference(
         PropertyProcess, id=propertyprocess_id
     )
 
+    last_property_fee = PropertyFees.objects.filter(
+        propertyprocess=property_process.id
+    ).first()
+
     if property_process.sector == PropertyProcess.SALES:
         new_business = round(price * (fee / 100), 2)
     else:
@@ -3685,6 +3695,7 @@ def property_fee_difference(
         price=price_difference,
         date=datetime.date.today(),
         new_business=new_business_difference,
+        show_all=last_property_fee.show_all,
         active=True,
         manual=True,
         created_by=request.user.get_full_name(),
