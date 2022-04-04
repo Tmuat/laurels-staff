@@ -3170,6 +3170,7 @@ def re_let(request, propertyprocess_id):
                 fee=re_inst_form.cleaned_data["fee_agreed"],
                 price=re_inst_form.cleaned_data["listing_price"],
                 date=re_inst_form.cleaned_data["date"],
+                show_all=False,
                 created_by=request.user.get_full_name(),
                 updated_by=request.user.get_full_name(),
             )
