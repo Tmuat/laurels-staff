@@ -6,7 +6,7 @@ from users.models import Profile
 
 class LastQuarterLeaderboard(Updated):
     class Meta:
-        ordering = ["type", "count"]
+        ordering = ["type", "-count"]
         verbose_name = "Leaderboard"
         verbose_name_plural = "Leaderboard"
 
@@ -29,7 +29,7 @@ class LastQuarterLeaderboard(Updated):
 
     def __str__(self):
         string = "%s (%s)" % (
-                self.employee.abbreviated_name,
+                self.employee.user.abbreviated_name,
                 self.type
             )
         return string
