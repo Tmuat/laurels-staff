@@ -27,7 +27,7 @@ class DataIsChanged(Updated):
     is_changed = models.BooleanField(default=False, null=False)
 
     def __str__(self):
-        return type
+        return self.type
 
 
 class LastQuarterLeaderboard(Updated):
