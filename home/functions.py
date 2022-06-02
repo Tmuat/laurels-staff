@@ -1,16 +1,18 @@
 from django.db.models import Count, Sum
+from django.utils import timezone
 
 from common.functions import (
     quarter_and_year_calc,
     last_quarter_and_year_calc,
 )
+from home.models import LastQuarterLeaderboard
 from properties.models import (
     PropertyFees,
     Instruction,
     Reduction,
     Valuation,
 )
-from users.models import UserTargets
+from users.models import Profile, UserTargets
 
 
 def top_performers(date):
@@ -184,6 +186,44 @@ def top_performers(date):
     data["reductions"] = reductions[:2]
     data["new_business"] = new_business[:2]
 
-    print(data)
-
     return data
+
+
+def refresh_top_performers(request):
+
+    refreshed_data = top_performers(timezone.now())
+
+    bulk_create = []
+
+    for type in refreshed_data:
+        leaderboard_instance = refreshed_data[type]
+        for instance in leaderboard_instance:
+            count=None
+            employee=None
+            target=None
+
+            for k, v in instance.items():
+
+                if "count" in k or "sum" in k:
+                    count = v
+                elif "employee" in k:
+                    employee = Profile.objects.get(id=v)
+                elif "target" in k:
+                    target = v
+                
+            bulk_create.append(
+                LastQuarterLeaderboard(
+                    type=f"{type}",
+                    employee=employee,
+                    count=count,
+                    target_percentage=target,
+                    updated_by=request.user.get_full_name()
+                )
+            )
+
+    LastQuarterLeaderboard.objects.all().delete()
+    LastQuarterLeaderboard.objects.bulk_create(
+        bulk_create
+    )
+
+    return refreshed_data
