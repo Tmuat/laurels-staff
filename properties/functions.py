@@ -1,5 +1,6 @@
+import logging
 
-
+logger = logging.getLogger(__name__)
 
 def property_fees_master(propertyprocess_id, fees_instance):
     """
