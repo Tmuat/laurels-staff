@@ -12,7 +12,6 @@ class LastQuarterLeaderboardAdmin(admin.ModelAdmin):
         "updated",
     ]
 
-
     def save_model(self, request, obj, form, change):
         obj.updated_by = request.user.get_full_name()
         super().save_model(request, obj, form, change)
@@ -28,7 +27,6 @@ class DataIsChangedAdmin(admin.ModelAdmin):
         "updated_by",
         "updated",
     ]
-
 
     def save_model(self, request, obj, form, change):
         obj.updated_by = request.user.get_full_name()
