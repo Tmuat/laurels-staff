@@ -1,6 +1,7 @@
 import datetime
 from decimal import Decimal
 import humanize
+import logging
 
 from django_otp.decorators import otp_required
 
@@ -16,6 +17,7 @@ from common.functions import (
     sales_progression_percentage,
     lettings_progression_percentage,
 )
+from properties.functions import property_fees_master
 from lettings.models import LettingProperties, Renewals, Gas, EPC, Electrical
 from properties.forms import (
     PropertyForm,
@@ -105,31 +107,7 @@ from properties.models import (
 from regionandhub.models import Hub
 from users.models import Profile
 
-
-def property_fees_master(propertyprocess_id, fees_instance):
-    """
-    This function takes in a property fees model instance
-    and changes the property_fees master.
-    """
-
-    propertyprocess = get_object_or_404(
-        PropertyProcess,
-        id=propertyprocess_id
-    )
-
-    property_fee_master = get_object_or_404(
-        PropertyFeeMaster,
-        propertyprocess=propertyprocess
-    )
-
-    property_fee_master.fee = fees_instance.fee
-    property_fee_master.price = fees_instance.price
-    property_fee_master.new_business = fees_instance.new_business
-    property_fee_master.updated_by = fees_instance.updated_by
-
-    property_fee_master.save()
-
-    return property_fee_master
+logger = logging.getLogger(__name__)
 
 
 @otp_required
@@ -138,7 +116,10 @@ def property_list(request):
     """
     A view to show paginated lists of the properties in the system; including
     searching and filtering.
+    :returns - 
     """
+
+    logger.info(f"{request.user.abbreviated_name} - Queried Property List")
 
     properties_list = PropertyProcess.objects.select_related(
         "property",
