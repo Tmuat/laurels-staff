@@ -1,5 +1,9 @@
 import logging
 
+from django.shortcuts import get_object_or_404
+
+from properties.models import PropertyProcess, PropertyFeeMaster
+
 logger = logging.getLogger(__name__)
 
 def property_fees_master(propertyprocess_id, fees_instance):
