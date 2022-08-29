@@ -1607,11 +1607,11 @@ class Marketing(UpdatedAndCreated):
     ]
 
     CONTACT_LAURELS = [
-        (LAURELSASKED, "Laurels Pro-actively Asked"),
-        (SOCIALMEDIAMESSAGE, "Social Media Message"),
-        (PHONECALL, "Phone Call To Office"),
-        (WEBSITE, "Website Message"),
+        (PHONECALL, "Direct Call"),
         (DIRECTEMAIL, "Direct Email"),
+        (WEBSITE, "Website Enquiry"),
+        (SOCIALMEDIAMESSAGE, "Social Media"),
+        (LAURELSASKED, "Laurels Contacted Them"),
     ]
 
     INSTRUCT = [
