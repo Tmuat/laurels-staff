@@ -47,6 +47,15 @@
         </div>
         <!-- end row -->
 
+        {% if propertyprocess.furthest_status < 4 %}
+            <div class="row">
+                <div class="col-lg-6">
+                    {% include 'properties/includes/detail/property_marketing.html' %}
+                </div>
+                <!-- end col -->
+            </div>
+        {% endif %}
+
         {% if propertyprocess.furthest_status > 3 %}
             {% if propertyprocess.sector == "sales" %}
                 <div class="row">
