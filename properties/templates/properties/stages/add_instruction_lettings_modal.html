@@ -40,6 +40,14 @@
                         {{ floor_space_form.floor_space|as_crispy_field }}
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-12">
+                        {{ instruction_reason_form.why_did_they_instruct_us|as_crispy_field }}
+                    </div>
+                    <div class="col-12">
+                        {{ instruction_reason_form.other|as_crispy_field }}
+                    </div>
+                </div>
                 <div class="my-2 text-center">
                     <button type="submit" class="btn btn-info" id="add-button">{% trans "Add Instruction" %}</button>
                 </div>
