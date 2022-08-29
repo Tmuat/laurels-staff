@@ -116,9 +116,9 @@ $(document).ready(function () {
     $('#base-modal').on('change', '#id_why_did_they_instruct_us', function () {
         value = $("#id_why_did_they_instruct_us").val()
         if (value == "other") {
-            $("#base-modal").find("#id_other").removeAttr("disabled").attr("required", true);;
+            $("#base-modal").find("#id_other").removeAttr("readonly").attr("required", true);;
         } else {
-            $("#base-modal").find("#id_other").attr("disabled", true).removeAttr("required");;
+            $("#base-modal").find("#id_other").attr("readonly", true).removeAttr("required");;
         };
     });
 
