@@ -4,15 +4,17 @@
         <h4 class="header-title mt-0 mb-3">Marketing Information</h4>
         <div class="text-left">
             <p class="text-muted"><strong>How Did The Seller Hear About Laurels:</strong> <span
-                    class="ml-2">{{ propertyprocess.marketing.get_hear_about_laurels_display }}</span></p>
-
+                    class="ml-2">{{ propertyprocess.marketing.get_hear_about_laurels_display }}</span>
+            </p>
             <p class="text-muted"><strong>How Did The Seller Contact Laurels:</strong><span
-                    class="ml-2">{{ propertyprocess.marketing.get_contact_laurels_display }}</span></p>
-
+                    class="ml-2">{{ propertyprocess.marketing.get_contact_laurels_display }}</span>
+            </p>
+            <p class="text-muted"><strong>Why Did The Seller Instruct Laurels:</strong> <span class="ml-2">
+                {{ propertyprocess.marketing.get_why_did_they_instruct_us_display }} {% if propertyprocess.marketing.why_did_they_instruct_us == "other" %}- {{ propertyprocess.marketing.other }}{% endif %}</span>
+            </p>
             <p class="text-muted"><strong>How Was The Applicant Introduced:</strong> <span class="ml-2">
                 {{ propertyprocess.marketing.get_applicant_intro_display }}</span>
             </p>
-
         </div>
     </div>
 </div>
