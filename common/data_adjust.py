@@ -2,7 +2,7 @@ import datetime
 
 from lettings.models import Renewals, Gas, EPC, Electrical
 from regionandhub.models import Hub
-from properties.models import PropertyProcess, Deal, PropertyHistory, Offer, Reduction, PropertyFees, PropertyFeeMaster
+from properties.models import PropertyProcess, Deal, PropertyHistory, Offer, Reduction, PropertyFees, PropertyFeeMaster, Marketing
 
 # python3 manage.py dumpdata > master.json --settings=laurels.settings.production
 
@@ -306,6 +306,35 @@ def delete_prop_fee():
     fee_instance = PropertyFees.objects.get(id="698cb8fa-ccb7-4eb0-babe-cd2bf9fd26c0")
     fee_instance.delete()
     print("Deleted")
+
+
+def marketing_info():
+    marketing_instance = Marketing.objects.all()
+    for instance in marketing_instance:
+        if instance.hear_about_laurels == "google_search":
+            instance.hear_about_laurels = Marketing.WEBSEARCH
+            instance.save()
+        elif instance.hear_about_laurels == "marketing_boards":
+            instance.hear_about_laurels = Marketing.BOARDS
+            instance.save()
+        elif instance.hear_about_laurels == "sold_let_flyer":
+            instance.hear_about_laurels = Marketing.PRINTDROP
+            instance.save()
+        elif instance.hear_about_laurels == "tout_letter":
+            instance.hear_about_laurels = Marketing.PRINTDROP
+            instance.save()
+        elif instance.hear_about_laurels == "specific_letter":
+            instance.hear_about_laurels = Marketing.PRINTDROP
+            instance.save()
+        elif instance.hear_about_laurels == "brochure":
+            instance.hear_about_laurels = Marketing.PRINTDROP
+            instance.save()
+        elif instance.hear_about_laurels == "business_card_drop":
+            instance.hear_about_laurels = Marketing.PRINTDROP
+            instance.save()
+        elif instance.hear_about_laurels == "combined_touting":
+            instance.hear_about_laurels = Marketing.PRINTDROP
+            instance.save()
 
 
 # python manage.py shell --settings=laurels.settings.production
