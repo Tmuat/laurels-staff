@@ -113,6 +113,15 @@ $(document).ready(function () {
         return false;
     });
 
+    $('#base-modal').on('change', '#id_why_did_they_instruct_us', function () {
+        value = $("#id_why_did_they_instruct_us").val()
+        if (value == "other") {
+            $("#base-modal").find("#id_other").removeAttr("disabled");
+        } else {
+            $("#base-modal").find("#id_other").attr("disabled", true);
+        };
+    });
+
     // Checks for change in the property chain div
     $("#simple-dragula").on("mousedown", ".dragula-handle", function () {
         $("#saved").addClass("d-none")
