@@ -1575,6 +1575,13 @@ class Marketing(UpdatedAndCreated):
     WEBSITE = "website_message"
     DIRECTEMAIL = "direct_email"
 
+    FEES = "fees"
+    CONSULTANT = "consultant"
+    RECOMMENDATION = "recommendation"
+    MARKETING = "marketing"
+    AREASUCCESS = "area_success"
+    OTHER = "other"
+
     HEAR_ABOUT_LAURELS = [
         (PREVIOUSCLIENT, "Previous Client"),
         (APPLICANT, "Applicant"),
@@ -1607,6 +1614,15 @@ class Marketing(UpdatedAndCreated):
         (DIRECTEMAIL, "Direct Email"),
     ]
 
+    INSTRUCT = [
+        (FEES, "Fees"),
+        (CONSULTANT, "Consultant"),
+        (RECOMMENDATION, "Recommendation"),
+        (MARKETING, "Marketing"),
+        (AREASUCCESS, "Area Success"),
+        (OTHER, "Other")
+    ]
+
     propertyprocess = models.OneToOneField(
         PropertyProcess,
         on_delete=models.CASCADE,
@@ -1621,6 +1637,10 @@ class Marketing(UpdatedAndCreated):
     contact_laurels = models.CharField(
         max_length=100, null=True, blank=False, choices=CONTACT_LAURELS
     )
+    why_did_they_instruct_us = models.CharField(
+        max_length=100, null=True, blank=True, choices=INSTRUCT
+    )
+    other = models.TextField(null=True, blank=True)
 
     def __str__(self):
         if (
