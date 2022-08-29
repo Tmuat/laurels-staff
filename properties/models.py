@@ -1553,16 +1553,13 @@ class Marketing(UpdatedAndCreated):
     SOCIALMEDIA = "social_media"
     RECOMMENDATION = "recommendation"
     LAURELS = "laurels_team_member_friends_or_family_of_laurels"
-    FLYER = "sold_let_flyer"
-    TOUT = "tout_letter"
-    LETTER = "specific_letter"
-    BROCHURE = "brochure"
-    BUSINESSCARD = "business_card_drop"
     COMBINEDTOUTING = "combined_touting"
-    GOOGLE = "google_search"
-    MARKETING = "marketing_boards"
     LOCAL = "local_presence"
     SOLDONROAD = "sold_on_road"
+    DOORKNOCKING = "door_knocking"
+    WEBSEARCH = "web_search"
+    BOARDS = "boards"
+    PRINTDROP = "print_drop"
 
     RIGHTMOVE = "rightmove"
     ZOOPLA = "zoopla"
@@ -1583,15 +1580,11 @@ class Marketing(UpdatedAndCreated):
         (APPLICANT, "Applicant"),
         (SOCIALMEDIA, "Social Media Posts"),
         (RECOMMENDATION, "Recommendation"),
+        (DOORKNOCKING, "Door Knocking"),
+        (PRINTDROP, "Print Drop"),
+        (WEBSEARCH, "Web Search"),
+        (BOARDS, "Boards"),
         (LAURELS, "Laurels Team Member/Friends or Family of Laurels"),
-        (FLYER, "Sold/Let Flyer"),
-        (TOUT, "Tout Letter"),
-        (LETTER, "Specific Letter"),
-        (BROCHURE, "Brochure Drop"),
-        (BUSINESSCARD, "Business Card Drop"),
-        (COMBINEDTOUTING, "Combined Touting"),
-        (GOOGLE, "Google Search"),
-        (MARKETING, "Marketing Boards"),
         (LOCAL, "Local Presence"),
         (SOLDONROAD, "Sold on Road"),
     ]
