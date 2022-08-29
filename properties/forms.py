@@ -208,6 +208,29 @@ class InstructionForm(forms.ModelForm):
             self.fields[field].label = label
 
 
+class InstructionReasonForm(forms.ModelForm):
+    class Meta:
+        model = Marketing
+        fields = (
+            "why_did_they_instruct_us",
+            "other"
+        )
+    
+    def __init__(self, *args, **kwargs):
+        """
+        Add new labels and required field
+        """
+        super().__init__(*args, **kwargs)
+        labels = {
+            "why_did_they_instruct_us": "Why Did The Seller Instruct Laurels",
+        }
+
+        self.fields['why_did_they_instruct_us'].required = True
+
+        self.fields["other"].disabled = True
+        self.fields["other"].widget.attrs["rows"] = 3
+
+
 class ReInstructionForm(forms.ModelForm):
     class Meta:
         model = Instruction
