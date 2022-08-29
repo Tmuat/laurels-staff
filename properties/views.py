@@ -72,6 +72,7 @@ from properties.forms import (
     GSCForm,
     InventoryForm,
     CleaningForm,
+    InstructionReasonForm,
 )
 from properties.models import (
     Property,
@@ -1039,10 +1040,16 @@ def add_instruction(request, propertyprocess_id):
 
     property = get_object_or_404(Property, id=property_process.property.id)
 
+    marketing = get_object_or_404(Marketing, propertyprocess=property_process.id)
+
     if request.method == "POST":
         form = InstructionForm(request.POST)
         floor_space_form = FloorSpaceForm(request.POST, instance=property)
-        if form.is_valid() and floor_space_form.is_valid():
+        instruction_reason_form = InstructionReasonForm(request.POST, instance=marketing)
+        if form.is_valid() and floor_space_form.is_valid() and instruction_reason_form.is_valid():
+            
+            instruction_reason_form.save()
+
             instance = form.save(commit=False)
 
             instance.propertyprocess = property_process
@@ -1115,14 +1122,15 @@ def add_instruction(request, propertyprocess_id):
             )
         else:
             data["form_is_valid"] = False
-
     else:
         form = InstructionForm()
         floor_space_form = FloorSpaceForm()
+        instruction_reason_form = InstructionReasonForm()
 
     context = {
         "form": form,
         "floor_space_form": floor_space_form,
+        "instruction_reason_form": instruction_reason_form,
         "propertyprocess_id": propertyprocess_id,
     }
     data["html_modal"] = render_to_string(
@@ -1147,17 +1155,23 @@ def add_lettings_instruction(request, propertyprocess_id):
 
     property = get_object_or_404(Property, id=property_process.property.id)
 
+    marketing = get_object_or_404(Marketing, propertyprocess=property_process.id)
+
     if request.method == "POST":
         form = InstructionForm(request.POST)
         instruction_lettings_extra_form = InstructionLettingsExtraForm(
             request.POST
         )
         floor_space_form = FloorSpaceForm(request.POST, instance=property)
+        instruction_reason_form = InstructionReasonForm(request.POST, instance=marketing)
         if (
             form.is_valid()
             and floor_space_form.is_valid()
             and instruction_lettings_extra_form.is_valid()
+            and instruction_reason_form.is_valid()
         ):
+            instruction_reason_form.save()
+            
             instance = form.save(commit=False)
 
             instance.propertyprocess = property_process
@@ -1247,16 +1261,17 @@ def add_lettings_instruction(request, propertyprocess_id):
             )
         else:
             data["form_is_valid"] = False
-
     else:
         form = InstructionForm()
         instruction_lettings_extra_form = InstructionLettingsExtraForm()
         floor_space_form = FloorSpaceForm()
+        instruction_reason_form = InstructionReasonForm()
 
     context = {
         "form": form,
         "instruction_lettings_extra_form": instruction_lettings_extra_form,
         "floor_space_form": floor_space_form,
+        "instruction_reason_form": instruction_reason_form,
         "propertyprocess_id": propertyprocess_id,
     }
     data["html_modal"] = render_to_string(
