@@ -223,12 +223,17 @@ class InstructionReasonForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         labels = {
             "why_did_they_instruct_us": "Why Did The Seller Instruct Laurels",
+            "other": "Reason*",
         }
 
         self.fields['why_did_they_instruct_us'].required = True
 
-        self.fields["other"].disabled = True
+        self.fields["other"].widget.attrs["readonly"] = True
         self.fields["other"].widget.attrs["rows"] = 3
+
+        for field in self.fields:
+            label = f"{labels[field]}"
+            self.fields[field].label = label
 
 
 class ReInstructionForm(forms.ModelForm):

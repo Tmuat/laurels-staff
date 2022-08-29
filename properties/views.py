@@ -1047,7 +1047,6 @@ def add_instruction(request, propertyprocess_id):
         floor_space_form = FloorSpaceForm(request.POST, instance=property)
         instruction_reason_form = InstructionReasonForm(request.POST, instance=marketing)
         if form.is_valid() and floor_space_form.is_valid() and instruction_reason_form.is_valid():
-            
             instruction_reason_form.save()
 
             instance = form.save(commit=False)
@@ -1110,7 +1109,7 @@ def add_instruction(request, propertyprocess_id):
                 updated_by=request.user.get_full_name(),
             )
 
-            data["form_is_valid"] = True
+            data["form_is_valid"] = False
             context = {
                 "property_process": property_process,
                 "history": history_instruction,
