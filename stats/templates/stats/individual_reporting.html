@@ -47,7 +47,7 @@
                                     <div class="input-group mb-3">
                                         <select class="custom-select" id="quick-filter">
                                             {% if selected_user is None %}
-                                                <option value="" selected>-</option>
+                                                <option value="" selected disabled>-</option>
                                             {% endif %}
                                             {% for user in users %}
                                                 <option value="{{ user.id }}">{{ user }}</option>
