@@ -21,7 +21,8 @@ from stats.views import (
     export_hub_new_business_xls,
     export_hub_exchanges_xls,
     pipeline,
-    individual_reporting_page
+    individual_reporting_page,
+    get_individual_reporting
 )
 
 
@@ -100,4 +101,5 @@ urlpatterns = [
         name="export_hub_exchanges_xls",
     ),
     path("individual-reporting/", individual_reporting_page, name="individual_reporting_page"),
+    path("get-individual-reporting/", get_individual_reporting, name="get_individual_reporting"),
 ]

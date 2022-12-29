@@ -2719,4 +2719,29 @@ def individual_reporting_page(request):
 
 
 def get_individual_reporting(request):
-    pass
+    
+    data = dict()
+
+    users = Profile.objects.filter(user__is_active=True) \
+    .filter(employee_targets=True) \
+    .order_by("user__first_name")
+
+    selected_user = None
+    if "user" in request.GET:
+        selected_user = request.GET.get("user")
+
+    quarters = calculate_quarter_and_year(timezone.now())
+
+    context = {
+        "users": users,
+        "selected_user": selected_user,
+        "quarters": quarters
+    }
+
+    data["html_table"] = render_to_string(
+        "stats/includes/individual_reporting_table.html",
+        context,
+        request=request,
+    )
+
+    return JsonResponse(data)
