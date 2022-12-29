@@ -2716,3 +2716,7 @@ def individual_reporting_page(request):
     }
 
     return render(request, "stats/individual_reporting.html", context)
+
+
+def get_individual_reporting(request):
+    pass
