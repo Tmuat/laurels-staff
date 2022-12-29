@@ -2705,7 +2705,8 @@ def individual_reporting_page(request):
 
     selected_user = None
     if "user" in request.GET:
-        selected_user = request.GET.get("user")
+        user_uuid = request.GET.get("user")
+        selected_user = Profile.objects.get(id=user_uuid)
 
     quarters = calculate_quarter_and_year(timezone.now())
 
@@ -2728,7 +2729,8 @@ def get_individual_reporting(request):
 
     selected_user = None
     if "user" in request.GET:
-        selected_user = request.GET.get("user")
+        user_uuid = request.GET.get("user")
+        selected_user = Profile.objects.get(id=user_uuid)
 
     quarters = calculate_quarter_and_year(timezone.now())
 

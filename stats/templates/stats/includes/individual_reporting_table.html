@@ -7,14 +7,18 @@
             <div class="card-body">
                 <div class="row mb-2">
                     <div class="col-12 col-md-4 col-xl-3 pr-md-0">
-                        <form method="GET" action="{% url 'stats:get_individual_reporting' %}" class="js-filter-get-form">
+                        <form method="GET" action="{% url 'stats:get_individual_reporting' %}" class="js-reporting-filter-get-form">
                             <div class="input-group mb-3">
                                 <select class="custom-select" id="quick-filter">
                                     {% if selected_user is None %}
                                         <option value="" selected disabled>-</option>
                                     {% endif %}
                                     {% for user in users %}
-                                        <option value="{{ user.id }}">{{ user }}</option>
+                                        {% if selected_user.id == user.id %}
+                                            <option value="{{ user.id }}" selected>{{ user }}</option>
+                                        {% else %}
+                                            <option value="{{ user.id }}">{{ user }}</option>
+                                        {% endif %}
                                     {% endfor %}
                                 </select>
                                 <div class="input-group-append">
