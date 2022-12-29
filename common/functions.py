@@ -110,6 +110,120 @@ def last_quarter_and_year_calc(date):
     return data
 
 
+def calculate_quarter_and_year(date):
+
+    data = []
+
+    def calculate_start_month(date):
+        start_month = (((date.month - 1) // 3) * 3) + 1
+        return start_month
+
+    def calculate_start_year(date):
+        start_year = date.year
+        return start_year
+    
+    start_month = int(calculate_start_month(date))
+    start_year = int(calculate_start_year(date))
+    company_year = start_year
+    
+    for idx, quarter in enumerate(range(4)):
+        if start_month == 10:
+            q1 = "q1"
+            q1_start = 10
+            q1_end = q1_start + 2
+            q1_year = start_year
+            q2 = "q4"
+            q2_start = 7
+            q2_end = q2_start + 2
+            q2_year = start_year
+            q3 = "q3"
+            q3_start = 4
+            q3_end = q3_start + 2
+            q3_year = start_year
+            q4 = "q2"
+            q4_start = 1
+            q4_end = q4_start + 2
+            q4_year = start_year
+        elif start_month == 1:
+            q1 = "q2"
+            q1_start = 1
+            q1_end = q1_start + 2
+            q1_year = start_year
+            q2 = "q1"
+            q2_start = 10
+            q2_end = q2_start + 2
+            q2_year = start_year - 1
+            q3 = "q4"
+            q3_start = 7
+            q3_end = q3_start + 2
+            q3_year = start_year - 1
+            q4 = "q3"
+            q4_start = 4
+            q4_end = q4_start + 2
+            q4_year = start_year - 1
+        elif start_month == 4:
+            q1 = "q3"
+            q1_start = 4
+            q1_end = q1_start + 2
+            q1_year = start_year
+            q2 = "q2"
+            q2_start = 1
+            q2_end = q2_start + 2
+            q2_year = start_year
+            q3 = "q1"
+            q3_start = 10
+            q3_end = q3_start + 2
+            q3_year = start_year - 1
+            q4 = "q4"
+            q4_start = 7
+            q4_end = q4_start + 2
+            q4_year = start_year - 1
+        elif start_month == 7:
+            q1 = "q4"
+            q1_start = 7
+            q1_end = q1_start + 2
+            q1_year = start_year
+            q2 = "q3"
+            q2_start = 4
+            q2_end = q2_start + 2
+            q2_year = start_year
+            q3 = "q2"
+            q3_start = 1
+            q3_end = q3_start + 2
+            q3_year = start_year
+            q4 = "q1"
+            q4_start = 10
+            q4_end = q4_start + 2
+            q4_year = start_year - 1
+
+        quarter_dict = {}
+
+        if idx == 0:
+            quarter_dict["quarter"] = q1
+            quarter_dict["start_month"] = q1_start
+            quarter_dict["end_month"] = q1_end
+            quarter_dict["start_year"] = q1_year
+        elif idx == 1:
+            quarter_dict["quarter"] = q2
+            quarter_dict["start_month"] = q2_start
+            quarter_dict["end_month"] = q2_end
+            quarter_dict["start_year"] = q2_year
+        elif idx == 2:
+            quarter_dict["quarter"] = q3
+            quarter_dict["start_month"] = q3_start
+            quarter_dict["end_month"] = q3_end
+            quarter_dict["start_year"] = q3_year
+        elif idx == 3:
+            quarter_dict["quarter"] = q4
+            quarter_dict["start_month"] = q4_start
+            quarter_dict["end_month"] = q4_end
+            quarter_dict["start_year"] = q4_year
+
+        data.append(quarter_dict)
+
+    return data
+
+
 def sales_progression_percentage(propertyprocess_id):
     instance = get_object_or_404(
         SalesProgression, propertyprocess=propertyprocess_id
@@ -289,7 +403,6 @@ def date_calc(date, filter):
             start_month = 10
             start_year = start_year - 1
     elif filter == "previous_year":
-        print(start_year)
         if start_month < 10:
             start_month = 10
             start_year = start_year - 2
@@ -316,7 +429,6 @@ def date_calc(date, filter):
         end_month = start_month + 2
 
     start_date = datetime.date(start_year, start_month, 1)
-    print(start_date)
 
     if filter == "year_to_date":
         end_date = (
