@@ -2734,6 +2734,29 @@ def get_individual_reporting(request):
 
     quarters = calculate_quarter_and_year(timezone.now())
 
+    for idx, quarter in enumerate(quarters):        
+        for key, value in quarter.items():
+            if key == "start_year":
+                year = value
+            elif key == "start_month":
+                start_month = value
+            elif key == "end_month":
+                end_month = value
+
+        valuations = (
+            Valuation.objects.values("valuer")
+            .exclude(active=False)
+            .annotate(valuation_count=Count("propertyprocess__employee"))
+            .filter(
+                date__iso_year=year,
+                date__month__gte=start_month,
+                date__month__lte=end_month,
+                propertyprocess__employee__employee_targets=True,
+                propertyprocess__employee__user__is_active=True,
+            )
+            .order_by("-valuation_count")
+        )
+
     context = {
         "users": users,
         "selected_user": selected_user,
