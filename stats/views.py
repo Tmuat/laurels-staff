@@ -10,7 +10,7 @@ from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.utils import timezone
 
-from common.functions import date_calc
+from common.functions import date_calc, calculate_quarter_and_year
 from properties.models import (
     PropertyProcess,
     PropertyFees,
@@ -2693,3 +2693,26 @@ def pipeline(request):
     }
 
     return render(request, template, context)
+
+
+@otp_required
+@login_required
+def individual_reporting_page(request):
+
+    users = Profile.objects.filter(user__is_active=True) \
+    .filter(employee_targets=True) \
+    .order_by("user__first_name")
+
+    selected_user = None
+    if "user" in request.GET:
+        selected_user = request.GET.get("user")
+
+    quarters = calculate_quarter_and_year(timezone.now())
+
+    context = {
+        "users": users,
+        "selected_user": selected_user,
+        "quarters": quarters
+    }
+
+    return render(request, "stats/individual_reporting.html", context)
