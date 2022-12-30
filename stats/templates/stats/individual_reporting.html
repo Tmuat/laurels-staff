@@ -1,0 +1,54 @@
+{% extends "vertical_base.html" %}
+{% load static i18n %}
+{% load humanize %}
+
+{% block head_title %}{% trans "Individual Reporting" %}{% endblock head_title %}
+
+{% block extra_css %}
+<link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"
+      integrity="sha512-HK5fgLBL+xu6dm/Ii3z4xhlSUyZgTT9tuc/hSrtw6uzJOvgRr2a9jyxxT1ely+B+xFAmJKVSTbpM/CuL7qxO8w=="
+      crossorigin="anonymous"
+    />
+{% endblock %}
+
+{% block content %}
+    <!-- Start Content-->
+    <div class="container-fluid">
+
+        <div class="row">
+            <div class="col">
+                <!-- start page title -->
+                <div class="page-title-box">
+                    <div class="page-title-right">
+                        <ol class="breadcrumb m-0 p-0">
+                            <li class="breadcrumb-item"><a href="{% url 'home:home' %}"><i class="uil-home-alt"></i> Home</a></li>
+                            <li class="breadcrumb-item active"><i class="mdi mdi-graph-outline"></i> Statistics</li>
+                            <li class="breadcrumb-item active"><i class="mdi mdi-teach"></i> Individuals</li>
+                        </ol>
+                    </div>
+                    <div class="text-center text-sm-left">
+                        <h4 class="page-title">Individual Reporting</h4>
+                    </div>
+                </div>
+                <!-- end page title -->
+            </div>
+        </div>
+        <!-- end row-->
+        <div id="reporting-table" class="row">
+            {% include 'stats/includes/individual_reporting_table.html' %}
+        </div>
+
+    </div>
+    <!-- container -->
+    {% include 'partials/base-extra-large-modal.html' %}
+{% endblock %}
+
+{% block extra_javascript %}
+{{ block.super }}
+    <!-- Custom JS -->
+    <script src="{% static 'stats/js/stats-v4.js' %}"></script>
+    <script src="{% static 'stats/js/lists-v3.js' %}"></script>
+    <!-- End Custom JS -->
+{% endblock %}

@@ -142,6 +142,13 @@
                             Hub {% if request.user.profile.director %}& Company {% endif %} Extra Stats
                         </a>
                     </li>
+                    {% if request.user.profile.director %}
+                    <li {% if request.resolver_match.url_name == 'individual_reporting_page' %}class="active"{% endif %}>
+                        <a href="{% url 'stats:individual_reporting_page' %}">
+                            Individual Reporting
+                        </a>
+                    </li>
+                    {% endif %}
                 </ul>
             </li>
             <li class="side-nav-item">

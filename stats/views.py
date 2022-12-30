@@ -4,13 +4,15 @@ import xlwt
 from django_otp.decorators import otp_required
 
 from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Count, Sum, Avg, F
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.utils import timezone
 
-from common.functions import date_calc
+from common.decorators import director_required
+from common.functions import date_calc, calculate_quarter_and_year
 from properties.models import (
     PropertyProcess,
     PropertyFees,
@@ -21,7 +23,7 @@ from properties.models import (
     ExchangeMoveLettings,
 )
 from regionandhub.models import Hub
-from users.models import Profile
+from users.models import Profile, UserTargets
 
 
 def sort_and_direction(sort, direction):
@@ -2693,3 +2695,174 @@ def pipeline(request):
     }
 
     return render(request, template, context)
+
+
+@director_required
+@staff_member_required
+@otp_required
+@login_required
+def individual_reporting_page(request):
+
+    data = dict()
+
+    users = Profile.objects.filter(user__is_active=True) \
+    .filter(employee_targets=True) \
+    .order_by("user__first_name")
+
+    selected_user = None
+    if "user" in request.GET:
+        user_uuid = request.GET.get("user")
+        selected_user = Profile.objects.get(id=user_uuid)
+
+    quarters = calculate_quarter_and_year(timezone.now())
+
+    user_data = []
+
+    if selected_user is not None:
+        for idx, quarter in enumerate(quarters):
+
+            quarter_info = {}
+
+            for key, value in quarter.items():
+                if key == "start_year":
+                    year = value
+                elif key == "start_month":
+                    start_month = value
+                elif key == "end_month":
+                    end_month = value
+                elif key == "company_year":
+                    company_year = str(value)
+                elif key == "quarter":
+                    current_quarter = value
+                    quarter_info["quarter"] = value
+
+            valuation_count = (
+                Valuation.objects.filter(valuer=selected_user.id)
+                .exclude(active=False)
+                .filter(
+                    date__iso_year=year,
+                    date__month__gte=start_month,
+                    date__month__lte=end_month,
+                    propertyprocess__employee__employee_targets=True,
+                    propertyprocess__employee__user__is_active=True,
+                ).count()
+            )
+
+            instruction_count = (
+                Instruction.objects.filter(propertyprocess__employee=selected_user.id)
+                .exclude(active=False)
+                .filter(
+                    date__iso_year=year,
+                    date__month__gte=start_month,
+                    date__month__lte=end_month,
+                    propertyprocess__employee__employee_targets=True,
+                    propertyprocess__employee__user__is_active=True,
+                ).count()
+            )
+
+            reduction_count = (
+                Reduction.objects.filter(propertyprocess__employee=selected_user.id)
+                .filter(
+                    date__iso_year=year,
+                    date__month__gte=start_month,
+                    date__month__lte=end_month,
+                    propertyprocess__employee__employee_targets=True,
+                    propertyprocess__employee__user__is_active=True,
+                ).count()
+            )
+
+            new_business = (
+                PropertyFees.objects.values("propertyprocess__employee__id")
+                .filter(propertyprocess__employee__id=selected_user.id)
+                .annotate(new_business_sum=Sum("new_business"))
+                .filter(
+                    date__iso_year=year,
+                    date__month__gte=start_month,
+                    date__month__lte=end_month,
+                    propertyprocess__employee__employee_targets=True,
+                    propertyprocess__employee__user__is_active=True,
+                    active=True,
+                    show_all=True,
+                )
+                .order_by("-new_business_sum")
+            )
+
+            exchanges_sales = (
+                ExchangeMoveSales.objects.filter(exchange__propertyprocess__employee__id=selected_user.id)
+                .filter(
+                    exchange_date__iso_year=year,
+                    exchange_date__month__gte=start_month,
+                    exchange_date__month__lte=end_month,
+                    exchange__propertyprocess__employee__employee_targets=True,
+                    exchange__propertyprocess__employee__user__is_active=True
+                )
+                .order_by("-exchange_date")
+            )
+
+            exchanges_lettings = (
+                ExchangeMoveLettings.objects.filter(exchange__propertyprocess__employee__id=selected_user.id)
+                .filter(
+                    move_in_date__iso_year=year,
+                    move_in_date__month__gte=start_month,
+                    move_in_date__month__lte=end_month,
+                    exchange__propertyprocess__employee__employee_targets=True,
+                    exchange__propertyprocess__employee__user__is_active=True
+                )
+                .order_by("-move_in_date")
+            )
+
+            exchange_sum = 0
+
+            for exchanges_sales_instance in exchanges_sales:
+                exchange_sum += (
+                    exchanges_sales_instance.exchange.propertyprocess.property_fees_master.new_business
+                )
+
+            for exchanges_lettings_instance in exchanges_lettings:
+                exchange_sum += (
+                    exchanges_lettings_instance.exchange.propertyprocess.property_fees_master.new_business
+                )
+            
+            try:
+                targets = UserTargets.objects.get(
+                    profile_targets=selected_user.id,
+                    year=company_year,
+                    quarter=current_quarter
+                )
+            except:
+                targets = None
+            
+            if targets is None:
+                quarter_info["valuation_target"] = 0
+                quarter_info["instruction_target"] = 0
+                quarter_info["reduction_target"] = 0
+                quarter_info["new_business_target"] = 0
+                quarter_info["exchange_sum_target"] = 0
+            else:
+                quarter_info["valuation_target"] = targets.valuations
+                quarter_info["instruction_target"] = targets.instructions
+                quarter_info["reduction_target"] = targets.reductions
+                quarter_info["new_business_target"] = targets.new_business
+                quarter_info["exchange_sum_target"] = targets.exchange_and_move
+
+            quarter_info["valuations"] = valuation_count
+            quarter_info["instructions"] = instruction_count
+            quarter_info["reductions"] = reduction_count
+
+            for result in new_business:
+                for key, value in result.items():
+                    if key == "new_business_sum":
+                        quarter_info["new_business"] = value
+            
+            quarter_info["exchange_sum"] = exchange_sum
+
+            user_data.append(quarter_info)
+
+    context = {
+        "users": users,
+        "selected_user": selected_user,
+        "quarters": quarters,
+        "user_data": user_data
+    }
+
+    return render(request, "stats/individual_reporting.html", context)

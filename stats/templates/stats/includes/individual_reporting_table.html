@@ -1,0 +1,130 @@
+{% load static i18n %}
+{% load humanize %}
+
+<div class="col-12">
+    <div class="card">
+        <div class="card-body">
+            <div class="row mb-2">
+                <div class="col-12 col-md-4 col-xl-3 pr-md-0">
+                    <form method="GET" action="{% url 'stats:individual_reporting_page' %}" class="js-reporting-filter-get-form">
+                        <div class="input-group mb-3">
+                            <select class="custom-select" id="quick-filter">
+                                {% if selected_user is None %}
+                                    <option value="" selected disabled>-</option>
+                                {% endif %}
+                                {% for user in users %}
+                                    {% if selected_user.id == user.id %}
+                                        <option value="{{ user.id }}" selected>{{ user }}</option>
+                                    {% else %}
+                                        <option value="{{ user.id }}">{{ user }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                            <div class="input-group-append">
+                                <button class="btn btn-info" type="submit">Go</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-centered mb-0">
+                    <thead class="thead-light">
+                        <tr>
+                            <th class="text-left">
+                                Quarter
+                            </th>
+                            <th class="text-center">
+                                Valuations
+                            </th>
+                            <th class="text-center">
+                                Instructions
+                            </th>
+                            <th class="text-center">
+                                Reductions
+                            </th>
+                            <th class="text-center">
+                                New Business
+                            </th>
+                            <th class="text-center">
+                                Exchanges
+                            </th>
+                        </tr>
+                    </thead>
+                    {% if selected_user is None %}
+                    <tbody>
+                        {% for instance in quarters %}
+                            <tr>
+                                <td>
+                                    {% if instance.quarter == 'q1' %}
+                                        Quarter 1
+                                    {% elif instance.quarter == 'q2' %}
+                                        Quarter 2
+                                    {% elif instance.quarter == 'q3' %}
+                                        Quarter 3
+                                    {% elif instance.quarter == 'q4' %}
+                                        Quarter 4
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">
+                                    -
+                                </td>
+                                <td class="text-center">
+                                    -
+                                </td>
+                                <td class="text-center">
+                                    -
+                                </td>
+                                <td class="text-center">
+                                    -
+                                </td>
+                                <td class="text-center">
+                                    -
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                    {% else %}
+                    <tbody>
+                        {% for instance in quarters %}
+                            <tr>
+                                <td>
+                                    {% if instance.quarter == 'q1' %}
+                                        Quarter 1
+                                    {% elif instance.quarter == 'q2' %}
+                                        Quarter 2
+                                    {% elif instance.quarter == 'q3' %}
+                                        Quarter 3
+                                    {% elif instance.quarter == 'q4' %}
+                                        Quarter 4
+                                    {% endif %}
+                                </td>
+                                {% for quarterly_instance in user_data %}
+                                    {% if quarterly_instance.quarter == instance.quarter %}
+                                    <td class="text-center">
+                                        {{ quarterly_instance.valuations }} / {{ quarterly_instance.valuation_target }}
+                                    </td>
+                                    <td class="text-center">
+                                        {{ quarterly_instance.instructions }} / {{ quarterly_instance.instruction_target }}
+                                    </td>
+                                    <td class="text-center">
+                                        {{ quarterly_instance.reductions }} / {{ quarterly_instance.reduction_target }}
+                                    </td>
+                                    <td class="text-center">
+                                        £{{ quarterly_instance.new_business|floatformat:2|intcomma }} / £{{ quarterly_instance.new_business_target|floatformat:2|intcomma }}
+                                    </td>
+                                    <td class="text-center">
+                                        £{{ quarterly_instance.exchange_sum|floatformat:2|intcomma }} / £{{ quarterly_instance.exchange_sum_target|floatformat:2|intcomma }}
+                                    </td>
+                                    {% endif %}
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                    {% endif %}
+                </table>
+            </div>
+        </div> <!-- end card-body-->
+    </div> <!-- end card-->
+</div> <!-- end col -->

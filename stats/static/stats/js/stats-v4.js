@@ -23,6 +23,17 @@ $(document).ready(function () {
         return false;
     };
 
+    // Deals with filtering individual reporting
+    var submitReportingFilterGetForm = function () {
+        $('#modal-overlay').fadeToggle(100);
+        var currentUrl = new URL(window.location);
+        var form = $(this);
+        var selectedOption = form.find(':selected').val()
+        currentUrl.searchParams.set("user", selectedOption);
+        window.location.replace(currentUrl);
+        return false;
+    };
+
     // Deals with sorting
     var setSort = function () {
         $('#modal-overlay').fadeToggle(100);
@@ -78,6 +89,7 @@ $(document).ready(function () {
 
     $(".js-load-form").on("click", loadBaseModal);
     $(".js-filter-get-form").on("submit", submitFilterGetForm);
+    $(".js-reporting-filter-get-form").on("submit", submitReportingFilterGetForm);
     $("#base-modal").on("click", ".js-hub-filter-form", submitHubFiltering);
 
     $(".js-sort").on("click", setSort);
