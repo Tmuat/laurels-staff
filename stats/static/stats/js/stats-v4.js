@@ -29,18 +29,8 @@ $(document).ready(function () {
         var currentUrl = new URL(window.location);
         var form = $(this);
         var selectedOption = form.find(':selected').val()
-        $.ajax({
-            url: form.attr("action"),
-            data: {
-                filter: selectedOption 
-                },
-            type: form.attr("method"),
-            dataType: 'json',
-            success: function (data) {
-                currentUrl.searchParams.set("user", selectedOption);
-                window.location.replace(currentUrl);
-            }
-        });
+        currentUrl.searchParams.set("user", selectedOption);
+        window.location.replace(currentUrl);
         return false;
     };
 
