@@ -124,7 +124,6 @@ def calculate_quarter_and_year(date):
     
     start_month = int(calculate_start_month(date))
     start_year = int(calculate_start_year(date))
-    company_year = start_year
     
     for idx, quarter in enumerate(range(4)):
         if start_month == 10:
@@ -132,69 +131,85 @@ def calculate_quarter_and_year(date):
             q1_start = 10
             q1_end = q1_start + 2
             q1_year = start_year
+            q1_company_year = start_year + 1
             q2 = "q4"
             q2_start = 7
             q2_end = q2_start + 2
             q2_year = start_year
+            q2_company_year = start_year
             q3 = "q3"
             q3_start = 4
             q3_end = q3_start + 2
             q3_year = start_year
+            q3_company_year = start_year
             q4 = "q2"
             q4_start = 1
             q4_end = q4_start + 2
             q4_year = start_year
+            q4_company_year = start_year
         elif start_month == 1:
             q1 = "q2"
             q1_start = 1
             q1_end = q1_start + 2
             q1_year = start_year
+            q1_company_year = start_year
             q2 = "q1"
             q2_start = 10
             q2_end = q2_start + 2
             q2_year = start_year - 1
+            q2_company_year = start_year
             q3 = "q4"
             q3_start = 7
             q3_end = q3_start + 2
             q3_year = start_year - 1
+            q3_company_year = start_year - 1
             q4 = "q3"
             q4_start = 4
             q4_end = q4_start + 2
             q4_year = start_year - 1
+            q4_company_year = start_year - 1
         elif start_month == 4:
             q1 = "q3"
             q1_start = 4
             q1_end = q1_start + 2
             q1_year = start_year
+            q1_company_year = start_year
             q2 = "q2"
             q2_start = 1
             q2_end = q2_start + 2
             q2_year = start_year
+            q2_company_year = start_year
             q3 = "q1"
             q3_start = 10
             q3_end = q3_start + 2
             q3_year = start_year - 1
+            q3_company_year = start_year
             q4 = "q4"
             q4_start = 7
             q4_end = q4_start + 2
             q4_year = start_year - 1
+            q4_company_year = start_year - 1
         elif start_month == 7:
             q1 = "q4"
             q1_start = 7
             q1_end = q1_start + 2
             q1_year = start_year
+            q1_company_year = start_year
             q2 = "q3"
             q2_start = 4
             q2_end = q2_start + 2
             q2_year = start_year
+            q2_company_year = start_year
             q3 = "q2"
             q3_start = 1
             q3_end = q3_start + 2
             q3_year = start_year
+            q3_company_year = start_year
             q4 = "q1"
             q4_start = 10
             q4_end = q4_start + 2
             q4_year = start_year - 1
+            q4_company_year = start_year
 
         quarter_dict = {}
 
@@ -203,21 +218,25 @@ def calculate_quarter_and_year(date):
             quarter_dict["start_month"] = q1_start
             quarter_dict["end_month"] = q1_end
             quarter_dict["start_year"] = q1_year
+            quarter_dict["company_year"] = q1_company_year
         elif idx == 1:
             quarter_dict["quarter"] = q2
             quarter_dict["start_month"] = q2_start
             quarter_dict["end_month"] = q2_end
             quarter_dict["start_year"] = q2_year
+            quarter_dict["company_year"] = q2_company_year
         elif idx == 2:
             quarter_dict["quarter"] = q3
             quarter_dict["start_month"] = q3_start
             quarter_dict["end_month"] = q3_end
             quarter_dict["start_year"] = q3_year
+            quarter_dict["company_year"] = q3_company_year
         elif idx == 3:
             quarter_dict["quarter"] = q4
             quarter_dict["start_month"] = q4_start
             quarter_dict["end_month"] = q4_end
             quarter_dict["start_year"] = q4_year
+            quarter_dict["company_year"] = q4_company_year
 
         data.append(quarter_dict)
 
