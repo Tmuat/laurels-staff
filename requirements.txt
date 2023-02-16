@@ -17,7 +17,7 @@ django-phonenumber-field==5.1.0
 django-ses==2.0.0
 django-storages==1.11.1
 django-two-factor-auth==1.13.1
-future==0.18.2
+future==0.18.3
 gunicorn==20.1.0
 humanize==3.8.0
 iniconfig==1.1.1
