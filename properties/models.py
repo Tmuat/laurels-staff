@@ -263,6 +263,34 @@ class PropertyProcess(UpdatedAndCreated):
             )
         except BadHeaderError:
             return HttpResponse("Invalid header found.")
+    
+    def send_fall_through_mail(self, request, **kwargs):
+        no_reply_email = settings.NO_REPLY_EMAIL
+        admin_email = settings.ADMIN_EMAIL
+        address = str(self.__str__())
+        context = kwargs
+        context.update(
+            {
+                "address": address,
+                "hub": self.hub,
+                "employee": self.employee,
+            }
+        )
+        subject = f"Fall Through: {address}"
+        body = render_to_string("properties/emails/fall_through.txt", context)
+
+        try:
+            send_mail(
+                subject=subject,
+                message=body,
+                from_email=f'"Laurels Auto Emails" <{no_reply_email}>',
+                recipient_list=[
+                    admin_email,
+                ],
+                fail_silently=False,
+            )
+        except BadHeaderError:
+            return HttpResponse("Invalid header found.")
 
     def send_back_on_market_mail(self, request, **kwargs):
         no_reply_email = settings.NO_REPLY_EMAIL
