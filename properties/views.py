@@ -4987,6 +4987,8 @@ def fall_through(request, propertyprocess_id):
                     offer_instance.status = Offer.REJECTED
                     offer_instance.save()
 
+            property_process.send_fall_through_mail(request)
+
             data["form_is_valid"] = True
 
             context = {
@@ -5089,6 +5091,8 @@ def lettings_fall_through(request, propertyprocess_id):
                 ):
                     offer_instance.status = Offer.REJECTED
                     offer_instance.save()
+
+            property_process.send_fall_through_mail(request)
 
             data["form_is_valid"] = True
 
